@@ -1,24 +1,57 @@
+<p align="center">
+  <img width="385" height="125" src="https://github.com/DTOcean/dtocean-app/raw/master/designer/logos/dtocean2plus._padded.png">
+</p>
+
 # DTOcean
 
-Repository for storing releases and tracking issues with the integrated DTOcean 
-tool.
+**DTOcean is the only open source fully parametric design tool for arrays of 
+ocean energy converters.**
+
+This repository contains DTOcean installation wizards and can also be
+used for submitting and tracking issues.
+
+ * For 64 and 32-bit Windows only.
+
+## Documentation
+
+See [https://dtocean.github.io](https://dtocean.github.io/) for the latest
+documentation.
 
 ## Credits
 
-DTOcean version 1.0.0 was developed and published by the EU's [DTOcean](
-https://www.dtoceanplus.eu/About-DTOceanPlus/History) consortium members.
+<img align="left" width="301" height="159" style="padding: 10px;" src="https://github.com/DTOcean/dtocean-app/raw/master/designer/logos/dog_logo_wide_300.png">
+
+DTOcean version 2.0.0 was developed and published by Mathew Topper at [Data
+Only Greater](https://www.dataonlygreater.com/).
+
+See [www.dataonlygreater.com](https://www.dataonlygreater.com/) for links
+to DTOcean video tutorials and for information regarding services available
+to support your use and development of DTOcean.
+
+Also, please check out the [EU DTOceanPlus](
+https://www.dtoceanplus.eu) project, which aims to further improve and expand
+the scope of the DTOcean tools.
 
 ## Installation
 
 ### Wizard Based Installer
 
-The DTOcean wizard based installer can be downloaded from the [Releases](
-https://github.com/DTOcean/dtocean/releases) page.
+The DTOcean installation wizard (for 64 or 32-bit) can be downloaded from the 
+[Releases](https://github.com/DTOcean/dtocean/releases) page.
+
+### Example Files
+
+The "Getting Started Example Files" zip folder can be downloaded from the 
+[Releases](https://github.com/DTOcean/dtocean/releases) page. See the "Getting 
+Started 1: Example Project" chapter of the [docs](https://dtocean.github.io/) 
+to see how it is used.
 
 ### Database
 
 See the [dtocean-database](https://github.com/DTOcean/dtocean-database)
 repository for download and installation instructions.
+
+**Note: DTOcean version 2.0.0 requires version 2.0.0 of the DTOcean database.**
 
 ### Manual
 
@@ -26,10 +59,10 @@ Installers for the "in-app" manual (accessed from the "Help" menu) can be
 downloaded from the [dtocean.github.io](
 https://github.com/DTOcean/dtocean.github.io) repository.
 
-## Online Documentation
+### Help
 
-See [https://dtocean.github.io](https://dtocean.github.io/) for the latest
-documentation.
+Links to video tutorials for installing DTOcean can be found at 
+[www.dataonlygreater.com](https://www.dataonlygreater.com/).
 
 ## Support
 
@@ -43,9 +76,20 @@ https://github.com/DTOcean/dtocean/wiki/Any-Asked-Questions) wiki page.
 For general questions or advice, please contact the [DTOcean Mailing List](
 https://groups.google.com/d/forum/dtocean).
 
-## Licence
+You may also wish to follow the [Design tools for Ocean Energy Systems](
+https://www.linkedin.com/groups/8612014/) group on [LinkedIn](
+https://www.linkedin.com).
+
+## Licence and Attributions
 
 [GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/)
 
 Other licenses may apply to individual components. Please see the source code
 for full licensing information.
+
+While not required by the terms of the license, if you would like to 
+acknowledge the use of DTOcean in a publication, please cite:
+
+> Topper, M. B. R., Nava, V., Collin, A. J., Bould, D., Ferri, F., 
+> Olson, S. S., … Jeffrey, H. F. (2018). Reducing Variability in the Cost of
+> Ocean Energy Arrays. Preprint. Retrieved from https://bit.ly/2XXzMkL
