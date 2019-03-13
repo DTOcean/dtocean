@@ -19,7 +19,7 @@ documentation.
 
 ## Credits
 
-<img align="left" width="301" height="159" style="padding: 10px;" src="https://github.com/DTOcean/dtocean-app/raw/master/designer/logos/dog_logo_wide_300.png">
+<img align="left" width="301" height="159" src="https://github.com/DTOcean/dtocean-app/raw/master/designer/logos/dog_logo_wide_300.png">
 
 DTOcean version 2.0.0 was developed and published by Mathew Topper at [Data
 Only Greater](https://www.dataonlygreater.com/).
@@ -41,7 +41,7 @@ The DTOcean installation wizard (for 64 or 32-bit) can be downloaded from the
 
 ### Example Files
 
-The "Getting Started Example Files" zip folder can be downloaded from the 
+The `getting_started_example_files-*.zip` zip folder can be downloaded from the 
 [Releases](https://github.com/DTOcean/dtocean/releases) page. See the "Getting 
 Started 1: Example Project" chapter of the [docs](https://dtocean.github.io/) 
 to see how it is used.
@@ -92,4 +92,4 @@ acknowledge the use of DTOcean in a publication, please cite:
 
 > Topper, M. B. R., Nava, V., Collin, A. J., Bould, D., Ferri, F., 
 > Olson, S. S., … Jeffrey, H. F. (2018). Reducing Variability in the Cost of
-> Ocean Energy Arrays. Preprint. Retrieved from https://bit.ly/2XXzMkL
+> Ocean Energy Arrays. Preprint. Retrieved from https://bit.ly/2HjGT29
