@@ -64,6 +64,12 @@ https://github.com/DTOcean/dtocean.github.io) repository.
 Links to video tutorials for installing DTOcean can be found at 
 [www.dataonlygreater.com](https://www.dataonlygreater.com/).
 
+### Uninstall
+
+To uninstall, either select the "Uninstall DTOcean" from the "DTOcean (XX-bit)" 
+start menu folder, or choose "DTOcean version 2.0.0+0" from "Programs and 
+Features" in the control panel or "Apps & Features" in "Settings" (Windows 10).
+
 ## Support
 
 Search for existing issues or create a new issue [HERE](
