@@ -66,9 +66,10 @@ Links to video tutorials for installing DTOcean can be found at
 
 ### Uninstall
 
-To uninstall, either select the "Uninstall DTOcean" from the "DTOcean (XX-bit)" 
-start menu folder, or choose "DTOcean version 2.0.0+0" from "Programs and 
-Features" in the control panel or "Apps & Features" in "Settings" (Windows 10).
+To uninstall, either select the "Uninstall DTOcean" icon from the "DTOcean 
+(XX-bit)" start menu folder, or choose "DTOcean version 2.0.0+0" from "Programs 
+and Features" in the control panel or "Apps & Features" in "Settings" (Windows 
+10).
 
 ## Support
 
