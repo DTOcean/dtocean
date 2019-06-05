@@ -97,6 +97,7 @@ for full licensing information.
 While not required by the terms of the license, if you would like to 
 acknowledge the use of DTOcean in a publication, please cite:
 
-> Topper, M. B. R., Nava, V., Collin, A. J., Bould, D., Ferri, F., 
-> Olson, S. S., … Jeffrey, H. F. (2018). Reducing Variability in the Cost of
-> Ocean Energy Arrays. Preprint. Retrieved from https://bit.ly/2HjGT29
+> Topper, M. B., Nava, V., Collin, A. J., Bould, D., Ferri, F., Olson, S. S., 
+> ... & Jeffrey, H. F. (2019). Reducing variability in the cost of energy of
+> ocean energy arrays. Renewable and Sustainable Energy Reviews, 112, 263-279.
+> Retrieved from https://authors.elsevier.com/sd/article/S1364032119303454
