@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="385" height="125" src="https://github.com/DTOcean/dtocean-app/raw/master/designer/logos/dtocean2plus._padded.png">
+  <img width="385" height="125" src="images/dtocean2plus._padded.png">
 </p>
 
 # DTOcean
@@ -19,7 +19,7 @@ documentation.
 
 ## Credits
 
-<img align="left" width="301" height="159" src="https://github.com/DTOcean/dtocean-app/raw/master/designer/logos/dog_logo_wide_300.png">
+<img align="left" width="301" height="159" src="images/dog_logo_wide_300.png">
 
 DTOcean version 2.0.0 was developed and published by Mathew Topper at [Data
 Only Greater](https://www.dataonlygreater.com/).
