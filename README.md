@@ -38,16 +38,14 @@ documentation.
 
 <img align="left" width="301" height="159" src="images/dog_logo_wide_300.png">
 
-DTOcean version 2.0.0 was developed and published by Mathew Topper at [Data
-Only Greater](https://www.dataonlygreater.com/).
+This version of DTOcean was developed and published by Mathew Topper at [Data
+Only Greater](https://www.dataonlygreater.com/) as a continuation of the
+[EU FP7 DTOcean project](https://cordis.europa.eu/project/id/608597).
 
-See [www.dataonlygreater.com](https://www.dataonlygreater.com/) for links
-to DTOcean video tutorials and for information regarding services available
-to support your use and development of DTOcean.
-
-Also, please check out the [EU DTOceanPlus](
-https://www.dtoceanplus.eu) project, which aims to further improve and expand
-the scope of the DTOcean tools.
+Also, please check out the [EU H2020 DTOceanPlus project](
+https://cinea.ec.europa.eu/featured-projects/dtoceanplus_en), which
+expanded the scope of the DTOcean tools. The source code for DTOceanPlus is
+available [here](https://gitlab.com/dtoceanplus).
 
 ## Installation
 
