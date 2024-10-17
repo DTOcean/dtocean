@@ -4,7 +4,7 @@
 
 # DTOcean
 
-**DTOcean is an open-source design and techno-economic assessment tool for 
+**DTOcean is an open-source tool for design and techno-economic assessment of
 marine renewable energy arrays.**
 
 DTOcean can calculate:
