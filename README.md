@@ -18,7 +18,7 @@ DTOcean can calculate:
 
 And features include:
 
-* A unique statistical approach to LCOE
+* A unique statistical approach to calculating levelized cost of energy (LCOE)
 * OEC reliability influenced at component level
 * Graphical user interface
 * Persistent database
