@@ -4,8 +4,25 @@
 
 # DTOcean
 
-**DTOcean is the only open source fully parametric design tool for arrays of 
-ocean energy converters.**
+**DTOcean is an open-source design and techno-economic assessment tool for 
+arrays of ocean energy converters (OECs).**
+
+DTOcean can calculate:
+
+* Optimal ocean energy converter (OEC) positioning
+* Energy export infrastructure
+* Station keeping requirements for OEC and site conditions
+* Installation planning with weather effects
+* Maintenance planning, simulating OEC downtime
+* Environmental impact assessment (experimental)
+
+And features include:
+
+* A unique statistical approach to LCOE
+* OEC reliability influenced at component level
+* Graphical user interface
+* Persistent database
+* Wizard based installation (for Windows)
 
 This repository contains DTOcean installation wizards and can also be
 used for submitting and tracking issues.
