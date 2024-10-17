@@ -11,7 +11,7 @@ DTOcean can calculate:
 
 * Optimal ocean energy converter (OEC) positioning
 * Energy export infrastructure
-* Station keeping requirements for OEC and site conditions
+* Station keeping requirements based on OEC performance and site conditions
 * Installation planning with weather effects
 * Maintenance planning, simulating OEC downtime
 * Environmental impact assessment (experimental)
