@@ -1,0 +1,48 @@
+name: Unit Tests
+on:
+  push:
+    branches: [ next ]
+    paths:
+      - 'packages/polite/**'
+  pull_request:
+    branches: [ next ]
+    paths:
+      - 'packages/polite/**'
+jobs:
+  pytest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            shell: pwsh
+          - os: ubuntu-latest
+            shell: bash -l {0}
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mamba-org/setup-micromamba@v1
+        with:
+          micromamba-version: 'latest'
+          environment-file: environment.yml
+          init-shell: >-
+            bash
+            powershell
+          cache-environment: true
+          post-cleanup: 'all'
+      - run: |
+          micromamba info
+      - name: Install package
+        run: |
+          pip install --no-deps -e .
+      - name: Run tests
+        run: |
+          pytest --cov --cov-report=xml tests
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+            fail_ci_if_error: true
