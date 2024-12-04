@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "polite"
+authors = [
+  { name="Mathew Toppper", email="damm_horse@yahoo.co.uk" },
+]
+description = "Easy functions for paths, logging and configuration files"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "configobj",
+    "pyyaml"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+tests = [
+  "pytest",
+  "pytest-mock"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/DTOcean/polite"
+"Bug Tracker" = "https://github.com/DTOcean/polite/issues"
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "src/polite/appdirs.py" # omit appdirs as developed externally
+]
+source = [
+    "src"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "polite.__version__"}
