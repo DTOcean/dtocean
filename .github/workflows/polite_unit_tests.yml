@@ -27,7 +27,7 @@ jobs:
       - uses: mamba-org/setup-micromamba@v1
         with:
           micromamba-version: 'latest'
-          environment-file: environment.yml
+          environment-file: packages/polite/environment.yml
           init-shell: >-
             bash
             powershell
