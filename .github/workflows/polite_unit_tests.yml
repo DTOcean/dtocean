@@ -2,12 +2,8 @@ name: Polite Unit Tests
 on:
   push:
     branches: [ next ]
-    paths:
-      - 'packages/polite/**'
   pull_request:
     branches: [ next ]
-    paths:
-      - 'packages/polite/**'
 defaults:
   run:
     working-directory: packages/polite
