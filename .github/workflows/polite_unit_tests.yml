@@ -22,6 +22,7 @@ jobs:
     defaults:
       run:
         shell: ${{ matrix.shell }}
+        working-directory: packages/polite
     steps:
       - uses: actions/checkout@v4
       - uses: mamba-org/setup-micromamba@v1
