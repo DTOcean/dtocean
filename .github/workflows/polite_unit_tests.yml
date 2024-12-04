@@ -8,6 +8,9 @@ on:
     branches: [ next ]
     paths:
       - 'packages/polite/**'
+defaults:
+  run:
+    working-directory: ./packages/polite
 jobs:
   pytest:
     runs-on: ${{ matrix.os }}
