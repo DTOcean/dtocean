@@ -27,7 +27,7 @@ jobs:
       run:
         shell: ${{ matrix.shell }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: mamba-org/setup-micromamba@v1
         with:
           micromamba-version: 'latest'
@@ -46,6 +46,4 @@ jobs:
         run: |
           pytest --cov --cov-report=xml tests
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-            fail_ci_if_error: true
+        uses: codecov/codecov-action@v5
