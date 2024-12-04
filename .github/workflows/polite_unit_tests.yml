@@ -10,7 +10,7 @@ on:
       - 'packages/polite/**'
 defaults:
   run:
-    working-directory: ./packages/polite
+    working-directory: packages/polite
 jobs:
   pytest:
     runs-on: ${{ matrix.os }}
