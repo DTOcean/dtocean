@@ -29,3 +29,5 @@ jobs:
           poetry run pytest --cov --cov-report=xml tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
+        with:
+          flags: polite
