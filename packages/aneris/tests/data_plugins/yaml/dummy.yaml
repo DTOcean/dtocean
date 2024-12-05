@@ -1,0 +1,11 @@
+---
+- identifier: 'early:dummy:data'
+  name: 'Early Dummy Data'
+  structure: 'Simple'
+  types:
+    - int
+- identifier: 'later:dummy:data'
+  name: 'Later Dummy Data'
+  structure: 'Simple'
+  types:
+    - float

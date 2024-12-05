@@ -1,0 +1,24 @@
+---
+- identifier: 'demo:demo:high'
+  name: 'High'
+  structure: 'Simple'
+  types:
+    - float
+- identifier: 'demo:demo:low'
+  name: 'Low'
+  structure: 'Simple'
+  types:
+    - float
+- identifier: 'demo:demo:rows'
+  name: 'Rows'
+  structure: 'Simple'
+  types:
+    - int
+- identifier: 'demo:demo:table'
+  name: 'Table'
+  structure: 'TableData'
+- identifier: 'trigger.bool'
+  name: 'Trigger'
+  structure: 'Simple'
+  types:
+    - bool

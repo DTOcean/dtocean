@@ -1,0 +1,18 @@
+---
+- identifier: "my:test:variable"
+  name: "Test"
+  units: "Test"
+  structure: "UnitData"
+- identifier: "Technology:Common:DeviceType"
+  name: "Device Type"
+  units: "-"
+  structure: "Simple"
+  types:
+    - "str"
+- identifier: "Technology:Common:DeviceType"
+  name: "Device Type"
+  units: "-"
+  structure: "Simple"
+  types:
+    - "str"
+

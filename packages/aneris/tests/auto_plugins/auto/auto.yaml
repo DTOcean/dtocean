@@ -1,0 +1,7 @@
+---
+- identifier: "my:auto:variable"
+  name: "Test"
+  units: "Test"
+  structure: "AutoSimple"
+  auto: 2.
+
