@@ -1,0 +1,13 @@
+---
+- identifier: 'site:wave:dir'
+  name: 'Direction'
+  units: 'Degrees'
+  structure: 'SeriesData'
+- identifier: 'site:wave:freqs'
+  name: 'Frequencies'
+  units: 'Hertz'
+  structure: 'SeriesData'
+- identifier: 'site:wave:PSD1D'
+  name: 'Spectral Density'
+  units: 'm/s^{2}'
+  structure: 'SeriesData'
