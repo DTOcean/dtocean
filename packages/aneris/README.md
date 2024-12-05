@@ -11,111 +11,34 @@ files, databases, python packages, etc.) and execution ordering.
 It is the framework on which [dtocean-core](
 https://github.com/DTOcean/dtocean-core) is built.
 
-\* For python 2.7 only.
 
 ## Installation
 
-Installation and development of aneris uses the [Anaconda Distribution](
-https://www.anaconda.com/distribution/) (Python 2.7)
-
-### Conda Package
+Installation and development of aneris uses the [Poetry](
+https://python-poetry.org/) dependency manager. Poetry must be installed
+and available on the command line.
 
 To install:
 
 ```
-$ conda install -c defaults -c conda-forge -c dataonlygreater aneris
+$ poetry install
 ```
 
-### Source Code
-
-Conda can be used to install dependencies into a dedicated environment from
-the source code root directory:
-
-```
-conda create -n _aneris python=2.7 pip
-```
-
-Activate the environment, then copy the `.condrc` file to store installation  
-channels:
-
-```
-$ conda activate _aneris
-$ copy .condarc %CONDA_PREFIX%
-```
-
-OR, if you're using Powershell:
-
-```
-$ conda activate _aneris
-$ copy .condarc $env:CONDA_PREFIX
-```
-
-Install [polite](https://github.com/DTOcean/polite) into the environment. For 
-example, if installing it from source:
-
-```
-$ cd \\path\\to\\polite
-$ conda install --file requirements-conda-dev.txt
-$ pip install -e .
-```
-
-Finally, install aneris and its dependencies using conda and pip:
-
-```
-$ cd \\path\\to\\aneris
-$ conda install --file requirements-conda-dev.txt
-$ pip install -e .
-```
-
-To deactivate the conda environment:
-
-```
-$ conda deactivate
-```
-
-### Tests
+## Tests
 
 A test suite is provided with the source code that uses [pytest](
 https://docs.pytest.org).
 
-If not already active, activate the conda environment set up in the [Source 
-Code](#source-code) section:
+Install the testing dependencies:
 
 ```
-$ conda activate _aneris
-```
-
-Install pytest to the environment (one time only):
-
-```
-$ conda install -y mock pytest pytest-mock
-```
-
-Optionally, you can also install [dtocean-dummy-module](https://github.com/DTOcean/dtocean-dummy-module)
-for additional tests:
-
-```
-$ conda install -y dtocean-dummy-module mock pytest pytest-mock
+$ poetry install --with test
 ```
 
 Run the tests:
 
 ``` 
-$ pytest tests
-```
-
-### Uninstall
-
-To uninstall the conda package:
-
-```
-$ conda remove aneris
-```
-
-To uninstall the source code and its conda environment:
-
-```
-$ conda remove --name _aneris --all
+$ poetry run pytest
 ```
 
 ## Usage

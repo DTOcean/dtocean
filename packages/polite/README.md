@@ -21,7 +21,7 @@ To install:
 $ poetry install
 ```
 
-### Tests
+## Tests
 
 A test suite is provided with the source code that uses [pytest](
 https://docs.pytest.org).
