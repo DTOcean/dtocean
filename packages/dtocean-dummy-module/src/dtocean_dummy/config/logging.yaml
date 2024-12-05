@@ -1,0 +1,24 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  simple:
+    format: '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+  file:
+    class : logging.FileHandler
+    formatter: simple
+    level: DEBUG
+    filename: dtocean-dummy.log
+loggers:
+  'dtocean_dummy':
+    level: DEBUG
+    handlers: [file]
+    propagate: no
+root:
+  level: DEBUG
+  handlers: [console]
