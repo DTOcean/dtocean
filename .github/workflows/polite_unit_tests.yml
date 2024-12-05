@@ -3,11 +3,11 @@ on:
   push:
     branches: [ next ]
     paths:
-      - 'packages/polite'
+      - 'packages/polite/**'
   pull_request:
     branches: [ next ]
     paths:
-      - 'packages/polite'
+      - 'packages/polite/**'
 jobs:
   pytest:
     runs-on: ${{ matrix.os }}
