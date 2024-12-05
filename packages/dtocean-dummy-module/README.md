@@ -8,27 +8,33 @@
 A python package to demonstrate some of the many features of Python and
 introduce a typical structure for a Python package.
 
-## Quick Start
+## Installation
 
-### Installation
+Installation and development of the dummy module uses the [Poetry](
+https://python-poetry.org/) dependency manager. Poetry must be installed
+and available on the command line.
 
-The DTOCEAN Python dummy module is currently only tested on Windows 32
-and 64 bit systems. Your mileage may vary on other platforms.
+To install:
 
-#### Setuptools
-
-```shell
-python setup.py install
+```
+$ poetry install
 ```
 
-#### Anaconda
+## Tests
 
-The demo has been packaged for use with the [Anaconda Scientific Python
-Distribution](https://store.continuum.io/cshop/anaconda/).
+A test suite is provided with the source code that uses [pytest](
+https://docs.pytest.org).
 
-```shell
-conda config --append channels dataonlygreater
-conda install dtocean-dummy-module
+Install the testing dependencies:
+
+```
+$ poetry install --with test
+```
+
+Run the tests:
+
+``` 
+$ poetry run pytest
 ```
 
 ## Example Usage
