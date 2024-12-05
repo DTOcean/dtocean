@@ -14,33 +14,18 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
-        include:
-          - os: windows-latest
-            shell: pwsh
-          - os: ubuntu-latest
-            shell: bash -l {0}
-    defaults:
-      run:
-        shell: ${{ matrix.shell }}
-        working-directory: packages/polite
     steps:
       - uses: actions/checkout@v4
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: actions/setup-python@v5
         with:
-          micromamba-version: 'latest'
-          environment-file: packages/polite/environment.yml
-          init-shell: >-
-            bash
-            powershell
-          cache-environment: true
-          post-cleanup: 'all'
-      - run: |
-          micromamba info
+          python-version: 3.13
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
       - name: Install package
         run: |
-          pip install --no-deps -e .
+          poetry install --with test
       - name: Run tests
         run: |
-          pytest --cov --cov-report=xml tests
+          poetry run pytest --cov --cov-report=xml tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
