@@ -136,7 +136,7 @@ def safe_update(dst_dict, src_dict, allow_none=False):
         
         src_copy = {k: v for k, v in src_dict.items() if v is not None}
 
-    dst_copy.update((k, src_copy[k]) for k in dst_copy.viewkeys() &
-                                              src_copy.viewkeys())
+    dst_copy.update((k, src_copy[k]) for k in dst_copy.keys() &
+                                              src_copy.keys())
     
     return dst_copy

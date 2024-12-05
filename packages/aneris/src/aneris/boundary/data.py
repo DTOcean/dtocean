@@ -16,6 +16,7 @@ import sys
 import glob
 import pickle
 import datetime as dt
+from abc import ABC
 from types import NoneType
 from numbers import Number
 
@@ -30,9 +31,7 @@ from ..utilities.files import yaml_to_py
 sys.modules['pandas.indexes'] = pandas.core.indexes
 
 
-class DataDefinition(object):
-
-    __metaclass__ = abc.ABCMeta
+class DataDefinition(ABC):
 
     @property
     @abc.abstractmethod
@@ -114,13 +113,10 @@ class DataDefinition(object):
         return yaml_paths
 
 
-class Structure(object):
-    
+class Structure(ABC):
     '''Boundary class to define creation and and access to Data objects. Also 
     contains methods used for automatic interfaces associated to the Structure
     class'''
-    
-    __metaclass__ = abc.ABCMeta
     
     @abc.abstractmethod
     def get_data(self, raw, meta_data):
@@ -194,7 +190,7 @@ class Structure(object):
         return value
 
 
-class SerialBox(object):
+class SerialBox():
     
     def __init__(self, identifier, load_dict):
         

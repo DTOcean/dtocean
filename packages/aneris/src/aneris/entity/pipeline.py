@@ -8,7 +8,7 @@ Created on Tue Mar 31 10:53:17 2015
 from copy import deepcopy
 from collections import OrderedDict
 
-class Hub(object):
+class Hub():
     
     """A Hub groups a particular class of interfaces and calculates the
     data requirements of each interface considering all the input and outputs

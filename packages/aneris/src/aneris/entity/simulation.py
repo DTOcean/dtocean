@@ -10,7 +10,7 @@ module_logger = logging.getLogger(__name__)
 
 from copy import deepcopy
 
-class Simulation(object):
+class Simulation():
     
     '''The main class is the simulation which holds all of the information
     about the system.'''
