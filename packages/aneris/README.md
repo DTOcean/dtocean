@@ -1,8 +1,3 @@
-[![appveyor](https://ci.appveyor.com/api/projects/status/github/DTOcean/aneris?branch=master&svg=true)](https://ci.appveyor.com/project/DTOcean/aneris)
-[![codecov](https://codecov.io/gh/DTOcean/aneris/branch/master/graph/badge.svg)](https://codecov.io/gh/DTOcean/aneris)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/31fbdbe9502b4985a6b8d4222fd13923)](https://www.codacy.com/gh/DTOcean/aneris/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DTOcean/aneris&amp;utm_campaign=Badge_Grade)
-[![release](https://img.shields.io/github/release/DTOcean/aneris.svg)](https://github.com/DTOcean/aneris/releases/latest)
-
 # aneris
 
 Aneris provides data management, coupling between arbitrary sources (such as
