@@ -61,7 +61,7 @@ def test_DirectoryMap_copy_all_new(tmpdir):
     test_dirmap.copy_all()
 
     assert len(dst_tmpdir.listdir()) == 4
-    assert len(glob.glob1(str(dst_tmpdir), "*.new")) == 2
+    assert len(glob.glob("*.new", root_dir=str(dst_tmpdir))) == 2
 
 
 def test_DirectoryMap_copy_all_overwrite(tmpdir):

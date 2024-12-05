@@ -11,38 +11,14 @@ Easy functions for paths, logging and configuration files.
 
 ## Installation
 
-Installation and development of polite uses the [Anaconda Distribution](
-https://www.anaconda.com/distribution/) (Python 2.7)
-
-### Conda Package
+Installation and development of polite uses the [Poetry](
+https://python-poetry.org/) dependency manager. Poetry must be installed
+and available on the command line.
 
 To install:
 
 ```
-$ conda install -c dataonlygreater polite
-```
-
-### Source Code
-
-Conda can be used to install dependencies into a dedicated environment from
-the source code root directory:
-
-```
-$ conda create -n _polite python=2.7 pip
-```
-
-Now activate the environment and use conda and pip to install the source code:
-
-```
-$ conda activate _polite
-$ conda install --file requirements-conda-dev.txt
-$ pip install -e .
-```
-
-To deactivate the conda environment:
-
-```
-$ conda deactivate
+$ poetry install
 ```
 
 ### Tests
@@ -50,37 +26,16 @@ $ conda deactivate
 A test suite is provided with the source code that uses [pytest](
 https://docs.pytest.org).
 
-If not already active, activate the conda environment set up in the [Source 
-Code](#source-code) section:
+Install the testing dependencies:
 
 ```
-$ conda activate _polite
-```
-
-Install pytest to the environment (one time only):
-
-```
-$ conda install -y mock pytest pytest-mock
+$ poetry install --with test
 ```
 
 Run the tests:
 
 ``` 
-$ pytest tests
-```
-
-### Uninstall
-
-To uninstall the conda package:
-
-```
-$ conda remove polite
-```
-
-To uninstall the source code and its conda environment:
-
-```
-$ conda remove --name _polite --all
+$ poetry run pytest
 ```
 
 ## Usage
