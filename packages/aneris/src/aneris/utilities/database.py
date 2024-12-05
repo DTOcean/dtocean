@@ -8,8 +8,9 @@ module_logger = logging.getLogger(__name__)
 import abc
 import socket
 import contextlib
+from abc import ABC
 
-from sqlalchemy import create_engine, MetaData, Table
+from sqlalchemy import create_engine, text, MetaData, Table
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 from .misc import safe_update
@@ -17,9 +18,7 @@ from .misc import safe_update
 #Create and engine and get the metadata
 Base = declarative_base()
 
-class Database(object):
-
-    __metaclass__ = abc.ABCMeta
+class Database(ABC):
 
     def __init__(self, adapter_name, config_dict=None):
 
@@ -157,8 +156,7 @@ class Database(object):
     def reflect_table(self, table_name,
                             remove_trailing_space=True):
 
-        kwargs = {"autoload": True,
-                  "autoload_with": self._engine}
+        kwargs = {"autoload_with": self._engine}
             
         # Sanitise the table names if required
         if remove_trailing_space: table_name = table_name.rstrip()
@@ -198,7 +196,7 @@ class Database(object):
 
         try:
 
-            result = connection.execute(query)
+            result = connection.execute(text(query))
             yield result
 
         finally:
@@ -344,8 +342,7 @@ class PostgreSQL(Database):
         # Sanitise the table names if required
         if remove_trailing_space: table_name = table_name.rstrip()
         
-        kwargs = {"autoload": True,
-                  "autoload_with": self._engine,
+        kwargs = {"autoload_with": self._engine,
                   "schema": schema}
 
         reflected = Table(table_name,

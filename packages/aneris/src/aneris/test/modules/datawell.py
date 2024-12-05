@@ -8,7 +8,7 @@ Created on Tue Nov 25 17:54:30 2014
 import pandas as pd
 
 
-class SPT(object):
+class SPT():
     
     def __init__(self):
     

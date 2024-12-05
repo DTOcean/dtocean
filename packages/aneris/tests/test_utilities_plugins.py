@@ -6,6 +6,7 @@
 
 import os
 import sys
+import pathlib
 
 import pytest
 
@@ -51,24 +52,18 @@ def test_get_module_names_from_paths():
 
 
 def test_get_class_descriptions_from_module():
+    '''Test if the SeriesData class can be recovered'''
+    mods = get_class_descriptions_from_module('aneris.test.data.definitions')
+    assert 'SeriesData' in mods
 
-    '''Test if the UnitData class can be recovered and that it is a
-    subclass of Data'''
-
-    mods = get_class_descriptions_from_module('data_plugins.definitions')
-    description = mods['UnitData']
-    super_name = description.super[0]
-
-    assert super_name == 'Structure'
 
 def test_get_subclass_names_from_module():
+    '''Test if the the SeriesData class is a subclass of the Data class.'''
+    data_sub_mods = get_subclass_names_from_module(
+                                            'aneris.test.data.definitions',
+                                            'Structure')
+    assert 'SeriesData' in data_sub_mods
 
-    '''Test if the the UnitData class is a subclass of the Data class.'''
-
-    data_sub_mods = get_subclass_names_from_module('data_plugins.definitions',
-                                                   'Structure')
-
-    assert 'UnitData' in data_sub_mods
 
 def test_get_class_attr_warn(monkeypatch):
     

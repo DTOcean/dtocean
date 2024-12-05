@@ -14,7 +14,6 @@ def test_safe_update():
     
     result = safe_update(dst, src)
     
-    assert result.keys() == ['a', 'b', 'd']
+    assert list(result.keys()) == ['a', 'b', 'd']
     assert result['b'] == 3
     assert result['d'] == 1
-    

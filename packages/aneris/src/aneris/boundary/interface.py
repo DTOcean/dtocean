@@ -36,6 +36,7 @@ module_logger = logging.getLogger(__name__)
 
 import os
 import abc
+from abc import ABC
 
 import pandas as pd
 from box import Box
@@ -45,7 +46,7 @@ from polite.abc import abstractclassmethod
 from ..utilities.misc import Injective
 
 
-class MaskVariable(object):
+class MaskVariable():
     
     '''Class for declaring a masked variable. A masked variable is not
     registered as an input (not for outputs yet) if a variable does not
@@ -60,11 +61,8 @@ class MaskVariable(object):
         
         return
 
-class Interface(object):
-
+class Interface(ABC):
     '''The base abstract class for all interface types'''
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self):
 
@@ -502,7 +500,7 @@ class MapInterface(Interface):
             raise KeyError(errStr)
         
         # Resolve duplicate mappings
-        dupes = test_id_map.values()
+        dupes = list(test_id_map.values())
         for x in all_mapped: dupes.remove(x)
             
         if dupes:
