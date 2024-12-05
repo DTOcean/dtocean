@@ -7,7 +7,7 @@ Created on Mon Jul 20 15:44:28 2015
 
 from ..utilities.identity import get_unique_id
 
-class InterfaceFactory(object):
+class InterfaceFactory():
     
     def __init__(self, auto_cls):
         

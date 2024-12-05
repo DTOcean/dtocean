@@ -17,9 +17,13 @@ from . import interface_plugins as interfaces
 # Using a py.test fixture to reduce boilerplate and test times.
 @pytest.fixture(scope="module")
 def sequencer():
-
-    sequencer = Sequencer(["DummyInterface"],
-                          interfaces)
+    
+    try:
+        sequencer = Sequencer(["DummyInterface"],
+                              interfaces)
+    except ModuleNotFoundError as e:
+        if "dtocean_dummy" in str(e):
+            pytest.skip("dtocean-dummy-module not installed")
 
     return sequencer
 

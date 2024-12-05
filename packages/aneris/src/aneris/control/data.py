@@ -269,7 +269,6 @@ class DataStorage(Plugin):
         module_logger.info(log_msg)
         
         for data_identifier in datastate.get_identifiers():
-            
             self.remove_data_from_state(pool,
                                         datastate,
                                         data_identifier)
@@ -570,7 +569,7 @@ class DataStorage(Plugin):
             msgStr = ("Saving of data with index {} failed with an unexpected "
                       "error:\n{}").format(data_index, traceback.format_exc())
             if warn_save:
-                module_logger.warn(msgStr)
+                module_logger.warning(msgStr)
                 return
             else:
                 raise Exception(msgStr)
@@ -618,7 +617,7 @@ class DataStorage(Plugin):
                       "unexpected error:\n{}").format(data_box.identifier,
                                                       traceback.format_exc())
             if warn_unpickle:
-                module_logger.warn(msgStr)
+                module_logger.warning(msgStr)
                 data = None
             else:
                 raise Exception(msgStr)
@@ -633,7 +632,7 @@ class DataStorage(Plugin):
             
             warnStr = ("No valid data object found for data with index "
                        "{}").format(data_index)
-            module_logger.warn(warnStr)
+            module_logger.warning(warnStr)
             
             data_obj = Data(data_box.identifier,
                             structure_name,
@@ -650,7 +649,7 @@ class DataStorage(Plugin):
             msgStr = "Data {} not found in data catalog".format(identifier)
             
             if warn_missing:
-                module_logger.warn(msgStr)
+                module_logger.warning(msgStr)
                 return None
             else:
                 raise ValueError(msgStr)

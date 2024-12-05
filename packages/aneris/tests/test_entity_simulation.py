@@ -23,10 +23,15 @@ from . import interface_plugins as interfaces
 def controller():
     
     data_store = DataStorage(data_plugins)
-    sequencer = Sequencer(["DummyInterface"],
-                          interfaces)
     
-    control = Controller(data_store, sequencer)  
+    try:
+        sequencer = Sequencer(["DummyInterface"],
+                              interfaces)
+    except ModuleNotFoundError as e:
+        if "dtocean_dummy" in str(e):
+            pytest.skip("dtocean-dummy-module not installed")
+    
+    control = Controller(data_store, sequencer)
     
     return control
 

@@ -26,7 +26,7 @@ from ..utilities.identity import get_unique_id
 from ..utilities.misc import OrderedSet
 
 
-class Loader(object):
+class Loader():
     
     """Class for working with simulations and a datastore. Loader should
     not contain methods that modify pools or simulations but can work 
@@ -451,9 +451,9 @@ class Loader(object):
         
         state_dict = state.dump()
         
-        with open(file_path, 'wb') as json_file:
+        with open(file_path, 'w') as json_file:
             json.dump(state_dict, json_file)
-                        
+        
         load_dict = {"file_path": store_path}
 
         data_box = SerialBox(identifier, load_dict)

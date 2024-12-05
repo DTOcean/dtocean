@@ -14,7 +14,7 @@ from ..boundary.interface import WeightedInterface
 from ..control.sockets import Socket
 from ..entity import Hub, Pipeline
 
-class Sequencer(object):
+class Sequencer():
 
     """Class to consider "activation" and "ordering" of interfaces relating
     to a particular class of socket."""

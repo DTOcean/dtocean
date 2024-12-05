@@ -102,7 +102,13 @@ def test_raw_interface():
     test_value = [4.]*10
     
     interfacer = NamedSocket("RawInterface")
-    interfacer.discover_interfaces(interface_plugins)
+    
+    try:
+        interfacer.discover_interfaces(interface_plugins)
+    except ModuleNotFoundError as e:
+        if "dtocean_dummy" in str(e):
+            pytest.skip("dtocean-dummy-module not installed")
+    
     providers = interfacer.get_providing_interfaces(test_variable)
     raw_interface = interfacer.get_interface_object(test_interface)
     
@@ -125,12 +131,14 @@ def test_wrong_interface():
     test_value = [4.]*10
     
     interfacer = NamedSocket("RawInterface")
-    interfacer.discover_interfaces(interface_plugins)
+    try:
+        interfacer.discover_interfaces(interface_plugins)
+    except ModuleNotFoundError as e:
+        if "dtocean_dummy" in str(e):
+            pytest.skip("dtocean-dummy-module not installed")
+    
     raw_interface = interfacer.get_interface_object(test_interface)
         
     # Try to get the wrong data
-    with pytest.raises(KeyError):    
-    
+    with pytest.raises(KeyError):
         raw_interface.set_variables({test_variable: test_value})
-
-    

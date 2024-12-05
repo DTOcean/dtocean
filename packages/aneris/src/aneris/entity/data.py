@@ -6,7 +6,7 @@ from collections.abc import Sequence
 
 from ..utilities.identity import get_unique_id
 
-class Frozen(object):
+class Frozen():
 
     __isfrozen = False
 
@@ -70,7 +70,7 @@ class MetaData(Frozen):
         return
 
 
-class DataCatalog(object):
+class DataCatalog():
 
     '''Data catalog contains a map of all of the valid metadata within the
     system. This is loaded in a dynamic plugin based methodology and all
@@ -164,7 +164,7 @@ class DataCatalog(object):
         return return_dict
         
 
-class DataPool(object):
+class DataPool():
     
     '''This class is used to hold all of the Data objects that are created.
     Each must have a unique index (not the identifier in MetaData) which
@@ -280,7 +280,7 @@ class DataPool(object):
         return iter(self._data_indexes)
         
 
-class BaseState(object):
+class BaseState():
     
     '''Base class for NameState and DataState
     '''
@@ -323,27 +323,19 @@ class BaseState(object):
         return result
     
     def get_level(self):
-        
         return self._level
     
     def get_identifiers(self):
-        
-        return self._data.keys()
+        return list(self._data.keys())
     
     def has_index(self, data_id):
-        
         '''Test if a variable is in a datastate'''
-        
-        result = self._data.has_key(data_id)
-        
-        return result
+        return data_id in self._data
     
     def get_index(self, data_id):
-        
         return self._data[data_id]
     
     def add_index(self, data_id, data_index):
-        
         self._data[data_id] = data_index
     
     def mirror_map(self):
@@ -469,7 +461,7 @@ class DataState(BaseState):
         return dump_dict
 
 
-class Data(object):
+class Data():
 
     '''Holds a unit of data in various formats.'''
 

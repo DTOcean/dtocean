@@ -5,17 +5,17 @@ Created on Fri Jan 16 17:10:16 2015
 @author: Mathew Topper
 """
 
-import pyclbr
+import inspect
 import logging
 import pkgutil
+import importlib
 import traceback
-from importlib import import_module
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
 
 
-class Plugin(object):
+class Plugin():
 
     '''Plugin discovery control classes.'''
 
@@ -67,59 +67,28 @@ def get_module_names_from_paths(package_paths, prefix=''):
 
 
 def get_class_descriptions_from_module(module_name):
-
-    '''Get the classes contained in a module as a pyclbr dictionary.
-
-    This wont work universally but it can be used for the current module as
-    long as we keep the source code intact. See:
-
-    https://docs.python.org/2/library/pyclbr.html
+    '''Get the classes contained in a module as a dictionary.
     '''
-
-    print(module_name)
-    clsmembers = pyclbr.readmodule(module_name)
-
-    return clsmembers
+    filter = lambda y: lambda x: inspect.isclass(x) and x.__module__ == y
+    clsmembers = inspect.getmembers(importlib.import_module(module_name),
+                                    filter(module_name))
+    return dict(clsmembers)
 
 
 def get_subclass_names_from_module(module_name, super_name):
-
     '''Get all classes in a module that are subclasses of the given super
     class type'''
 
     clsmembers = get_class_descriptions_from_module(module_name)
-
     match_super = []
 
-    for description in clsmembers.values():
-
-        all_supers = unroll_description(description)
+    for name, cls in clsmembers.items():
+        all_supers = [x.__name__ for x in inspect.getmro(cls)]
 
         if super_name in all_supers:
-
-            match_super.append(description.name)
+            match_super.append(name)
 
     return match_super
-
-
-def unroll_description(description, super_strs=None):
-
-    '''Recurse through the pyclbr classes to find all base classes'''
-
-    if super_strs is None: super_strs = []
-
-    for supers in description.super:
-
-        if isinstance(supers, pyclbr.Class):
-
-            super_strs.append(supers.name)
-            super_strs = unroll_description(supers, super_strs)
-
-        else:
-
-            super_strs.append(supers)
-
-    return super_strs
 
 
 def create_object_map(class_map):
@@ -167,12 +136,12 @@ def get_module_attr(mod_name, warn_import=False):
     '''Return a module attribute.'''
     
     try:
-        module = import_module(mod_name)
+        module = importlib.import_module(mod_name)
     except Exception:
         msgStr = ("Importing module {} failed with an unexpected "
                   "error:\n{}").format(mod_name, traceback.format_exc())
         if warn_import:
-            module_logger.warn(msgStr)
+            module_logger.warning(msgStr)
             return
         else:
             raise Exception(msgStr)

@@ -53,7 +53,7 @@ def xl_to_dds(xl_path,
     
     # Drop a column if ignore_column is given
     if ignore_column is not None and ignore_column in root_sheet.columns:
-        root_sheet = root_sheet.drop(ignore_column, 1)
+        root_sheet = root_sheet.drop(ignore_column, axis=1)
     
     # Fix the columns if necessary
     if sanitise_keys:
@@ -226,12 +226,12 @@ def xl_to_data_yaml(xl_path,
                      sanitise_keys)
     
     with open(yaml_path, 'w') as outfile:
-        
-        outfile.write(safe_dump(data,
-                                default_flow_style=False,
-                                encoding='utf-8',
-                                allow_unicode=True,
-                                explicit_start=True))
+        safe_dump(data,
+                  outfile,
+                  default_flow_style=False,
+                  encoding='utf-8',
+                  allow_unicode=True,
+                  explicit_start=True)
     
     return
 
