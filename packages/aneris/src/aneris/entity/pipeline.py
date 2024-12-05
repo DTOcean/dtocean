@@ -156,7 +156,7 @@ class Hub():
             
         if interface_cls_name in all_interfaces:
             
-            interface_names = all_interfaces.keys()
+            interface_names = list(all_interfaces.keys())
             interface_index = interface_names.index(interface_cls_name)
 
             for i in interface_names[:interface_index]:
@@ -250,7 +250,7 @@ class Hub():
         
     def get_next_scheduled(self):
         
-        scheduled_keys = self._scheduled_interface_map.keys()
+        scheduled_keys = list(self._scheduled_interface_map.keys())
         
         if scheduled_keys:
             return scheduled_keys[0]
@@ -259,7 +259,7 @@ class Hub():
                 
     def get_last_completed(self):
         
-        completed_keys = self._completed_interface_map.keys()
+        completed_keys = list(self._completed_interface_map.keys())
         
         if not completed_keys:
             
@@ -272,9 +272,7 @@ class Hub():
         return result
         
     def get_scheduled_cls_names(self):
-                
-        all_names = self._scheduled_interface_map.keys()
-        
+        all_names = list(self._scheduled_interface_map.keys())
         return all_names
         
     def get_completed_cls_names(self):

@@ -841,7 +841,7 @@ class Controller(Loader):
             # Get all the outputs provided for the proceeding items
             if all_overwritten is None: all_overwritten = []
 
-            for interface_obj in preceeding_interfaces.itervalues():
+            for interface_obj in preceeding_interfaces.values():
                 
                 prec_input_declaration, _ = interface_obj.get_inputs()
                 prec_inputs = self._get_active_inputs(pool,

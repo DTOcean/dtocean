@@ -42,7 +42,6 @@ import pandas as pd
 from box import Box
 from sqlalchemy.exc import DBAPIError
 
-from polite.abc import abstractclassmethod
 from ..utilities.misc import Injective
 
 
@@ -76,7 +75,8 @@ class Interface(ABC):
 
         return
 
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def get_name(cls):
 
         '''A class method for the common name of the interface.
@@ -85,9 +85,10 @@ class Interface(ABC):
           str: A unique string
         '''
 
-        return cls()
+        pass
 
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def declare_inputs(cls):
 
         '''A class method to declare all the variables required as inputs by
@@ -105,9 +106,10 @@ class Interface(ABC):
                        ]
         '''
 
-        return cls()
+        pass
 
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def declare_outputs(cls):
 
         '''A class method to declare all the output variables provided by
@@ -125,9 +127,10 @@ class Interface(ABC):
                         ]
         '''
 
-        return cls()
+        pass
 
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def declare_optional(cls):
 
         '''A class method to declare all the variables which should be flagged
@@ -149,7 +152,7 @@ class Interface(ABC):
                          ]
         '''
 
-        return cls()
+        pass
 
     @abc.abstractmethod
     def connect(self):
@@ -351,13 +354,14 @@ class Interface(ABC):
 
 class WeightedInterface(Interface):
 
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def declare_weight(cls):
 
         '''A class method to declare interface weighting
         '''
 
-        return cls()
+        pass
 
 
 class MapInterface(Interface):
@@ -369,7 +373,8 @@ class MapInterface(Interface):
 
         return
 
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def declare_id_map(cls):
 
         '''Declare the mapping for variable identifiers in the data description
@@ -638,7 +643,8 @@ class FileInterface(MapInterface):
 
         return
         
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def get_valid_extensions(cls):
         
         return cls
@@ -775,7 +781,8 @@ class AutoInterface(MetaInterface):
 
         return
         
-    @abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def get_connect_name(cls):
 
         '''A class method for returning the name of the automatic interface
@@ -785,7 +792,7 @@ class AutoInterface(MetaInterface):
           str: The method name
         '''
         
-        return cls()
+        pass
     
     @classmethod
     def get_method_names(cls):

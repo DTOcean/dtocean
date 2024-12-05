@@ -40,7 +40,7 @@ def test_sequence(sequencer):
     sequencer.sequence(hub, "Early Interface")
 
     assert 'EarlyInterface' in hub._scheduled_interface_map.keys()
-    assert hub._scheduled_interface_map.keys().index('EarlyInterface') == 0
+    assert list(hub._scheduled_interface_map.keys()).index('EarlyInterface') == 0
     
 def test_complete(sequencer):
     
@@ -51,7 +51,7 @@ def test_complete(sequencer):
     sequencer.complete(hub, "Early Interface")
     
     assert 'EarlyInterface' in hub._completed_interface_map.keys()
-    assert hub._scheduled_interface_map.keys().index('LaterInterface') == 0
+    assert list(hub._scheduled_interface_map.keys()).index('LaterInterface') == 0
                                             
                                             
 def test_refresh(sequencer):

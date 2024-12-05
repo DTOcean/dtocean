@@ -66,7 +66,7 @@ class Sequencer():
             names_map = socket_obj.get_interface_names(
                                             sort_weighted=self._sort_weighted)
             
-            dupes = names_map.values()
+            dupes = list(names_map.values())
             for x in set(names_map.values()): dupes.remove(x)
             
             if dupes:
@@ -130,7 +130,7 @@ class Sequencer():
         """Return all the interface names found as plugins"""
 
         names_dict = self._names[hub.interface_type]
-        names = names_dict.keys()
+        names = list(names_dict.keys())
 
         return names
         
