@@ -2,11 +2,12 @@ name: Polite Unit Tests
 on:
   push:
     branches: [ next ]
+    paths:
+      - 'packages/polite'
   pull_request:
     branches: [ next ]
-defaults:
-  run:
-    working-directory: packages/polite
+    paths:
+      - 'packages/polite'
 jobs:
   pytest:
     runs-on: ${{ matrix.os }}
@@ -14,6 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: packages/polite
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
