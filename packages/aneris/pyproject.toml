@@ -33,6 +33,7 @@ pytest = "^8.3.4"
 pytest-mock = "^3.14.0"
 mock = "^5.1.0"
 dtocean-dummy-module = {path = "../dtocean-dummy-module"}
+pytest-cov = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core"]
