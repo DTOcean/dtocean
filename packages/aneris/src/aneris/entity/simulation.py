@@ -50,8 +50,7 @@ class Simulation():
         return new_hub
     
     def get_hub_ids(self):
-        
-        return self._hubs.keys()
+        return list(self._hubs.keys())
     
     def set_merged_state(self, pseudo_state):
         
