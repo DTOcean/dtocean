@@ -1,8 +1,3 @@
-[![appveyor](https://ci.appveyor.com/api/projects/status/github/DTOcean/polite?branch=master&svg=true)](https://ci.appveyor.com/project/DTOcean/polite)
-[![codecov](https://codecov.io/gh/DTOcean/polite/branch/master/graph/badge.svg)](https://codecov.io/gh/DTOcean/polite)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1a2d478b95544457b22fdf444b4a8b6f)](https://www.codacy.com/gh/DTOcean/polite/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DTOcean/polite&amp;utm_campaign=Badge_Grade)
-[![release](https://img.shields.io/github/release/DTOcean/polite.svg)](https://github.com/DTOcean/polite/releases/latest)
-
 # polite
 
 Easy functions for paths, logging and configuration files.
