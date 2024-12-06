@@ -9,6 +9,7 @@ import os
 import glob
 import errno
 import argparse
+import platform
 
 from copy import deepcopy
 from collections import Counter, OrderedDict
@@ -17,7 +18,6 @@ import numpy as np
 import pandas as pd
 
 from yaml import load, safe_dump
-from win32com.client import Dispatch
 
 try:
     from yaml import CLoader as Loader
@@ -349,21 +349,25 @@ def dds_to_xl(dds_list,
     
     writer.close()
     
-    # Fit the columns
-    excel = Dispatch('Excel.Application')
-    wb = excel.Workbooks.Open(os.path.abspath(xl_path))
+    # Fit the columns (Windows only)
+    if platform.system() == "Windows":
     
-    for i in range(wb.Sheets.Count):
-    
-        #Activate each sheet
-        excel.Worksheets(i + 1).Activate()
+        from win32com.client import Dispatch
         
-        #Autofit column in active sheet
-        excel.ActiveSheet.Columns.AutoFit()
-    
-    #Save changes
-    wb.Save()
-    wb.Close()
+        excel = Dispatch('Excel.Application')
+        wb = excel.Workbooks.Open(os.path.abspath(xl_path))
+        
+        for i in range(wb.Sheets.Count):
+        
+            #Activate each sheet
+            excel.Worksheets(i + 1).Activate()
+            
+            #Autofit column in active sheet
+            excel.ActiveSheet.Columns.AutoFit()
+        
+        #Save changes
+        wb.Save()
+        wb.Close()
     
     return
 
