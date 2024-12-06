@@ -37,7 +37,7 @@ def test_get_module_names_from_paths():
     # Get this module path and then the directory above it.
     this_mod = sys.modules[__name__]
     mod_path = module_path(this_mod)
-    root_dir = '{}\\..'.format(os.path.dirname(mod_path))
+    root_dir = pathlib.Path(mod_path).parent.parent
     names = get_module_names_from_paths([root_dir])
     
     # Get the expected names by looking for py files in the root_dir
