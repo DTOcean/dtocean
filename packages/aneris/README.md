@@ -3,15 +3,13 @@
 Aneris provides data management, coupling between arbitrary sources (such as
 files, databases, python packages, etc.) and execution ordering.
 
-It is the framework on which [dtocean-core](
-https://github.com/DTOcean/dtocean-core) is built.
-
+It is the framework on which [dtocean-core](https://github.com/DTOcean/dtocean-core) is built.
 
 ## Installation
 
-Installation and development of aneris uses the [Poetry](
-https://python-poetry.org/) dependency manager. Poetry must be installed
-and available on the command line.
+Installation and development of aneris uses the
+[Poetry](https://python-poetry.org/) dependency manager. Poetry must be
+installed and available on the command line.
 
 To install:
 
@@ -21,8 +19,7 @@ $ poetry install
 
 ## Tests
 
-A test suite is provided with the source code that uses [pytest](
-https://docs.pytest.org).
+A test suite is provided with the source code that uses [pytest](https://docs.pytest.org).
 
 Install the testing dependencies:
 
@@ -32,7 +29,7 @@ $ poetry install --with test
 
 Run the tests:
 
-``` 
+```
 $ poetry run pytest
 ```
 
@@ -173,20 +170,18 @@ $ xl_merge -h
 Pull requests are welcome. For major changes, please open an issue first to
 discuss what you would like to change.
 
-See [this blog post](
-https://www.dataonlygreater.com/latest/professional/2017/03/09/dtocean-development-change-management/)
+See [this blog post](https://www.dataonlygreater.com/latest/professional/2017/03/09/dtocean-development-change-management/)
 for information regarding development of the DTOcean ecosystem.
 
 Please make sure to update tests as appropriate.
 
 ## Credits
 
-This package was initially created as part of the [EU DTOcean project](
-https://www.dtoceanplus.eu/About-DTOceanPlus/History) by Mathew Topper at
-[TECNALIA](https://www.tecnalia.com).
+This package was initially created as part of the [EU DTOcean
+project](https://www.dtoceanplus.eu/About-DTOceanPlus/History) by Mathew Topper
+at [TECNALIA](https://www.tecnalia.com).
 
-It is now maintained by Mathew Topper at [Data Only Greater](
-https://www.dataonlygreater.com/).
+It is now maintained by Mathew Topper at [Data Only Greater](https://www.dataonlygreater.com/).
 
 ## License
 
