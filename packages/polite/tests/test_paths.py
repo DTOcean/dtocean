@@ -11,8 +11,6 @@ import os
 
 from polite.paths import (
     EtcDirectory,
-    SiteDataDirectory,
-    UserDataDirectory,
     class_dir,
     class_path,
     object_dir,
@@ -26,20 +24,6 @@ class Mock(object):
         return True
 
 
-def test_UserDataDirectory():
-    test = UserDataDirectory("test", "test")
-    path = test.get_path()
-
-    assert isinstance(path, str)
-
-
-def test_SiteDataDirectory():
-    test = SiteDataDirectory("test", "test")
-    path = test.get_path()
-
-    assert isinstance(path, str)
-
-
 def test_EtcDirectory_win(mocker, tmp_path):
     exe_path = tmp_path / "python.exe"
 
@@ -49,7 +33,7 @@ def test_EtcDirectory_win(mocker, tmp_path):
     test = EtcDirectory("mock")
     expected = os.path.join(str(tmp_path), "etc", "mock")
 
-    assert test.get_path() == expected
+    assert str(test) == expected
 
 
 def test_EtcDirectory_linux(mocker, tmp_path):
@@ -61,7 +45,7 @@ def test_EtcDirectory_linux(mocker, tmp_path):
     test = EtcDirectory("mock")
     expected = os.path.join(str(tmp_path), "etc", "mock")
 
-    assert test.get_path() == expected
+    assert str(test) == expected
 
 
 def test_object_path():

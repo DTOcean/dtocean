@@ -53,12 +53,14 @@ def test_configure_logger(tmp_path, directory):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
     locp = locd / "logging.yaml"
 
     logger = Logger(locd)
 
     # Copy the logging file
     src_file_path = directory / "logging.yaml"
+    print(src_file_path)
     shutil.copy(src_file_path, str(locp))
 
     # Attempt to configure the logger
@@ -72,6 +74,7 @@ def test_call_logger(tmp_path, directory):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
     locp = locd / "logging.yaml"
 
     logger = Logger(locd)
@@ -90,6 +93,7 @@ def test_call_logger_options(tmp_path, directory):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
     locp = locd / "logging.yaml"
 
     logger = Logger(locd)
@@ -108,6 +112,7 @@ def test_copy_ini_config(tmp_path):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
     ini_reader = ReadINI(locd)
 
     with pytest.raises(ValueError):
@@ -120,6 +125,7 @@ def test_config_exists(tmp_path, directory):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
     locp = locd / "configuration.ini"
 
     # Create object
@@ -139,7 +145,8 @@ def test_get_config(tmp_path, directory):
 
     # Make a local directory
     locd = tmp_path / "config"
-    locp = locd.join("configuration.ini")
+    locd.mkdir()
+    locp = locd / "configuration.ini"
 
     # Create object
     ini_reader = ReadINI(locd)
@@ -164,13 +171,14 @@ def test_read_yaml(tmp_path, directory):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
     locp = locd / "logging.yaml"
 
     # Create Logger object
     yaml_reader = ReadYAML(locd, "logging.yaml")
 
     # Copy the config file
-    src_file_path = directory.get_path("logging.yaml")
+    src_file_path = directory / "logging.yaml"
     shutil.copy(src_file_path, str(locp))
 
     yaml_dict = yaml_reader.read()
@@ -183,13 +191,14 @@ def test_write_yaml(tmp_path):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
 
     yaml_reader = ReadYAML(locd, "logging.yaml")
 
     test_list = ["curly", "larry", "moe"]
     yaml_reader.write(test_list)
 
-    assert os.path.basename(str(locd.listdir()[0])) == "logging.yaml"
+    assert os.path.basename(str(list(locd.iterdir())[0])) == "logging.yaml"
 
 
 def test_write_yaml_nodir(tmp_path):
@@ -198,14 +207,12 @@ def test_write_yaml_nodir(tmp_path):
 
     # Make a local directory
     locd = tmp_path / "config"
+    locd.mkdir()
     nodir = locd / "nodir"
 
-    yaml_reader = ReadYAML(locd, "logging.yaml")
+    yaml_reader = ReadYAML(nodir, "logging.yaml")
 
     test_list = ["curly", "larry", "moe"]
     yaml_reader.write(test_list)
 
-    testdir = locd.join("nodir")
-
-    assert os.path.basename(str(testdir.listdir()[0])) == "logging.yaml"
-    assert os.path.basename(str(testdir.listdir()[0])) == "logging.yaml"
+    assert os.path.basename(str(list(nodir.iterdir())[0])) == "logging.yaml"
