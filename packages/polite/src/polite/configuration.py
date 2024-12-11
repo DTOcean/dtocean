@@ -191,7 +191,15 @@ class ReadINI(Config):
             )
             raise IOError(error_str)
 
-        config = ConfigObj(ini_config_path, configspec=configspec_path)
+        if configspec_path is None:
+            configspec = None
+        else:
+            configspec = str(configspec_path)
+
+        config = ConfigObj(
+            str(ini_config_path),
+            configspec=configspec,
+        )
 
         return config
 
@@ -298,7 +306,7 @@ class ReadYAML(Config):
         yaml_config_path = self.get_config_path()
 
         # Ensure target directory exists
-        self.target_dir.mkdir()
+        self.target_dir.mkdir(exist_ok=True)
 
         with open(yaml_config_path, "w") as yaml_file:
             yaml.dump(

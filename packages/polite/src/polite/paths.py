@@ -15,6 +15,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+from typing import Optional
 
 from .appdirs import site_data_dir, system, user_data_dir
 
@@ -22,21 +23,16 @@ from .appdirs import site_data_dir, system, user_data_dir
 class ObjDirectory(Path):
     """Directory of the calling object."""
 
-    def __init__(self, module_name, *paths):
+    def __new__(cls, module_name, *paths):
         mod_handle = sys.modules[module_name]
         dir_path = module_dir(mod_handle)
-
-        dir_path = os.path.join(dir_path, *paths)
-
-        super(ObjDirectory, self).__init__(dir_path)
-
-        return
+        return Path(dir_path, *paths)
 
 
 class EtcDirectory(Path):
     """Distribution's etc directory"""
 
-    def __init__(self, *paths):
+    def __new__(cls, *paths):
         def get_dir(*paths):  # pylint: disable=missing-docstring
             return os.path.abspath(os.path.join(*paths))
 
@@ -47,40 +43,32 @@ class EtcDirectory(Path):
         else:
             dir_path = get_dir(exe_folder, "..", "etc")
 
-        dir_path = os.path.join(dir_path, *paths)
-        super(EtcDirectory, self).__init__(dir_path)
+        return Path(dir_path, *paths)
 
 
 class UserDataDirectory(Path):
     """Directory based on the user data directory for the given package."""
 
-    def __init__(self, package, company, *paths):
+    def __new__(cls, package, company, *paths):
         dir_path = user_data_dir(package, company, roaming=True)
         dir_path = os.path.join(dir_path, *paths)
-
-        super(UserDataDirectory, self).__init__(dir_path)
-
-        return
+        return Path(dir_path)
 
 
 class SiteDataDirectory(Path):
     """Directory based on the site data directory for the given package."""
 
-    def __init__(self, package, company, *paths):
+    def __new__(cls, package, company, *paths):
         dir_path = site_data_dir(package, company)
-        dir_path = os.path.join(dir_path, *paths)
-
-        super(SiteDataDirectory, self).__init__(dir_path)
-
-        return
+        return Path(dir_path, *paths)
 
 
 class DirectoryMap:
     """Class for moving files from one directory to another.
 
     Attributes:
-        target_dir (polite.paths.Directory)
-        source_dir (polite.paths.Directory)
+        target_dir (pathlib.Path)
+        source_dir (pathlib.Path)
         last_copy_path (str): Location of last copied configuration file.
           Defaults to None.
 
@@ -89,7 +77,7 @@ class DirectoryMap:
     def __init__(self, target_dir, source_dir):
         self.target_dir: Path = target_dir
         self.source_dir: Path = source_dir
-        self.last_copy_path = None
+        self.last_copy_path: Optional[str] = None
 
         return
 
@@ -148,13 +136,15 @@ class DirectoryMap:
         dst_file_path = self.target_dir / file_name
 
         if self.target_exists(file_name) and not overwrite:
-            dst_file_path = dst_file_path + new_ext
+            dst_file_path = dst_file_path.with_suffix(
+                dst_file_path.suffix + new_ext
+            )
 
         # Get the source path
-        src_file_path = self.source_dir.get_path(src_name)
+        src_file_path = self.source_dir / src_name
 
         # Prepare the destination directory
-        self.target_dir.mkdir()
+        self.target_dir.mkdir(exist_ok=True)
 
         # Copy the file
         shutil.copy(src_file_path, dst_file_path)
@@ -242,11 +232,9 @@ class DirectoryMap:
 
         """
 
-        dir_files = self.source_dir.list_files()
-
-        for src_name in dir_files:
+        for src_path in self.source_dir.iterdir():
             kwargs = {"overwrite": overwrite, "new_ext": new_ext}
-            copy_method(src_name, **kwargs)
+            copy_method(src_path.name, **kwargs)
 
         return
 
