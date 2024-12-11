@@ -107,7 +107,7 @@ class DataDefinition(ABC):
         local_dir = UserDataDirectory(self.package_name,
                                       self.company_name)
 
-        yaml_dir = os.path.join(local_dir.get_path(), self.user_yaml_dir)
+        yaml_dir = os.path.join(local_dir, self.user_yaml_dir)
         yaml_paths = self._get_yaml_paths(yaml_dir)
 
         return yaml_paths
