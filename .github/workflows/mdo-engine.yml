@@ -1,0 +1,42 @@
+name: mdo-engine actions
+on:
+  push:
+    branches: [ next ]
+    paths:
+      - 'packages/mdo-engine/**'
+      - 'packages/dtocean-dummy-module/**'
+      - 'packages/polite-config/**'
+  pull_request:
+    branches: [ next ]
+    paths:
+      - 'packages/mdo-engine/**'
+      - 'packages/dtocean-dummy-module/**'
+      - 'packages/polite-config/**'
+jobs:
+  pytest:
+    name: Unit tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: packages/mdo-engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+      - name: Install package
+        run: |
+          poetry install --with test
+      - name: Run tests
+        run: |
+          poetry run pytest --cov --cov-report=xml tests
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          flags: mdo-engine
