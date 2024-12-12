@@ -1,4 +1,4 @@
-name: DTOcean Dummy Module Unit Tests
+name: dtocean-dummy-module actions
 on:
   push:
     branches: [ next ]
@@ -10,6 +10,7 @@ on:
       - 'packages/dtocean-dummy-module/**'
 jobs:
   pytest:
+    name: Unit tests
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
