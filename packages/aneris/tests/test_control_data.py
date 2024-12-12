@@ -20,7 +20,7 @@ from aneris.control.data import (DataValidation,
                                  _check_valid_datastate)
 from aneris.entity.data import DataCatalog, DataPool, DataState, Data
 #from aneris.utilities.files import mkdir_p
-#from polite.paths import user_data_dir, module_dir
+#from polite_config.paths import user_data_dir, module_dir
 
 from . import data_plugins as data
 from . import user_plugins as user_data

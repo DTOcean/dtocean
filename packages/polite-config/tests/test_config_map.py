@@ -12,8 +12,8 @@ import configobj
 import pytest
 from validate import ValidateError
 
-from polite.configuration import Config, Logger, ReadINI, ReadYAML
-from polite.paths import DirectoryMap, ModPath
+from polite_config.configuration import Config, Logger, ReadINI, ReadYAML
+from polite_config.paths import DirectoryMap, ModPath
 
 
 # Using a py.test fixture to reduce boilerplate and test times.

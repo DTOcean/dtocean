@@ -9,7 +9,7 @@ Created on Thu Mar 31 15:24:33 2016
 
 import glob
 
-from polite.paths import DirectoryMap
+from polite_config.paths import DirectoryMap
 
 
 def test_DirectoryMap_copy_all(tmp_path):
