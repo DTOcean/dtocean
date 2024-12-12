@@ -9,7 +9,7 @@ Created on Thu Mar 31 15:24:33 2016
 
 import os
 
-from polite.paths import (
+from polite_config.paths import (
     EtcPath,
     class_dir,
     class_path,
@@ -27,8 +27,8 @@ class Mock(object):
 def test_EtcDirectory_win(mocker, tmp_path):
     exe_path = tmp_path / "python.exe"
 
-    mocker.patch("polite.paths.sys.executable", new=str(exe_path))
-    mocker.patch("polite.paths.system", new="win32")
+    mocker.patch("polite_config.paths.sys.executable", new=str(exe_path))
+    mocker.patch("polite_config.paths.system", new="win32")
 
     test = EtcPath("mock")
     expected = os.path.join(str(tmp_path), "etc", "mock")
@@ -39,8 +39,8 @@ def test_EtcDirectory_win(mocker, tmp_path):
 def test_EtcDirectory_linux(mocker, tmp_path):
     exe_path = tmp_path / "bin" / "python"
 
-    mocker.patch("polite.paths.sys.executable", new=str(exe_path))
-    mocker.patch("polite.paths.system", new="linux2")
+    mocker.patch("polite_config.paths.sys.executable", new=str(exe_path))
+    mocker.patch("polite_config.paths.system", new="linux2")
 
     test = EtcPath("mock")
     expected = os.path.join(str(tmp_path), "etc", "mock")

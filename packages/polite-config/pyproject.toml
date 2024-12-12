@@ -11,10 +11,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-packages = [{include = "polite", from="src"}]
+packages = [{include = "polite_config", from="src"}]
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/DTOcean/polite/issues"
+"Bug Tracker" = "https://github.com/DTOcean/dtocean/issues"
 
 [tool.poetry.group.test]
 optional = true
@@ -32,7 +32,7 @@ pytest-mock = "^3.14.0"
 [tool.coverage.run]
 branch = true
 omit = [
-    "src/polite/appdirs.py" # omit appdirs as developed externally
+    "src/polite_config/appdirs.py" # omit appdirs as developed externally
 ]
 source = [
     "src"

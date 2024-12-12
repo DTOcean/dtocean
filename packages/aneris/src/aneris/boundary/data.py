@@ -23,7 +23,7 @@ from numbers import Number
 import pandas as pd
 import pandas.core.indexes 
 
-from polite.paths import object_dir, UserDataPath
+from polite_config.paths import object_dir, UserDataPath
 
 from ..utilities.files import yaml_to_py
 

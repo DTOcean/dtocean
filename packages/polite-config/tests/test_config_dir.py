@@ -12,8 +12,8 @@ import shutil
 import configobj
 import pytest
 
-from polite.configuration import Logger, ReadINI, ReadYAML
-from polite.paths import ModPath
+from polite_config.configuration import Logger, ReadINI, ReadYAML
+from polite_config.paths import ModPath
 
 
 # Using a py.test fixture to reduce boilerplate and test times.

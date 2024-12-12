@@ -41,9 +41,7 @@ Copy the default logging file from the module source code to the user's data
 directory (`C:\Users\<USERNAME>\AppData\Roaming\DTOcean\polite`):
 
 ```python
->>> from polite.paths import (DirectoryMap,
-                              ModPath,
-                              UserDataPath)
+>>> from polite_config.paths import (DirectoryMap, ModPath, UserDataPath)
 
 >>> objdir = ModPath("polite", "config")
 >>> datadir = UserDataPath("polite", "DTOcean")
@@ -56,7 +54,7 @@ True
 Use the copied configuration file to set up logging:
 
 ```python
->>> from polite.configuration import Logger
+>>> from polite_config.configuration import Logger
 
 >>> log = Logger(datadir)
 >>> log_config_dict = log.read()
