@@ -10,7 +10,7 @@ import pathlib
 
 import pytest
 
-from polite.paths import module_path
+from polite_config.paths import module_path
 from aneris.utilities.plugins import (get_module_names_from_package,
                                       get_module_names_from_paths,
                                       get_class_descriptions_from_module,

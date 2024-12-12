@@ -19,8 +19,8 @@ import argparse
 import logging
 
 # Import DTOcean modules
-from polite.paths import ObjDirectory, UserDataPath, DirectoryMap
-from polite.configuration import Logger, ReadINI
+from polite_config.paths import ObjDirectory, UserDataPath, DirectoryMap
+from polite_config.configuration import Logger, ReadINI
 
 # Import local modules
 from . import Spreadsheet, __version__
