@@ -10,7 +10,7 @@ dependency manager. Poetry must be installed and available on the command line.
 To install:
 
 ```console
-> poetry install
+poetry install
 ```
 
 ## Tests
@@ -20,13 +20,13 @@ A test suite is provided with the source code that uses [pytest](https://docs.py
 Install the testing dependencies:
 
 ```console
-> poetry install --with test
+poetry install --with test
 ```
 
 Run the tests:
 
 ```console
-> poetry run pytest
+poetry run pytest
 ```
 
 ## Usage
