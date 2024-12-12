@@ -38,7 +38,7 @@ except ImportError:
 from .paths import DirectoryMap
 
 
-class Config(object):
+class Config():
     """Base class for handling configuration files.
 
     Attributes:
@@ -57,8 +57,6 @@ class Config(object):
             self.directory_map = None
 
         self.config_file_name = file_name
-
-        return
 
     def get_config_path(self):
         return self.target_dir / self.config_file_name
@@ -82,8 +80,6 @@ class Config(object):
         self.directory_map.copy_file(
             self.config_file_name, overwrite=overwrite, new_ext=new_ext
         )
-
-        return
 
     def config_exists(self):
         result = (self.target_dir / self.config_file_name).is_file()
@@ -162,8 +158,6 @@ class ReadINI(Config):
         self.directory_map.copy_file(
             self.validation_file_name, overwrite=overwrite, new_ext=new_ext
         )
-
-        return
 
     def config_exists(self):
         result = super(ReadINI, self).config_exists()
@@ -316,8 +310,6 @@ class ReadYAML(Config):
                 Dumper=Dumper,
             )
 
-        return
-
 
 class Logger(ReadYAML):
     """Class to configure and control the python logging system.
@@ -340,8 +332,6 @@ class Logger(ReadYAML):
 
         # Configure the logger
         dictConfig(log_config_dict)
-
-        return
 
     @classmethod
     def add_named_logger(cls, log_name, log_level=None, info_message=None):
@@ -371,6 +361,3 @@ class Logger(ReadYAML):
         log_config_dict = self.read()
         self.configure_logger(log_config_dict)
         self.add_named_logger(package, level, info_message)
-
-        return
-        return
