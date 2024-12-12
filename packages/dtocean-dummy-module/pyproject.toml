@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "dtocean-dummy-module"
 version = "1.0.0"
-description = "Dummy DTOcean module used in aneris tests"
+description = "Dummy DTOcean module used in mdo-engine tests"
 authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
