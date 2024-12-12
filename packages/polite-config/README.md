@@ -37,7 +37,7 @@ using a user-specific [yaml configuration file](https://docs.python.org/3/howto/
 Copy the default logging file from the module source code to the user's data
 directory (`C:\Users\<USERNAME>\AppData\Roaming\DTOcean\polite`):
 
-```python
+```pycon
 >>> from polite_config.paths import (DirectoryMap, ModPath, UserDataPath)
 
 >>> objdir = ModPath("polite", "config")
@@ -50,7 +50,7 @@ True
 
 Use the copied configuration file to set up logging:
 
-```python
+```pycon
 >>> from polite_config.configuration import Logger
 
 >>> log = Logger(datadir)
