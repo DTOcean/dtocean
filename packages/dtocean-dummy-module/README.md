@@ -13,7 +13,7 @@ and available on the command line.
 
 To install:
 
-```
+```console
 $ poetry install
 ```
 
@@ -24,13 +24,13 @@ https://docs.pytest.org).
 
 Install the testing dependencies:
 
-```
+```console
 $ poetry install --with test
 ```
 
 Run the tests:
 
-``` 
+```console
 $ poetry run pytest
 ```
 
@@ -41,34 +41,12 @@ The following commands are run from the
 
 ### Execution
 
-```shell
+```console
 dtocean-dummy 5
 ```
 
 ### Help
 
-```shell
+```console
 dtocean-dummy -h
-```
-
-## Update
-
-### Anaconda
-
-```shell
-conda update dtocean-dummy-module
-```
-
-## Uninstallation
-
-### Pip
-
-```shell
-pip uninstall dtocean-dummy-module
-```
-
-### Anaconda
-
-```shell
-conda remove dtocean-dummy-module
 ```
