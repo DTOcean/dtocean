@@ -4,10 +4,12 @@ on:
     branches: [ next ]
     paths:
       - 'packages/dtocean-dummy-module/**'
+      - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
       - 'packages/dtocean-dummy-module/**'
+      - 'packages/polite-config/**'
 jobs:
   pytest:
     name: Unit tests
