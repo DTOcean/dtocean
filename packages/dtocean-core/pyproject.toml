@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "dtocean-core"
+version = "3.0.2"
+description = "The main (non-graphical) interface for the DTOcean tools"
+authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
