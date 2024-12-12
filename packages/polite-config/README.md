@@ -1,8 +1,6 @@
-# polite
+# polite-config
 
 Easy functions for paths, logging and configuration files.
-
-\* For python 2.7 only.
 
 ## Installation
 
@@ -44,11 +42,11 @@ directory (`C:\Users\<USERNAME>\AppData\Roaming\DTOcean\polite`):
 
 ```python
 >>> from polite.paths import (DirectoryMap,
-                              ObjDirectory,
-                              UserDataDirectory)
+                              ModPath,
+                              UserDataPath)
 
->>> objdir = ObjDirectory("polite", "config")
->>> datadir = UserDataDirectory("polite", "DTOcean")
+>>> objdir = ModPath("polite", "config")
+>>> datadir = UserDataPath("polite", "DTOcean")
 >>> dirmap = DirectoryMap(datadir, objdir)
 >>> dirmap.copy_file("logging.yaml", overwrite=True)
 >>> datadir.isfile("logging.yaml")
@@ -67,6 +65,9 @@ Use the copied configuration file to set up logging:
 >>> logger.info("Hello World")
 INFO - polite - Hello World
 ```
+
+Note that classes such as `ModPath` and `UserDataPath` are subclasses of
+`pathlib.Path`.
 
 ## Contributing
 

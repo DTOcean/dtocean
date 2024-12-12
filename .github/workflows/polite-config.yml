@@ -1,15 +1,16 @@
-name: Polite Unit Tests
+name: polite-config actions
 on:
   push:
     branches: [ next ]
     paths:
-      - 'packages/polite/**'
+      - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
-      - 'packages/polite/**'
+      - 'packages/polite-config/**'
 jobs:
   pytest:
+    name: Unit tests
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,7 +18,7 @@ jobs:
         os: [windows-latest, ubuntu-latest]
     defaults:
       run:
-        working-directory: packages/polite
+        working-directory: packages/polite-config
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,4 +35,4 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          flags: polite
+          flags: polite-config
