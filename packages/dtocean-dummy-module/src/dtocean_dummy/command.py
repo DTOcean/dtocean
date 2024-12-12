@@ -19,7 +19,7 @@ import argparse
 import logging
 
 # Import DTOcean modules
-from polite.paths import ObjDirectory, UserDataDirectory, DirectoryMap
+from polite.paths import ObjDirectory, UserDataPath, DirectoryMap
 from polite.configuration import Logger, ReadINI
 
 # Import local modules
@@ -40,7 +40,7 @@ def start_logging(level=None):
     """Start python logger"""
 
     objdir = ObjDirectory(__name__, "config")
-    datadir = UserDataDirectory("dtocean_dummy", "DTOcean", "config")
+    datadir = UserDataPath("dtocean_dummy", "DTOcean", "config")
     dirmap = DirectoryMap(datadir, objdir)
 
     log = Logger(dirmap)
@@ -57,7 +57,7 @@ def get_config(config_name="configuration.ini",
     and tidal packages."""
     
     source_dir = ObjDirectory(__name__, "config")
-    user_data = UserDataDirectory("dtocean_dummy", "DTOcean", "config")
+    user_data = UserDataPath("dtocean_dummy", "DTOcean", "config")
     user_data_map = DirectoryMap(user_data, source_dir)
 
     user_ini_reader = ReadINI(user_data_map, config_name, valid_name)
