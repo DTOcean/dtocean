@@ -27,6 +27,10 @@ polite-config = {path = "../polite-config"}
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 
+[tool.poetry-monorepo-dependency-plugin]
+enable = true
+version-pinning-strategy = "semver"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
