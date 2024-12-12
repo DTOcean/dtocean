@@ -5,25 +5,23 @@ Created on Fri Jan 16 17:10:16 2015
 @author: Mathew Topper
 """
 
+import importlib
 import inspect
 import logging
 import pkgutil
-import importlib
 import traceback
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
 
 
-class Plugin():
-
-    '''Plugin discovery control classes.'''
+class Plugin:
+    """Plugin discovery control classes."""
 
     def _discover_plugins(self, package, super_cls, warn_import=False):
+        """Retrieve all of the matching subclass names found in the package"""
 
-        '''Retrieve all of the matching subclass names found in the package'''
-
-#        interfaces = import_module(package)
+        #        interfaces = import_module(package)
 
         names = get_module_names_from_package(package)
         names.append(package.__name__)
@@ -31,21 +29,18 @@ class Plugin():
         cls_map = {}
 
         for mod_name in names:
-
-            data_sub_mods = get_subclass_names_from_module(mod_name,
-                                                           super_cls)
+            data_sub_mods = get_subclass_names_from_module(mod_name, super_cls)
 
             for cls_name in data_sub_mods:
-
-                class_attr = get_class_attr(cls_name,mod_name, warn_import)
-                if class_attr is not None: cls_map[cls_name] = class_attr
+                class_attr = get_class_attr(cls_name, mod_name, warn_import)
+                if class_attr is not None:
+                    cls_map[cls_name] = class_attr
 
         return cls_map
 
 
 def get_module_names_from_package(package):
-
-    '''Return the names of modules in the given package'''
+    """Return the names of modules in the given package"""
 
     prefix = package.__name__ + "."
     module_names = get_module_names_from_paths(package.__path__, prefix)
@@ -53,31 +48,32 @@ def get_module_names_from_package(package):
     return module_names
 
 
-def get_module_names_from_paths(package_paths, prefix=''):
-
-    '''Return the names of modules in the given list of package paths'''
+def get_module_names_from_paths(package_paths, prefix=""):
+    """Return the names of modules in the given list of package paths"""
 
     module_names = []
 
     for _, modname, _ in pkgutil.iter_modules(package_paths, prefix):
-
         module_names.append(modname)
 
     return module_names
 
 
 def get_class_descriptions_from_module(module_name):
-    '''Get the classes contained in a module as a dictionary.
-    '''
-    filter = lambda y: lambda x: inspect.isclass(x) and x.__module__ == y
-    clsmembers = inspect.getmembers(importlib.import_module(module_name),
-                                    filter(module_name))
+    """Get the classes contained in a module as a dictionary."""
+
+    def filter(y):
+        return lambda x: inspect.isclass(x) and x.__module__ == y
+
+    clsmembers = inspect.getmembers(
+        importlib.import_module(module_name), filter(module_name)
+    )
     return dict(clsmembers)
 
 
 def get_subclass_names_from_module(module_name, super_name):
-    '''Get all classes in a module that are subclasses of the given super
-    class type'''
+    """Get all classes in a module that are subclasses of the given super
+    class type"""
 
     clsmembers = get_class_descriptions_from_module(module_name)
     match_super = []
@@ -92,36 +88,31 @@ def get_subclass_names_from_module(module_name, super_name):
 
 
 def create_object_map(class_map):
-
-    '''Take a mapping of class and module names and return a similar mapping
-    but with instances of the classes themselves.'''
+    """Take a mapping of class and module names and return a similar mapping
+    but with instances of the classes themselves."""
 
     object_map = {}
 
     for cls_name, cls_attr in class_map.items():
-
         object_map[cls_name] = cls_attr()
 
     return object_map
 
 
 def create_object_list(class_map):
-
-    '''Take a mapping of class and module names and return a list with
-    instances of the classes themselves.'''
+    """Take a mapping of class and module names and return a list with
+    instances of the classes themselves."""
 
     object_list = []
 
     for cls_name, cls_attr in class_map.items():
-
         object_list.append(cls_attr())
 
     return object_list
 
 
 def get_class_attr(cls_name, mod_name, warn_import=False):
-
-    '''Return a class attribute from the class and module names.'''
+    """Return a class attribute from the class and module names."""
 
     module = get_module_attr(mod_name, warn_import)
 
@@ -132,14 +123,14 @@ def get_class_attr(cls_name, mod_name, warn_import=False):
 
 
 def get_module_attr(mod_name, warn_import=False):
+    """Return a module attribute."""
 
-    '''Return a module attribute.'''
-    
     try:
         module = importlib.import_module(mod_name)
     except Exception:
-        msgStr = ("Importing module {} failed with an unexpected "
-                  "error:\n{}").format(mod_name, traceback.format_exc())
+        msgStr = (
+            "Importing module {} failed with an unexpected " "error:\n{}"
+        ).format(mod_name, traceback.format_exc())
         if warn_import:
             module_logger.warning(msgStr)
             return
@@ -150,10 +141,8 @@ def get_module_attr(mod_name, warn_import=False):
 
 
 def get_public_attributes(cls_attr):
+    """Return all the public attributes contained in a class"""
 
-    '''Return all the public attributes contained in a class'''
-
-    public_attrs = (name for name in dir(cls_attr) if not name.startswith('_'))
+    public_attrs = (name for name in dir(cls_attr) if not name.startswith("_"))
 
     return public_attrs
-

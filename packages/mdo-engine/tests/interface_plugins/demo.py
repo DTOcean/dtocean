@@ -25,172 +25,159 @@ Note:
 .. module:: demo
    :platform: Windows
    :synopsis: mdo_engine interface for dtocean_dummy package
-   
+
 .. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
 """
 
-
-from mdo_engine.boundary.interface import MapInterface, MaskVariable
 from dtocean_dummy import Spreadsheet
 
+from mdo_engine.boundary.interface import MapInterface, MaskVariable
+
+
 class DemoInterface(MapInterface):
-    
-    '''Class of interfaces for the purposes of this test.
-    '''
+    """Class of interfaces for the purposes of this test."""
 
 
 class TableInterface(DemoInterface):
-    
-    '''Interface to the Spreadsheet class of dtocean_dummy, providing a table
+    """Interface to the Spreadsheet class of dtocean_dummy, providing a table
     of random numbers.
-          
-    '''
-        
+
+    """
+
     @classmethod
     def get_name(cls):
-        
         return "Spreadsheet Generator"
 
-    @classmethod         
+    @classmethod
     def declare_inputs(cls):
-        
-        '''Declare all the variables required as inputs by this interface.
+        """Declare all the variables required as inputs by this interface.
 
-         Returns:
-            list: List of internal variables names required as inputs.
-        
-        '''
+        Returns:
+           list: List of internal variables names required as inputs.
 
-        input_list  =  [MaskVariable('demo:demo:low',
-                                     'trigger.bool',
-                                     [True]),
-                        MaskVariable('demo:demo:high',
-                                     'trigger.bool',
-                                     [True]),
-                        'demo:demo:rows'
-                        ]
-                        
+        """
+
+        input_list = [
+            MaskVariable("demo:demo:low", "trigger.bool", [True]),
+            MaskVariable("demo:demo:high", "trigger.bool", [True]),
+            "demo:demo:rows",
+        ]
+
         return input_list
 
-    @classmethod        
+    @classmethod
     def declare_outputs(cls):
-        
-        '''Declare all the variables provided as outputs by this interface.
-        
+        """Declare all the variables provided as outputs by this interface.
+
         Returns:
             list: List of internal variables names provided as outputs.
-        '''
-        
-        output_list =  ['demo:demo:table',
-                        ]
-        
+        """
+
+        output_list = [
+            "demo:demo:table",
+        ]
+
         return output_list
-        
-    @classmethod        
+
+    @classmethod
     def declare_optional(cls):
-        
-        optional_list  =  ['demo:demo:low',
-                           'demo:demo:high',
-                          ]
-        
+        optional_list = [
+            "demo:demo:low",
+            "demo:demo:high",
+        ]
+
         return optional_list
-        
+
     @classmethod
     def declare_id_map(cls):
-                
-        '''Declare the mapping between the internal variable names and local
+        """Declare the mapping between the internal variable names and local
         variable names.
-        
+
         Returns:
             dict: Dictionary mapping of variable names, each entry being of the
               form "'local_name' : 'internal:name'".
-        '''
-        
-        id_map = {'low': 'demo:demo:low',
-                  'high': 'demo:demo:high',
-                  'rows': 'demo:demo:rows',
-                  'table': 'demo:demo:table'}
-                  
+        """
+
+        id_map = {
+            "low": "demo:demo:low",
+            "high": "demo:demo:high",
+            "rows": "demo:demo:rows",
+            "table": "demo:demo:table",
+        }
+
         return id_map
-                 
+
     def connect(self):
-        
-        '''This fucntion is used to extract the data from the interfacing
+        """This fucntion is used to extract the data from the interfacing
         package.
-        
+
         Note: methods get_local and set_local are used to get the inputs and
           provide the outputs to and from the interface.
-        '''
-        
+        """
+
         rows = self.data.rows
-        
+
         # Build optional data
         config = {}
-        
-        if self.data.low is not None: config["low"] = self.data.low
-        if self.data.high is not None: config["high"] = self.data.high
-        
+
+        if self.data.low is not None:
+            config["low"] = self.data.low
+        if self.data.high is not None:
+            config["high"] = self.data.high
+
         sheet = Spreadsheet(**config)
 
         sheet.make_table(rows)
         table_data = sheet.table.to_dict()
-        
-        self.data.table =  table_data
-        
+
+        self.data.table = table_data
+
         return
-        
+
+
 class LaterInterface(DemoInterface):
-    
-    '''Interface to test outputs generated later than table interface
-          
-    '''
-        
+    """Interface to test outputs generated later than table interface"""
+
     @classmethod
     def get_name(cls):
-        
         return "Later Interface"
 
-    @classmethod         
+    @classmethod
     def declare_inputs(cls):
-        
-        '''Declare all the variables required as inputs by this interface.
+        """Declare all the variables required as inputs by this interface.
 
-         Returns:
-            list: List of internal variables names required as inputs.
-        
-        '''
+        Returns:
+           list: List of internal variables names required as inputs.
 
-        input_list = ['demo:demo:rows']
-                        
+        """
+
+        input_list = ["demo:demo:rows"]
+
         return input_list
 
-    @classmethod        
+    @classmethod
     def declare_outputs(cls):
-        
-        '''Declare all the variables provided as outputs by this interface.
-        
+        """Declare all the variables provided as outputs by this interface.
+
         Returns:
             list: List of internal variables names provided as outputs.
-        '''
-        
-        output_list =  ['demo:demo:table',
-                        ]
-        
-        return output_list
-        
-    @classmethod        
-    def declare_optional(cls):
-        
-        return None
-        
-    @classmethod 
-    def declare_id_map(cls):
+        """
 
-        id_map = {'rows': 'demo:demo:rows',
-                  'table': 'demo:demo:table'}
-                  
+        output_list = [
+            "demo:demo:table",
+        ]
+
+        return output_list
+
+    @classmethod
+    def declare_optional(cls):
+        return None
+
+    @classmethod
+    def declare_id_map(cls):
+        id_map = {"rows": "demo:demo:rows", "table": "demo:demo:table"}
+
         return id_map
-                 
+
     def connect(self):
-        
         return
