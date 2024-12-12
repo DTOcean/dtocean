@@ -1,3 +1,11 @@
+***
+
+:loudspeaker: A major overhaul is underway on the [next](https://github.com/DTOcean/dtocean/tree/next)
+branch. Please see my [sponsorship page](https://github.com/sponsors/H0R5E) for
+further details.
+
+***
+
 <p align="center">
   <img width="385" height="125" src="images/dtocean2plus._padded.png">
 </p>
