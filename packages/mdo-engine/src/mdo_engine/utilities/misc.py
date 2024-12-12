@@ -7,6 +7,7 @@ Este es archivo temporal
 
 from collections.abc import MutableSet
 from copy import deepcopy
+from typing import Iterable, Union
 
 
 class Injective:
@@ -109,7 +110,7 @@ class OrderedSet(MutableSet):
             return "%s()" % (self.__class__.__name__,)
         return "%s(%r)" % (self.__class__.__name__, list(self))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Union["OrderedSet", Iterable]):
         if isinstance(other, OrderedSet):
             return len(self) == len(other) and list(self) == list(other)
         return set(self) == set(other)
