@@ -25,130 +25,112 @@ Note:
 .. module:: demo
    :platform: Windows
    :synopsis: mdo_engine interface for dtocean_demo package
-   
+
 .. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
 """
 
-
 from mdo_engine.boundary.interface import MapInterface
 
+
 class DummyInterface(MapInterface):
-    
-    '''Class of interfaces for the purposes of this test.
-    '''
+    """Class of interfaces for the purposes of this test."""
 
 
 class EarlyInterface(DummyInterface):
-    
-    '''Interface to test outputs generated later than table interface
-          
-    '''
-        
+    """Interface to test outputs generated later than table interface"""
+
     @classmethod
     def get_name(cls):
-        
         return "Early Interface"
 
-    @classmethod         
+    @classmethod
     def declare_inputs(cls):
-        
-        '''Declare all the variables required as inputs by this interface.
+        """Declare all the variables required as inputs by this interface.
 
-         Returns:
-            list: List of internal variables names required as inputs.
-        
-        '''
+        Returns:
+           list: List of internal variables names required as inputs.
 
-        input_list  =  []
-                        
+        """
+
+        input_list = []
+
         return input_list
 
-    @classmethod        
+    @classmethod
     def declare_outputs(cls):
-        
-        '''Declare all the variables provided as outputs by this interface.
-        
+        """Declare all the variables provided as outputs by this interface.
+
         Returns:
             list: List of internal variables names provided as outputs.
-        '''
-        
-        output_list =  ['early:dummy:data',
-                        ]
-        
-        return output_list
-        
-    @classmethod        
-    def declare_optional(cls):
-        
-        return None
-        
-    @classmethod 
-    def declare_id_map(cls):
+        """
 
-        id_map = {'early': 'early:dummy:data'}
-                  
+        output_list = [
+            "early:dummy:data",
+        ]
+
+        return output_list
+
+    @classmethod
+    def declare_optional(cls):
+        return None
+
+    @classmethod
+    def declare_id_map(cls):
+        id_map = {"early": "early:dummy:data"}
+
         return id_map
-                 
+
     def connect(self):
-        
         self.data.early = 1
-        
+
         return
-        
+
+
 class LaterInterface(DummyInterface):
-    
-    '''Interface to test outputs generated later than table interface
-          
-    '''
-        
+    """Interface to test outputs generated later than table interface"""
+
     @classmethod
     def get_name(cls):
-        
         return "Later Interface"
 
-    @classmethod         
+    @classmethod
     def declare_inputs(cls):
-        
-        '''Declare all the variables required as inputs by this interface.
+        """Declare all the variables required as inputs by this interface.
 
-         Returns:
-            list: List of internal variables names required as inputs.
-        
-        '''
+        Returns:
+           list: List of internal variables names required as inputs.
 
-        input_list  =  ['early:dummy:data']
-                        
+        """
+
+        input_list = ["early:dummy:data"]
+
         return input_list
 
-    @classmethod        
+    @classmethod
     def declare_outputs(cls):
-        
-        '''Declare all the variables provided as outputs by this interface.
-        
+        """Declare all the variables provided as outputs by this interface.
+
         Returns:
             list: List of internal variables names provided as outputs.
-        '''
-        
-        output_list =  ['later:dummy:data',
-                        ]
-        
-        return output_list
-        
-    @classmethod        
-    def declare_optional(cls):
-        
-        return None
-        
-    @classmethod 
-    def declare_id_map(cls):
+        """
 
-        id_map = {'early': 'early:dummy:data',
-                  'later': 'later:dummy:data'}
-                  
+        output_list = [
+            "later:dummy:data",
+        ]
+
+        return output_list
+
+    @classmethod
+    def declare_optional(cls):
+        return None
+
+    @classmethod
+    def declare_id_map(cls):
+        id_map = {"early": "early:dummy:data", "later": "later:dummy:data"}
+
         return id_map
-                 
+
     def connect(self):
-        
         self.data.later = self.data.early + 1
-        
+
         return
