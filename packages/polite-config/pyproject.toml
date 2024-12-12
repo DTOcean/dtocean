@@ -39,6 +39,7 @@ source = [
 ]
 
 [tool.ruff]
+exclude = ["src/polite_config/appdirs.py"]
 line-length = 80
 
 [build-system]
