@@ -35,6 +35,10 @@ mock = "^5.1.0"
 dtocean-dummy-module = {path = "../dtocean-dummy-module"}
 pytest-cov = "^6.0.0"
 
+[tool.poetry-monorepo-dependency-plugin]
+enable = true
+version-pinning-strategy = "semver"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
