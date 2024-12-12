@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "dtocean-moorings"
+version = "2.1.0"
+description = "The mooring and foundations module for the DTOcean tools"
+authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
