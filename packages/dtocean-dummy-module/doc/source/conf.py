@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# aneris documentation build configuration file, created by
+# mdo-engine documentation build configuration file, created by
 # sphinx-quickstart on Tue Sep 16 17:24:51 2014.
 #
 # This file is execfile()d with the current directory set to its
