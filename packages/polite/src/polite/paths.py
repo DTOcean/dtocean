@@ -246,12 +246,10 @@ def object_path(obj):
       object (obj): Class object.
 
     Returns:
-        str: Absolute path to class source file.
+        pathlib.Path: Absolute path to class source file.
     """
 
-    path = inspect.getabsfile(obj.__class__)
-
-    return path
+    return Path(inspect.getabsfile(obj.__class__))
 
 
 def object_dir(obj):
@@ -261,13 +259,11 @@ def object_dir(obj):
       object (obj): Class object.
 
     Returns:
-        str: Absolute path to directory containing class source file.
+        pathlib.Path:: Absolute path to directory containing class source file.
     """
 
     obj_path = object_path(obj)
-    obj_dir = os.path.dirname(obj_path)
-
-    return obj_dir
+    return obj_path.parent
 
 
 def class_path(cls):
@@ -277,12 +273,10 @@ def class_path(cls):
       class (cls): Class.
 
     Returns:
-        str: Absolute path to class source file.
+        pathlib.Path:: Absolute path to class source file.
     """
 
-    path = inspect.getabsfile(cls)
-
-    return path
+    return Path(inspect.getabsfile(cls))
 
 
 def class_dir(cls):
@@ -292,13 +286,11 @@ def class_dir(cls):
       class (cls): Class.
 
     Returns:
-        str: Absolute path to directory containing class source file.
+        pathlib.Path:: Absolute path to directory containing class source file.
     """
 
     cls_path = class_path(cls)
-    cls_dir = os.path.dirname(cls_path)
-
-    return cls_dir
+    return cls_path.parent
 
 
 def module_path(module):
@@ -308,11 +300,11 @@ def module_path(module):
       module (module): Module object.
 
     Returns:
-        str: Absolute path to "module.__file__".
+        pathlib.Path:: Absolute path to "module.__file__".
 
     """
 
-    return os.path.realpath(module.__file__)
+    return Path(module.__file__).resolve()
 
 
 def module_dir(module):
@@ -322,11 +314,9 @@ def module_dir(module):
       module (module): Module object.
 
     Returns:
-        str: Absolute path to directory containing module.
+        pathlib.Path:: Absolute path to directory containing module.
 
     """
 
     mod_path = module_path(module)
-    dirname = os.path.dirname(mod_path)
-
-    return os.path.abspath(dirname)
+    return mod_path.parent
