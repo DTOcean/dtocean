@@ -1,19 +1,20 @@
-name: Aneris Unit Tests
+name: aneris actions
 on:
   push:
     branches: [ next ]
     paths:
       - 'packages/aneris/**'
       - 'packages/dtocean-dummy-module/**'
-      - 'packages/polite/**'
+      - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
       - 'packages/aneris/**'
       - 'packages/dtocean-dummy-module/**'
-      - 'packages/polite/**'
+      - 'packages/polite-config/**'
 jobs:
   pytest:
+    name: Unit tests
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
