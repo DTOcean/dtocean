@@ -14,7 +14,7 @@ and available on the command line.
 To install:
 
 ```console
-$ poetry install
+> poetry install
 ```
 
 ## Tests
@@ -25,13 +25,13 @@ https://docs.pytest.org).
 Install the testing dependencies:
 
 ```console
-$ poetry install --with test
+> poetry install --with test
 ```
 
 Run the tests:
 
 ```console
-$ poetry run pytest
+> poetry run pytest
 ```
 
 ## Example Usage
@@ -42,11 +42,11 @@ The following commands are run from the
 ### Execution
 
 ```console
-dtocean-dummy 5
+> dtocean-dummy 5
 ```
 
 ### Help
 
 ```console
-dtocean-dummy -h
+> dtocean-dummy -h
 ```
