@@ -4,38 +4,35 @@ Easy functions for paths, logging and configuration files.
 
 ## Installation
 
-Installation and development of polite uses the [Poetry](
-https://python-poetry.org/) dependency manager. Poetry must be installed
-and available on the command line.
+Installation and development of polite uses the [Poetry](https://python-poetry.org/)
+dependency manager. Poetry must be installed and available on the command line.
 
 To install:
 
-```
-$ poetry install
+```console
+> poetry install
 ```
 
 ## Tests
 
-A test suite is provided with the source code that uses [pytest](
-https://docs.pytest.org).
+A test suite is provided with the source code that uses [pytest](https://docs.pytest.org).
 
 Install the testing dependencies:
 
-```
-$ poetry install --with test
+```console
+> poetry install --with test
 ```
 
 Run the tests:
 
-``` 
-$ poetry run pytest
+```console
+> poetry run pytest
 ```
 
 ## Usage
 
-An example of setting up [logging](
-https://docs.python.org/2/library/logging.html) using a user-specific [yaml 
-configuration file](https://docs.python.org/2/howto/logging.html#configuring-logging).
+An example of setting up [logging](https://docs.python.org/3/library/logging.html)
+using a user-specific [yaml configuration file](https://docs.python.org/3/howto/logging.html#configuring-logging).
 
 Copy the default logging file from the module source code to the user's data
 directory (`C:\Users\<USERNAME>\AppData\Roaming\DTOcean\polite`):
@@ -72,19 +69,17 @@ Note that classes such as `ModPath` and `UserDataPath` are subclasses of
 Pull requests are welcome. For major changes, please open an issue first to
 discuss what you would like to change.
 
-See [this blog post](https://www.dataonlygreater.com/latest/professional/2017/03/09/dtocean-development-change-management/)
+See [this blog post](https://www.dataonlygreater.com/blog/post/dtocean-development-change-management/)
 for information regarding development of the DTOcean ecosystem.
 
 Please make sure to update tests as appropriate.
 
 ## Credits
 
-This package was initially created as part of the [EU DTOcean project](
-https://www.dtoceanplus.eu/About-DTOceanPlus/History) by Mathew Topper at
-[TECNALIA](https://www.tecnalia.com).
+This package was initially created as part of the [EU DTOcean project](https://cordis.europa.eu/project/id/608597)
+by Mathew Topper at [TECNALIA](https://www.tecnalia.com).
 
-It is now maintained by Mathew Topper at [Data Only Greater](
-https://www.dataonlygreater.com/).
+It is now maintained by Mathew Topper at [Data Only Greater](https://www.dataonlygreater.com/).
 
 ## License
 
