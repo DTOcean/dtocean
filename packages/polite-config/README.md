@@ -4,7 +4,7 @@ Easy functions for paths, logging and configuration files.
 
 ## Installation
 
-Installation and development of polite uses the [Poetry](https://python-poetry.org/)
+Installation and development of polite-config uses the [Poetry](https://python-poetry.org/)
 dependency manager. Poetry must be installed and available on the command line.
 
 To install:
