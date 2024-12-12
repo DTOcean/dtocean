@@ -20,8 +20,8 @@ from typing import Optional
 from .appdirs import site_data_dir, system, user_data_dir
 
 
-class ObjDirectory(Path):
-    """Directory of the calling object."""
+class ModPath(Path):
+    """Path relative to a given module name's parent directory"""
 
     def __new__(cls, module_name, *paths):
         mod_handle = sys.modules[module_name]
@@ -29,8 +29,8 @@ class ObjDirectory(Path):
         return Path(dir_path, *paths)
 
 
-class EtcDirectory(Path):
-    """Distribution's etc directory"""
+class EtcPath(Path):
+    """Path relative to the Python distribution's etc directory"""
 
     def __new__(cls, *paths):
         def get_dir(*paths):  # pylint: disable=missing-docstring
@@ -46,8 +46,8 @@ class EtcDirectory(Path):
         return Path(dir_path, *paths)
 
 
-class UserDataDirectory(Path):
-    """Directory based on the user data directory for the given package."""
+class UserDataPath(Path):
+    """Path relative to the user data directory for the given package."""
 
     def __new__(cls, package, company, *paths):
         dir_path = user_data_dir(package, company, roaming=True)
@@ -55,8 +55,8 @@ class UserDataDirectory(Path):
         return Path(dir_path)
 
 
-class SiteDataDirectory(Path):
-    """Directory based on the site data directory for the given package."""
+class SiteDataPath(Path):
+    """Path relative to the site data directory for the given package."""
 
     def __new__(cls, package, company, *paths):
         dir_path = site_data_dir(package, company)

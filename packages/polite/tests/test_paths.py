@@ -10,7 +10,7 @@ Created on Thu Mar 31 15:24:33 2016
 import os
 
 from polite.paths import (
-    EtcDirectory,
+    EtcPath,
     class_dir,
     class_path,
     object_dir,
@@ -30,7 +30,7 @@ def test_EtcDirectory_win(mocker, tmp_path):
     mocker.patch("polite.paths.sys.executable", new=str(exe_path))
     mocker.patch("polite.paths.system", new="win32")
 
-    test = EtcDirectory("mock")
+    test = EtcPath("mock")
     expected = os.path.join(str(tmp_path), "etc", "mock")
 
     assert str(test) == expected
@@ -42,7 +42,7 @@ def test_EtcDirectory_linux(mocker, tmp_path):
     mocker.patch("polite.paths.sys.executable", new=str(exe_path))
     mocker.patch("polite.paths.system", new="linux2")
 
-    test = EtcDirectory("mock")
+    test = EtcPath("mock")
     expected = os.path.join(str(tmp_path), "etc", "mock")
 
     assert str(test) == expected

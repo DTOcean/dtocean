@@ -23,7 +23,7 @@ from numbers import Number
 import pandas as pd
 import pandas.core.indexes 
 
-from polite.paths import object_dir, UserDataDirectory
+from polite.paths import object_dir, UserDataPath
 
 from ..utilities.files import yaml_to_py
 
@@ -104,7 +104,7 @@ class DataDefinition(ABC):
 
         if self.user_yaml_dir is None: return []
 
-        local_dir = UserDataDirectory(self.package_name,
+        local_dir = UserDataPath(self.package_name,
                                       self.company_name)
 
         yaml_dir = os.path.join(local_dir, self.user_yaml_dir)

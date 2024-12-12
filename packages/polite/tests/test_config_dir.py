@@ -13,15 +13,15 @@ import configobj
 import pytest
 
 from polite.configuration import Logger, ReadINI, ReadYAML
-from polite.paths import ObjDirectory
+from polite.paths import ModPath
 
 
 # Using a py.test fixture to reduce boilerplate and test times.
 @pytest.fixture(scope="module")
 def directory():
-    """Share a ObjDirectory object"""
+    """Share a ModPath object"""
 
-    objdir = ObjDirectory(__name__, "..", "examples", "config")
+    objdir = ModPath(__name__, "..", "examples", "config")
 
     return objdir
 
