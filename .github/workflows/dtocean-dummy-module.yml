@@ -3,11 +3,13 @@ on:
   push:
     branches: [ next ]
     paths:
+      - '.github/workflows/dtocean-dummy-module.yml'
       - 'packages/dtocean-dummy-module/**'
       - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
+      - '.github/workflows/dtocean-dummy-module.yml'
       - 'packages/dtocean-dummy-module/**'
       - 'packages/polite-config/**'
 jobs:
