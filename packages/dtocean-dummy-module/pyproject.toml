@@ -31,6 +31,12 @@ pytest-cov = "^6.0.0"
 enable = true
 version-pinning-strategy = "semver"
 
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
