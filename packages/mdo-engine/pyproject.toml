@@ -14,7 +14,7 @@ xl-merge = 'mdo_engine.utilities.files:xl_merge_interface'
 
 [tool.poetry.dependencies]
 python = "^3.12"
-numpy = "^2.1.3"
+numpy = "<2"
 openpyxl = "^3.1.5"
 pandas = "^2.2.3"
 pyyaml = "^6.0.2"
