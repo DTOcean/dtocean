@@ -1,0 +1,66 @@
+---
+# Required
+root_project_path:
+worker_dir:
+n_threads: 1
+objective:
+base_penalty: 1.
+
+# Optional
+clean_existing_dir:         # 'true' will empty the worker_dir if it exists
+maximise:                   # maximise the cost function [default: false]
+tolfun:                     # tolerance in function value for termination [default: 1e-11]
+max_simulations:            # quit after n simulations (following an iteration)
+timeout:                    # quit after t seconds (following an iteration)
+min_evals:                  # minimum number of maintenance data points for noise handling
+max_evals:                  # maximum number of maintenance data points for noise handling [default: 128]
+popsize:                    # number of sample points per iteration [default: 4 + int(3 * np.log(N))]
+max_resample_factor:        # multiplied by popsize to give maximum number of resample loops 
+                            # can give "auto" followed by number of iterations to record max resamples [default: auto2]
+
+# Parameter specification
+parameters:
+    grid_orientation:
+      range:
+        type: fixed
+        min: -90.
+        max: 90.
+    delta_row:
+      range:
+        type: multiplier
+        variable: device.minimum_distance_x
+        min_multiplier: 1.
+        max_multiplier: 2.
+    delta_col:
+      range:
+        type: multiplier
+        variable: device.minimum_distance_y
+        min_multiplier: 1.
+        max_multiplier: 2.
+    n_nodes:
+      range:
+        type: fixed
+        min: 1
+        max: 20
+      x0: 15
+    t1:
+      range:
+        type: fixed
+        min: 0.
+        max: 1.
+    t2:
+      range:
+        type: fixed
+        min: 0.
+        max: 1.
+
+results_params:                     # Do not modify
+  - project.number_of_devices
+  - project.annual_energy
+  - project.q_factor
+  - project.capex_total
+  - project.capex_breakdown
+  - project.lifetime_opex_mean
+  - project.lifetime_cost_mean
+  - project.lifetime_energy_mean
+  - project.lcoe_mean

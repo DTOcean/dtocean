@@ -1,0 +1,7 @@
+{'array': {'Export cable': {'marker': [[0]], 'quantity': Counter({2: 1})},
+                      'Substation': {'marker': [[1]], 'quantity': Counter({11: 1})}},
+            'device001': {'marker': [[6, 7]], 'quantity': Counter({1: 1, 5: 1})},
+            'device002': {'marker': [[4, 5]], 'quantity': Counter({1: 1, 5: 1})},
+            'device003': {'marker': [[2, 3]], 'quantity': Counter({1: 1, 5: 1})},
+            'device004': {'marker': [[10, 11]], 'quantity': Counter({1: 1, 5: 1})},
+            'device005': {'marker': [[8, 9]], 'quantity': Counter({1: 1, 5: 1})}}

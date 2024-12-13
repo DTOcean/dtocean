@@ -1,0 +1,15 @@
+subclass or group,observed,observed january,observed february,observed march,observed april,observed may,observed june,observed july,observed august,observed september,observed october,observed november,observed december
+Hard substrate benthic habitat,TRUE,,,,,,,,,,,,
+Soft substrate benthic habitat,TRUE,,,,,,,,,,,,
+Particular habitats,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Shallow diving birds,TRUE,,,,,,,,,,,,
+Medium diving birds,TRUE,,,,,,,,,,,,
+Deep diving birds,TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE
+Large odontocete_Mysticete,TRUE,,,,,,,,,,,,
+Odontoncete_dolphinds,TRUE,,,,,,,,,,,,
+Seals,TRUE,,,,,,,,,,,,
+Fishes,TRUE,,,,,,,,,,,,
+Bony fishes,TRUE,,,,,,,,,,,,
+Magnetosensitive species,TRUE,,,,,,,,,,,,
+Electrosensitive species,TRUE,,,,,,,,,,,,
+Elasmobranchs,TRUE,,,,,,,,,,,,

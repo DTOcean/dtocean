@@ -1,0 +1,1246 @@
+---
+- description: Component data for foundation drag anchors
+  identifier: component.foundations_anchor
+  labels:
+  - Key Identifier
+  - Name
+  - Width
+  - Depth
+  - Height
+  - Connecting Size
+  - Dry Unit Mass
+  - Wet Unit Mass
+  - Min Break Load
+  - Axial Stiffness
+  - Cost
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_anchor
+  - component_id
+  - description
+  - width
+  - depth
+  - height
+  - connecting_size
+  - dry_mass
+  - wet_mass
+  - minimum_breaking_load
+  - axial_stiffness
+  - cost
+  - environmental_impact
+  title: Foundation Drag Anchor Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - kg
+  - kg
+  - N
+  - N/m
+  - Euro
+  - null
+- description: Holding and penetration coefficients for sand-like substrate
+  identifier: component.foundations_anchor_sand
+  labels:
+  - Key Identifier
+  - Holding Capacity Coefficient 1
+  - Holding Capacity Coefficient 2
+  - Penetration Coefficient 1
+  - Penetration Coefficient 2
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_anchor_coefs
+  - component_id
+  - sand_holding_cap_coef_1
+  - sand_holding_cap_coef_2
+  - sand_penetration_coef_1
+  - sand_penetration_coef_2
+  title: Foundation Drag Anchor Sand Coefficients
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+- description: Holding and penetration coefficients for soft-like substrate
+  identifier: component.foundations_anchor_soft
+  labels:
+  - Key Identifier
+  - Holding Capacity Coefficient 1
+  - Holding Capacity Coefficient 2
+  - Penetration Coefficient 1
+  - Penetration Coefficient 2
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_anchor_coefs
+  - component_id
+  - soft_holding_cap_coef_1
+  - soft_holding_cap_coef_2
+  - soft_penetration_coef_1
+  - soft_penetration_coef_2
+  title: Foundation Drag Anchor Soft Coefficients
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+- description: Component data for foundation piles
+  identifier: component.foundations_pile
+  labels:
+  - Key Identifier
+  - Name
+  - Diameter
+  - Wall Thickness
+  - Dry Mass per Unit Length
+  - Wet Mass per Unit Length
+  - Yield Stress
+  - Youngs Modulus
+  - Cost per Unit Length
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_pile
+  - component_id
+  - description
+  - diameter
+  - wall_thickness
+  - dry_mass_per_unit_length
+  - wet_mass_per_unit_length
+  - yield_stress
+  - youngs_modulus
+  - cost_per_unit_length
+  - environmental_impact
+  title: Foundation Pile Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - m
+  - kg/m
+  - kg/m
+  - N/m^{2}
+  - N/m^{2}
+  - Euro/m
+  - null
+- description: Component data for mooring chains
+  identifier: component.moorings_chain
+  labels:
+  - Key Identifier
+  - Name
+  - Diameter
+  - Connecting Length
+  - Dry Mass per Unit Length
+  - Wet Mass per Unit Length
+  - Min Break Load
+  - Axial Stiffness
+  - Cost per Unit Length
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_chain
+  - component_id
+  - description
+  - diameter
+  - connecting_length
+  - dry_mass_per_unit_length
+  - wet_mass_per_unit_length
+  - minimum_breaking_load
+  - axial_stiffness
+  - cost_per_unit_length
+  - environmental_impact
+  title: Mooring Chain Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - m
+  - kg/m
+  - kg/m
+  - N
+  - N/m
+  - Euro/m
+  - null
+- description: Component data for mooring forerunner assemblies
+  identifier: component.moorings_forerunner
+  labels:
+  - Key Identifier
+  - Name
+  - Diameter
+  - Connecting Length
+  - Dry Mass per Unit Length
+  - Wet Mass per Unit Length
+  - Min Break Load
+  - Axial Stiffness
+  - Cost per Unit Length
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_forerunner
+  - component_id
+  - description
+  - diameter
+  - connecting_length
+  - dry_mass_per_unit_length
+  - wet_mass_per_unit_length
+  - minimum_breaking_load
+  - axial_stiffness
+  - cost_per_unit_length
+  - environmental_impact
+  title: Mooring Forerunner Assembly Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - m
+  - kg/m
+  - kg/m
+  - N
+  - N/m
+  - Euro/m
+  - null
+- description: Component data for mooring rope
+  identifier: component.moorings_rope
+  labels:
+  - Key Identifier
+  - Name
+  - Diameter
+  - Dry Mass per Unit Length
+  - Wet Mass per Unit Length
+  - Material
+  - Min Break Load
+  - Cost per Unit Length
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_rope
+  - component_id
+  - description
+  - diameter
+  - dry_mass_per_unit_length
+  - wet_mass_per_unit_length
+  - material
+  - minimum_breaking_load
+  - cost_per_unit_length
+  - environmental_impact
+  title: Mooring Rope Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - str
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - kg/m
+  - kg/m
+  - null
+  - N
+  - Euro/m
+  - null
+- description: Axial stiffness per load for mooring ropes
+  identifier: component.moorings_rope_stiffness
+  labels:
+  - Key Identifier
+  - Extension
+  - '% of Min Breaking Load'
+  structure: NumpyLineDictArrayColumn
+  tables:
+  - reference.view_component_moorings_rope
+  - component_id
+  - rope_stiffness_curve
+  title: Mooring Rope Axial Stiffness Data
+  types:
+  - str
+  units:
+  - N
+  - N/m
+- description: Component data for mooring shackles
+  identifier: component.moorings_shackle
+  labels:
+  - Key Identifier
+  - Name
+  - Width
+  - Depth
+  - Height
+  - Nominal Diameter
+  - Connecting Length
+  - Dry Unit Mass
+  - Wet Unit Mass
+  - Min Break Load
+  - Axial Stiffness
+  - Cost
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_shackle
+  - component_id
+  - description
+  - width
+  - depth
+  - height
+  - nominal_diameter
+  - connecting_length
+  - dry_mass
+  - wet_mass
+  - minimum_breaking_load
+  - axial_stiffness
+  - cost
+  - environmental_impact
+  title: Mooring Shackle Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - m
+  - kg
+  - kg
+  - N
+  - N/m
+  - Euro
+  - null
+- description: Component data for mooring swivels
+  identifier: component.moorings_swivel
+  labels:
+  - Key Identifier
+  - Name
+  - Width
+  - Depth
+  - Height
+  - Nominal Diameter
+  - Connecting Length
+  - Dry Unit Mass
+  - Wet Unit Mass
+  - Min Break Load
+  - Axial Stiffness
+  - Cost
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_swivel
+  - component_id
+  - description
+  - width
+  - depth
+  - height
+  - nominal_diameter
+  - connecting_length
+  - dry_mass
+  - wet_mass
+  - minimum_breaking_load
+  - axial_stiffness
+  - cost
+  - environmental_impact
+  title: Mooring Swivel Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - m
+  - kg
+  - kg
+  - N
+  - N/m
+  - Euro
+  - null
+- description: Bearing capacity factor for buried mooring line (per soil friction
+    angle)
+  identifier: constants.line_bearing_capacity_factor
+  labels:
+  - Soil Friction Angle
+  - Bearing Capacity Factor
+  structure: NumpyLineColumn
+  tables:
+  - reference.ref_line_bcf
+  - soil_friction_angle
+  - bearing_capacity_factor
+  title: Buried Mooring Line Bearing Capacity Factor
+  types:
+  - float
+  - float
+  units:
+  - degrees
+  - null
+- description: Moment coefficient Am for piles (at fixed pile length/relative soil-pile
+    stiffness values)
+  identifier: constants.pile_Am_moment_coefficient
+  labels:
+  - Depth Coefficient
+  - Pile Length / Relative Soil-Pile Stiffness = 10
+  - Pile Length / Relative Soil-Pile Stiffness = 5
+  - Pile Length / Relative Soil-Pile Stiffness = 4
+  - Pile Length / Relative Soil-Pile Stiffness = 3
+  - Pile Length / Relative Soil-Pile Stiffness = 2
+  structure: LineTableColumn
+  tables:
+  - reference.ref_pile_moment_coefficient_sam
+  - depth_coefficient
+  - pile_length_relative_soil_pile_stiffness_10
+  - pile_length_relative_soil_pile_stiffness_5
+  - pile_length_relative_soil_pile_stiffness_4
+  - pile_length_relative_soil_pile_stiffness_3
+  - pile_length_relative_soil_pile_stiffness_2
+  title: Am Pile Moment Coefficient
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Moment coefficient Bm for piles (at fixed pile length/relative soil-pile
+    stiffness values)
+  identifier: constants.pile_Bm_moment_coefficient
+  labels:
+  - Depth Coefficient
+  - Pile Length / Relative Soil-Pile Stiffness = 10
+  - Pile Length / Relative Soil-Pile Stiffness = 5
+  - Pile Length / Relative Soil-Pile Stiffness = 4
+  - Pile Length / Relative Soil-Pile Stiffness = 3
+  - Pile Length / Relative Soil-Pile Stiffness = 2
+  structure: LineTableColumn
+  tables:
+  - reference.ref_pile_moment_coefficient_sbm
+  - depth_coefficient
+  - pile_length_relative_soil_pile_stiffness_10
+  - pile_length_relative_soil_pile_stiffness_5
+  - pile_length_relative_soil_pile_stiffness_4
+  - pile_length_relative_soil_pile_stiffness_3
+  - pile_length_relative_soil_pile_stiffness_2
+  title: Bm Pile Moment Coefficient
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Deflection coefficients (depth, Ay, By) for piles
+  identifier: constants.pile_deflection_coefficients
+  labels:
+  - Depth Coefficient
+  - Ay
+  - By
+  structure: LineTableColumn
+  tables:
+  - reference.ref_pile_deflection_coefficients
+  - depth_coefficient
+  - coefficient_ay
+  - coefficient_by
+  title: Pile Deflection Coefficients
+  types:
+  - float
+  - float
+  - float
+- description: Skin friction and end bearing capacity of piles per soil friction angle
+  identifier: constants.pile_skin_friction_end_bearing_capacity
+  labels:
+  - Soil Friction Angle
+  - Friction Angle Sand-Pile
+  - Max Bearing Capacity Factor
+  - Max Unit Skin Friction
+  - Max End Bearing Capacity
+  structure: LineTableColumn
+  tables:
+  - reference.ref_pile_limiting_values_noncalcareous
+  - soil_friction_angle
+  - friction_angle_sand_pile
+  - bearing_capacity_factor
+  - max_unit_skin_friction
+  - max_end_bearing_capacity
+  title: Pile Skin Friction and End Bearing Capacity
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - degrees
+  - degrees
+  - null
+  - N/m^{2}
+  - N/m^{2}
+- description: Coefficient of subgrade reaction for cohesionless soils (35%, 50%,
+    65%, 85% levels per allowable deflection / diameter)
+  identifier: constants.soil_cohesionless_reaction_coefficient
+  labels:
+  - Allowable Deflection / Diameter
+  - 35% Relative Density Coefficient
+  - 50% Relative Density Coefficient
+  - 65% Relative Density Coefficient
+  - 85% Relative Density Coefficient
+  structure: LineTableColumn
+  tables:
+  - reference.ref_subgrade_reaction_coefficient_cohesionless
+  - allowable_deflection_diameter
+  - relative_density_35
+  - relative_density_50
+  - relative_density_65
+  - relative_density_85
+  title: Cohesionless Soil Coefficient of Subgrade Reaction
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Coefficient of subgrade reaction for cohesive soils (soft clay, stiff
+    clay)
+  identifier: constants.soil_cohesive_reaction_coefficient
+  labels:
+  - Allowable Deflection / Diameter
+  - Soft Clay Coefficient
+  - Stiff Clay Coefficient
+  structure: LineTableColumn
+  tables:
+  - reference.ref_subgrade_reaction_coefficient_k1_cohesive
+  - allowable_deflection_diameter
+  - softclay
+  - stiffclay
+  title: Cohesive Soil Coefficient of Subgrade Reaction
+  types:
+  - float
+  - float
+  - float
+- description: Holding capacity factor for drained soil conditions (per relative embedment
+    depth and drained friction angle)
+  identifier: constants.soil_drained_holding_capacity_factor
+  labels:
+  - Relative Embedment Depth
+  - Drained Friction Angle = 20 degrees
+  - Drained Friction Angle = 25 degrees
+  - Drained Friction Angle = 30 degrees
+  - Drained Friction Angle = 35 degrees
+  - Drained Friction Angle = 40 degrees
+  structure: LineTableColumn
+  tables:
+  - reference.ref_holding_capacity_factors_plate_anchors
+  - relative_embedment_depth
+  - drained_friction_angle_20deg
+  - drained_friction_angle_25deg
+  - drained_friction_angle_30deg
+  - drained_friction_angle_35deg
+  - drained_friction_angle_40deg
+  title: Drained Soil Holding Capacity Factor
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Default Soil Properties Table
+  identifier: constants.soilprops
+  labels:
+  - Soil Type
+  - Drained Soil Friction Angle
+  - Relative Soil Density
+  - Buoyant Unit Weight of Soil
+  - Undrained Soil / Rock Shear Strength 1
+  - Undrained Soil / Rock Shear Strength 2
+  - Effective Drained Cohesion
+  - Seafloor Friction Coefficient
+  - Soil Sensitivity
+  - Rock Compressive Strength
+  structure: TableDataColumn
+  tables:
+  - reference.view_soil_type_geotechnical_properties
+  - soil_type
+  - drained_soil_friction_angle
+  - relative_soil_density
+  - buoyant_unit_weight_of_soil
+  - undrained_soil_shear_strength_constant_term
+  - undrained_soil_shear_strength_depth_dependent_term
+  - effective_drained_cohesion
+  - seafloor_friction_coefficient
+  - soil_sensitivity
+  - rock_compressive_strength
+  title: Soil Properties Table
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - degrees
+  - '%'
+  - N/m^3
+  - N/m^2
+  - N/m^2
+  - N/m^2
+  - null
+  - null
+  - N/m^2
+- auto_only: hidden.device_filtered
+  description: Is the floating device submersible?
+  identifier: device.depth_variation_permitted
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_floating
+  - depth_variation_permitted
+  title: Floating Device Submersible Option
+  types:
+  - bool
+- auto_only: hidden.device_filtered
+  description: Device dry beam area
+  identifier: device.dry_beam_area
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - dry_beam_area
+  title: System Dry Beam Area
+  types:
+  - float
+  units:
+  - m^{2}
+- auto_only: hidden.device_filtered
+  description: Device dry frontal area
+  identifier: device.dry_frontal_area
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - dry_frontal_area
+  title: System Dry Frontal Area
+  types:
+  - float
+  units:
+  - m^{2}
+- auto_only: hidden.device_filtered
+  description: Fairlead locations with respect to the device origin for N lines
+  identifier: device.fairlead_location
+  structure: CartesianListColumn
+  tables:
+  - filter.device_floating
+  - fairlead_locations
+  title: Fairlead Locations
+  units:
+  - m
+  - m
+  - m
+- auto_only: hidden.device_filtered
+  description: Preferred foundation type
+  identifier: device.foundation_type
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - prescribed_foundation_system
+  title: Preferred Foundation Type
+  types:
+  - str
+  valid_values:
+  - Shallow
+  - Gravity
+  - Pile
+  - Suction Caisson
+  - Direct Embedment
+  - Drag
+- auto_only: hidden.device_filtered
+  description: Maximum device displacement (surge, sway, heave)
+  identifier: device.maximum_displacement
+  structure: CartesianDataColumn
+  tables:
+  - filter.device_floating
+  - maximum_displacement
+  title: Maximum System Displacement
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Predefined mooring system type
+  identifier: device.mooring_system_type
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_floating
+  - prescribed_mooring_system
+  title: Mooring System Type
+  types:
+  - str
+  valid_values:
+  - Catenary
+  - Taut
+- auto_only: hidden.device_filtered
+  description: Centre of gravity of the device (x, y, z)  with respect to the device
+    origin
+  identifier: device.system_centre_of_gravity
+  structure: CartesianDataColumn
+  tables:
+  - filter.device_shared
+  - centre_of_gravity
+  title: System Centre of Gravity
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Submerged volume of the device
+  identifier: device.system_displaced_volume
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - displaced_volume
+  title: System Submerged Volume
+  types:
+  - float
+  units:
+  - m^{3}
+- auto_only: hidden.device_filtered
+  description: Height of the device and heave axis
+  identifier: device.system_height
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - height
+  title: System Height
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Length of the device and surge axis
+  identifier: device.system_length
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - length
+  title: System Length
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Mass of the device
+  identifier: device.system_mass
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - mass
+  title: System Mass
+  types:
+  - float
+  units:
+  - kg
+- auto_only: hidden.device_filtered
+  description: Profile of the device
+  group: Characteristics
+  identifier: device.system_profile
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - profile
+  title: System Profile
+  types:
+  - str
+  valid_values:
+  - Cylindrical
+  - Rectangular
+- auto_only: hidden.device_filtered
+  description: Skin surface roughness of the device (Ra)
+  identifier: device.system_roughness
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - surface_roughness
+  title: System Surface Roughness
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Width of the device and sway axis
+  identifier: device.system_width
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - width
+  title: System Width
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Predefined umbilical cable identifier
+  identifier: device.umbilical_type
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_floating
+  - prescribed_umbilical_type
+  title: Predefined Umbilical Cable Identifier
+  types:
+  - str
+- auto_only: hidden.device_filtered
+  description: System wet beam area
+  identifier: device.wet_beam_area
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - wet_beam_area
+  title: System Wet Beam Area
+  types:
+  - float
+  units:
+  - m^{2}
+- auto_only: hidden.device_filtered
+  description: System wet frontal area
+  identifier: device.wet_frontal_area
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - wet_frontal_area
+  title: System Wet Frontal Area
+  types:
+  - float
+  units:
+  - m^{2}
+- auto_only: hidden.site_filtered
+  description: Vertical profile of tidal current flow
+  identifier: farm.current_profile
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - moor_found_current_profile
+  title: Vertical Current Profile
+  types:
+  - str
+  valid_values:
+  - Uniform
+  - 1/7 Power Law
+- auto_only: hidden.site_filtered
+  description: JONSWAP gamma parameter at maximum wave conditions (100 year return
+    period)
+  identifier: farm.max_gamma_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - jonswap_gamma
+  title: Maximum JONSWAP gamma
+  types:
+  - float
+- auto_only: hidden.site_filtered
+  description: Direction of the wind at maximum gust velocity
+  identifier: farm.max_gust_wind_direction_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - wind_gust_direction
+  title: Predominant Direction of Max Gust
+  types:
+  - float
+  units:
+  - degrees
+- auto_only: hidden.site_filtered
+  description: Maximum wind gust velocity magnitude at 10m above sea level (100 year
+    return period)
+  identifier: farm.max_gust_wind_speed_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - max_wind_gust_speed
+  title: Maximum Gust Wind Velocity
+  types:
+  - float
+  units:
+  - m/s
+- auto_only: hidden.site_filtered
+  description: Maximum significant wave height (100 year return period)
+  identifier: farm.max_hs_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - significant_wave_height
+  title: Maximum Significant Wave Height
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.site_filtered
+  description: Maximum peak wave period (100 year return period)
+  identifier: farm.max_tp_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - peak_wave_period
+  title: Maximum Peak Wave Period
+  types:
+  - float
+  units:
+  - s
+- auto_only: hidden.site_filtered
+  description: Maximum water level above mean sea level (50 year return period)
+  identifier: farm.max_water_level_50_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - water_level_max
+  title: Maximum Water Level
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.site_filtered
+  description: Predominant direction of the mean velocity wind
+  identifier: farm.mean_wind_direction_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - predominant_wind_direction
+  title: Predominant Mean Wind Direction
+  types:
+  - float
+  units:
+  - degrees
+- auto_only: hidden.site_filtered
+  description: Mean wind velocity magnitude at 10m above sea level (100 year return
+    period)
+  identifier: farm.mean_wind_speed_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - mean_wind_speed
+  title: Mean Wind Velocity
+  types:
+  - float
+  units:
+  - m/s
+- auto_only: hidden.site_filtered
+  description: Minimum water level below mean sea level (50 year return period)
+  identifier: farm.min_water_level_50_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - water_level_min
+  title: Minimum Water Level
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.site_filtered
+  description: Overrides the ratio of peak to remoulded shear strength for entire
+    farm, ignoring individual soil types.
+  identifier: farm.soil_sensitivity
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - soil_sensitivity
+  title: Soil Sensitivity
+  types:
+  - float
+- description: Cost of concrete per kg
+  identifier: project.cost_of_concrete
+  structure: SimpleData
+  title: Concrete Cost per kg
+  types:
+  - float
+  units:
+  - Euro/kg
+- description: Cost of grout per kg
+  identifier: project.cost_of_grout
+  structure: SimpleData
+  title: Grout Cost per kg
+  types:
+  - float
+  units:
+  - Euro/kg
+- description: Cost of steel per kg
+  identifier: project.cost_of_steel
+  structure: SimpleData
+  title: Steel Cost per kg
+  types:
+  - float
+  units:
+  - Euro/kg
+- description: Optional fabrication cost factor
+  identifier: project.fabrication_cost
+  structure: SimpleData
+  title: Optional Fabrication Cost Factor
+  types:
+  - float
+  units:
+  - Euro
+- auto_only: hidden.device_filtered
+  description: Foundation safety factor
+  identifier: project.foundation_safety_factor
+  structure: SimpleData
+  title: Foundation Safety Factor
+  types:
+  - float
+- description: Supplementary design data for the foundation components
+  identifier: project.foundations_component_data
+  labels:
+  - Type
+  - Sub-Type
+  - UTM X
+  - UTM Y
+  - Depth
+  - Length
+  - Width
+  - Height
+  - Installation Depth
+  - Dry Mass
+  - Grout Type
+  - Grout Volume
+  - Marker
+  structure: TableData
+  title: Foundations Components Supplementary Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  - float
+  - int
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - m
+  - m
+  - m
+  - kg
+  - null
+  - m^{3}
+  - null
+- description: Data pertaining to the soil characteristics for each foundation
+  identifier: project.foundations_soil_data
+  labels:
+  - Layer Number
+  - Soil Type
+  - Depth
+  - Marker
+  structure: TableData
+  title: Foundations Soil Data
+  types:
+  - float
+  - str
+  - float
+  - int
+  units:
+  - null
+  - null
+  - m
+  - null
+- description: Grout strength safety factor
+  identifier: project.grout_strength_safety_factor
+  structure: SimpleData
+  title: Grout Strength Safety Factor
+  types:
+  - float
+- description: Mooring accident limit state safety factor
+  identifier: project.mooring_ALS_safety_factor
+  structure: SimpleData
+  title: Mooring ALS Safety Factor
+  types:
+  - float
+- description: Mooring ultimate limit state safety factor
+  identifier: project.mooring_ULS_safety_factor
+  structure: SimpleData
+  title: Mooring ULS Safety Factor
+  types:
+  - float
+- description: Supplementary design data for the moorings components
+  identifier: project.moorings_component_data
+  labels:
+  - Line Identifier
+  - Marker
+  structure: TableData
+  title: Moorings Components Supplementary Data
+  types:
+  - str
+  - int
+  units:
+  - null
+  - null
+- description: Overall dimensions of the moorings and foundations design
+  identifier: project.moorings_dimensions
+  labels:
+  - System Identifier
+  - Footprint Area
+  - Volume
+  structure: TableData
+  title: Moorings and Foundations Configuration Dimensions
+  types:
+  - str
+  - float
+  - float
+  units:
+  - null
+  - m^{2}
+  - m^{3}
+- description: Bill of materials for the moorings and foundations network cost calculation
+  identifier: project.moorings_foundations_economics_data
+  labels:
+  - Key Identifier
+  - Cost
+  - Quantity
+  - Year
+  structure: TableData
+  title: Moorings and Foundations Bill of Materials
+  types:
+  - str
+  - float
+  - float
+  - int
+  units:
+  - null
+  - Euro
+  - null
+  - null
+- description: Moorings & foundations network description
+  identifier: project.moorings_foundations_network
+  structure: Network
+  title: Moorings and Foundations Network Description
+- description: Designation of complete mooring lines
+  identifier: project.moorings_line_data
+  labels:
+  - Line Identifier
+  - Type
+  - Length
+  - Dry Mass
+  structure: TableData
+  title: Mooring Line Supplementary Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - kg
+- description: Predefined mooring component list
+  identifier: project.predefined_mooring_list
+  structure: SimpleList
+  title: Predefined Mooring Component List
+  types:
+  - str
+- description: Apply device forces calculated by the hydrodynamics module
+  experimental:
+  - true
+  identifier: options.apply_fex
+  structure: SimpleData
+  title: Apply Calculated Device Forces
+  types:
+  - bool
+- description: Use a single foundation design per device for all foundation locations.
+    This does not apply where a device has mixed foundation types.
+  identifier: options.repeat_foundations
+  structure: SimpleData
+  title: Use Repeated Foundations
+  types:
+  - bool
+- description: Use the maximum turbine thrust coefficient for extreme rotor loads
+    calculations. Defaults to False.
+  identifier: options.use_max_thrust
+  structure: SimpleData
+  title: Use Maximum Turbine Thrust
+  types:
+  - bool

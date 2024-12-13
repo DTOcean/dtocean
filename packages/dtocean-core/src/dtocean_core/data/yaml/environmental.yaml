@@ -1,0 +1,824 @@
+---
+- description: Weight for the Reef Effect  (hydro module)
+  identifier: device.hydro_reef_effect_weight
+  structure: SimpleData
+  title: Weight for the Reef Effect  (hydro module)
+  types:
+  - str
+  valid_values:
+  - Wave Design Horizontal
+  - Wave Design Vertical
+  - Tidal Design Horizontal
+  - Tidal Design Vertical
+- description: Weight for the Resting Place  (hydro module)
+  identifier: device.hydro_resting_place_weight
+  structure: SimpleData
+  title: Weight for the Resting Place  (hydro module)
+  types:
+  - str
+  valid_values:
+  - No Dangerous Part Of Devices
+  - Blades
+  - Turbine Shroud
+  - Oscillating Water Column With Cavity
+  - Oscillating Bodies With Translation Part
+  - Oscillating Bodies With Rotating Part
+  - Flexible Sleeve Between Each Box Of Pelamis
+- description: Weight for the Underwater Noise Risk  (hydro module)
+  identifier: device.hydro_underwater_noise_risk_weight
+  structure: SimpleData
+  title: Weight for the Underwater Noise Risk  (hydro module)
+  types:
+  - str
+  valid_values:
+  - Noise Device 0 - 90 dB re 1muPa
+  - Noise Device 90 - 100 dB re 1muPa
+  - Noise Device 100 - 150 dB re 1muPa
+  - Noise Device 150 - 200  dB re 1muPa
+  - Noise Device > 200 dB re 1muPa
+- description: Weight for the Reserve Effect  (electrical module)
+  identifier: farm.elec_reserve_effect_weight
+  structure: SimpleData
+  title: Weight for the Reserve Effect  (electrical module)
+  types:
+  - str
+  valid_values:
+  - Fishery Complete Prohibition
+  - Cast Net Fishing (Using Gillnets And Entangling Nets)
+  - Trawler Fishing
+  - Others
+- description: Weight for the Energy Modification (hydro module)
+  identifier: farm.hydro_energy_modif_weight
+  structure: SimpleData
+  title: Weight for the Energy Modification (hydro module)
+  types:
+  - str
+  valid_values:
+  - Loose Sand
+  - Medium Sand
+  - Dense Sand
+  - Very Soft Clay
+  - Soft Clay
+  - Firm Clay
+  - Stiff Clay
+  - Cemented
+  - Soft Rock Coral
+  - Hard Glacial Till
+  - Gravel Cobble
+  - Hard Rock
+- description: Weight for the Reserve Effect  (hydro module)
+  identifier: farm.hydro_reserve_effect_weight
+  structure: SimpleData
+  title: Weight for the Reserve Effect  (hydro module)
+  types:
+  - str
+  valid_values:
+  - Fishery Complete Prohibition
+  - Cast Net Fishing (Using Gillnets And Entangling Nets)
+  - Trawler Fishing
+  - Others
+  - No Restriction
+- description: Weight for the Turbidity Risk (hydro module)
+  identifier: farm.hydro_turbidity_risk_weight
+  structure: SimpleData
+  title: Weight for the Turbidity Risk (hydro module)
+  types:
+  - str
+- description: Measured ambient electric field before the array installation
+  identifier: farm.initial_elec_field
+  structure: SimpleData
+  title: Initial Electrical Field
+  types:
+  - float
+  units:
+  - \mu V
+- description: Measured ambient magnetic field before the array installation
+  identifier: farm.initial_magnetic_field
+  structure: SimpleData
+  title: Initial Magnetic Field
+  types:
+  - float
+  units:
+  - \mu T
+- description: Measured ambient noise before the array installation
+  identifier: farm.initial_noise
+  structure: SimpleData
+  title: Initial Noise
+  types:
+  - float
+  units:
+  - dB
+- description: Measured ambient temperature before the array installation
+  identifier: farm.initial_temperature
+  structure: SimpleData
+  title: Initial Temperature
+  types:
+  - float
+  units:
+  - C
+- description: Measured turbidity before the array installation
+  identifier: farm.initial_turbidity
+  structure: SimpleData
+  title: Initial Turbidity
+  types:
+  - float
+- identifier: farm.protected_species
+  structure: SimpleDict
+  title: Presence of  Protected Species
+  types:
+  - bool
+  valid_values:
+  - Sei whale
+  - Blue whale
+  - Fin whale
+  - North Atlantic right whale
+  - Humpback whale
+  - Long finned pilot whale
+  - Risso s dolphin
+  - Killer whale
+  - Striped dolphin
+  - Rough toothed dolphin
+  - Common bottlenose dolphin
+  - Sperm whale
+  - Harbour porpoise
+  - Mediterranean monk seal
+  - Lesser white fronted goose
+  - Red breasted goose
+  - Slender billed curlew
+  - Steller eider
+  - Audouin gull
+  - White tailed eagle
+  - Loggerhead sea turtle
+  - Green sea turtle
+  - Kemp ridley
+- description: Monthly Observation of Receptors
+  identifier: farm.receptor_species
+  labels:
+  - Subclass or Group
+  - Year
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+  structure: TriStateIndexTable
+  title: Monthly Observation of Receptors
+  types:
+  - str
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  - bool
+  valid_values:
+  - Observation of Hard substrate benthic habitat
+  - Observation of Soft substrate benthic habitat
+  - Observation of Particular habitat
+  - Observation of Shallow diving birds
+  - Observation of Medium diving birds
+  - Observation of Deep diving birds
+  - Observation of Fishes
+  - Observation of Elasmobranchs
+  - Observation of Large odontocete_Mysticete
+  - Observation of Odontoncete_dolphinds
+  - Observation of Seals
+  - Observation of Magnetosensitive species
+  - Observation of Electrosensitive species
+- description: Weight for the Collision Risk  (electrical module)
+  identifier: project.elec_collision_risk_weight
+  structure: SimpleData
+  title: Weight for the Collision Risk  (electrical module)
+  types:
+  - str
+  valid_values:
+  - Cable Buried
+  - Cable Not Buried
+- description: Dictionary of the Confidence Levels - Electrical stage
+  identifier: project.elec_confidence
+  structure: EIADict
+  title: Dictionary of the Confidence Levels - Electrical stage
+- description: Dictionary of the EIS - Electrical stage
+  identifier: project.elec_eis
+  structure: EIADict
+  title: Dictionary of the EIS - Electrical stage
+- description: Weight for the Electrical Fields Risk (electrical module)
+  identifier: project.elec_elec_field_weight
+  structure: SimpleData
+  title: Weight for the Electrical Fields Risk (electrical module)
+  types:
+  - str
+  valid_values:
+  - Cable Buried
+  - Cable Not Buried
+- description: Weight for the Footprint Weight (electrical cable)
+  identifier: project.elec_footprint_weight
+  structure: SimpleData
+  title: Weight for the Footprint Weight (electrical cable)
+  types:
+  - str
+  valid_values:
+  - Cable Buried
+  - Cable Not Buried
+- description: 'Global EIS - Electrical Stage '
+  identifier: project.elec_global_eis
+  structure: EIADict
+  title: 'Global EIS - Electrical Stage '
+- description: Weight for the Magnetic Fields Risk (electrical module)
+  identifier: project.elec_magnetic_field_weight
+  structure: SimpleData
+  title: Weight for the Magnetic Fields Risk (electrical module)
+  types:
+  - str
+  valid_values:
+  - Cable Buried
+  - Cable Not Buried
+- description: Measured (or estimated) electric field close to the electric systems
+    produced by the functioning of the devices (electrical module)
+  identifier: project.elec_measured_elec_field
+  structure: SimpleData
+  title: Measured Electrical Field (electrical module)
+  types:
+  - float
+  units:
+  - \mu V
+- description: Measured (or estimated) magnetic field close to the electric systems
+    produced by the functioning of the devices (electrical module)
+  identifier: project.elec_measured_magnetic_field
+  structure: SimpleData
+  title: Measured Magnetic Field (electrical module)
+  types:
+  - float
+  units:
+  - \mu T
+- description: Maximum measured (or estimated) noise produced by the electric systems
+    (electrical module)
+  identifier: project.elec_measured_noise
+  structure: SimpleData
+  title: Measured Noise(electrical module)
+  types:
+  - float
+  units:
+  - dB
+- description: Measured (or estimated) temperature close to the electric systems produced
+    by the functioning of the devices. At the same period of the year as the measure
+    of the initial temperature (electrical module)
+  identifier: project.elec_measured_temperature
+  structure: SimpleData
+  title: Measured Temperature (electrical module)
+  types:
+  - float
+  units:
+  - C
+- description: Dictionary of Recommendation for the Electrical Stage
+  identifier: project.elec_recommendation_dict
+  labels:
+  - Electric Fields
+  - Magnetic Fields
+  - Temperature Modfication
+  - Collision Risk
+  - Underwater Noise
+  - Reserve Effect
+  - Resting Place
+  - Footprint
+  structure: RecommendationDict
+  title: Dictionary of Recommendation for the Electrical Stage
+- description: Weight for the Reef Effect Risk (electrical module)
+  identifier: project.elec_reef_effect_weight
+  structure: SimpleData
+  title: Weight for the Reef Effect Risk (electrical module)
+  types:
+  - str
+  valid_values:
+  - Substation
+  - Transformer
+  - 'Hub '
+  - Cable Not Buried
+- description: Weight for the Resting Place  (electrical module)
+  identifier: project.elec_resting_place_weight
+  structure: SimpleData
+  title: Weight for the Resting Place  (electrical module)
+  types:
+  - str
+  valid_values:
+  - No Constraint
+- description: Table of Impacts per Month
+  identifier: project.elec_season
+  labels:
+  - Impact
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+  structure: TableData
+  title: Table of Impacts per Month - Electrical Stage
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Weight for the Temperature Modification  (electrical module)
+  identifier: project.elec_temp_modif_weight
+  structure: SimpleData
+  title: Weight for the Temperature Modification  (electrical module)
+  types:
+  - str
+  valid_values:
+  - Cable Buried
+  - Cable Not Buried
+- description: Weight for the Underwater Noise Risk  (electrical module)
+  identifier: project.elec_underwater_noise_risk_weight
+  structure: SimpleData
+  title: Weight for the Underwater Noise Risk  (electrical module)
+  types:
+  - str
+  valid_values:
+  - Noise Electrical Components 0 - 90 dB re 1muPa
+  - Noise Electrical Components 90 - 100 dB re 1muPa
+  - Noise Electrical Components 100 - 150 dB re 1muPa
+  - Noise Electrical Components 150 - 200  dB re 1muPa
+  - Noise Electrical Components > 200 dB re 1muPa
+- description: 'Surface of the fishery restriction area due to the electric systems
+    (ex: cable route) '
+  identifier: project.fishery_restricted_area
+  structure: SimpleData
+  title: Fishery Restriction Area
+  types:
+  - float
+  units:
+  - m^2
+- description: Global EIS -  - All Stages
+  identifier: project.global_eis
+  structure: EIADict
+  title: Global EIS -  - All  Stages
+- description: Weight for the Collision Risk  (hydro module)
+  identifier: project.hydro_collision_risk_weight
+  structure: SimpleData
+  title: Weight for the Collision Risk  (hydro module)
+  types:
+  - str
+  valid_values:
+  - Open Water/ Devices In Parallel
+  - Sea Loch Entrance/ Devices In Parallel
+  - Sounds/ Devices In Parallel
+  - Open Water/ Devices In Series
+  - Sea Loch Entrances/ Devices In Series
+  - Sounds / Devices In Series
+- description: Dictionary of the Confidence Levels - Hydrodynamics Stage
+  identifier: project.hydro_confidence
+  structure: EIADict
+  title: Dictionary of the Confidence Levels - Hydrodynamics Stage
+- description: Dictionary of the EIS - Hydrodynamics Stage
+  identifier: project.hydro_eis
+  structure: EIADict
+  title: Dictionary of the EIS - Hydrodynamics Stage
+- description: Global EIS - Hydrodynamics Stage
+  identifier: project.hydro_global_eis
+  structure: EIADict
+  title: Global EIS - Hydrodynamics Stage
+- description: Maximum measured (or estimated) noise produced by the devices (hydro
+    module)
+  identifier: project.hydro_measured_noise
+  structure: SimpleData
+  title: Measured Noise(hydro module)
+  types:
+  - float
+  units:
+  - dB
+- description: Maximum measured (or estimated) turbidity with the functioning of the
+    devices (hydro module)
+  identifier: project.hydro_measured_turbidity
+  structure: SimpleData
+  title: Measured Turbidity (hydro module)
+  types:
+  - float
+- description: Dictionary of Recommendation for the Hydrodynamics Stage
+  identifier: project.hydro_recommendation_dict
+  labels:
+  - Energy Modification
+  - Collision Risk
+  - Reef Effect
+  - Underwater Noise
+  - Turbidity
+  - Reserve Effect
+  - Resting Place
+  structure: RecommendationDict
+  title: Dictionary of Recommendation for the Hydrodynamics Stage
+- description: Table of Impacts per Month
+  identifier: project.hydro_season
+  labels:
+  - Impact
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+  structure: TableData
+  title: Table of Impacts per Month - Hydro Stage
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Weight for the Chemical Pollution Risk (installation module)
+  identifier: project.install_chemical_pollution_weight
+  structure: SimpleData
+  title: Weight for the Chemical Pollution Risk (installation module)
+  types:
+  - str
+  valid_values:
+  - Bunker Oil
+  - Highly Toxic Antifouling
+  - Moderate Toxic Antifouling
+  - Natural Antifouling
+- description: Weight for the Collision Risk  (installation module)
+  identifier: project.install_collision_risk_weight
+  structure: SimpleData
+  title: Weight for the Collision Risk  (installation module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Dictionary of the Confidence Levels - Installation Stage
+  identifier: project.install_confidence
+  structure: EIADict
+  title: Dictionary of the Confidence Levels - Installation Stage
+- description: Dictionary of the EIS - Installation Stage
+  identifier: project.install_eis
+  structure: EIADict
+  title: Dictionary of the EIS - Installation Stage
+- description: Weight for the Footprint Weight (installation module)
+  identifier: project.install_footprint_weight
+  structure: SimpleData
+  title: Weight for the Footprint Weight (installation module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Global EIS -  - Installation Stage
+  identifier: project.install_global_eis
+  structure: EIADict
+  title: Global EIS -  - Installation Stage
+- description: Import of Chemical Pollutant - Installation Stage
+  identifier: project.install_import_chem_pollutant
+  structure: SimpleData
+  title: Import of Chemical Pollutant - Installation Stage
+  types:
+  - bool
+- description: Maximum measured (or estimated) noise produced during the installation
+    (installation module)
+  identifier: project.install_measured_noise
+  structure: SimpleData
+  title: Measured Noise (installation module)
+  types:
+  - float
+  units:
+  - dB
+- description: Maximum measured (or estimated) turbidity with the installation of
+    the devices and components (installation module)
+  identifier: project.install_measured_turbidity
+  structure: SimpleData
+  title: Measured Turbidity (installation module)
+  types:
+  - float
+- description: Dictionary of Recommendation for the Installation Stage
+  identifier: project.install_recommendation_dict
+  labels:
+  - Chemical Pollution
+  - Footprint
+  - Turbidity
+  - Collision Risk Vessel
+  - Underwater Noise
+  structure: RecommendationDict
+  title: Dictionary of Recommendation for the Installation Stage
+- description: Table of Impacts per Month
+  identifier: project.install_season
+  labels:
+  - Impact
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+  structure: TableData
+  title: Table of Impacts per Month - Installation Stage
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Weight for the Turbidity Risk (installation module)
+  identifier: project.install_turbidity_risk_weight
+  structure: SimpleData
+  title: Weight for the Turbidity Risk (installation module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Weight for the Underwater Noise Risk  (installation module)
+  identifier: project.install_underwater_noise_risk_weight
+  structure: SimpleData
+  title: Weight for the Underwater Noise Risk  (installation module)
+  types:
+  - str
+  valid_values:
+  - Noise Vessels or Tools 0 - 90 dB re 1muPa
+  - Noise Vessels or Tools 90 - 100 dB re 1muPa
+  - Noise Vessels or Tools 100 - 150 dB re 1muPa
+  - Noise Vessels or Tools 150 - 200 dB re 1muPa
+  - Noise Vessels or Tools > 200 dB re 1muPa
+- description: Weight for the Collision Risk  (mooring and foundation module)
+  identifier: project.moor_collision_risk_weight
+  structure: SimpleData
+  title: Weight for the Collision Risk  (mooring and foundation module)
+  types:
+  - str
+  valid_values:
+  - Catenary & Chains
+  - Catenary & Chains & Nylon Ropes
+  - Catenary & Chains & Polyester Ropes
+  - Taut
+  - Catenary & Accessory Buoy
+  - Taut & Accessory Buoy
+- description: Dictionary of the Confidence Levels - Moorings and Foundation Stage
+  identifier: project.moor_confidence
+  structure: EIADict
+  title: Dictionary of the Confidence Levels - Moorings and Foundation Stage
+- description: Dictionary of the EIS - Moorings and Foundation Stage
+  identifier: project.moor_eis
+  structure: EIADict
+  title: Dictionary of the EIS - Moorings and Foundation Stage
+- description: Weight for the Footprint Weight  (mooring and foundation module)
+  identifier: project.moor_footprint_weight
+  structure: SimpleData
+  title: Weight for the Footprint Weight  (mooring and foundation module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Global EIS -  - Moorings and Foundation Stage
+  identifier: project.moor_global_eis
+  structure: EIADict
+  title: Global EIS -  - Moorings and Foundation Stage
+- description: Maximum measured (or estimated) noise produced by the moorings (mooring
+    module)
+  identifier: project.moor_measured_noise
+  structure: SimpleData
+  title: Measured Noise(mooring module)
+  types:
+  - float
+  units:
+  - dB
+- description: Dictionary of Recommendation for the Moorings and Foundation Stage
+  identifier: project.moor_recommendation_dict
+  labels:
+  - Collision Risk
+  - Underwater Noise
+  - Reef Effect
+  - Footprint
+  structure: RecommendationDict
+  title: Dictionary of Recommendation for the Moorings and Foundation Stage
+- description: Weight for the Reef Effect Risk  (mooring and foundation module)
+  identifier: project.moor_reef_effect_weight
+  structure: SimpleData
+  title: Weight for the Reef Effect Risk  (mooring and foundation module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Table of Impacts per Month
+  identifier: project.moor_season
+  labels:
+  - Impact
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+  structure: TableData
+  title: Table of Impacts per Month - Moorings and Foundation Stage
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Weight for the Underwater Noise Risk   (mooring and foundation module)
+  identifier: project.moor_underwater_noise_risk_weight
+  structure: SimpleData
+  title: Weight for the Underwater Noise Risk   (mooring and foundation module)
+  types:
+  - str
+  valid_values:
+  - Chafing 0 dB re 1muPa
+  - Chafing 90 dB re 1muPa
+  - Chafing 100 dB re 1muPa
+  - Chafing 150 dB re 1muPa
+  - Chafing 200 dB re 1muPa
+- description: Weight for the Turbidity Risk (operation and maintenance module)
+  identifier: project.operat_chemical_pollution_weight
+  structure: SimpleData
+  title: Weight for the Turbidity Risk (operation and maintenance module)
+  types:
+  - str
+  valid_values:
+  - Bunker Oil
+  - Highly Toxic Antifouling
+  - Moderate Toxic Antifouling
+  - Natural Antifouling
+- description: Weight for the Collision Risk  (operation and maintenance module)
+  identifier: project.operat_collision_risk_weight
+  structure: SimpleData
+  title: Weight for the Collision Risk  (operation and maintenance module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Dictionary of the Confidence Levels - Operation and Maintenance Stage
+  identifier: project.operat_confidence
+  structure: EIADict
+  title: Dictionary of the Confidence Levels - Operation and Maintenance Stage
+- description: Dictionary of the EIS - Operation and Maintenance Stage
+  identifier: project.operat_eis
+  structure: EIADict
+  title: Dictionary of the EIS - Operation and Maintenance Stage
+- description: Weight for the Footprint Weight (operation and maintenance module)
+  identifier: project.operat_footprint_weight
+  structure: SimpleData
+  title: Weight for the Footprint Weight (operation and maintenance module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Global EIS -  Operation and Maintenance Stage
+  identifier: project.operat_global_eis
+  structure: EIADict
+  title: Global EIS - Operation and Maintenance Stage
+- description: Import of Chemical Pollutant - Operation and Maintenance Stage
+  identifier: project.operat_import_chem_pollutant
+  structure: SimpleData
+  title: Import of Chemical Pollutant - Operation and Maintenance Stage
+  types:
+  - bool
+- description: Maximum measured (or estimated) turbidity with the installation of
+    the devices and components (operation and maintenance module)
+  identifier: project.operat_measured_noise
+  structure: SimpleData
+  title: Measured Turbidity (operation and maintenance module)
+  types:
+  - float
+  units:
+  - dB
+- description: Maximum measured (or estimated) noise produced during the installation
+    (operation and maintenance module)
+  identifier: project.operat_measured_turbidity
+  structure: SimpleData
+  title: Measured Noise (operation and maintenance module)
+  types:
+  - float
+- description: Dictionary of Recommendation for the Operation and Maintenance Stage
+  identifier: project.operat_recommendation_dict
+  labels:
+  - Chemical Pollution
+  - Footprint
+  - Turbidity
+  - Collision Risk Vessel
+  - Underwater Noise
+  structure: RecommendationDict
+  title: Dictionary of Recommendation for the Operation and Maintenance Stage
+- description: Table of Impacts per Month
+  identifier: project.operat_season
+  labels:
+  - Impact
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+  structure: TableData
+  title: Table of Impacts per Month - Operation and Maintenance Stage
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Weight for the Underwater Noise Risk  (operation and maintenance module)
+  identifier: project.operat_turbidity_risk_weight
+  structure: SimpleData
+  title: Weight for the Underwater Noise Risk  (operation and maintenance module)
+  types:
+  - str
+  valid_values:
+  - No Data
+- description: Weight for the Chemical Pollution Risk (operation and maintenance module)
+  identifier: project.operat_underwater_noise_risk_weight
+  structure: SimpleData
+  title: Weight for the Chemical Pollution Risk (operation and maintenance module)
+  types:
+  - str
+  valid_values:
+  - Noise Vessels or Tools 0 - 90 dB re 1muPa
+  - Noise Vessels or Tools 90 - 100 dB re 1muPa
+  - Noise Vessels or Tools 100 - 150 dB re 1muPa
+  - Noise Vessels or Tools 150 - 200 dB re 1muPa
+  - Noise Vessels or Tools > 200 dB re 1muPa
+- description: Average Size of Vessels during Operation and Maintenance Stage
+  identifier: project.operat_vessel_average_size
+  structure: SimpleData
+  title: Average Size of Vessels during Operation and Maintenance Stage
+  types:
+  - float

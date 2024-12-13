@@ -1,0 +1,376 @@
+---
+- auto_only: hidden.device_filtered
+  description: Device Cost
+  identifier: device.system_cost
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - cost
+  title: Device Cost
+  types:
+  - float
+  units:
+  - Euro
+- description: Estimate for the annual mean time to failure of the array
+  identifier: project.annual_array_mttf_estimate
+  structure: SimpleData
+  title: Annual Array MTTF Estimate
+  types:
+  - float
+  units:
+  - hours
+- description: Estimate for the annual cost of repair
+  identifier: project.annual_repair_cost_estimate
+  structure: SimpleData
+  title: Annual Repair Costs Estimate
+  types:
+  - float
+  units:
+  - Euro/year
+- description: Discount rate as a decimal fraction
+  identifier: project.discount_rate
+  structure: SimpleData
+  title: Discount Rate
+  types:
+  - float
+- description: Estimated costs for the electrical sub-systems
+  identifier: project.electrical_cost_estimate
+  structure: SimpleData
+  title: Electrical Sub-Systems Cost Estimate
+  types:
+  - float
+  units:
+  - Euro
+- description: Estimated costs for installation of array
+  identifier: project.installation_cost_estimate
+  structure: SimpleData
+  title: Installation Cost Estimate
+  types:
+  - float
+  units:
+  - Euro
+- description: Project Lifetime
+  identifier: project.lifetime
+  structure: SimpleData
+  title: Project Lifetime
+  types:
+  - int
+  units:
+  - Years
+- description: Estimated costs for the moorings and foundations
+  identifier: project.moorings_cost_estimate
+  structure: SimpleData
+  title: Moorings and Foundations Cost Estimate
+  types:
+  - float
+  units:
+  - Euro
+- description: Estimate for the annual OPEX costs
+  identifier: project.opex_estimate
+  structure: SimpleData
+  title: Annual OPEX Estimate
+  types:
+  - float
+  units:
+  - Euro
+- description: Estimate energy record from annual energy if True
+  identifier: project.estimate_energy_record
+  structure: SimpleData
+  title: Estimate Energy Record
+  types:
+  - bool
+- description: One of additional CAPEX contribution applied at year 0. This can be
+    used for costs not considered in the DTOcean software.
+  identifier: project.externalities_capex
+  structure: SimpleData
+  title: CAPEX Externalities
+  types:
+  - float
+  units:
+  - Euro
+- description: Additional OPEX contributions applied in each year of operation. This
+    can be used for costs not considered in the DTOcean software.
+  identifier: project.externalities_opex
+  structure: SimpleData
+  title: OPEX Externalities
+  types:
+  - float
+  units:
+  - Euro
+- description: Table of metrics for the economics assessment of the array. One row
+    is used per data point.
+  identifier: project.economics_metrics
+  labels:
+  - LCOE
+  - LCOE CAPEX
+  - LCOE OPEX
+  - OPEX
+  - Energy
+  - Discounted OPEX
+  - Discounted Energy
+  structure: TableData
+  title: Economics Evaluation Metrics Table
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - Euro/kWh
+  - Euro/kWh
+  - Euro/kWh
+  - Euro
+  - MWh
+  - Euro
+  - MWh
+- description: Mean levelised cost of energy in Euro/kWh
+  identifier: project.lcoe_mean
+  structure: SimpleData
+  title: Mean Levelised Cost of Energy
+  types:
+  - float
+  units:
+  - Euro/kWh
+- description: Most likely discounted OPEX from the combination of discounted OPEX
+    and energy used to determine the most likely LCOE.
+  identifier: project.lcoe_mode_opex
+  structure: SimpleData
+  title: Most Likely Discounted OPEX (OPEX & Energy)
+  types:
+  - float
+  units:
+  - Euro
+- description: Most likely discounted energy from the combination of discounted OPEX
+    and energy used to determine the most likely LCOE.
+  identifier: project.lcoe_mode_energy
+  structure: SimpleData
+  title: Most Likely Discounted Energy (OPEX & Energy)
+  types:
+  - float
+  units:
+  - MWh
+- description: Most likely levelised cost of energy in Euro/kWh
+  identifier: project.lcoe_mode
+  structure: SimpleData
+  title: Most Likely Levelised Cost of Energy
+  types:
+  - float
+  units:
+  - Euro/kWh
+- description: Lower bound of the 95% confidence interval of the levelised cost of
+    energy in Euro/kWh
+  identifier: project.lcoe_interval_lower
+  structure: SimpleData
+  title: LCOE 95% Interval Lower Bound
+  types:
+  - float
+  units:
+  - Euro/kWh
+- description: Upper bound of the 95% confidence interval of the levelised cost of
+    energy in Euro/kWh
+  identifier: project.lcoe_interval_upper
+  structure: SimpleData
+  title: LCOE 95% Interval Upper Bound
+  types:
+  - float
+  units:
+  - Euro/kWh
+- description: Mean OPEX costs discounted annually
+  identifier: project.discounted_opex_mean
+  structure: SimpleData
+  title: Mean Discounted OPEX
+  types:
+  - float
+  units:
+  - Euro
+- description: Most likely OPEX costs discounted annually
+  identifier: project.discounted_opex_mode
+  structure: SimpleData
+  title: Most Likely Discounted OPEX
+  types:
+  - float
+  units:
+  - Euro
+- description: Lower bound of the 95% confidence interval of the OPEX costs discounted
+    annually
+  identifier: project.discounted_opex_interval_lower
+  structure: SimpleData
+  title: Discounted OPEX 95% Interval Lower Bound
+  types:
+  - float
+  units:
+  - Euro
+- description: Upper bound of the 95% confidence interval of the OPEX costs discounted
+    annually
+  identifier: project.discounted_opex_interval_upper
+  structure: SimpleData
+  title: Discounted OPEX 95% Interval Upper Bound
+  types:
+  - float
+  units:
+  - Euro
+- description: Mean discounted energy. This value includes network effects.
+  identifier: project.discounted_energy_mean
+  structure: SimpleData
+  title: Mean Discounted Energy
+  types:
+  - float
+  units:
+  - MWh
+- description: Most likely discounted energy. This value includes network effects.
+  identifier: project.discounted_energy_mode
+  structure: SimpleData
+  title: Most Likely Discounted Energy
+  types:
+  - float
+  units:
+  - MWh
+- description: Lower bound of the 95% confidence interval of the discounted energy.
+    This value includes network effects.
+  identifier: project.discounted_energy_interval_lower
+  structure: SimpleData
+  title: Discounted Energy 95% Interval Lower Bound
+  types:
+  - float
+  units:
+  - MWh
+- description: Upper bound of the 95% confidence interval of the discounted energy.
+    This value includes network effects.
+  identifier: project.discounted_energy_interval_upper
+  structure: SimpleData
+  title: Discounted Energy 95% Interval Upper Bound
+  types:
+  - float
+  units:
+  - MWh
+- description: Total capital expenditure
+  identifier: project.capex_total
+  structure: SimpleData
+  title: CAPEX
+  types:
+  - float
+  units:
+  - Euro
+- description: Total capital expenditure excluding additional CAPEX contributions.
+  identifier: project.capex_without_externalities
+  structure: SimpleData
+  title: CAPEX (Excluding Externalities)
+  types:
+  - float
+  units:
+  - Euro
+- description: CAPEX costs discounted annually
+  identifier: project.discounted_capex
+  structure: SimpleData
+  title: Discounted CAPEX
+  types:
+  - float
+  units:
+  - Euro
+- description: Mean expenditure for the lifetime of the project
+  identifier: project.lifetime_cost_mean
+  structure: SimpleData
+  title: Mean Lifetime Cost
+  types:
+  - float
+  units:
+  - Euro
+- description: Most likely expenditure for the lifetime of the project
+  identifier: project.lifetime_cost_mode
+  structure: SimpleData
+  title: Most Likely Lifetime Cost
+  types:
+  - float
+  units:
+  - Euro
+- description: Mean discounted expenditure for the lifetime of the project
+  identifier: project.discounted_lifetime_cost_mean
+  structure: SimpleData
+  title: Mean Discounted Lifetime Cost
+  types:
+  - float
+  units:
+  - Euro
+- description: Most likely discounted expenditure for the lifetime of the project
+  identifier: project.discounted_lifetime_cost_mode
+  structure: SimpleData
+  title: Most Likely Discounted Lifetime Cost
+  types:
+  - float
+  units:
+  - Euro
+- description: Discounted CAPEX vs OPEX cost breakdown for most likely or mean LCOE
+    if most likely unavailable
+  identifier: project.cost_breakdown
+  structure: SimplePie
+  title: Most Likely Discounted Cost Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: CAPEX cost breakdown
+  identifier: project.capex_breakdown
+  structure: SimplePie
+  title: CAPEX Cost Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: Discounted OPEX cost breakdown for the most likely or mean LCOE if
+    most likely unavailable
+  identifier: project.opex_breakdown
+  structure: SimplePie
+  title: Most Likely Discounted OPEX Cost Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: CAPEX vs OPEX contributions to the most likely or mean LCOE if most
+    likely unavailable
+  identifier: project.lcoe_breakdown
+  structure: SimplePie
+  title: Most Likely LCOE Breakdown
+  types:
+  - float
+  units:
+  - cent/kWh
+- description: CAPEX cost breakdown per discounted energy of most likely or mean LCOE
+    if most likely unavailable
+  identifier: project.capex_lcoe_breakdown
+  structure: SimplePie
+  title: Most Likely CAPEX LCOE Breakdown
+  types:
+  - float
+  units:
+  - cent/kWh
+- description: OPEX cost breakdown per discounted energy of most likely or mean LCOE
+    if most likely unavailable
+  identifier: project.opex_lcoe_breakdown
+  structure: SimplePie
+  title: Most Likely OPEX LCOE Breakdown
+  types:
+  - float
+  units:
+  - cent/kWh
+- description: Density level containing 95% of the LCOE probability density function
+    energy
+  identifier: project.confidence_density
+  structure: SimpleData
+  title: 95th Percentile Density Level
+  types:
+  - float
+- description: Graphical representation of the estimated LCOE probability density
+    function
+  identifier: project.lcoe_pdf
+  labels:
+  - Discounted OPEX
+  - Discounted Energy
+  structure: XGrid2D
+  title: Estimated LCOE PDF
+  units:
+  - 1 \times 10^{-3} Euro
+  - MWh
+  - null

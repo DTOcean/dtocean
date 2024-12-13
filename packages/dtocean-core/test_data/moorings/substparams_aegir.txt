@@ -1,0 +1,4 @@
+substid	suborig	presubstfound	submass	subvol	subcog	subwetfa	subwetba	subdryfa	subdryba	sublength	subwidth	subheight	subprof	subrough	suborienang	substloc
+array	[584946.00,6650564.00,0.0]	[]	500.0e3	281.25	[0.0, 0.0, 0.0]	37.5	37.5	0.0	0.0	7.5	7.5	5.0	rectangular	5.0e-6	0.0	[[0.0, 0.0, 0.0]]
+subhub001	[584946.00,6651064.00,0.0]	[]	100.0e3	50.0	[0.0, 0.0, 0.0]	10.0	10.0	0.0	0.0	5.0	5.0	2.0	rectangular	5.0e-6	0.0	[[0.0, 0.0, 0.0]]
+subhub002	[584946.00,6651564.00,0.0]	[]	100.0e3	50.0	[0.0, 0.0, 0.0]	10.0	10.0	0.0	0.0	5.0	5.0	2.0	rectangular	5.0e-6	0.0	[[0.0, 0.0, 0.0]]

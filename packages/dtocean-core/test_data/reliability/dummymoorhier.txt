@@ -1,0 +1,6 @@
+{'array': {'Substation foundation': ['id736']},
+ 'device001': {'Foundation': [['gravity'], 'id736', 'id736']},
+ 'device002': {'Foundation': [['gravity'], 'id736', 'id736']},
+ 'device003': {'Foundation': [['gravity'], 'id736', 'id736']},
+ 'device004': {'Foundation': [['gravity'], 'id736', 'id736']},
+ 'device005': {'Foundation': [['gravity'], 'id736', 'id736']}}
