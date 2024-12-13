@@ -38,6 +38,10 @@ source = [
     "src"
 ]
 
+[tool.pyright]
+ignore = ["src/polite_config/appdirs.py"]
+typeCheckingMode = "basic"
+
 [tool.ruff]
 exclude = ["src/polite_config/appdirs.py"]
 line-length = 80
