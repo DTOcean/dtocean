@@ -320,7 +320,7 @@ name = "polite-config"
 version = "1.0.0"
 description = "Easy functions for paths, logging and configuration files"
 optional = false
-python-versions = "^3.13"
+python-versions = "^3.12"
 files = []
 develop = false
 
@@ -566,5 +566,5 @@ files = [
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.13"
-content-hash = "93990afae908e7fcaec86efaafc4c69fa7a3b92f5acd0a992f3474de455814a6"
+python-versions = "^3.12"
+content-hash = "672844547891b841f4491e82538c10e2ca87043c075721194d8a9bf5d15bd6ba"
