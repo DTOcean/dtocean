@@ -16,18 +16,25 @@ packages = [{include = "polite_config", from="src"}]
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/DTOcean/dtocean/issues"
 
-[tool.poetry.group.test]
-optional = true
-
 [tool.poetry.dependencies]
 python = "^3.13"
 configobj = "^5.0.9"
 pyyaml = "^6.0.2"
 
+[tool.poetry.group.test]
+optional = true
+
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+pyright = "^1.1.390"
+ruff = "^0.8.3"
 
 [tool.coverage.run]
 branch = true

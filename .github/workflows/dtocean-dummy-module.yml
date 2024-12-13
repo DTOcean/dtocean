@@ -44,3 +44,27 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           flags: dtocean-dummy-module
+  audit:
+    name: Code audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/dtocean-dummy-module
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+      - name: Install package
+        run: |
+          poetry install --with audit
+      - name: Run ruff
+        run: |
+          poetry run ruff check --output-format github
+      - name: Run pyright
+        run: |
+          poetry run pyright src
