@@ -3,12 +3,14 @@ on:
   push:
     branches: [ next ]
     paths:
+      - '.github/workflows/mdo-engine.yml'
       - 'packages/mdo-engine/**'
       - 'packages/dtocean-dummy-module/**'
       - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
+      - '.github/workflows/mdo-engine.yml'
       - 'packages/mdo-engine/**'
       - 'packages/dtocean-dummy-module/**'
       - 'packages/polite-config/**'

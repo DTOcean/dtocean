@@ -3,10 +3,12 @@ on:
   push:
     branches: [ next ]
     paths:
+      - '.github/workflows/polite-config.yml'
       - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
+      - '.github/workflows/polite-config.yml'
       - 'packages/polite-config/**'
 jobs:
   pytest:
