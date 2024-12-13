@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-"""A demonstration vehicle for the dtocean project.
-"""
+"""A demonstration vehicle for the dtocean project."""
 
-from .main import Spreadsheet
+from .main import Spreadsheet as Spreadsheet
