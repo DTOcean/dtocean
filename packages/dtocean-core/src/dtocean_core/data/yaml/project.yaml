@@ -1,0 +1,188 @@
+---
+- auto_only: hidden.lease_selected
+  description: Bathymetry of the lease area
+  identifier: bathymetry.layers
+  labels:
+  - x
+  - y
+  - layer
+  - depth
+  - sediment
+  structure: Strata
+  title: Bathymetry
+  units:
+  - m
+  - m
+  - null
+  - m
+  - null
+- description: Coordinates of cable landing point
+  identifier: corridor.landing_point
+  structure: PointData
+  title: Cable Landing Point
+- auto_only: hidden.corridor_selected
+  description: Bathymetry of the cable corridor
+  identifier: corridor.layers
+  labels:
+  - x
+  - y
+  - layer
+  - depth
+  - sediment
+  structure: Strata
+  title: Cable Corridor Bathymetry
+  units:
+  - m
+  - m
+  - null
+  - m
+  - null
+- description: A list of the available ocean energy devices for the chosen technology
+    type
+  identifier: device.available_names
+  structure: SimpleList
+  title: Device Names
+  types:
+  - str
+- description: The device technology data to be retrieved from the database
+  identifier: device.selected_name
+  structure: SimpleData
+  title: Selected Device
+  types:
+  - str
+- description: 'Type of Device: "Tidal Floating", "Tidal Fixed", "Wave Floating" or
+    "Wave Fixed"'
+  identifier: device.system_type
+  structure: SimpleData
+  title: Device Technology Type
+  types:
+  - str
+  valid_values:
+  - Tidal Floating
+  - Tidal Fixed
+  - Wave Floating
+  - Wave Fixed
+- description: All sites and associated top level data
+  identifier: hidden.available_sites
+  labels:
+  - id
+  - site_name
+  - lease_area_proj4_string
+  structure: TableDataColumn
+  tables:
+  - project.site
+  - id
+  - site_name
+  - lease_area_proj4_string
+  title: All Available Sites
+- description: All devices in the database for both wave and tidal technologies
+  identifier: hidden.available_systems
+  labels:
+  - id
+  - description
+  - device_type
+  structure: TableDataColumn
+  tables:
+  - project.device
+  - id
+  - description
+  - device_type
+  title: All Available Devices
+- description: The corridor boundaries for all the available sites
+  identifier: hidden.corridor_boundaries
+  structure: PolygonDictColumn
+  tables:
+  - project.site
+  - site_name
+  - corridor_boundary
+  title: All Cable Corridor Boundaries
+- description: Indicates if a cable corridor area has been selected for database filtering
+  identifier: hidden.corridor_selected
+  structure: SimpleData
+  title: Cable Corridor Area Selected
+  types:
+  - bool
+- description: Indicates if the dataflows are ready
+  identifier: hidden.dataflow_active
+  structure: SimpleData
+  title: DataFlow Active
+  types:
+  - bool
+- description: True if the device has been filtered by the database
+  identifier: hidden.device_filtered
+  structure: SimpleData
+  title: Device Filtered
+  types:
+  - bool
+- description: The export cable landing points for all available sites
+  identifier: hidden.landing_points
+  structure: PointDictColumn
+  tables:
+  - project.site
+  - site_name
+  - cable_landing_location
+  title: All Landing Points
+- description: The lease boundaries for all the available sites
+  identifier: hidden.lease_boundaries
+  structure: PolygonDictColumn
+  tables:
+  - project.site
+  - site_name
+  - lease_boundary
+  title: All Lease Boundaries
+- description: Indicates if a lease area has been selected for database filtering
+  identifier: hidden.lease_selected
+  structure: SimpleData
+  title: Lease Area Selected
+  types:
+  - bool
+- description: Indicates if the filtering pipeline is ready
+  identifier: hidden.pipeline_active
+  structure: SimpleData
+  title: Pipeline Active
+  types:
+  - bool
+- description: The site boundaries for all the available sites
+  identifier: hidden.site_boundaries
+  structure: PolygonDictColumn
+  tables:
+  - project.site
+  - site_name
+  - site_boundary
+  title: All Site Boundaries
+- description: The boundary for the site
+  identifier: hidden.site_boundary
+  structure: PolygonData
+  title: Selected Site Boundary
+- description: True if the site has been filtered by the database
+  identifier: hidden.site_filtered
+  structure: SimpleData
+  title: Site Filtered
+  types:
+  - bool
+- description: A list of the available site location names in the database
+  identifier: site.available_names
+  structure: SimpleList
+  title: Site Names
+  types:
+  - str
+- description: The boundary for the cable corridor bathymetry
+  identifier: site.corridor_boundary
+  structure: PolygonData
+  title: Cable Corridor Boundary
+- description: The lease boundary for the ocean energy farm (excluding the cable corridor)
+  identifier: site.lease_boundary
+  structure: PolygonData
+  title: Lease Boundary
+- description: Proj4 projection string for the project site
+  identifier: site.projection
+  structure: SimpleData
+  title: Projection String
+  types:
+  - str
+- description: The site for which data should be retrieved from the database
+  identifier: site.selected_name
+  structure: SimpleData
+  title: Selected Site
+  types:
+  - str

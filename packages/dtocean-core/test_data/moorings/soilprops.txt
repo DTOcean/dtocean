@@ -1,0 +1,14 @@
+Soil Type	Drained Soil Friction Angle	Relative Soil Density	Buoyant Unit Weight of Soil	Undrained Soil / Rock Shear Strength 1	Undrained Soil / Rock Shear Strength 2	Effective Drained Cohesion	Seafloor Friction Coefficient	Soil Sensitivity	Rock Compressive Strength
+loose sand	29	25	8009.232	0	0	0	0.74	0	0
+medium sand	33	60	9611.078	0	0	0	0.74	0	0
+dense sand	38.5	77.5	10412.001	0	0	0	0.74	0	0
+very soft clay	0	0	3604.154	4788	0	0	0.5	3	0
+soft clay	0	0	6006.924	7182	478	0	0.5	3	0
+firm clay	0	0	9210.616	21546	478	0	0.5	3	0
+stiff clay	0	0	9210.616	50274	478	0	0.5	3	0
+cemented	36.5	0	1.00E+04	1.00E+01	0	0	0.3	0	9.24E+07
+soft rock coral	24	0	1.15E+04	1.15E+01	0	0	0.3	0	8.50E+06
+hard rock	40	0	1.75E+04	1.75E+01	0	0	0.3	0	2.03E+08
+hard glacial till	32.5	0	1.00E+04	1.00E+01	0	0	0.3	0	1.50E+06
+gravel cobble	32.5	0	1.00E+04	1.00E+01	0	0	0.3	0	1.50E+06
+

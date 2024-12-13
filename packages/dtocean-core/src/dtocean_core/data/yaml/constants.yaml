@@ -1,0 +1,189 @@
+---
+- description: Acceleration due to gravity
+  identifier: constants.gravity
+  structure: SimpleDataColumn
+  tables:
+  - reference.constants
+  - gravity
+  title: Gravitational Acceleration
+  types:
+  - float
+  units:
+  - m/s^{2}
+- description: Density of sea water
+  identifier: constants.sea_water_density
+  structure: SimpleDataColumn
+  tables:
+  - reference.constants
+  - sea_water_density
+  title: Sea Water Density
+  types:
+  - float
+  units:
+  - kg/m^{3}
+- description: Density of air
+  identifier: constants.air_density
+  structure: SimpleDataColumn
+  tables:
+  - reference.constants
+  - air_density
+  title: Air Density
+  types:
+  - float
+  units:
+  - kg/m^{3}
+- description: Density of steel
+  identifier: constants.steel_density
+  structure: SimpleDataColumn
+  tables:
+  - reference.constants
+  - steel_density
+  title: Steel Density
+  types:
+  - float
+  units:
+  - kg/m^{3}
+- description: Density of concrete
+  identifier: constants.concrete_density
+  structure: SimpleDataColumn
+  tables:
+  - reference.constants
+  - concrete_density
+  title: Concrete Density
+  types:
+  - float
+  units:
+  - kg/m^{3}
+- description: Density of grout
+  identifier: constants.grout_density
+  structure: SimpleDataColumn
+  tables:
+  - reference.constants
+  - grout_density
+  title: Grout Density
+  types:
+  - float
+  units:
+  - kg/m^{3}
+- description: Grout compressive strength
+  identifier: constants.grout_compressive_strength
+  structure: SimpleDataColumn
+  tables:
+  - reference.constants
+  - grout_strength
+  title: Grout Compressive Strength
+  types:
+  - float
+  units:
+  - psi
+- description: Cylinder drag coefficient specification
+  identifier: constants.cylinder_drag
+  labels:
+  - Reynolds Number
+  - Smooth Coefficient
+  - Roughness = 1e-5 Coefficient
+  - Roughness = 1e-2 Coefficient
+  structure: LineTableColumn
+  tables:
+  - reference.ref_drag_coef_cyl
+  - reynolds_number
+  - smooth
+  - roughness_1e_5
+  - roughness_1e_2
+  title: Cylinder Drag Coefficients
+  types:
+  - float
+  - float
+  - float
+  - float
+- description: Cylinder wake amplification factors
+  identifier: constants.cylinder_wake_amplificiation
+  labels:
+  - kc/steady Drag Coefficient
+  - Smooth Cylinder Amplification Factor
+  - Rough Cylinder Amplification Factor
+  structure: LineTableColumn
+  tables:
+  - reference.ref_wake_amplification_factor_cyl
+  - kc_steady_drag_coefficient
+  - amplification_factor_for_smooth_cylinders
+  - amplification_factor_for_rough_cylinders
+  title: Cylinder Wake Amplification Factors
+  types:
+  - float
+  - float
+  - float
+- description: Rectangular section wind drag coefficients
+  identifier: constants.rectangular_wind_drag
+  labels:
+  - Width / Length
+  - 0 < Height / Breadth < 1
+  - Height / Breadth = 1
+  - Height / Breadth = 2
+  - Height / Breadth = 4
+  - Height / Breadth = 6
+  - Height / Breadth = 10
+  - Height / Breadth = 20
+  structure: LineTableColumn
+  tables:
+  - reference.ref_wind_drag_coef_rect
+  - width_length
+  - height_breadth_between_0_1
+  - height_breadth_less_1
+  - height_breadth_less_2
+  - height_breadth_less_4
+  - height_breadth_less_6
+  - height_breadth_less_10
+  - height_breadth_less_20
+  title: Rectangular Section Wind Drag Coefficients
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+- description: Rectangular section current drag coefficients
+  identifier: constants.rectangular_current_drag
+  labels:
+  - Width / Length
+  - Thickness / Width = 0
+  structure: LineTableColumn
+  tables:
+  - reference.ref_current_drag_coef_rect
+  - width_length
+  - thickness_width
+  title: Rectangular Section Current Drag Coefficients
+  types:
+  - float
+  - float
+- description: Rectangular section drift coefficients
+  identifier: constants.rectangular_drift
+  labels:
+  - Wavenumber * Draft
+  - Reflection Coefficient
+  structure: LineTableColumn
+  tables:
+  - reference.ref_drift_coef_float_rect
+  - wavenumber_draft
+  - reflection_coefficient
+  title: Rectangular Section Drift Coefficients
+  types:
+  - float
+  - float
+- description: Rectangular section wave inertia coefficients
+  identifier: constants.rectangular_wave_inertia
+  labels:
+  - Width / Length
+  - Inertia Coefficients
+  structure: LineTableColumn
+  tables:
+  - reference.ref_rectangular_wave_inertia
+  - width/length
+  - inertia_coefficients
+  title: Rectangular Section Wave Inertia Coefficients
+  types:
+  - float
+  - float
