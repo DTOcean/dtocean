@@ -17,7 +17,7 @@ packages = [{include = "polite_config", from="src"}]
 "Bug Tracker" = "https://github.com/DTOcean/dtocean/issues"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.12"
 configobj = "^5.0.9"
 pyyaml = "^6.0.2"
 
