@@ -12,6 +12,7 @@ import os
 import platform
 from collections import Counter, OrderedDict
 from copy import deepcopy
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -37,13 +38,19 @@ def yaml_to_py(yaml_path):
 
 
 def xl_to_dds(
-    xl_path, ignore_column=None, ignore_missing=True, sanitise_keys=True
+    xl_path,
+    ignore_column=None,
+    ignore_missing=True,
+    sanitise_keys=True,
 ):
     """Read an XL file and produce a dds list of the form expected by
     the DataDefinition boundary class"""
 
     sheets = pd.read_excel(xl_path, sheet_name=None, index_col=0)
     root_sheet = sheets.pop("ROOT", None)
+
+    if root_sheet is None:
+        raise RuntimeError("XL file must contain a ROOT sheet")
 
     # Drop a column if ignore_column is given
     if ignore_column is not None and ignore_column in root_sheet.columns:
@@ -74,13 +81,13 @@ def xl_to_dds(
         if ignore_missing:
             row = row.dropna()
 
-        member_dict = {"identifier": identifier}
+        member_dict: dict[str, Any] = {"identifier": identifier}
         member_dict.update(row.to_dict())
 
         for key, df in sheets.items():
             # Drop a column if ignore_column is given
             if ignore_column is not None and ignore_column in df.columns:
-                df = df.drop(ignore_column, 1)
+                df = df.drop(ignore_column, axis=1)
 
             # Fix the key if you need to
             if sanitise_keys:
@@ -110,7 +117,8 @@ def xl_to_dds(
                 raise KeyError(errStr)
 
             if identifier in df.index:
-                keyseries = df.loc[identifier].dropna()
+                keyseries = df.loc[str(identifier)].dropna()
+                assert isinstance(keyseries, pd.Series)
                 keyseries = keyseries.replace("-", np.nan)
                 keyseries = keyseries.where(pd.notnull(keyseries), None)
 
