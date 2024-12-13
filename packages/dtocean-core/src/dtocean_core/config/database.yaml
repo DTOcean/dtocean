@@ -1,0 +1,7 @@
+---
+"local":
+  dbname: dtocean_examples
+  host: localhost
+  user: dtocean_user
+  pwd: 
+ 

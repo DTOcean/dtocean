@@ -1,0 +1,1070 @@
+---
+- description: All collection point centre of gravity with respect to their origin
+  identifier: component.collection_point_cog
+  labels:
+  - Key Identifier
+  structure: CartesianDictColumn
+  tables:
+  - reference.view_component_collection_point
+  - component_id
+  - centre_of_gravity
+  title: Collections Points Centre of Gravity
+  types:
+  - str
+  units:
+  - m
+  - m
+  - m
+- description: All collection point foundation locations with respect to their origin
+  identifier: component.collection_point_foundations
+  labels:
+  - Key Identifier
+  structure: CartesianListDictColumn
+  tables:
+  - reference.view_component_collection_point
+  - component_id
+  - foundation_locations
+  title: Collection Points Foundation Locations
+  types:
+  - str
+  units:
+  - null
+- description: Collection point database.
+  identifier: component.collection_points
+  labels:
+  - Key Identifier
+  - Name
+  - Width
+  - Depth
+  - Height
+  - Dry Frontal Area
+  - Wet Frontal Area
+  - Dry Beam Area
+  - Wet Beam Area
+  - Max Water Depth
+  - Orientation Angle
+  - Dry Mass
+  - Wet Mass
+  - Input Lines
+  - Output Lines
+  - Input Connector Type
+  - Output Connector Type
+  - Number of Fibre Optic Channels
+  - Primary Winding Voltage
+  - Secondary Winding Voltage
+  - Rated Current
+  - Min Temperature
+  - Max Temperature
+  - Cost
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_collection_point
+  - component_id
+  - description
+  - width
+  - depth
+  - height
+  - dry_frontal_area
+  - wet_frontal_area
+  - dry_beam_area
+  - wet_beam_area
+  - maximum_water_depth
+  - orientation_angle
+  - dry_mass
+  - wet_mass
+  - input_lines
+  - output_lines
+  - input_connector_type
+  - output_connector_type
+  - number_fibre_channels
+  - voltage_primary_winding
+  - voltage_secondary_winding
+  - rated_operating_current
+  - operational_temp_min
+  - operational_temp_max
+  - cost
+  - environmental_impact
+  title: Collection Point Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - str
+  - str
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m^{2}
+  - m^{2}
+  - m^{2}
+  - m^{2}
+  - m
+  - deg
+  - kg
+  - kg
+  - null
+  - null
+  - null
+  - null
+  - null
+  - V
+  - V
+  - A
+  - C
+  - C
+  - Euro
+  - null
+- description: Dry-mate connector database.
+  identifier: component.dry_mate_connectors
+  labels:
+  - Key Identifier
+  - Name
+  - Width
+  - Depth
+  - Height
+  - Max Water Depth
+  - Dry Mass
+  - Wet Mass
+  - Number Of Contacts
+  - Number of Fibre Optic Channels
+  - Mating Force
+  - Demating Force
+  - Rated Voltage (U0)
+  - Rated Current
+  - Min Cable Area
+  - Max Cable Area
+  - Min Temperature
+  - Max Temperature
+  - Cost
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_connector_drymate
+  - component_id
+  - description
+  - width
+  - depth
+  - height
+  - maximum_water_depth
+  - dry_mass
+  - wet_mass
+  - number_contacts
+  - number_fibre_channels
+  - mating_force
+  - demating_force
+  - rated_voltage_u0
+  - rated_current
+  - cable_area_min
+  - cable_area_max
+  - operational_temp_min
+  - operational_temp_max
+  - cost
+  - environmental_impact
+  title: Dry Mate Connector Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - null
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - kg
+  - kg
+  - null
+  - null
+  - N
+  - N
+  - V
+  - A
+  - mm^2
+  - mm^2
+  - C
+  - 'C '
+  - Euro
+  - null
+- description: The installation technique soil compatibility matrix.
+  identifier: component.installation_soil_compatibility
+  labels:
+  - Technique
+  - Loose Sand
+  - Medium Sand
+  - Dense Sand
+  - Very Soft Clay
+  - Soft Clay
+  - Firm Clay
+  - Stiff Clay
+  - Hard Glacial Till
+  - Cemented
+  - Soft Rock Coral
+  - Hard Rock
+  - Gravel Cobble
+  structure: IndexTableColumn
+  tables:
+  - reference.equipment_soil_lay_rates
+  - equipment_type
+  - soil_ls
+  - soil_ms
+  - soil_ds
+  - soil_vsc
+  - soil_sc
+  - soil_fc
+  - soil_stc
+  - soil_hgt
+  - soil_cm
+  - soil_src
+  - soil_hr
+  - soil_gc
+  title: Installation Technique Soil Compatibility
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  valid_values:
+  - Jetting
+  - Ploughing
+  - Cutting
+  - Dredging
+- description: Component data for dynamic cables.
+  identifier: component.dynamic_cable
+  labels:
+  - Key Identifier
+  - Name
+  - Diameter
+  - Dry Mass per Unit Length
+  - Wet Mass per Unit Length
+  - Min Break Load
+  - Min Bend Radius
+  - Number of Conductors
+  - Number of Fibre Optic Channels
+  - Rated Voltage (U0)
+  - Rated Current in Air
+  - Rated Current if Buried
+  - Rated Current in J Tube
+  - DC Resistance
+  - AC Resistance
+  - Inductive Reactance
+  - Capacitance
+  - Max Temperature
+  - Cost per Unit Length
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_cable_dynamic
+  - component_id
+  - description
+  - diameter
+  - dry_mass_per_unit_length
+  - wet_mass_per_unit_length
+  - minimum_breaking_load
+  - minimum_bend_radius
+  - number_conductors
+  - number_fibre_channels
+  - rated_voltage_u0
+  - rated_current_air
+  - rated_current_buried
+  - rated_current_jtube
+  - resistance_dc_20
+  - resistance_ac_90
+  - inductive_reactance
+  - capacitance
+  - operational_temp_max
+  - cost_per_unit_length
+  - environmental_impact
+  title: Dynamic Cable Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - kg/m
+  - kg/m
+  - N
+  - m
+  - null
+  - null
+  - V
+  - A
+  - A
+  - A
+  - Ohm/km
+  - Ohm/km
+  - Ohm/km
+  - uF/km
+  - 'C '
+  - Euro/m
+  - null
+- description: Component data for static cables.
+  identifier: component.static_cable
+  labels:
+  - Key Identifier
+  - Name
+  - Diameter
+  - Dry Mass per Unit Length
+  - Wet Mass per Unit Length
+  - Min Break Load
+  - Min Bend Radius
+  - Number of Conductors
+  - Number of Fibre Optic Channels
+  - Rated Voltage (U0)
+  - Rated Current in Air
+  - Rated Current if Buried
+  - Rated Current in J Tube
+  - DC Resistance
+  - AC Resistance
+  - Inductive Reactance
+  - Capacitance
+  - Max Temperature
+  - Cost per Unit Length
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_cable_static
+  - component_id
+  - description
+  - diameter
+  - dry_mass_per_unit_length
+  - wet_mass_per_unit_length
+  - minimum_breaking_load
+  - minimum_bend_radius
+  - number_conductors
+  - number_fibre_channels
+  - rated_voltage_u0
+  - rated_current_air
+  - rated_current_buried
+  - rated_current_jtube
+  - resistance_dc_20
+  - resistance_ac_90
+  - inductive_reactance
+  - capacitance
+  - operational_temp_max
+  - cost_per_unit_length
+  - environmental_impact
+  title: Static Cable Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - m
+  - kg/m
+  - kg/m
+  - N
+  - m
+  - null
+  - null
+  - V
+  - A
+  - A
+  - A
+  - Ohm/km
+  - Ohm/km
+  - Ohm/km
+  - uF/km
+  - 'C '
+  - Euro/m
+  - null
+- description: Transformer database.
+  identifier: component.transformers
+  labels:
+  - Key Identifier
+  - Name
+  - Width
+  - Depth
+  - Height
+  - Max Water Depth
+  - Dry Mass
+  - Wet Mass
+  - Power Rating
+  - Impedance
+  - Number of Windings
+  - Primary Winding Voltage
+  - Secondary Winding Voltage
+  - Tertiary Winding Voltage
+  - Min Temperature
+  - Max Temperature
+  - Cost
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_transformer
+  - component_id
+  - description
+  - width
+  - depth
+  - height
+  - maximum_water_depth
+  - dry_mass
+  - wet_mass
+  - power_rating
+  - impedance
+  - windings
+  - voltage_primary_winding
+  - voltage_secondary_winding
+  - voltage_tertiary_winding
+  - operational_temp_min
+  - operational_temp_max
+  - cost
+  - environmental_impact
+  title: Power Transformer Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - null
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - kg
+  - kg
+  - VA
+  - pc
+  - null
+  - V
+  - V
+  - V
+  - C
+  - 'C '
+  - Euro
+  - null
+- description: Wet-mate connector database.
+  identifier: component.wet_mate_connectors
+  labels:
+  - Key Identifier
+  - Name
+  - Width
+  - Depth
+  - Height
+  - Max Water Depth
+  - Dry Mass
+  - Wet Mass
+  - Number Of Contacts
+  - Number of Fibre Optic Channels
+  - Mating Force
+  - Demating Force
+  - Rated Voltage (U0)
+  - Rated Current
+  - Min Cable Area
+  - Max Cable Area
+  - Min Temperature
+  - Max Temperature
+  - Cost
+  - Environmental Impact
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_connector_wetmate
+  - component_id
+  - description
+  - width
+  - depth
+  - height
+  - maximum_water_depth
+  - dry_mass
+  - wet_mass
+  - number_contacts
+  - number_fibre_channels
+  - mating_force
+  - demating_force
+  - rated_voltage_u0
+  - rated_current
+  - cable_area_min
+  - cable_area_max
+  - operational_temp_min
+  - operational_temp_max
+  - cost
+  - environmental_impact
+  title: Wet Mate Connector Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - null
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - kg
+  - kg
+  - null
+  - null
+  - N
+  - N
+  - V
+  - A
+  - mm^2
+  - mm^2
+  - C
+  - 'C '
+  - Euro
+  - null
+- auto_only: hidden.site_filtered
+  description: Areas to be avoided during the cable routing analysis/
+  identifier: corridor.nogo_areas
+  structure: PolygonDictColumn
+  tables:
+  - filter.cable_corridor_constraint
+  - description
+  - boundary
+  title: No Go Areas in Cable Corridor
+- auto_only: hidden.device_filtered
+  description: Wet Mate' or Dry Mate. This will be applied to all connectors.
+  identifier: device.connector_type
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - connector_type
+  title: Connector type for device
+  types:
+  - str
+  valid_values:
+  - Wet-Mate
+  - Dry-Mate
+- auto_only: hidden.device_filtered
+  description: Constant power factor, given at rated power. Either this or a variable
+    power factor should be input; unity power factor is applied if not.
+  identifier: device.constant_power_factor
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - constant_power_factor
+  title: Device Constant Power Factor
+  types:
+  - float
+- auto_only: hidden.device_filtered
+  description: Corner points of the device footprint coordinate. Either this or the
+    footprint radius should be input.
+  identifier: device.footprint_coords
+  structure: CartesianListColumn
+  tables:
+  - filter.device_shared
+  - footprint_corner_coords
+  title: Device Footprint Coordinates
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Foundation locations with respect to the device origin
+  identifier: device.foundation_location
+  structure: CartesianListColumn
+  tables:
+  - filter.device_shared
+  - foundation_locations
+  title: Device Foundation Locations
+  units:
+  - m
+  - m
+- auto_only: hidden.device_filtered
+  description: Variable power factor, given as function of device power output. Either
+    this or a constant power factor should be input; unity power factor is applied
+    if not.
+  identifier: device.power_factor
+  labels:
+  - Load
+  - Power Factor
+  structure: NumpyLineArray
+  tables:
+  - filter.device_shared
+  - variable_power_factor
+  title: Device Variable Power Factor
+  units:
+  - pu
+  - null
+- auto_only: hidden.device_filtered
+  description: Footprint Radius. Either this or the footprint coordinates should be
+    input
+  identifier: device.prescribed_footprint_radius
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - prescribed_footprint_radius
+  title: Footprint Radius
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Floating device equilibrium draft without mooring system. For use in
+    the umbilical design.
+  identifier: device.system_draft
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_floating
+  - draft
+  title: Floating Device Draft
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Umbilical connection point relative to the origin of the device.
+  identifier: device.umbilical_connection_point
+  structure: CartesianDataColumn
+  tables:
+  - filter.device_floating
+  - umbilical_connection_point
+  title: Umbilical Cable Device Connection Point
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Device rated voltage at point of network coupling, i.e. at local connector.
+  identifier: device.voltage
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - rated_voltage_u0
+  title: Device Rated Voltage (U0)
+  types:
+  - float
+  units:
+  - V
+- auto_only: hidden.site_filtered
+  description: Surface current direction at maximum velocity in the lease area.
+  identifier: farm.direction_of_max_surface_current
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - current_flow_direction
+  title: Maximum Surface Current Direction
+  types:
+  - float
+  units:
+  - degrees
+- auto_only: hidden.site_filtered
+  description: Maximum tidal stream current velocity in the lease area.
+  identifier: farm.max_surface_current_10_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - surface_current_flow_velocity
+  title: Maximum Tidal Stream Current Velocity in Lease Area
+  types:
+  - float
+  units:
+  - m/s
+- auto_only: hidden.site_filtered
+  description: Predominant wave direction at maximum wave height in the lease area.
+  identifier: farm.wave_direction_100_year
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - predominant_wave_direction
+  title: Predominant Wave Direction
+  types:
+  - float
+  units:
+  - degrees
+- description: Tool to be used to install the electrical cables.
+  identifier: options.user_installation_tool
+  structure: SimpleData
+  title: User Selected Installation Tool
+  types:
+  - str
+  valid_values:
+  - Jetting
+  - Ploughing
+  - Cutting
+  - Dredging
+- description: The representative array efficiency over a one year period.
+  identifier: project.array_efficiency
+  structure: SimpleData
+  title: Array Capacity Factor
+  types:
+  - float
+- description: Detailed information of all cable routes.
+  identifier: project.cable_routes
+  labels:
+  - Key Identifier
+  - Burial Depth
+  - Split Pipe
+  - UTM X
+  - UTM Y
+  - Depth
+  - Sediment
+  - Marker
+  structure: TableData
+  title: Cable Route Data
+  types:
+  - str
+  - int
+  - bool
+  - float
+  - float
+  - float
+  - str
+  - int
+  units:
+  - null
+  - m
+  - null
+  - m
+  - m
+  - m
+  - null
+  - null
+- description: 'A maximum allowable number of devices per radial string. Note: this
+    is maximum may not be achieved is better solutions are obtained with fewer devices
+    per radial string.'
+  identifier: project.devices_per_string
+  structure: SimpleData
+  title: Maximum Number of Devices per Radial String
+  types:
+  - int
+- description: Supplementary design data for the electrical components used in the
+    design.
+  identifier: project.electrical_component_data
+  labels:
+  - Key Identifier
+  - Installation Type
+  - Quantity
+  - UTM X
+  - UTM Y
+  - Marker
+  structure: TableData
+  title: Electrical Components Supplementary Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - int
+- description: Bill of materials for electrical network.
+  identifier: project.electrical_economics_data
+  labels:
+  - Key Identifier
+  - Cost
+  - Quantity
+  - Year
+  structure: TableData
+  title: Electrical Bill of Materials
+  types:
+  - str
+  - float
+  - float
+  - int
+- description: Electrical network description denoting nodes and hierarchy between
+    nodes.
+  identifier: project.electrical_network
+  structure: Network
+  title: Electrical Network Description
+- description: Efficiency of the electrical network
+  identifier: project.electrical_network_efficiency
+  structure: SimpleData
+  title: Electrical Network Efficiency
+  types:
+  - float
+- description: The maximum allowable seabed  gradient considered by the cable routing
+    analysis.
+  identifier: project.equipment_gradient_constraint
+  structure: SimpleData
+  title: Maximum Seabed Gradient
+  types:
+  - float
+  units:
+  - degrees
+- description: 'Predefined burial depth for the export cable system. Note: this can
+    be set to zero.'
+  identifier: project.export_target_burial_depth
+  structure: SimpleData
+  title: Export Cable Burial Depth
+  types:
+  - float
+  units:
+  - m
+- description: Voltage of the export cable system.
+  identifier: project.export_voltage
+  structure: SimpleData
+  title: Export Cable Voltage
+  types:
+  - float
+  units:
+  - V
+- description: 'Type of network to evaluate: Radial or Star.'
+  experimental:
+  - Star
+  identifier: project.network_configuration
+  structure: SimpleData
+  title: Network Configuration
+  types:
+  - str
+  valid_values:
+  - Radial
+  - Star
+- description: Cost of onshore infrastructure. This should include all electrical
+    components beyond the Cable Landing Point.
+  identifier: project.onshore_infrastructure_cost
+  structure: SimpleData
+  title: Cost of Onshore Infrastructure
+  types:
+  - float
+  units:
+  - Euro
+- description: Tool selected to install the electrical cables.
+  identifier: project.selected_installation_tool
+  structure: SimpleData
+  title: Selected Installation Tool
+  types:
+  - str
+  valid_values:
+  - Jetting
+  - Ploughing
+  - Cutting
+  - Dredging
+- description: Centre of gravity for substations relative to their local origin
+  identifier: project.substation_cog
+  structure: CartesianDict
+  title: Substation Centre of Gravity
+  units:
+  - m
+  - m
+  - m
+- description: Foundation locations for substations relative to their local origin
+  identifier: project.substation_foundation_location
+  structure: CartesianListDict
+  title: Substation Foundation Location
+  units:
+  - m
+  - m
+  - m
+- description: UTM coordinates of substations
+  identifier: project.substation_layout
+  labels:
+  - UTM x
+  - UTM y
+  structure: PointDict
+  title: Substation Location
+  units:
+  - m
+  - m
+- description: Detailed information of all collection points.
+  identifier: project.substation_props
+  labels:
+  - Substation Identifier
+  - Type
+  - Mass
+  - Volume
+  - Length
+  - Width
+  - Height
+  - Profile
+  - Wet Frontal Area
+  - Wet Beam Area
+  - Dry Frontal Area
+  - Dry Beam Area
+  - Surface Roughness
+  - Orientation Angle
+  - Marker
+  structure: TableData
+  title: Collection Point Data
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  units:
+  - null
+  - null
+  - kg
+  - m^{3}
+  - m
+  - m
+  - m
+  - null
+  - m^{2}
+  - m^{2}
+  - m^{2}
+  - m^{2}
+  - m
+  - deg
+  - null
+- auto_only: hidden.site_filtered
+  description: 'Predefined burial depth for the array cable system. Note: this can
+    be set to zero.'
+  identifier: project.target_burial_depth
+  structure: SimpleData
+  title: Array Cable Burial Depth
+  types:
+  - float
+- description: Detailed information of umbilical cables.
+  identifier: project.umbilical_cable_data
+  labels:
+  - Key Identifier
+  - Length
+  - Dry Mass
+  - Required Floatation
+  - Floatation Length
+  - Marker
+  structure: TableData
+  title: Umbilical Cable Data
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - int
+  units:
+  - null
+  - m
+  - kg
+  - N/m
+  - m
+  - null
+- description: Umbilical safety factor.
+  identifier: project.umbilical_safety_factor
+  structure: SimpleData
+  title: Umbilical Cable Safety Factor
+  types:
+  - float
+- description: Connection point of the umbilical cable on the seabed for each device.
+  identifier: project.umbilical_seabed_connection
+  labels:
+  - UTM x
+  - UTM y
+  structure: PointDict
+  title: Umbilical Cable Seabed Connection Points
+  units:
+  - m
+  - m

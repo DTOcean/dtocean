@@ -1,0 +1,1850 @@
+---
+- auto_only: hidden.device_filtered
+  description: Requirements data for accessing the device control sub-system
+  identifier: device.control_subsystem_access
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_control_system_access
+  - sub_system
+  - operation_duration
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Control Sub-System Access Requirements
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Device control sub-system costs
+  identifier: device.control_subsystem_costs
+  structure: SimpleDictColumn
+  tables:
+  - filter.view_control_system_economic
+  - sub_system
+  - cost
+  title: Control Sub-System Costs
+  types:
+  - float
+  units:
+  - Euro
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Failure rates for the device control sub-system
+  identifier: device.control_subsystem_failure_rates
+  structure: SimpleDictColumn
+  tables:
+  - filter.view_control_system_economic
+  - sub_system
+  - failure_rate
+  title: Control Sub-System Failure Rates
+  types:
+  - float
+  units:
+  - Failures per 10^{6} hours
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Requirements data for inspections of the device control sub-system
+  identifier: device.control_subsystem_inspections
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Crew Preparation Delay
+  - Other Delay
+  - Specialists Required
+  - Technicians Required
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_control_system_inspection
+  - sub_system
+  - operation_duration
+  - crew_lead_time
+  - other_lead_time
+  - n_specialists
+  - n_technicians
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Control Sub-System Inspections Requirements
+  types:
+  - str
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Requirements data for on-site maintenance of the device control sub-system
+  identifier: device.control_subsystem_maintenance
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Interruptible
+  - Spare Parts Preparation Delay
+  - Crew Preparation Delay
+  - Other Delay
+  - Specialists Required
+  - Technicians Required
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_control_system_maintenance
+  - sub_system
+  - operation_duration
+  - interruptible
+  - assembly_lead_time
+  - crew_lead_time
+  - other_lead_time
+  - n_specialists
+  - n_technicians
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Control Sub-System On-Site Maintenance Requirements
+  types:
+  - str
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Supplementary parts data for replacement of the device control sub-system
+  identifier: device.control_subsystem_maintenance_parts
+  labels:
+  - Sub-System
+  - Spare Parts Max Height
+  - Spare Parts Max Width
+  - Spare Parts Max Length
+  - Spare Parts Mass
+  structure: IndexTableColumn
+  tables:
+  - filter.view_control_system_maintenance
+  - sub_system
+  - parts_height
+  - parts_width
+  - parts_length
+  - parts_dry_mass
+  title: Control Sub-System On-Site Maintenance Parts Data
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - m
+  - kg
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Weightings per operation type for the device control sub-system
+  identifier: device.control_subsystem_operation_weightings
+  labels:
+  - Sub-System
+  - On-Site Maintenance
+  - Replacement
+  - Inspections
+  structure: IndexTableColumn
+  tables:
+  - filter.view_control_system_operation_weightings
+  - sub_system
+  - maintenance
+  - replacement
+  - inspection
+  title: Control Sub-System Operation Weightings
+  types:
+  - str
+  - float
+  - float
+  - float
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Requirements data for replacement of the device control sub-system
+  identifier: device.control_subsystem_replacement
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Interruptible
+  - Spare Parts Preparation Delay
+  - Crew Preparation Delay
+  - Other Delay
+  - Specialists Required
+  - Technicians Required
+  structure: IndexTableColumn
+  tables:
+  - filter.view_control_system_replace
+  - sub_system
+  - operation_duration
+  - interruptible
+  - assembly_lead_time
+  - crew_lead_time
+  - other_lead_time
+  - n_specialists
+  - n_technicians
+  title: Control Sub-System Replacement Requirements
+  types:
+  - str
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  units:
+  - null
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  valid_values:
+  - Control
+- auto_only: hidden.device_filtered
+  description: Requirements data for accessing device sub-systems
+  identifier: device.subsystem_access
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_sub_systems_access
+  - sub_system
+  - operation_duration
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Device Access Requirements
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: Device sub-system costs
+  identifier: device.subsystem_costs
+  structure: SimpleDictColumn
+  tables:
+  - filter.view_sub_systems_economic
+  - sub_system
+  - cost
+  title: Device Sub-System Costs
+  types:
+  - float
+  units:
+  - Euro
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: Failure rates for device sub-systems
+  identifier: device.subsystem_failure_rates
+  structure: SimpleDictColumn
+  tables:
+  - filter.view_sub_systems_economic
+  - sub_system
+  - failure_rate
+  title: Device Sub-System Failure Rates
+  types:
+  - float
+  units:
+  - Failures per 10^{6} hours
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: Requirements data for inspections of device sub-systems
+  identifier: device.subsystem_inspections
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Crew Preparation Delay
+  - Other Delay
+  - Specialists Required
+  - Technicians Required
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_sub_systems_inspection
+  - sub_system
+  - operation_duration
+  - crew_lead_time
+  - other_lead_time
+  - n_specialists
+  - n_technicians
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Device Inspections Requirements
+  types:
+  - str
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: Requirements data for on-site maintenance of device sub-systems
+  identifier: device.subsystem_maintenance
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Interruptible
+  - Spare Parts Preparation Delay
+  - Crew Preparation Delay
+  - Other Delay
+  - Specialists Required
+  - Technicians Required
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_sub_systems_maintenance
+  - sub_system
+  - operation_duration
+  - interruptible
+  - assembly_lead_time
+  - crew_lead_time
+  - other_lead_time
+  - n_specialists
+  - n_technicians
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Device On-Site Maintenance Requirements
+  types:
+  - str
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: Supplementary parts data for replacement of device sub-systems
+  identifier: device.subsystem_maintenance_parts
+  labels:
+  - Sub-System
+  - Spare Parts Max Height
+  - Spare Parts Max Width
+  - Spare Parts Max Length
+  - Spare Parts Mass
+  structure: IndexTableColumn
+  tables:
+  - filter.view_sub_systems_maintenance
+  - sub_system
+  - parts_height
+  - parts_width
+  - parts_length
+  - parts_dry_mass
+  title: Device On-Site Maintenance Parts Data
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - m
+  - kg
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: Weightings per operation type for the device sub-systems
+  identifier: device.subsystem_operation_weightings
+  labels:
+  - Sub-System
+  - On-Site Maintenance
+  - Replacement
+  - Inspections
+  structure: IndexTableColumn
+  tables:
+  - filter.view_sub_systems_operation_weightings
+  - sub_system
+  - maintenance
+  - replacement
+  - inspection
+  title: Device Operation Weightings
+  types:
+  - str
+  - float
+  - float
+  - float
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: Requirements data for replacement of device sub-systems
+  identifier: device.subsystem_replacement
+  labels:
+  - Sub-System
+  - Operation Duration
+  - Interruptible
+  - Spare Parts Preparation Delay
+  - Crew Preparation Delay
+  - Other Delay
+  - Specialists Required
+  - Technicians Required
+  structure: IndexTableColumn
+  tables:
+  - filter.view_sub_systems_replace
+  - sub_system
+  - operation_duration
+  - interruptible
+  - assembly_lead_time
+  - crew_lead_time
+  - other_lead_time
+  - n_specialists
+  - n_technicians
+  title: Device Replacement Requirements
+  types:
+  - str
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  units:
+  - null
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.site_filtered
+  description: Presence of a helideck within the array
+  identifier: farm.helideck
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - has_helipad
+  title: Array Helideck
+  types:
+  - bool
+- description: Month of the year for cessation of calendar based maintenance (repeats
+    annually)
+  identifier: options.annual_maintenance_end
+  structure: SimpleData
+  title: Annual End Month for Calendar Maintenance
+  types:
+  - str
+  valid_values:
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+- description: Month of the year for commencement of calendar based maintenance (repeats
+    annually)
+  identifier: options.annual_maintenance_start
+  structure: SimpleData
+  title: Annual Start Month for Calendar Maintenance
+  types:
+  - str
+  valid_values:
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
+- description: Interval between calendar based maintenance actions for device and
+    array sub-systems. Values of zero or less exclude the sub-system
+  identifier: options.calendar_maintenance_interval
+  structure: SimpleDict
+  title: Calendar Based Maintenance Interval
+  types:
+  - float
+  units:
+  - years
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Control
+  - Support Structure
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+  - Foundations
+  - Mooring Lines
+- description: State of health threshold for triggering condition based maintenance
+    for device and array sub-systems. Values of zero or less exclude the sub-system
+  identifier: options.condition_maintenance_soh
+  structure: SimpleDict
+  title: Condition Based Maintenance Health Threshold
+  types:
+  - float
+  units:
+  - \%
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Control
+  - Support Structure
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+  - Foundations
+  - Mooring Lines
+- description: Option to curtail the operation of devices in the event of no weather
+    window being available to access the device. Defaults to True.
+  identifier: options.curtail_devices
+  structure: SimpleData
+  title: Curtail Devices
+  types:
+  - bool
+- description: Multiplier of sub-system cost representing loading onto vessels. Defaults
+    to 0
+  identifier: options.loading_cost_multiplier
+  structure: SimpleData
+  title: Sub-system Loading Costs Multiplier
+  types:
+  - float
+- description: Activation of inspections for device and array sub-systems
+  identifier: options.operations_inspections
+  structure: SimpleDict
+  title: Sub-System Inspection Operations
+  types:
+  - bool
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Control
+  - Support Structure
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+  - Foundations
+  - Mooring Lines
+- description: Activation of on-site maintenance operations for device and array sub-systems
+  identifier: options.operations_onsite_maintenance
+  structure: SimpleDict
+  title: Sub-System On-Site Maintenance Operations
+  types:
+  - bool
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Control
+  - Support Structure
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+  - Foundations
+  - Mooring Lines
+- description: 'Activation of device and array sub-system replacement operations '
+  identifier: options.operations_replacements
+  structure: SimpleDict
+  title: Sub-System Replacement Operations
+  types:
+  - bool
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Control
+  - Support Structure
+  - Umbilical Cable
+  - Mooring Lines
+- description: Costs of monitoring equipment required for conditional maintenance
+    of device and array sub-systems
+  identifier: options.subsystem_monitering_costs
+  structure: SimpleDict
+  title: Monitoring Costs for Device and Array Sub-Systems
+  types:
+  - float
+  units:
+  - Euro
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Control
+  - Support Structure
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+  - Foundations
+  - Mooring Lines
+- description: Multiplier of sub-system cost representing transit to port. Defaults
+    to 0
+  identifier: options.transit_cost_multiplier
+  structure: SimpleData
+  title: Sub-system Transit Costs Multiplier
+  types:
+  - float
+- description: Weightings per operation type for the inter-array cables
+  identifier: project.array_cables_operations_weighting
+  structure: SimpleDict
+  title: Operation Type Weighting for Inter-Array Cables
+  types:
+  - float
+  valid_values:
+  - On-Site Maintenance
+  - Inspections
+- description: Apply calendar based maintenance to sub-systems. Chosen sub-systems
+    have perfect reliability up to their MTTF
+  identifier: project.calendar_based_maintenance
+  structure: SimpleData
+  title: Calendar Based Maintenance
+  types:
+  - bool
+- description: Apply condition based maintenance to sub-systems
+  identifier: project.condition_based_maintenance
+  structure: SimpleData
+  title: Condition Based Maintenance
+  types:
+  - bool
+- description: Requirements data for inspections of electrical sub-systems
+  identifier: project.electrical_inspections_requirements
+  labels:
+  - Sub-System
+  - Inspection Duration
+  - Access Duration
+  - Crew Preparation Delay
+  - Other Delay
+  - Technicians Required
+  - Specialists Required
+  - Max Wave Height for Access
+  - Max Wave Period for Access
+  - Max Wind Speed for Access
+  - Max Current Speed for Access
+  - Max Wave Height for Inspections
+  - Max Wave Period for Inspections
+  - Max Wind Speed for Inspections
+  - Max Current Speed for Inspections
+  structure: IndexTable
+  title: Electrical Sub-Systems Inspections Requirements
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - m/s
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+- description: Supplementary parts data for on-site maintenance of electrical sub-systems
+  identifier: project.electrical_onsite_maintenance_parts
+  labels:
+  - Sub-System
+  - Spare Parts Mass
+  - Spare Parts Max Height
+  - Spare Parts Max Width
+  - Spare Parts Max Length
+  structure: IndexTable
+  title: Electrical Sub-Systems On-Site Maintenance Parts Data
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - kg
+  - m
+  - m
+  - m
+  valid_values:
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+- description: Requirements data for on-site maintenance of electrical sub-systems
+  identifier: project.electrical_onsite_maintenance_requirements
+  labels:
+  - Sub-System
+  - Maintenance Duration
+  - Access Duration
+  - Interruptible
+  - Crew Preparation Delay
+  - Other Delay
+  - Spare Parts Preparation Delay
+  - Technicians Required
+  - Specialists Required
+  - Max Wave Height for Access
+  - Max Wave Period for Access
+  - Max Wind Speed for Access
+  - Max Current Speed for Access
+  - Max Wave Height for Maintenance
+  - Max Wave Period for Maintenance
+  - Max Wind Speed for Maintenance
+  - Max Current Speed for Maintenance
+  structure: IndexTable
+  title: Electrical Sub-Systems On-Site Maintenance Requirements
+  types:
+  - str
+  - float
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+- description: Supplementary parts data for replacement of electrical sub-systems
+  identifier: project.electrical_replacement_parts
+  labels:
+  - Sub-System
+  - Spare Parts Mass
+  - Spare Parts Max Height
+  - Spare Parts Max Width
+  - Spare Parts Max Length
+  structure: IndexTable
+  title: Electrical Sub-Systems Replacement Parts Data
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - kg
+  - m
+  - m
+  - m
+  valid_values:
+  - Umbilical Cable
+  - Inter-Array Cables
+  - Substations
+  - Export Cable
+- description: Requirements data for replacement of electrical sub-systems
+  identifier: project.electrical_replacement_requirements
+  labels:
+  - Sub-System
+  - Maintenance Duration
+  - Access Duration
+  - Interruptible
+  - Crew Preparation Delay
+  - Other Delay
+  - Spare Parts Preparation Delay
+  - Technicians Required
+  - Specialists Required
+  - Max Wave Height for Access
+  - Max Wave Period for Access
+  - Max Wind Speed for Access
+  - Max Current Speed for Access
+  - Max Wave Height for Maintenance
+  - Max Wave Period for Maintenance
+  - Max Wind Speed for Maintenance
+  - Max Current Speed for Maintenance
+  structure: IndexTable
+  title: Electrical Sub-Systems Replacement Requirements
+  types:
+  - str
+  - float
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Umbilical Cable
+- description: Energy selling price
+  identifier: project.energy_selling_price
+  structure: SimpleData
+  title: Energy Selling Price
+  types:
+  - float
+  units:
+  - Euro/kWh
+- description: Weightings per operation type for the export cable
+  identifier: project.export_cable_operations_weighting
+  structure: SimpleDict
+  title: Operation Type Weighting for the Export Cable
+  types:
+  - float
+  valid_values:
+  - On-Site Maintenance
+  - Inspections
+- description: Weightings per operation type for device foundations
+  identifier: project.foundations_operations_weighting
+  structure: SimpleDict
+  title: Operation Type Weighting for Device Foundations
+  types:
+  - float
+  valid_values:
+  - On-Site Maintenance
+  - Inspections
+- description: Requirements data for inspections of moorings and foundations
+  identifier: project.moorings_inspections_requirements
+  labels:
+  - Sub-System
+  - Inspection Duration
+  - Access Duration
+  - Crew Preparation Delay
+  - Other Delay
+  - Technicians Required
+  - Specialists Required
+  - Max Wave Height for Access
+  - Max Wave Period for Access
+  - Max Wind Speed for Access
+  - Max Current Speed for Access
+  - Max Wave Height for Inspections
+  - Max Wave Period for Inspections
+  - Max Wind Speed for Inspections
+  - Max Current Speed for Inspections
+  structure: IndexTable
+  title: Moorings and Foundations Inspections Requirements
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - m/s
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Foundations
+  - Mooring Lines
+- description: Supplementary parts data for on-site maintenance of moorings and foundations
+  identifier: project.moorings_onsite_maintenance_parts
+  labels:
+  - Sub-System
+  - Spare Parts Mass
+  - Spare Parts Max Height
+  - Spare Parts Max Width
+  - Spare Parts Max Length
+  structure: IndexTable
+  title: Moorings and Foundations On-Site Maintenance Parts Data
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - kg
+  - m
+  - m
+  - m
+  valid_values:
+  - Foundations
+  - Mooring Lines
+- description: Requirements data for on-site maintenance of moorings and foundations
+  identifier: project.moorings_onsite_maintenance_requirements
+  labels:
+  - Sub-System
+  - Maintenance Duration
+  - Access Duration
+  - Interruptible
+  - Crew Preparation Delay
+  - Other Delay
+  - Spare Parts Preparation Delay
+  - Technicians Required
+  - Specialists Required
+  - Max Wave Height for Access
+  - Max Wave Period for Access
+  - Max Wind Speed for Access
+  - Max Current Speed for Access
+  - Max Wave Height for Maintenance
+  - Max Wave Period for Maintenance
+  - Max Wind Speed for Maintenance
+  - Max Current Speed for Maintenance
+  structure: IndexTable
+  title: Moorings and Foundations On-Site Maintenance Requirements
+  types:
+  - str
+  - float
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Foundations
+  - Mooring Lines
+- description: Weightings per operation type for device mooring lines
+  identifier: project.moorings_operations_weighting
+  structure: SimpleDict
+  title: Operation Type Weighting for Device Mooring Lines
+  types:
+  - float
+  valid_values:
+  - On-Site Maintenance
+  - Replacement
+  - Inspections
+- description: Supplementary parts data for replacement of moorings and foundations
+  identifier: project.moorings_replacement_parts
+  labels:
+  - Sub-System
+  - Spare Parts Mass
+  - Spare Parts Max Height
+  - Spare Parts Max Width
+  - Spare Parts Max Length
+  structure: IndexTable
+  title: Moorings and Foundations Replacement Parts Data
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - kg
+  - m
+  - m
+  - m
+  valid_values:
+  - Foundations
+  - Mooring Lines
+- description: Requirements data for replacement of moorings and foundations
+  identifier: project.moorings_replacement_requirements
+  labels:
+  - Sub-System
+  - Maintenance Duration
+  - Access Duration
+  - Interruptible
+  - Crew Preparation Delay
+  - Other Delay
+  - Spare Parts Preparation Delay
+  - Technicians Required
+  - Specialists Required
+  - Max Wave Height for Access
+  - Max Wave Period for Access
+  - Max Wind Speed for Access
+  - Max Current Speed for Access
+  - Max Wave Height for Maintenance
+  - Max Wave Period for Maintenance
+  - Max Wind Speed for Maintenance
+  - Max Current Speed for Maintenance
+  structure: IndexTable
+  title: Moorings and Foundations Replacement Requirements
+  types:
+  - str
+  - float
+  - float
+  - bool
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - null
+  - hours
+  - hours
+  - hours
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Mooring Lines
+- description: Weightings per operation type for electrical substations
+  identifier: project.substations_operations_weighting
+  structure: SimpleDict
+  title: Operation Type Weighting for Electrical Substations
+  types:
+  - float
+  valid_values:
+  - On-Site Maintenance
+  - Inspections
+- description: Weightings per operation type for the device umbilical cable
+  identifier: project.umbilical_operations_weighting
+  structure: SimpleDict
+  title: Operation Type Weighting for Device Umbilical Cable
+  types:
+  - float
+  valid_values:
+  - On-Site Maintenance
+  - Replacement
+  - Inspections
+- description: Wage for specialists crew at daytime e.g. diver
+  identifier: project.wage_specialist_day
+  structure: SimpleData
+  title: Wage for specialists crew at daytime e.g. diver
+  types:
+  - float
+  units:
+  - Euro/hour
+- description: Wage for specialists crew at night time e.g. diver
+  identifier: project.wage_specialist_night
+  structure: SimpleData
+  title: Wage for specialists crew at night time e.g. diver
+  types:
+  - float
+  units:
+  - Euro/hour
+- description: Wage for technicians at daytime
+  identifier: project.wage_technician_day
+  structure: SimpleData
+  title: Wage for technicians at daytime
+  types:
+  - float
+  units:
+  - Euro/hour
+- description: 'Wage for technicians at night time                '
+  identifier: project.wage_technician_night
+  structure: SimpleData
+  title: 'Wage for technicians at night time                '
+  types:
+  - float
+  units:
+  - Euro/hour
+- description: Working days per week during summer
+  identifier: project.workdays_summer
+  structure: SimpleData
+  title: Working Days per Week during Summer
+  types:
+  - int
+- description: Working days per week during winter
+  identifier: project.workdays_winter
+  structure: SimpleData
+  title: Working Days per Week during Winter
+  types:
+  - int
+- description: Suppress corrective maintenance events
+  identifier: options.suppress_corrective_maintenance
+  structure: SimpleData
+  title: Suppress Corrective Maintenance
+  types:
+  - bool
+- description: Multiplier of sub-system cost representing spares. Defaults to 1
+  identifier: options.spare_cost_multiplier
+  structure: SimpleData
+  title: Sub-system Spares Costs Multiplier
+  types:
+  - float
+- description: Number of parallel operations per vessel undertaking calendar based
+    maintenance. Defaults to 10.
+  identifier: options.parallel_operations
+  structure: SimpleData
+  title: Number of Parallel Calendar Maintenance Operations
+  types:
+  - int
+- description: Number of data points to be used for the maintenance operations evaluation
+  identifier: options.maintenance_data_points
+  structure: SimpleData
+  title: Number of Maintenance Data Points
+  types:
+  - int
+- description: Number of hours required to prepare a vessel for a corrective maintenance
+    operation. Defaults to 48.
+  identifier: options.corrective_prep_time
+  structure: SimpleData
+  title: Preparation Time for Correction Maintenance
+  types:
+  - float
+  units:
+  - hours
+- description: Capital expenditure for condition monitoring equipment
+  identifier: project.capex_oandm
+  structure: SimpleData
+  title: Condition Monitoring Capital Expenditure
+  types:
+  - float
+  units:
+  - Euro
+- description: Table of metrics for the evaluation of the array maintenance simulations.
+    One row is used per requested data point.
+  identifier: project.maintenance_metrics
+  labels:
+  - OPEX LCOE
+  - Lifetime OPEX
+  - Lifetime Energy
+  - Array Availability
+  - Array Downtime
+  - Number of Journeys
+  structure: TableData
+  title: Maintenance Evaluation Metrics Table
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  units:
+  - Euro/kWh
+  - Euro
+  - MWh
+  - null
+  - hours
+  - null
+- description: 'Operation expenditure per data point per year of the project '
+  identifier: project.opex_per_year
+  labels:
+  - Year
+  - Cost
+  structure: LineTableExpand
+  title: OPEX per Year
+  types:
+  - float
+  - float
+  units:
+  - null
+  - Euro
+- description: Array energy production per data point per year without electrical
+    losses
+  identifier: project.energy_per_year
+  labels:
+  - Year
+  - Energy
+  structure: LineTableExpand
+  title: Energy Production per Year
+  types:
+  - float
+  - float
+  units:
+  - null
+  - MWh
+- description: Mean operation expenditure for the lifetime of the project
+  identifier: project.lifetime_opex_mean
+  structure: SimpleData
+  title: Mean Lifetime OPEX
+  types:
+  - float
+  units:
+  - Euro
+- description: Most likely operation expenditure for the lifetime of the project
+  identifier: project.lifetime_opex_mode
+  structure: SimpleData
+  title: Most Likely Lifetime OPEX
+  types:
+  - float
+  units:
+  - Euro
+- description: Lower bound of the 95% confidence interval of the operation expenditure
+    for the lifetime of the project
+  identifier: project.lifetime_opex_interval_lower
+  structure: SimpleData
+  title: Lifetime OPEX 95% Interval Lower Bound
+  types:
+  - float
+  units:
+  - Euro
+- description: Upper bound of the 95% confidence interval of the operation expenditure
+    for the lifetime of the project
+  identifier: project.lifetime_opex_interval_upper
+  structure: SimpleData
+  title: Lifetime OPEX 95% Interval Upper Bound
+  types:
+  - float
+  units:
+  - Euro
+- description: Mean lifetime energy production assuming no electrical losses
+  identifier: project.lifetime_energy_mean
+  structure: SimpleData
+  title: Mean Lifetime Energy Production
+  types:
+  - float
+  units:
+  - MWh
+- description: Most likely lifetime energy production assuming no electrical losses
+  identifier: project.lifetime_energy_mode
+  structure: SimpleData
+  title: Most Likely Lifetime Energy Production
+  types:
+  - float
+  units:
+  - MWh
+- description: Lower bound of the 95% confidence interval of the lifetime energy production
+    assuming no electrical losses
+  identifier: project.lifetime_energy_interval_lower
+  structure: SimpleData
+  title: Lifetime Energy Production 95% Interval Lower Bound
+  types:
+  - float
+  units:
+  - MWh
+- description: Upper bound of the 95% confidence interval of the lifetime energy production
+    assuming no electrical losses
+  identifier: project.lifetime_energy_interval_upper
+  structure: SimpleData
+  title: Lifetime Energy Production 95% Interval Upper Bound
+  types:
+  - float
+  units:
+  - MWh
+- description: Mean availability of the complete array over the lifetime of the project
+  identifier: project.array_availability_mean
+  structure: SimpleData
+  title: Mean Availability of Array
+  types:
+  - float
+- description: Most likely availability of the complete array over the lifetime of
+    the project
+  identifier: project.array_availability_mode
+  structure: SimpleData
+  title: Most Likely Availability of Array
+  types:
+  - float
+- description: Lower bound of the 95% confidence interval of the availability of the
+    complete array over the lifetime of the project
+  identifier: project.array_availability_interval_lower
+  structure: SimpleData
+  title: Availability of Array 95% Interval Lower Bound
+  types:
+  - float
+- description: Upper bound of the 95% confidence interval of the availability of the
+    complete array over the lifetime of the project
+  identifier: project.array_availability_interval_upper
+  structure: SimpleData
+  title: Availability of Array 95% Interval Upper Bound
+  types:
+  - float
+- description: Mean downtime of the complete array over the lifetime of the project
+  identifier: project.array_downtime_mean
+  structure: SimpleData
+  title: Mean Downtime of Array
+  types:
+  - float
+  units:
+  - hours
+- description: Most likely downtime of the complete array over the lifetime of the
+    project
+  identifier: project.array_downtime_mode
+  structure: SimpleData
+  title: Most Likely Downtime of Array
+  types:
+  - float
+  units:
+  - hours
+- description: Lower bound of the 95% confidence interval of the downtime of the complete
+    array over the lifetime of the project
+  identifier: project.array_downtime_interval_lower
+  structure: SimpleData
+  title: Downtime of Array 95% Interval Lower Bound
+  types:
+  - float
+  units:
+  - hours
+- description: Upper bound of the 95% confidence interval of the downtime of the complete
+    array over the lifetime of the project
+  identifier: project.array_downtime_interval_upper
+  structure: SimpleData
+  title: Downtime of Array 95% Interval Upper Bound
+  types:
+  - float
+  units:
+  - hours
+- description: Mean number of maintenance operations over the lifetime of the project
+  identifier: project.operation_journeys_mean
+  structure: SimpleData
+  title: Mean Number of Maintenance Operations
+  types:
+  - float
+- description: Most likely number of maintenance operations over the lifetime of the
+    project
+  identifier: project.operation_journeys_mode
+  structure: SimpleData
+  title: Most Likely Number of Maintenance Operations
+  types:
+  - float
+- description: Lower bound of the 95% confidence interval of the number of maintenance
+    operations over the lifetime of the project
+  identifier: project.operation_journeys_interval_lower
+  structure: SimpleData
+  title: Number of Maintenance Operations 95% Interval Lower Bound
+  types:
+  - float
+- description: Upper bound of the 95% confidence interval of the number of maintenance
+    operations over the lifetime of the project
+  identifier: project.operation_journeys_interval_upper
+  structure: SimpleData
+  title: Number of Maintenance Operations 95% Interval Upper Bound
+  types:
+  - float
+- description: Total lifetime energy production per device assuming no electrical
+    losses for the highest OPEX LCOE data point
+  identifier: project.lifetime_energy_per_device_best
+  structure: SimpleDict
+  title: Best Lifetime Energy Production per Device
+  types:
+  - float
+  units:
+  - MWh
+- description: Total lifetime energy production per device assuming no electrical
+    losses for the lowest OPEX LCOE data point
+  identifier: project.lifetime_energy_per_device_worst
+  structure: SimpleDict
+  title: Worst Lifetime Energy Production per Device
+  types:
+  - float
+  units:
+  - MWh
+- description: Downtime per device over the lifetime of the project for the highest
+    OPEX LCOE data point
+  identifier: project.downtime_per_device_best
+  structure: SimpleDict
+  title: Best Downtime per Device
+  types:
+  - float
+  units:
+  - hours
+- description: Downtime per device over the lifetime of the project for the lowest
+    OPEX LCOE data point
+  identifier: project.downtime_per_device_worst
+  structure: SimpleDict
+  title: Worst Downtime per Device
+  types:
+  - float
+  units:
+  - hours
+- description: Time history of calendar based maintenance actions for the highest
+    OPEX LCOE data point
+  identifier: project.calendar_maintenance_events_best
+  labels:
+  - Operation Request Date
+  - Operation Action Date
+  - Downtime
+  - Sub-System
+  - Operation Type
+  - Logistics Cost
+  - Labour Cost
+  - Parts Cost
+  - Vessel Name
+  structure: TableData
+  title: Best Calendar Based Maintenance Events Table
+  types:
+  - null
+  - null
+  - float
+  - str
+  - str
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - hours
+  - null
+  - null
+  - Euro
+  - Euro
+  - Euro
+  - null
+- description: Time history of condition based maintenance actions for the highest
+    OPEX LCOE data point
+  identifier: project.condition_maintenance_events_best
+  labels:
+  - Operation Request Date
+  - Operation Action Date
+  - Downtime
+  - Sub-System
+  - Operation Type
+  - Logistics Cost
+  - Labour Cost
+  - Parts Cost
+  - Vessel Name
+  structure: TableData
+  title: Best Condition Based Maintenance Events Table
+  types:
+  - null
+  - null
+  - float
+  - str
+  - str
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - hours
+  - null
+  - null
+  - Euro
+  - Euro
+  - Euro
+  - null
+- description: Time history of corrective maintenance actions for the highest OPEX
+    LCOE data point
+  identifier: project.corrective_maintenance_events_best
+  labels:
+  - Failure Date
+  - Operation Request Date
+  - Operation Action Date
+  - Downtime
+  - Sub-System
+  - Operation Type
+  - Logistics Cost
+  - Labour Cost
+  - Parts Cost
+  - Vessel Name
+  structure: TableData
+  title: Best Corrective Maintenance Events Table
+  types:
+  - null
+  - null
+  - null
+  - float
+  - str
+  - str
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - null
+  - hours
+  - null
+  - null
+  - Euro
+  - Euro
+  - Euro
+  - null
+- description: Time history of calendar based maintenance actions for the lowest OPEX
+    LCOE data point
+  identifier: project.calendar_maintenance_events_worst
+  labels:
+  - Operation Request Date
+  - Operation Action Date
+  - Downtime
+  - Sub-System
+  - Operation Type
+  - Logistics Cost
+  - Labour Cost
+  - Parts Cost
+  - Vessel Name
+  structure: TableData
+  title: Worst Calendar Based Maintenance Events Table
+  types:
+  - null
+  - null
+  - float
+  - str
+  - str
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - hours
+  - null
+  - null
+  - Euro
+  - Euro
+  - Euro
+  - null
+- description: Time history of condition based maintenance actions for the lowest
+    OPEX LCOE data point
+  identifier: project.condition_maintenance_events_worst
+  labels:
+  - Operation Request Date
+  - Operation Action Date
+  - Downtime
+  - Sub-System
+  - Operation Type
+  - Logistics Cost
+  - Labour Cost
+  - Parts Cost
+  - Vessel Name
+  structure: TableData
+  title: Worst Condition Based Maintenance Events Table
+  types:
+  - null
+  - null
+  - float
+  - str
+  - str
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - hours
+  - null
+  - null
+  - Euro
+  - Euro
+  - Euro
+  - null
+- description: Time history of corrective maintenance actions for the lowest OPEX
+    LCOE data point
+  identifier: project.corrective_maintenance_events_worst
+  labels:
+  - Failure Date
+  - Operation Request Date
+  - Operation Action Date
+  - Downtime
+  - Sub-System
+  - Operation Type
+  - Logistics Cost
+  - Labour Cost
+  - Parts Cost
+  - Vessel Name
+  structure: TableData
+  title: Worst Corrective Maintenance Events Table
+  types:
+  - null
+  - null
+  - null
+  - float
+  - str
+  - str
+  - float
+  - float
+  - float
+  - str
+  units:
+  - null
+  - null
+  - null
+  - hours
+  - null
+  - null
+  - Euro
+  - Euro
+  - Euro
+  - null

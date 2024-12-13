@@ -1,0 +1,251 @@
+- table: component_type
+  schema: reference
+- table: operations_type
+  schema: reference
+- table: soil_type
+  schema: reference
+- table: vehicle_type
+  schema: reference
+- table: other
+  dummy: True
+  schema: reference
+  children:
+    - table: ports
+      bool:
+        - jacking_capability
+      geo:
+        - point_location
+    - table: component
+      pkey: id
+      children:
+        - table: component_shared
+          fkey: fk_component_id
+        - table: component_discrete
+          fkey: fk_component_id
+          pkey: id
+          children:
+            - table: component_anchor
+              fkey: fk_component_discrete_id
+            - table: component_collection_point
+              fkey: fk_component_discrete_id
+              array:
+                - foundation_locations
+                - centre_of_gravity
+            - table: component_connector
+              fkey: fk_component_discrete_id
+            - table: component_mooring_discrete
+              fkey: fk_component_discrete_id
+            - table: component_transformer
+              fkey: fk_component_discrete_id
+        - table: component_continuous
+          fkey: fk_component_id
+          pkey: id
+          children:
+            - table: component_cable
+              fkey: fk_component_continuous_id
+            - table: component_mooring_continuous
+              fkey: fk_component_continuous_id
+            - table: component_pile
+              fkey: fk_component_continuous_id
+            - table: component_rope
+              fkey: fk_component_continuous_id
+              array:
+                - rope_stiffness_curve
+    - table: constants
+      dummy: True
+      children:
+        - table: constants
+        - table: ref_current_drag_coef_rect
+        - table: ref_drag_coef_cyl
+        - table: ref_drift_coef_float_rect
+        - table: ref_holding_capacity_factors_plate_anchors
+        - table: ref_line_bcf
+        - table: ref_pile_deflection_coefficients
+        - table: ref_pile_limiting_values_noncalcareous
+        - table: ref_pile_moment_coefficient_sam
+        - table: ref_pile_moment_coefficient_sbm
+        - table: ref_rectangular_wave_inertia
+        - table: ref_subgrade_reaction_coefficient_cohesionless
+        - table: ref_subgrade_reaction_coefficient_k1_cohesive
+        - table: ref_superline_nylon
+        - table: ref_superline_polyester
+        - table: ref_superline_steelite
+        - table: ref_wake_amplification_factor_cyl
+        - table: ref_wind_drag_coef_rect
+        - table: soil_type_geotechnical_properties
+    - table: equipment
+      dummy: True
+      children:
+        - table: equipment_cable_burial
+          bool:
+            - jetting_capability
+            - ploughing_capability
+            - cutting_capability
+        - table: equipment_divers
+        - table: equipment_drilling_rigs
+        - table: equipment_excavating
+        - table: equipment_hammer
+        - table: equipment_mattress
+        - table: equipment_rock_filter_bags
+        - table: equipment_rov
+        - table: equipment_soil_lay_rates
+        - table: equipment_soil_penet_rates
+        - table: equipment_split_pipe
+        - table: equipment_vibro_driver
+    - table: operations
+      dummy: True
+      children:
+        - table: operations_limit_hs
+        - table: operations_limit_tp
+        - table: operations_limit_ws
+        - table: operations_limit_cs
+    - table: vehicle
+      pkey: id
+      children:
+        - table: vehicle_shared
+          fkey: fk_vehicle_id
+        - table: vehicle_helicopter
+          fkey: fk_vehicle_id
+        - table : vehicle_vessel_anchor_handling
+          fkey: fk_vehicle_id
+        - table: vehicle_vessel_cable_laying
+          fkey: fk_vehicle_id
+          bool:
+            - cable_splice_capabilities
+            - dynamic_positioning_capabilities 
+        - table: vehicle_vessel_cargo
+          fkey: fk_vehicle_id
+          bool:
+            - dynamic_positioning_capabilities
+        - table: vehicle_vessel_jackup
+          fkey: fk_vehicle_id
+          bool:
+            - dynamic_positioning_capabilities
+        - table: vehicle_vessel_tugboat
+          fkey: fk_vehicle_id
+- table: device
+  pkey: id
+  autokey: True
+  schema: project
+  children:
+    - table: device_shared
+      array:
+        - centre_of_gravity
+        - foundation_locations
+        - footprint_corner_coords
+        - variable_power_factor
+      bool:
+        - two_stage_assembly
+      fkey: fk_device_id
+      stripf: True
+    - table: device_floating
+      array:
+        - maximum_displacement
+        - fairlead_locations
+        - umbilical_connection_point
+      bool:
+        - depth_variation_permitted
+      fkey: fk_device_id
+      stripf: True
+    - table: device_tidal
+      bool:
+        - two_ways_flow
+      fkey: fk_device_id
+      stripf: True
+    - table: device_tidal_power_performance
+      fkey: fk_device_id
+      stripf: True
+    - table: device_wave
+      fkey: fk_device_id
+      stripf: True
+    - table: sub_systems
+      pkey: id
+      fkey: fk_device_id
+      stripf: True
+      children:
+        - table: sub_systems_access
+          fkey: fk_sub_system_id
+        - table: sub_systems_economic
+          fkey: fk_sub_system_id
+        - table: sub_systems_inspection
+          fkey: fk_sub_system_id
+        - table: sub_systems_install
+          fkey: fk_sub_system_id
+        - table: sub_systems_maintenance
+          fkey: fk_sub_system_id
+          bool:
+            - interruptible
+        - table: sub_systems_operation_weightings
+          fkey: fk_sub_system_id
+        - table: sub_systems_replace
+          fkey: fk_sub_system_id
+          bool:
+            - interruptible
+- table: site
+  pkey: id
+  autokey: True
+  geo:
+    - site_boundary
+    - lease_boundary
+    - corridor_boundary
+    - cable_landing_location
+  schema: project
+  children:
+    - table: cable_corridor_constraint
+      fkey: fk_site_id
+      stripf: True
+    - table: time_series_energy_wave
+      fkey: fk_site_id
+      time:
+        - measure_time
+      stripf: True
+    - table: time_series_om_tidal
+      fkey: fk_site_id
+      time:
+        - measure_time
+      stripf: True
+    - table: time_series_om_wave
+      fkey: fk_site_id
+      time:
+        - measure_time
+      stripf: True
+    - table: time_series_om_wind
+      fkey: fk_site_id
+      time:
+        - measure_time
+      stripf: True
+    - table: constraint
+      fkey: fk_site_id
+      geo:
+        - boundary
+      stripf: True
+    - table: lease_area
+      fkey: fk_site_id
+      geo:
+        - tidal_occurrence_point
+      bool:
+        - has_helipad
+      stripf: True
+    - table: cable_corridor_bathymetry
+      fkey: fk_site_id
+      pkey: id
+      geo:
+        - utm_point
+      stripf: True
+      children:
+        - table: cable_corridor_bathymetry_layer
+          fkey: fk_bathymetry_id
+    - table: bathymetry
+      fkey: fk_site_id
+      pkey: id
+      geo:
+        - utm_point
+      stripf: True
+      children: 
+        - table: bathymetry_layer
+          fkey: fk_bathymetry_id
+        - table: time_series_energy_tidal
+          fkey: fk_bathymetry_id
+          time:
+            - measure_time
+

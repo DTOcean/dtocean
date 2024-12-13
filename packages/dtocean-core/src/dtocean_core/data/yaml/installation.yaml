@@ -1,0 +1,3073 @@
+---
+- description: Cable burial equipment database.
+  identifier: component.cable_burial
+  labels:
+  - Name
+  - Width
+  - Length
+  - Height
+  - Dry Mass
+  - Max Operating Depth
+  - Tow Force Required
+  - Jetting Capability
+  - Ploughing Capability
+  - Cutting Capability
+  - Jetting Trench Depth
+  - Ploughing Trench Depth
+  - Cutting Trench Depth
+  - Max Cable Diameter
+  - Min Cable Bending Radius
+  - Additional Equipment Footprint
+  - Additional Equipment Mass
+  - Equipment Day Rate
+  - Personnel Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_cable_burial
+  - description
+  - width
+  - length
+  - height
+  - dry_mass
+  - max_operating_depth
+  - tow_force_required
+  - jetting_capability
+  - ploughing_capability
+  - cutting_capability
+  - jetting_trench_depth
+  - ploughing_trench_depth
+  - cutting_trench_depth
+  - max_cable_diameter
+  - min_cable_bend_radius
+  - additional_equipment_footprint
+  - additional_equipment_mass
+  - equipment_day_rate
+  - personnel_day_rate
+  title: 'Installation Equipment: Cable Burial Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - bool
+  - bool
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - m
+  - tonnes
+  - m
+  - tonnes
+  - null
+  - null
+  - null
+  - m
+  - m
+  - m
+  - mm
+  - m
+  - m^{2}
+  - tonnes
+  - Euro/day
+  - Euro/day
+- description: Divers equipment database.
+  identifier: component.divers
+  labels:
+  - Name
+  - Max Operating Depth
+  - Deployment Equipment Footprint
+  - Deployment Equipment Mass
+  - Total Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_divers
+  - description
+  - max_operating_depth
+  - deployment_eq_footprint
+  - deployment_eq_mass
+  - total_day_rate
+  title: 'Installation Equipment: Divers  Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m^{2}
+  - tonnes
+  - Euro/day
+- description: Drilling rigs equipment database.
+  identifier: component.drilling_rigs
+  labels:
+  - Name
+  - Diameter
+  - Length
+  - Dry Mass
+  - Max Water Depth
+  - Max Drilling Depth
+  - Drilling Diameter Range
+  - Additional Equipment Footprint
+  - Additional Equipment Mass
+  - Equipment Day Rate
+  - Personnel Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_drilling_rigs
+  - description
+  - diameter
+  - length
+  - dry_mass
+  - max_water_depth
+  - max_drilling_depth
+  - drilling_diameter_range
+  - additional_equipment_footprint
+  - additional_equipment_mass
+  - equipment_day_rate
+  - personnel_day_rate
+  title: 'Installation Equipment: Drilling Rigs Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - tonnes
+  - m
+  - m
+  - m
+  - m^{2}
+  - tonnes
+  - Euro/day
+  - Euro/day
+- description: Installation equipment penetration rate for different soil types.
+  identifier: component.equipment_penetration_rates
+  labels:
+  - Technique
+  - Loose Sand
+  - Medium Sand
+  - Dense Sand
+  - Very Soft Clay
+  - Soft Clay
+  - Firm Clay
+  - Stiff Clay
+  - Hard Glacial Till
+  - Cemented
+  - Soft Rock Coral
+  - Hard Rock
+  - Gravel Cobble
+  structure: IndexTableColumn
+  tables:
+  - reference.equipment_soil_penet_rates
+  - equipment_type
+  - soil_ls
+  - soil_ms
+  - soil_ds
+  - soil_vsc
+  - soil_sc
+  - soil_fc
+  - soil_stc
+  - soil_hgt
+  - soil_cm
+  - soil_src
+  - soil_hr
+  - soil_gc
+  title: 'Installation Equipment: Penetration Rates'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  - m/hour
+  valid_values:
+  - Drilling rig
+  - Hammer
+  - Vibro driver
+  - ROV with suction pump
+  - ROV with jetting
+- description: Excavating equipment database.
+  identifier: component.excavating
+  labels:
+  - Name
+  - Width
+  - Height
+  - Dry Mass
+  - Depth Rating
+  - Equipment Day Rate
+  - Personnel Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_excavating
+  - description
+  - width
+  - height
+  - dry_mass
+  - depth_rating
+  - equipment_day_rate
+  - personnel_day_rate
+  title: 'Installation Equipment: Excavating Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - tonnes
+  - m
+  - Euro/day
+  - Euro/day
+- description: Hammer equipment database.
+  identifier: component.hammer
+  labels:
+  - Name
+  - Length
+  - Dry Mass
+  - Depth Rating
+  - Min Pile Diameter
+  - Max Pile Diameter
+  - Additional Equipment Footprint
+  - Additional Equipment Mass
+  - Equipment Day Rate
+  - Personnel Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_hammer
+  - description
+  - length
+  - dry_mass
+  - depth_rating
+  - min_pile_diameter
+  - max_pile_diameter
+  - additional_equipment_footprint
+  - additional_equipment_mass
+  - equipment_day_rate
+  - personnel_day_rate
+  title: 'Installation Equipment: Hammer Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - tonnes
+  - m
+  - mm
+  - mm
+  - m^{2}
+  - tonnes
+  - Euro/day
+  - Euro/day
+- description: Concrete mattress installation equipment database.
+  identifier: component.mattress_installation
+  labels:
+  - Name
+  - Width
+  - Length
+  - Thickness
+  - Dry Mass
+  - Cost
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_mattress
+  - description
+  - width
+  - length
+  - thickness
+  - dry_mass
+  - cost
+  title: 'Installation Equipment: Concrete Mattress Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - m
+  - tonnes
+  - Euro
+- description: Port locations in geographical coordinates.
+  identifier: component.port_locations
+  labels:
+  - Lon
+  - Lat
+  structure: PointDictColumn
+  tables:
+  - reference.ports
+  - name
+  - point_location
+  title: Port Locations
+  units:
+  - degrees
+  - degrees
+- description: Ports database.
+  identifier: component.ports
+  labels:
+  - Name
+  - Country
+  - Type of Terminal
+  - Entrance Width
+  - Terminal Length
+  - Terminal Load Bearing
+  - Terminal Draught
+  - Terminal Area
+  - Max Gantry Crane Lift Capacity
+  - Max Tower Crane Lift Capacity
+  - Jacking Capability
+  structure: TableDataColumn
+  tables:
+  - reference.ports
+  - name
+  - country
+  - type_of_terminal
+  - entrance_width
+  - terminal_length
+  - terminal_load_bearing
+  - terminal_draught
+  - terminal_area
+  - max_gantry_crane_lift_capacity
+  - max_tower_crane_lift_capacity
+  - jacking_capability
+  title: Ports Data
+  types:
+  - str
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  units:
+  - null
+  - null
+  - null
+  - m
+  - m
+  - tonnes/m^{2}
+  - m
+  - m^{2}
+  - tonnes
+  - tonnes
+  - null
+- description: Rock bag installation equipment database.
+  identifier: component.rock_bags_installation
+  labels:
+  - Name
+  - Diameter
+  - Height
+  - Dry Mass
+  - Cost
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_rock_filter_bags
+  - description
+  - diameter
+  - height
+  - dry_mass
+  - cost
+  title: 'Installation Equipment: Rock Bags Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - tonnes
+  - Euro
+- description: ROV equipment database.
+  identifier: component.rov
+  labels:
+  - Name
+  - Class
+  - Width
+  - Length
+  - Height
+  - Dry Mass
+  - Depth Rating
+  - Payload
+  - Manipulator Grip Force
+  - Additional Equipment Footprint
+  - Additional Equipment Mass
+  - Number of Supervisors
+  - Number of Technicians
+  - Equipment Day Rate
+  - Supervisor Day Rate
+  - Technician Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_rov
+  - description
+  - rov_class
+  - width
+  - length
+  - height
+  - dry_mass
+  - depth_rating
+  - payload
+  - manipulator_grip_force
+  - additional_equipment_footprint
+  - additional_equipment_mass
+  - additional_equipment_supervisors
+  - additional_equipment_technicians
+  - equipment_day_rate
+  - supervisor_day_rate
+  - technician_day_rate
+  title: 'Installation Equipment: ROV Data'
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - int
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - tonnes
+  - m
+  - tonnes
+  - N
+  - m^{2}
+  - tonnes
+  - null
+  - null
+  - Euro/day
+  - Euro/day
+  - Euro/day
+- description: Split pipe installation equipment database.
+  identifier: component.split_pipes_installation
+  labels:
+  - Name
+  - Length
+  - Cost
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_split_pipe
+  - description
+  - length
+  - cost
+  title: 'Installation Equipment: Split Pipes Data'
+  types:
+  - str
+  - float
+  - float
+  units:
+  - null
+  - mm
+  - Euro
+- description: Helicopter vehicle details.
+  identifier: component.vehicle_helicopter
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_helicopter
+  - description
+  - gross_tonnage
+  - length
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Helicopter Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Anchor handling tug supply vessel vehicle details.
+  identifier: component.vehicle_vessel_ahts
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Towing Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Bollard Pull
+  - Anchor Handling Drum Capacity
+  - Anchor Handling Winch Rated Pull
+  - External  Personnel
+  - Max Towing Hs
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_ahts
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - consumption_towing
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - bollard_pull
+  - anchor_handling_drum_capacity
+  - anchor_handling_winch_rated_pull
+  - external_personel
+  - towing_max_hs
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Anchor Handling Tug Supply Vessel Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - tonnes
+  - m
+  - tonnes
+  - null
+  - m
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Barge vehicle details.
+  identifier: component.vehicle_vessel_barge
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_barge
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - dynamic_positioning_capabilities
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Barge Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Cable laying barge vehicle details.
+  identifier: component.vehicle_vessel_clb
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Number of Turntables
+  - Max Turntable Load Mass
+  - Turntable Inner Diameter
+  - Cable Splice Capabilities
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_clb
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - number_turntables
+  - turntable_max_load_mass
+  - turntable_inner_diameter
+  - cable_splice_capabilities
+  - dynamic_positioning_capabilities
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Cable Laying Barge Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - float
+  - float
+  - bool
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - tonnes
+  - m
+  - null
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Cable laying vessel vehicle details.
+  identifier: component.vehicle_vessel_clv
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Bollard Pull
+  - Number of Turntables
+  - Max Turntable Load Mass
+  - Turntable Inner Diameter
+  - Cable Splice Capabilities
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_clv
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - bollard_pull
+  - number_turntables
+  - turntable_max_load_mass
+  - turntable_inner_diameter
+  - cable_splice_capabilities
+  - dynamic_positioning_capabilities
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Cable Laying Vessel Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - float
+  - float
+  - bool
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - tonnes
+  - null
+  - tonnes
+  - m
+  - null
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Crane barge vehicle details.
+  identifier: component.vehicle_vessel_crane_barge
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_crane_barge
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - dynamic_positioning_capabilities
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Crane Barge Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Crane vessel vehicle details.
+  identifier: component.vehicle_vessel_crane_vessel
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_crane_vessel
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - dynamic_positioning_capabilities
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Crane Vessel Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Construction support vessel vehicle details.
+  identifier: component.vehicle_vessel_csv
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_csv
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - dynamic_positioning_capabilities
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Construction Support Vessel Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Crew transfer vessel vehicle details.
+  identifier: component.vehicle_vessel_ctv
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_ctv
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - dynamic_positioning_capabilities
+  - external_personel
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Crew Transfer Vessel Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - null
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Jackup barge vehicle details.
+  identifier: component.vehicle_vessel_jackup_barge
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Jack-Up Water Depth
+  - Jack-Up Lowering Velocity
+  - Max Jack-Up Payload
+  - Max Jacking Hs
+  - Max Jacking Tp
+  - Max Jacking Current Velocity
+  - Max Jacking Wind Velocity
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_jackup_barge
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - dynamic_positioning_capabilities
+  - external_personel
+  - jackup_max_water_depth
+  - jackup_speed_down
+  - jackup_max_payload_mass
+  - jacking_max_hs
+  - jacking_max_tp
+  - jacking_max_cs
+  - jacking_max_ws
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Jackup Barge Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - null
+  - m
+  - m/min
+  - tonnes
+  - m
+  - s
+  - m/s
+  - m/s
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Jackup vessel vehicle details.
+  identifier: component.vehicle_vessel_jackup_vessel
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Dynamic Positioning Capabilities
+  - External  Personnel
+  - Max Jack-Up Water Depth
+  - Jack-Up Lowering Velocity
+  - Max Jack-Up Payload
+  - Max Jacking Hs
+  - Max Jacking Tp
+  - Max Jacking Current Velocity
+  - Max Jacking Wind Velocity
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_jackup_vessel
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - dynamic_positioning_capabilities
+  - external_personel
+  - jackup_max_water_depth
+  - jackup_speed_down
+  - jackup_max_payload_mass
+  - jacking_max_hs
+  - jacking_max_tp
+  - jacking_max_cs
+  - jacking_max_ws
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Jackup Vessel Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - bool
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - null
+  - null
+  - m
+  - m/min
+  - tonnes
+  - m
+  - s
+  - m/s
+  - m/s
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Multicat vehicle details.
+  identifier: component.vehicle_vessel_multicat
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Towing Consumption
+  - Transit Speed
+  - Deck Space
+  - Max Deck Pressure
+  - Max Cargo Mass
+  - Max Crane Load Mass
+  - Bollard Pull
+  - Anchor Handling Drum Capacity
+  - Anchor Handling Winch Rated Pull
+  - External  Personnel
+  - Max Towing Hs
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_multicat
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - consumption_towing
+  - transit_speed
+  - deck_space
+  - max_deck_load_pressure
+  - max_cargo_mass
+  - crane_max_load_mass
+  - bollard_pull
+  - anchor_handling_drum_capacity
+  - anchor_handling_winch_rated_pull
+  - external_personel
+  - towing_max_hs
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Multicat Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - int
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - l/hour
+  - m/s
+  - m^{2}
+  - tonnes/m^{2}
+  - tonnes
+  - tonnes
+  - tonnes
+  - m
+  - tonnes
+  - null
+  - m
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Tugboat vehicle details.
+  identifier: component.vehicle_vessel_tugboat
+  labels:
+  - Name
+  - Gross Tonnage
+  - Length
+  - Beam
+  - Max Draft
+  - Consumption
+  - Towing Consumption
+  - Transit Speed
+  - Bollard Pull
+  - Max Transit Hs
+  - Max Transit Tp
+  - Max Transit Current Velocity
+  - Max Transit Wind Velocity
+  - Mobilisation Time
+  - Mobilisation Percentage Cost
+  - Min Day Rate
+  - Max Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.view_vehicle_vessel_tugboat
+  - description
+  - gross_tonnage
+  - length
+  - beam
+  - max_draft
+  - consumption
+  - consumption_towing
+  - transit_speed
+  - bollard_pull
+  - transit_max_hs
+  - transit_max_tp
+  - transit_max_cs
+  - transit_max_ws
+  - mobilisation_time
+  - mobilisation_percentage_cost
+  - min_day_rate
+  - max_day_rate
+  title: 'Vessels: Tugboat Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - null
+  - m
+  - m
+  - m
+  - l/hour
+  - l/hour
+  - m/s
+  - tonnes
+  - m
+  - s
+  - m/s
+  - m/s
+  - hours
+  - pc
+  - Euro/day
+  - Euro/day
+- description: Vibro driver equipment database.
+  identifier: component.vibro_driver
+  labels:
+  - Name
+  - Width
+  - Length
+  - Height
+  - Vibro Driver Mass
+  - Clamp Mass
+  - Min Pile Diameter
+  - Max Pile Diameter
+  - Max Pile Mass
+  - Additional Equipment Footprint
+  - Additional Equipment Mass
+  - Equipment Day Rate
+  - Personnel Day Rate
+  structure: TableDataColumn
+  tables:
+  - reference.equipment_vibro_driver
+  - description
+  - width
+  - length
+  - height
+  - vibro_driver_mass
+  - clamp_mass
+  - min_pile_diameter
+  - max_pile_diameter
+  - max_pile_mass
+  - additional_equipment_footprint
+  - additional_equipment_mass
+  - equipment_day_rate
+  - personnel_day_rate
+  title: 'Installation Equipment: Vibro Driver Data'
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - m
+  - tonnes
+  - tonnes
+  - mm
+  - mm
+  - tonnes
+  - m^{2}
+  - tonnes
+  - Euro/day
+  - Euro/day
+- auto_only: hidden.device_filtered
+  description: The time required to assemble the device.
+  identifier: device.assembly_duration
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - assembly_duration
+  title: Device Assembly Duration
+  types:
+  - float
+  units:
+  - hours
+- auto_only: hidden.device_filtered
+  description: The required bollard pull to tow a single device.
+  identifier: device.bollard_pull
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - bollard_pull
+  title: Device Towing Bollard Pull
+  types:
+  - float
+  units:
+  - tonnes
+- auto_only: hidden.device_filtered
+  description: The time required to mechanically and electrically connect a single
+    device on-site.
+  identifier: device.connect_duration
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - connect_duration
+  title: Device Connect Duration
+  types:
+  - float
+  units:
+  - hours
+- auto_only: hidden.device_filtered
+  description: Dimensions and assembly data for the device Control System.
+  identifier: device.control_subsystem_installation
+  labels:
+  - Sub-System
+  - Length
+  - Width
+  - Height
+  - Dry Mass
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_control_system_installation
+  - sub_system
+  - length
+  - width
+  - height
+  - dry_mass
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Device Control System Installation Specification
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - m
+  - kg
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Control System
+- auto_only: hidden.device_filtered
+  description: The time required to mechanically and electrically disconnect a single
+    device on-site.
+  identifier: device.disconnect_duration
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - disconnect_duration
+  title: Device Disconnect Duration
+  types:
+  - float
+  units:
+  - hours
+- auto_only: hidden.device_filtered
+  description: The load out method to transfer the device from port to vessel deck
+    or port waters.
+  identifier: device.load_out_method
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - load_out_method
+  title: Device Load Out Method
+  types:
+  - str
+  valid_values:
+  - Lift Away
+  - Float Away
+  - Skidded
+  - Trailer
+- auto_only: hidden.device_filtered
+  description: 'Dimensions and assembly data for three device sub-systems: Prime Mover,
+    PTO and Support Structure. The control system is defined by Device Control System
+    Installation Specification.'
+  identifier: device.subsystem_installation
+  labels:
+  - Sub-System
+  - Length
+  - Width
+  - Height
+  - Dry Mass
+  - Max Hs
+  - Max Tp
+  - Max Wind Velocity
+  - Max Current Velocity
+  structure: IndexTableColumn
+  tables:
+  - filter.view_sub_systems_installation
+  - sub_system
+  - length
+  - width
+  - height
+  - dry_mass
+  - max_hs
+  - max_tp
+  - max_ws
+  - max_cs
+  title: Device Sub-System Installation Specification
+  types:
+  - str
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - m
+  - m
+  - m
+  - kg
+  - m
+  - s
+  - m/s
+  - m/s
+  valid_values:
+  - Prime Mover
+  - PTO
+  - Support Structure
+- auto_only: hidden.device_filtered
+  description: The device transportation method from port to site.
+  identifier: device.transportation_method
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - transportation_method
+  title: Device Transportation Method
+  types:
+  - str
+  valid_values:
+  - Deck
+  - Tow
+- auto_only: hidden.device_filtered
+  description: If true the device is assembled in two stages, attaching the support
+    structure on site.
+  identifier: device.two_stage_assembly
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - two_stage_assembly
+  title: Two Stage Assembly
+  types:
+  - bool
+- auto_only: hidden.site_filtered
+  description: Tidal current time series data keyed on date and time.
+  identifier: farm.tidal_series_installation
+  labels:
+  - Velocity
+  structure: TimeSeriesColumn
+  tables:
+  - filter.time_series_om_tidal
+  - measure_date
+  - measure_time
+  - current_speed
+  title: Tidal Current Time Series
+  types:
+  - float
+  units:
+  - m/s
+- auto_only: hidden.site_filtered
+  description: Wave time series data (Hs, Tp) keyed on date and time for use in planning
+    the installation phases.
+  identifier: farm.wave_series_installation
+  labels:
+  - Hs
+  - Tp
+  structure: TimeTableColumn
+  tables:
+  - filter.time_series_om_wave
+  - measure_date
+  - measure_time
+  - height_hs
+  - period_tp
+  title: Wave Time Series (Installation)
+  types:
+  - float
+  - float
+  units:
+  - m
+  - s
+- auto_only: hidden.site_filtered
+  description: Wind speed time series data keyed on date and time.
+  identifier: farm.wind_series_installation
+  labels:
+  - Velocity
+  structure: TimeSeriesColumn
+  tables:
+  - filter.time_series_om_wind
+  - measure_date
+  - measure_time
+  - wind_speed
+  title: Wind Speed Time Series
+  types:
+  - float
+  units:
+  - m/s
+- description: Allow skipping of installation phases that cannot be completed.
+  identifier: options.skip_phase
+  structure: SimpleData
+  title: Skip Phases
+  types:
+  - bool
+- description: Installation safety factors applied on cable burial equipment parameters.
+  identifier: project.cable_burial_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: 'Installation Equipment Safety Factors: Cable Burial'
+  types:
+  - str
+  - float
+  valid_values:
+  - Jetting trench depth [m]
+  - Ploughing trench depth [m]
+  - Cutting trench depth [m]
+  - Max cable diameter [mm]
+  - Min cable bending radius [m]
+  - Max operating depth [m]
+- description: Project commissioning date.
+  identifier: project.commissioning_date
+  structure: DateTimeData
+  title: Project Commissioning Date
+- description: The time required to commission the array once all devices have been
+    installed.
+  identifier: project.commissioning_time
+  structure: SimpleData
+  title: Installation Commissioning Duration
+  types:
+  - float
+  units:
+  - weeks
+- description: Installation contingency percentage; applied on top of the total installation
+    costs.
+  identifier: project.cost_contingency
+  structure: SimpleData
+  title: Installation Costs Contingency Factor
+  types:
+  - float
+  units:
+  - pc
+- description: Cost information breakdown displaying the contribution of the equipment,
+    port and vessel costs to the total cost of installing the devices.
+  identifier: project.device_phase_cost_class_breakdown
+  structure: SimpleDict
+  title: Device Phase Installation Cost Class Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: Cost information breakdown displaying the total cost associated with
+    installing individual components of the device.
+  identifier: project.device_phase_installation_cost_breakdown
+  structure: SimpleDict
+  title: Device Phase Installation Cost Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: 'Cost information for the installation of the devices. Cost components
+    are assigned to the following categories: Equipment, Port and Vessel.'
+  identifier: project.device_phase_installation_costs
+  labels:
+  - Component
+  - Equipment
+  - Port
+  - Vessel
+  structure: IndexTable
+  title: Device Phase Installation Costs
+  types:
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Euro
+  - Euro
+  - Euro
+- description: Time information breakdown displaying the total time associated with
+    installing individual sub-systems of the devices.
+  identifier: project.device_phase_installation_time_breakdown
+  structure: SimpleDict
+  title: Device Phase Installation Time Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: 'Information on the installation time of installing individual sub-systems
+    of the devices. Time is divided into the following components: Preparation, Operations,
+    Transit and Waiting.'
+  identifier: project.device_phase_installation_times
+  labels:
+  - Component
+  - Preparation
+  - Operations
+  - Transit
+  - Waiting
+  structure: IndexTable
+  title: Device Phase Installation Times
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - hours
+  - hours
+- description: 'Information on the total installation time of installing devices.
+    Time is divided into the following components: Preparation, Operations, Transit
+    and Waiting.'
+  identifier: project.device_phase_time_class_breakdown
+  structure: SimpleDict
+  title: Device Phase Installation Time Class Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: Installation safety factors applied on divers equipment parameters.
+  identifier: project.divers_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: 'Installation Equipment Safety Factors: Divers'
+  types:
+  - str
+  - float
+  valid_values:
+  - Max operating depth [m]
+- description: Cost information breakdown displaying the contribution of the equipment,
+    port and vessel costs to the total cost of installing the electrical network.
+  identifier: project.electrical_phase_cost_class_breakdown
+  structure: SimpleDict
+  title: Electrical Phase Installation Cost Class Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: Cost information breakdown displaying the total cost associated with
+    installing individual sub-systems of the electrical network.
+  identifier: project.electrical_phase_installation_cost_breakdown
+  structure: SimpleDict
+  title: Electrical Phase Installation Cost Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: 'Cost information for the installation of the electrical network. Cost
+    components are assigned to the following categories: Equipment, Port and Vessel.'
+  identifier: project.electrical_phase_installation_costs
+  labels:
+  - Component
+  - Equipment
+  - Port
+  - Vessel
+  structure: IndexTable
+  title: Electrical Phase Installation Costs
+  types:
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Euro
+  - Euro
+  - Euro
+- description: Time information breakdown displaying the total time associated with
+    installing individual sub-systems of the electrical network.
+  identifier: project.electrical_phase_installation_time_breakdown
+  structure: SimpleDict
+  title: Electrical Phase Installation Time Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: 'Information on the installation time of installing individual sub-systems
+    of the electrical network. Time is divided into the following components: Preparation,
+    Operations, Transit and Waiting.'
+  identifier: project.electrical_phase_installation_times
+  labels:
+  - Component
+  - Preparation
+  - Operations
+  - Transit
+  - Waiting
+  structure: IndexTable
+  title: Electrical Phase Installation Times
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - hours
+  - hours
+- description: 'Information on the total installation time of installing the electrical
+    network. Time is divided into the following components: Preparation, Operations,
+    Transit and Waiting.'
+  identifier: project.electrical_phase_time_class_breakdown
+  structure: SimpleDict
+  title: Electrical Phase Installation Time Class Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: Installation fuel unit cost.
+  identifier: project.fuel_cost_rate
+  structure: SimpleData
+  title: 'Installation Rates: Fuel Cost'
+  types:
+  - float
+  units:
+  - Euro/l
+- description: Installation grouting rate.
+  identifier: project.grout_rate
+  structure: SimpleData
+  title: 'Installation Rates: Grout'
+  types:
+  - float
+  units:
+  - m^{3}/hour
+- description: Installation safety factors applied on hammer equipment parameters.
+  identifier: project.hammer_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: 'Installation Equipment Safety Factors: Hammer'
+  types:
+  - str
+  - float
+  valid_values:
+  - Max pile diameter [mm]
+- description: 'Dates for installing the static array cable(s). Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_array_cable_dates
+  structure: DateTimeDict
+  title: 'Array Cable: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the static cable protection. Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_cable_protection_dates
+  structure: DateTimeDict
+  title: 'Cable Protection: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the device(s). Dates are defined as: Start, Depart
+    and End.'
+  identifier: project.install_devices_dates
+  structure: DateTimeDict
+  title: 'Device: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the direct embedment anchors. Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_direct_embedment_dates
+  structure: DateTimeDict
+  title: 'Direct Embedment Anchors: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the drag embedment anchors. Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_drag_embedment_dates
+  structure: DateTimeDict
+  title: 'Drag Embedment Anchors: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the driven pile anchors or foundations. Dates
+    are defined as: Start, Depart and End.'
+  identifier: project.install_driven_piles_dates
+  structure: DateTimeDict
+  title: 'Driven Pile Foundations: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the dynamic electrical cable(s). Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_dynamic_cable_dates
+  structure: DateTimeDict
+  title: 'Dynamic Cable: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the export cable(s). Dates are defined as: Start,
+    Depart and End.'
+  identifier: project.install_export_cable_dates
+  structure: DateTimeDict
+  title: 'Export Cable: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the gravity based foundations. Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_gravity_based_dates
+  structure: DateTimeDict
+  title: 'Gravity Based Foundations: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the pile anchors. Dates are defined as: Start,
+    Depart and End.'
+  identifier: project.install_pile_anchor_dates
+  structure: DateTimeDict
+  title: 'Driven Pile Anchors: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the subsea collection point(s). Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_subsea_collection_point_dates
+  structure: DateTimeDict
+  title: 'Subsea Collection Point: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the suction embedment anchors. Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_suction_embedment_dates
+  structure: DateTimeDict
+  title: 'Suction Embedment Anchors: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the device support structure. Dates are defined
+    as: Start, Depart and End.'
+  identifier: project.install_support_structure_dates
+  structure: DateTimeDict
+  title: 'Device Support Structure: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: 'Dates for installing the surface piercing substation(s). Dates are
+    defined as: Start, Depart and End.'
+  identifier: project.install_surface_piercing_substation_dates
+  structure: DateTimeDict
+  title: 'Surface Piercing Substation: Installation Dates'
+  valid_values:
+  - Start
+  - Depart
+  - End
+- description: End date of the project installation phase.
+  identifier: project.installation_completion_date
+  structure: DateTimeData
+  title: Installation End Date
+- description: Total installation cost separated into installation operation components.
+  identifier: project.installation_cost_class_breakdown
+  structure: SimpleDict
+  title: Per Installation Cost Class Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: Bill of materials for array installation costs, assigned to logistic
+    phases.
+  identifier: project.installation_economics_data
+  labels:
+  - Key Identifier
+  - Cost
+  - Quantity
+  - Year
+  structure: TableData
+  title: Installation Bill of Materials
+  types:
+  - str
+  - float
+  - float
+  - int
+  units:
+  - null
+  - Euro
+  - null
+  - null
+- description: The total number of vessels used for the installation phase operations.
+  identifier: project.installation_journeys
+  structure: SimpleData
+  title: Number of Installation Vessels Used
+  types:
+  - int
+- description: Total installation cost separated into individual phases.
+  identifier: project.installation_phase_cost_breakdown
+  structure: SimpleDict
+  title: Per Phase Installation Cost Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: Total installation time separated into individual phases.
+  identifier: project.installation_phase_time_breakdown
+  structure: SimpleDict
+  title: Per Phase Installation Time Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: Ordered list of installation operations.
+  identifier: project.installation_plan
+  structure: SimpleList
+  title: Array Installation Plan
+  types:
+  - str
+- description: Total installation time separated into installation operation components.
+  identifier: project.installation_time_class_breakdown
+  structure: SimpleDict
+  title: Per Installation Time Class Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: Computed average vessel size used during the installation phase.
+  identifier: project.installation_vessel_average_size
+  structure: SimpleData
+  title: Average Length of Installation Vessels
+  types:
+  - float
+  units:
+  - m
+- description: Installation technique used at the transition area to bring the cable
+    onshore.
+  identifier: project.landfall_contruction_technique
+  structure: SimpleData
+  title: Export Cable Landfall Construction Technique
+  types:
+  - str
+  valid_values:
+  - Horizontal Directional Drilling
+  - Open Cut Trenching
+- description: Local access point in the lease area used for vessel entry.
+  identifier: project.lease_area_entry_point
+  labels:
+  - UTM x
+  - UTM x
+  structure: PointData
+  title: Lease Area Installation Entry Point
+  types:
+  - float
+  units:
+  - m
+  - m
+- description: Installation cable loading rate in turntable.
+  identifier: project.loading_rate
+  structure: SimpleData
+  title: 'Installation Rates: Loading'
+  types:
+  - float
+  units:
+  - m/hour
+- description: Cost information breakdown displaying the contribution of the equipment,
+    port and vessel costs to the total cost of installing the moorings and foundations.
+  identifier: project.mooring_phase_cost_class_breakdown
+  structure: SimpleDict
+  title: Moorings & Foundations Phase Installation Cost Class Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: Cost information breakdown displaying the total cost associated with
+    installing individual sub-systems of the moorings and foundations.
+  identifier: project.mooring_phase_installation_cost_breakdown
+  structure: SimpleDict
+  title: Moorings & Foundations Phase Installation Cost Breakdown
+  types:
+  - float
+  units:
+  - Euro
+- description: 'Cost information for the installation of the moorings and foundations.
+    Cost components are assigned to the following categories: Equipment, Port and
+    Vessel.'
+  identifier: project.mooring_phase_installation_costs
+  labels:
+  - Component
+  - Equipment
+  - Port
+  - Vessel
+  structure: IndexTable
+  title: Moorings & Foundations Phase Installation Costs
+  types:
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Euro
+  - Euro
+  - Euro
+- description: Time information breakdown displaying the total time associated with
+    installing individual sub-systems of the moorings and foundations.
+  identifier: project.mooring_phase_installation_time_breakdown
+  structure: SimpleDict
+  title: Moorings & Foundations Phase Installation Time Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: 'Information on the installation time of installing individual sub-systems
+    of the moorings and foundations. Time is divided into the following components:
+    Preparation, Operations, Transit and Waiting.'
+  identifier: project.mooring_phase_installation_times
+  labels:
+  - Component
+  - Preparation
+  - Operations
+  - Transit
+  - Waiting
+  structure: IndexTable
+  title: Moorings & Foundations Phase Installation Times
+  types:
+  - float
+  - float
+  - float
+  - float
+  - float
+  units:
+  - null
+  - hours
+  - hours
+  - hours
+  - hours
+- description: 'Information on the total installation time of installing the moorings
+    and foundations. Time is divided into the following components: Preparation, Operations,
+    Transit and Waiting.'
+  identifier: project.mooring_phase_time_class_breakdown
+  structure: SimpleDict
+  title: Moorings & Foundations Phase Installation Time Class Breakdown
+  types:
+  - float
+  units:
+  - hours
+- description: Port selected for use in assessment of the installation phase operations.
+  identifier: project.port
+  structure: SimpleData
+  title: Selected Port
+  types:
+  - str
+- description: The sea distance between the Selected Port and the Lease Area Installation
+    Entry Point.
+  identifier: project.port_distance
+  structure: SimpleData
+  title: Port To Site Transit Distance
+  types:
+  - float
+  units:
+  - km
+- description: Installation port costs as percentage of total installation costs.
+  identifier: project.port_percentage_cost
+  structure: SimpleData
+  title: Port Cost Percentage
+  types:
+  - float
+  units:
+  - pc
+- description: Installation safety factors applied on port parameters.
+  identifier: project.port_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: Installation Port Safety Factors
+  types:
+  - str
+  - float
+  valid_values:
+  - Terminal area [m^2]
+  - Terminal load bearing [t/m^2]
+- description: Installation safety factors applied on ROV equipment parameters.
+  identifier: project.rov_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: 'Installation Equipment Safety Factors: ROV'
+  types:
+  - str
+  - float
+  valid_values:
+  - Manipulator grip force [N]
+  - Depth rating [m]
+- description: Installation equipment split pipe laying rate.
+  identifier: project.split_pipe_laying_rate
+  structure: SimpleData
+  title: 'Installation Rates: Split Pipe Laying Rate'
+  types:
+  - float
+  units:
+  - m/hour
+- description: Installation safety factors applied on split pipe equipment parameters.
+  identifier: project.split_pipe_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: 'Installation Equipment Safety Factors: Split Pipe'
+  types:
+  - str
+  - float
+  valid_values:
+  - Max cable size [mm]
+  - Min bending radius [m]
+- description: Start date of the project installation phase.
+  identifier: project.start_date
+  structure: DateTimeData
+  title: Project Start Date
+  types:
+  - datetime
+- description: Installation equipment cable surface laying rate.
+  identifier: project.surface_laying_rate
+  structure: SimpleData
+  title: 'Installation Rates: Surface Laying Rate'
+  types:
+  - float
+  units:
+  - m/hour
+- description: Total cost of all installation phases and operations.
+  identifier: project.total_installation_cost
+  structure: SimpleData
+  title: Total Installation Cost
+  types:
+  - float
+  units:
+  - Euro
+- description: Total time of all installation phases and operations.
+  identifier: project.total_installation_time
+  structure: SimpleData
+  title: Total Installation Time
+  types:
+  - float
+  units:
+  - hours
+- description: Installation safety factors applied on vessel parameters.
+  identifier: project.vessel_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: Vessel Safety Factors
+  types:
+  - str
+  - float
+  valid_values:
+  - Deck space [m^2]
+  - Deck loading [t/m^2]
+  - Max. cargo [t]
+  - Crane capacity [t]
+  - Bollard pull [t]
+  - Turntable loading [t]
+  - Turntable inner diameter [m]
+  - AH winch rated pull [t]
+  - AH drum capacity [m]
+  - JackUp max payload [t]
+  - JackUp max water depth [m]
+- description: Installation safety factors applied on vibro-driver equipment parameters.
+  identifier: project.vibro_driver_safety_factors
+  labels:
+  - Parameter
+  - Safety Factor
+  structure: IndexTable
+  title: 'Installation Equipment Safety Factors: Vibro Driver'
+  types:
+  - str
+  - float
+  valid_values:
+  - Max pile diameter [mm]
+  - Max pile weight [t]
+  - Depth rating [m]
+- description: Per operation limit conditions for significant wave height
+  identifier: component.operations_limit_hs
+  labels:
+  - Name
+  - Hs Limit
+  structure: SimpleDictColumn
+  tables:
+  - reference.view_operations_limit_hs
+  - operations_type
+  - hs_limit
+  title: Wave Height Operational Limits
+  types:
+  - float
+  units:
+  - m
+  valid_values:
+  - Vessel Positioning + Connection to cable pull-head + Cable float-out + Cable lay
+    into pre-excavated trench
+  - Vessel positioning + Connection to cable pull-head + Cable float-out + Cable pull-in
+    through HDD conduit
+  - Deploy of Cable Burial Tool
+  - Recover cable burial tool
+  - Cable lay and burial through cable route
+  - Cable lay through cable route
+  - Cable lay through open trench
+  - Cable lay with split pipes
+  - Cable lay with buoyancy modules
+  - Conduct dry-mate connection on deck
+  - Conduct splice connection on deck
+  - Connect to guide wire + Lower cable and connection equip + Perform wet-mate connect
+    + Recover connection equip
+  - J-tube entrance inspection + Guide wire connection + Cable lay + Cable pull +
+    Cable connection
+  - Lower cable-end to the seabed
+  - Lift cable-end from seabed
+  - Lower collection point to the seabed
+  - Lift top-side platform
+  - Connect top-side platform to the support structure
+  - Lift and overboard concrete mattress + Lower concrete mattress to seabed + Position
+    and release concrete mattress + Recover installation frame
+  - Lift and overboard rock filter bag + Lower rock filter bag to seabed + Position
+    and release concrete mattress
+- description: Per operation limit conditions for peak wave period
+  identifier: component.operations_limit_tp
+  labels:
+  - Name
+  - Tp Limit
+  structure: SimpleDictColumn
+  tables:
+  - reference.view_operations_limit_tp
+  - operations_type
+  - tp_limit
+  title: Wave Period Operational Limits
+  types:
+  - float
+  units:
+  - s
+  valid_values:
+  - Seafloor & equipment preparation
+  - Grouting
+  - Grouting equipment removal
+  - Vessel Positioning + Connection to cable pull-head + Cable float-out + Cable lay
+    into pre-excavated trench
+  - Vessel positioning + Connection to cable pull-head + Cable float-out + Cable pull-in
+    through HDD conduit
+  - Deploy of Cable Burial Tool
+  - Recover cable burial tool
+  - Cable lay and burial through cable route
+  - Cable lay through cable route
+  - Cable lay through open trench
+  - Cable lay with split pipes
+  - Cable lay with buoyancy modules
+  - Conduct dry-mate connection on deck
+  - Conduct splice connection on deck
+  - Connect to guide wire + Lower cable and connection equip + Perform wet-mate connect
+    + Recover connection equip
+  - J-tube entrance inspection + Guide wire connection + Cable lay + Cable pull +
+    Cable connection
+  - Lower cable-end to the seabed
+  - Lift cable-end from seabed
+  - Lower collection point to the seabed
+  - Lift top-side platform
+  - Connect top-side platform to the support structure
+  - Lift and overboard concrete mattress + Lower concrete mattress to seabed + Position
+    and release concrete mattress + Recover installation frame
+  - Lift and overboard rock filter bag + Lower rock filter bag to seabed + Position
+    and release concrete mattress
+  - Guiding template positioning + seafloor preparation equipment preparation
+  - Seafloor preparation + support structure positioning and equipment preparation
+  - Driven pile foundation or anchor seafloor penetration through drilling rig + positioning
+  - Driven pile foundation or anchor seafloor penetration through hammering + positioning
+  - Driven pile foundation or anchor seafloor penetration through vibro-driving +
+    positioning
+  - Gravity based foundation or anchor lowering
+  - Lowering mooring lines + Drag-embedment anchor seafloor penetration + Tensioning
+  - Lowering mooring lines + Connecting end of mooring line to pre-installed pile
+    + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through suction-embedment + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through jetting-embedment + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through mechanical-embedment + Tensioning
+- description: Per operation limit conditions for wind speed
+  identifier: component.operations_limit_ws
+  labels:
+  - Name
+  - Wind Velocity Limit
+  structure: SimpleDictColumn
+  tables:
+  - reference.view_operations_limit_ws
+  - operations_type
+  - ws_limit
+  title: Wind Speed Operational Limits
+  types:
+  - float
+  units:
+  - m/s
+  valid_values:
+  - Seafloor & equipment preparation
+  - Grouting
+  - Grouting equipment removal
+  - Vessel Positioning + Connection to cable pull-head + Cable float-out + Cable lay
+    into pre-excavated trench
+  - Vessel positioning + Connection to cable pull-head + Cable float-out + Cable pull-in
+    through HDD conduit
+  - Deploy of Cable Burial Tool
+  - Recover cable burial tool
+  - Cable lay and burial through cable route
+  - Cable lay through cable route
+  - Cable lay through open trench
+  - Cable lay with split pipes
+  - Cable lay with buoyancy modules
+  - Conduct dry-mate connection on deck
+  - Conduct splice connection on deck
+  - Connect to guide wire + Lower cable and connection equip + Perform wet-mate connect
+    + Recover connection equip
+  - J-tube entrance inspection + Guide wire connection + Cable lay + Cable pull +
+    Cable connection
+  - Lower cable-end to the seabed
+  - Lift cable-end from seabed
+  - Lower collection point to the seabed
+  - Lift top-side platform
+  - Connect top-side platform to the support structure
+  - Lift and overboard concrete mattress + Lower concrete mattress to seabed + Position
+    and release concrete mattress + Recover installation frame
+  - Lift and overboard rock filter bag + Lower rock filter bag to seabed + Position
+    and release concrete mattress
+  - Guiding template positioning + seafloor preparation equipment preparation
+  - Seafloor preparation + support structure positioning and equipment preparation
+  - Driven pile foundation or anchor seafloor penetration through drilling rig + positioning
+  - Driven pile foundation or anchor seafloor penetration through hammering + positioning
+  - Driven pile foundation or anchor seafloor penetration through vibro-driving +
+    positioning
+  - Gravity based foundation or anchor lowering
+  - Lowering mooring lines + Drag-embedment anchor seafloor penetration + Tensioning
+  - Lowering mooring lines + Connecting end of mooring line to pre-installed pile
+    + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through suction-embedment + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through jetting-embedment + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through mechanical-embedment + Tensioning
+- description: Per operation limit conditions for current speed
+  identifier: component.operations_limit_cs
+  labels:
+  - Name
+  - Current Velocity Limit
+  structure: SimpleDictColumn
+  tables:
+  - reference.view_operations_limit_cs
+  - operations_type
+  - cs_limit
+  title: Current Speed Operational Limits
+  types:
+  - float
+  units:
+  - m/s
+  valid_values:
+  - Seafloor & equipment preparation
+  - Grouting
+  - Grouting equipment removal
+  - Vessel Positioning + Connection to cable pull-head + Cable float-out + Cable lay
+    into pre-excavated trench
+  - Vessel positioning + Connection to cable pull-head + Cable float-out + Cable pull-in
+    through HDD conduit
+  - Deploy of Cable Burial Tool
+  - Recover cable burial tool
+  - Cable lay and burial through cable route
+  - Cable lay through cable route
+  - Cable lay through open trench
+  - Cable lay with split pipes
+  - Cable lay with buoyancy modules
+  - Connect to guide wire + Lower cable and connection equip + Perform wet-mate connect
+    + Recover connection equip
+  - J-tube entrance inspection + Guide wire connection + Cable lay + Cable pull +
+    Cable connection
+  - Lower cable-end to the seabed
+  - Lift cable-end from seabed
+  - Lower collection point to the seabed
+  - Lift top-side platform
+  - Connect top-side platform to the support structure
+  - Lift and overboard concrete mattress + Lower concrete mattress to seabed + Position
+    and release concrete mattress + Recover installation frame
+  - Lift and overboard rock filter bag + Lower rock filter bag to seabed + Position
+    and release concrete mattress
+  - Guiding template positioning + seafloor preparation equipment preparation
+  - Seafloor preparation + support structure positioning and equipment preparation
+  - Driven pile foundation or anchor seafloor penetration through drilling rig + positioning
+  - Driven pile foundation or anchor seafloor penetration through hammering + positioning
+  - Driven pile foundation or anchor seafloor penetration through vibro-driving +
+    positioning
+  - Gravity based foundation or anchor lowering
+  - Lowering mooring lines + Drag-embedment anchor seafloor penetration + Tensioning
+  - Lowering mooring lines + Connecting end of mooring line to pre-installed pile
+    + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through suction-embedment + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through jetting-embedment + Tensioning
+  - Lowering anchors with mooring lines + Direct-embedment anchor seafloor penetration
+    through mechanical-embedment + Tensioning

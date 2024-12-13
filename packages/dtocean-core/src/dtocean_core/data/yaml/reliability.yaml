@@ -1,0 +1,1120 @@
+---
+- description: Non-critical failure rates for collection points
+  identifier: component.collection_points_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_collection_point
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Collection Points Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for dry mate connectors
+  identifier: component.dry_mate_connectors_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_connector_drymate
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Dry Mate Connector Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for dynamic cables
+  identifier: component.dynamic_cable_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_cable_dynamic
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Dynamic Cable Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for static cables
+  identifier: component.static_cable_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_cable_static
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Static Cable Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical per km failure rates for static cables. Used in k-factor
+    calculation.
+  identifier: component.static_cable_perkm_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableData
+  title: Static Cable Non-Critical Per km Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours per km
+  - Failures per 10^{6} hours per km
+  - Failures per 10^{6} hours per km
+- description: Non-critical failure rates for transformers
+  identifier: component.transformers_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_transformer
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Transformers Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for wet mate connectors
+  identifier: component.wet_mate_connectors_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_connector_wetmate
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Wet Mate Connector Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for collection points
+  identifier: component.collection_points_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_collection_point
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Collection Points Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for dry mate connectors
+  identifier: component.dry_mate_connectors_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_connector_drymate
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Dry Mate Connector Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for dynamic cables
+  identifier: component.dynamic_cable_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_cable_dynamic
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Dynamic Cable Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for static cables
+  identifier: component.static_cable_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_cable_static
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Static Cable Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical per km failure rates for static cables. Used in k-factor calculation.
+  identifier: component.static_cable_perkm_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableData
+  title: Static Cable Critical Per km Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours per km
+  - Failures per 10^{6} hours per km
+  - Failures per 10^{6} hours per km
+- description: Critical failure rates for transformers
+  identifier: component.transformers_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_transformer
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Transformers Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for wet mate connectors
+  identifier: component.wet_mate_connectors_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_connector_wetmate
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Wet Mate Connector Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for mooring chains
+  identifier: component.moorings_chain_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_chain
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Mooring Chain Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for foundation drag anchors
+  identifier: component.foundations_anchor_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_anchor
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Foundation Drag Anchor Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for mooring forerunner assemblies
+  identifier: component.moorings_forerunner_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_forerunner
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Mooring Forerunner Assembly Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for foundation piles
+  identifier: component.foundations_pile_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_pile
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Foundation Pile Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for mooring ropes
+  identifier: component.moorings_rope_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_rope
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Mooring Rope Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for mooring shackles
+  identifier: component.moorings_shackle_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_shackle
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Mooring shackle Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Non-critical failure rates for mooring swivels
+  identifier: component.moorings_swivel_NCFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_swivel
+  - component_id
+  - ncfr_lower_bound
+  - ncfr_mean
+  - ncfr_upper_bound
+  title: Mooring Swivel Non-Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for mooring chains
+  identifier: component.moorings_chain_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_chain
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Mooring Chain Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for foundation drag anchors
+  identifier: component.foundations_anchor_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_anchor
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Foundation Drag Anchor Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for mooring forerunner assemblies
+  identifier: component.moorings_forerunner_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_forerunner
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Mooring Forerunner Assembly Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for foundation piles
+  identifier: component.foundations_pile_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_foundations_pile
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Foundation Pile Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for mooring ropes
+  identifier: component.moorings_rope_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_rope
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Mooring Rope Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for mooring shackles
+  identifier: component.moorings_shackle_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_shackle
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Mooring Shackle Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Critical failure rates for mooring swivels
+  identifier: component.moorings_swivel_CFR
+  labels:
+  - Key Identifier
+  - Lower Bound
+  - Mean
+  - Upper Bound
+  structure: TableDataColumn
+  tables:
+  - reference.view_component_moorings_swivel
+  - component_id
+  - cfr_lower_bound
+  - cfr_mean
+  - cfr_upper_bound
+  title: Mooring Swivel Critical Failure Rates
+  types:
+  - str
+  - float
+  - float
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+  - Failures per 10^{6} hours
+- description: Time, $T$, at which the reliability, $R$, of the array systems should
+    be calculated. Default is 8766 hours (i.e. one year).
+  identifier: project.reliability_time
+  structure: SimpleData
+  title: Systems Reliability Calculation Time
+  types:
+  - int
+  units:
+  - hours
+- description: Confidence level for reliability calculations. Can be one of Pessimistic,
+    Normal or Optimistic. Default is Normal.
+  identifier: project.reliability_confidence
+  structure: SimpleData
+  title: Reliability Confidence Level
+  types:
+  - str
+  valid_values:
+  - Pessimistic
+  - Normal
+  - Optimistic
+- description: Use k-factors for failure rate adjustment. Default is False.
+  identifier: project.apply_kfactors
+  structure: SimpleData
+  title: Apply k-factors
+  types:
+  - bool
+- description: Critical reliability metrics for higher level systems such as the collection
+    points and devices.
+  identifier: project.system_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: System Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the export cable sub-system
+  identifier: project.export_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Export Cable Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the substation sub-system of collection
+    points
+  identifier: project.substation_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Substation Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the inter-array cable sub-systems
+  identifier: project.electrical_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Array Cable Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the combined moorings and foundations
+    sub-system
+  identifier: project.mandf_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Moorings and Foundations Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the foundations sub-system
+  identifier: project.foundations_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Foundations Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the moorings sub-system
+  identifier: project.moorings_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Moorings Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the umbilical sub-system
+  identifier: project.umbilical_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Umbilical Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Critical reliability metrics for the device sub-systems (i.e. PTO,
+    prime mover, support structure and control system)
+  identifier: project.device_reliability_CFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Device Sub-Systems Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for higher level systems such as the
+    collection points and devices.
+  identifier: project.system_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: System Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the export cable sub-system
+  identifier: project.export_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Export Cable Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the substation sub-system of collection
+    points
+  identifier: project.substation_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Substation Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the inter-array cable sub-systems
+  identifier: project.electrical_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Array Cable Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the combined moorings and foundations
+    sub-system
+  identifier: project.mandf_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Moorings and Foundations Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the foundations sub-system
+  identifier: project.foundations_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Foundations Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the moorings sub-system
+  identifier: project.moorings_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Moorings Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the umbilical sub-system
+  identifier: project.umbilical_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Umbilical Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null
+- description: Non-critical reliability metrics for the device sub-systems (i.e. PTO,
+    prime mover, support structure and control system)
+  identifier: project.device_reliability_NCFR
+  labels:
+  - System ID
+  - Failure Rate
+  - MTTF
+  - RPN
+  - Reliability (at time $T$)
+  structure: TableData
+  title: Device Sub-Systems Non-Critical Reliability Metrics
+  types:
+  - str
+  - float
+  - float
+  - int
+  - float
+  units:
+  - null
+  - Failures per 10^{6} hours
+  - years
+  - null
+  - null

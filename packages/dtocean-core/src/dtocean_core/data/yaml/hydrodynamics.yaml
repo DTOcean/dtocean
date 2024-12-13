@@ -1,0 +1,528 @@
+---
+- auto_only: hidden.device_filtered
+  description: Ability of tidal device turbine to work in both ebb and flow or just
+    one.
+  identifier: device.bidirection
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_tidal
+  - two_ways_flow
+  title: Bi-directional Turbine Boolean
+  types:
+  - bool
+- auto_only: hidden.device_filtered
+  description: The height of the tidal rotor hub from the device base.
+  identifier: device.turbine_hub_height
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_tidal
+  - hub_height
+  title: Tidal Device Hub Height
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: The current velocity at which the tidal device rotor begins to turn.
+  identifier: device.cut_in_velocity
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_tidal
+  - cut_in_velocity
+  title: Tidal Turbine Cut-In Velocity
+  types:
+  - float
+  units:
+  - m/s
+- auto_only: hidden.device_filtered
+  description: The current velocity at which the tidal device rotor stops turning.
+  identifier: device.cut_out_velocity
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_tidal
+  - cut_out_velocity
+  title: Tidal Turbine Cut-Out Velocity
+  types:
+  - float
+  units:
+  - m/s
+- description: Resultant excitation force of the isolated device
+  identifier: device.external_forces
+  labels:
+  - Modes
+  - Te
+  - Dir
+  structure: XGrid3D
+  title: Single Device Excitation Forces
+  units:
+  - null
+  - s
+  - deg
+  - N/m
+- auto_only: hidden.device_filtered
+  description: Maximum water depth in which device can be installed.
+  identifier: device.installation_depth_max
+  maximum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - installation_depth_max
+  title: Maximum Installation Water Depth
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Minimum water depth in which device can be installed.
+  identifier: device.installation_depth_min
+  maximum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - installation_depth_min
+  title: Minimum Installation Water Depth
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Minimum distance between devices in the transverse direction (perpendicular
+    to the array orientation). Also known as the column spacing.
+  identifier: device.minimum_distance_x
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - minimum_distance_x
+  title: Minimum Transverse Device Spacing
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Minimum distance between devices in the longitudinal direction (parallel
+    to the array orientation). Also known as the row spacing.
+  identifier: device.minimum_distance_y
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - minimum_distance_y
+  title: Minimum Longitudinal Device Spacing
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Rated power of device.
+  identifier: device.power_rating
+  minimums:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - rated_power
+  title: Device Rated Power
+  types:
+  - float
+  units:
+  - MW
+- auto_only: hidden.device_filtered
+  description: Diameter of tidal device rotor in m.
+  identifier: device.turbine_diameter
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_tidal
+  - turbine_diameter
+  title: Turbine Rotor Diameter
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Distance between the turbine and the axis of the device in case of
+    MCT device (two hubs). In the case of just one hub this value is set to zero.
+  identifier: device.turbine_interdistance
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_tidal
+  - turbine_interdistance
+  title: Interdistance Between Turbines
+  types:
+  - float
+  units:
+  - m
+- auto_only: hidden.device_filtered
+  description: Tidal device rotor performance keyed on stream velocity.
+  identifier: device.turbine_performance
+  labels:
+  - Velocity
+  - Coefficient of Power
+  - Coefficient of Thrust
+  structure: LineTableColumn
+  tables:
+  - filter.device_tidal_power_performance
+  - velocity
+  - power_coefficient
+  - thrust_coefficient
+  title: Turbine Performance Curves
+  types:
+  - float
+  - float
+  - float
+  units:
+  - m/s
+  - null
+  - null
+- auto_only: hidden.device_filtered
+  description: Directory where solver wave device data will be stored.
+  identifier: device.wave_data_directory
+  structure: DirectoryDataColumn
+  tables:
+  - filter.device_wave
+  - wave_data_directory
+  title: Wave Data Directory
+  types:
+  - str
+- auto_only: hidden.device_filtered
+  description: Range of angles in which the machine can be oriented. The range is
+    evenly distributed around the positive x-axis of the machine.
+  identifier: device.yaw
+  structure: SimpleDataColumn
+  tables:
+  - filter.device_shared
+  - yaw
+  title: Device Heading Angle Span
+  types:
+  - float
+  units:
+  - deg
+- auto_only: hidden.site_filtered
+  description: Ranges from 0 to 1. 0 = open sea, 1 = closed channel.
+  identifier: farm.blockage_ratio
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - blockage_ratio
+  title: Site Blockage Ratio
+  types:
+  - float
+- auto_only: hidden.site_filtered
+  description: List of UTM vertex of the no-go zones if any
+  identifier: farm.nogo_areas
+  structure: PolygonDictColumn
+  tables:
+  - filter.constraint
+  - description
+  - boundary
+  title: Nogo Areas
+  types:
+  - float
+- auto_only: hidden.site_filtered
+  category: Lease Area
+  description: Wave spectrum gamma (peak enhancement factor) for lease area.
+  group: Wave Resource
+  identifier: farm.spec_gamma
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - wave_spectrum_gamma
+  title: Peak factor for Wave Spectrum
+  types:
+  - float
+- auto_only: hidden.site_filtered
+  category: Lease Area
+  description: Wave spectrum spreading factor for lease area. Follows the COSINE 2s
+    convention.
+  group: Wave Resource
+  identifier: farm.spec_spread
+  minimum_equals:
+  - 0.0
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - wave_spectrum_spreading_parameter
+  title: Spreading Parameter for Wave Spectrum
+  types:
+  - float
+- auto_only: hidden.site_filtered
+  category: Lease Area
+  description: Name of wave spectrum in the lease area.
+  group: Wave Resource
+  identifier: farm.spectrum_name
+  structure: SimpleDataColumn
+  tables:
+  - filter.lease_area
+  - wave_spectrum_type
+  title: Wave Spectrum
+  types:
+  - str
+  valid_values:
+  - Regular
+  - JONSWAP
+  - Pierson-Moskowitz
+  - Bretschneider
+  - Modified Bretschneider
+- description: Representative velocity fields for tidal currents. Can be used as input
+    to the tidal hydrodynamics module, or will be populated using the tidal time series
+    data. Takes preference over tidal time series if provided as input.
+  identifier: farm.tidal_occurrence
+  labels:
+  - UTM x
+  - UTM y
+  - p
+  - U
+  - V
+  - SSH
+  - TI
+  structure: XSet3D
+  title: Representative Velocity Fields
+- auto_only: hidden.site_filtered
+  description: UTM coordinate of the point at which tidal statistics for the farm
+    will be extracted
+  identifier: farm.tidal_occurrence_point
+  structure: PointDataColumn
+  tables:
+  - filter.lease_area
+  - tidal_occurrence_point
+  title: Tidal Occurrence Extraction Point
+  types:
+  - float
+- auto_only: hidden.site_filtered
+  description: Time series of velocities, sea surface elevation and turbulence intensities
+    for all lease area points. Two weeks of hourly data is typical.
+  identifier: farm.tidal_series
+  labels:
+  - UTM x
+  - UTM y
+  - t
+  - U
+  - V
+  - SSH
+  - TI
+  structure: XSet3D
+  title: Tidal Time Series
+- identifier: farm.wave_occurrence
+  labels:
+  - Te
+  - Hm0
+  - Dir
+  structure: XGrid3D
+  title: Occurrence Hs/Te/dir Matrix
+  units:
+  - s
+  - m
+  - deg
+  - null
+- auto_only: hidden.site_filtered
+  description: Wave time series data (Te, Hm0, Dir) keyed on date and time. Minimum
+    of one year of hourly data for a representative point.
+  identifier: farm.wave_series
+  labels:
+  - Te
+  - Hm0
+  - Dir
+  structure: TimeTableColumn
+  tables:
+  - filter.time_series_energy_wave
+  - measure_date
+  - measure_time
+  - te
+  - height
+  - direction
+  title: Wave Time Series
+  types:
+  - str
+  - str
+  - float
+  - float
+  - float
+  units:
+  - s
+  - m
+  - deg
+- description: Padding added to inside of the lease area in which devices may not
+    be placed
+  identifier: options.boundary_padding
+  minimum_equals:
+  - 0.0
+  structure: SimpleData
+  title: Lease Area Boundary Padding
+  types:
+  - float
+  units:
+  - m
+- description: Minimum allowed q-factor for optimiser
+  identifier: options.optimisation_threshold
+  minimum_equals:
+  - 0.0
+  structure: SimpleData
+  title: Minimum Q-Factor
+  types:
+  - float
+- description: Bin width for power histograms
+  identifier: options.power_bin_width
+  minimums:
+  - 0.0
+  structure: SimpleData
+  title: Power Histogram Bin Width
+  types:
+  - float
+- description: Directory where tidal device solver data will be stored
+  identifier: options.tidal_data_directory
+  structure: DirectoryData
+  title: Tidal Data Directory
+  types:
+  - str
+- identifier: options.user_array_layout
+  structure: PointList
+  title: User Defined Array Layout
+- identifier: options.user_array_option
+  structure: SimpleData
+  title: User Option for Array Layout
+  types:
+  - str
+  valid_values:
+  - Rectangular
+  - Staggered
+  - Full
+  - User Defined Flexible
+  - User Defined Fixed
+- description: Annual energy production of the entire array
+  identifier: project.annual_energy
+  minimum_equals:
+  - 0.0
+  structure: SimpleData
+  title: Array Annual Energy Production
+  types:
+  - float
+  units:
+  - MWh
+- description: Annual energy production of each device on the array.
+  identifier: project.annual_energy_per_device
+  structure: SimpleDict
+  title: Annual Energy Production Per Device
+  types:
+  - float
+  units:
+  - MWh
+- description: The dictionary has a variable number of keys, equal to the number of
+    devices in the array.
+  identifier: project.layout
+  labels:
+  - UTM x
+  - UTM y
+  structure: PointDict
+  title: Array Layout
+  units:
+  - m
+  - m
+- auto_only: hidden.site_filtered
+  description: Defines the main direction for the orientation of the array.
+  identifier: project.main_direction
+  structure: SimpleData
+  title: Array Orientation
+  types:
+  - float
+  units:
+  - deg
+- description: Histogram of mean power  production per device
+  identifier: project.mean_power_hist_per_device
+  structure: HistogramDict
+  title: Mean Power Production Histogram Per Device
+- description: Mean power production per device.
+  identifier: project.mean_power_per_device
+  structure: SimpleDict
+  title: Mean Power Production Per Device
+  types:
+  - float
+  units:
+  - MW
+- description: Probability mass function of mean power production per device.
+  identifier: project.mean_power_pmf_per_device
+  structure: NumpyLineDict
+  title: Mean Power Production PMF Per Device
+  units:
+  - MW
+- description: Number of devices chosen for array.
+  identifier: project.number_of_devices
+  minimum_equals:
+  - 1.0
+  structure: SimpleData
+  title: Number of Devices
+  types:
+  - int
+- description: Overall Q-factor for the entire array.
+  identifier: project.q_factor
+  maximum_equals:
+  - 1.0
+  minimum_equals:
+  - 0.0
+  structure: SimpleData
+  title: Array Q-factor
+  types:
+  - float
+- description: Q-factor of each device n the array.
+  identifier: project.q_factor_per_device
+  structure: SimpleDict
+  title: Device Q-factor
+  types:
+  - float
+- auto_only: hidden.site_filtered
+  description: Rated power of the array.
+  identifier: project.rated_power
+  minimum_equals:
+  - 0.0
+  structure: SimpleData
+  title: Array Rated Power
+  types:
+  - float
+  units:
+  - MW
+- description: Max (normalised) resource reduction.
+  identifier: project.resource_reduction
+  structure: SimpleData
+  title: Resource Reduction
+  types:
+  - float
+- description: The number of "slices" from the tidal energy time series to be used
+    to evaluate the energy generated. Default is to use all time steps, which may
+    add significant computation time.
+  identifier: project.tidal_occurrence_nbins
+  minimum_equals:
+  - 1.0
+  structure: SimpleData
+  title: Tidal Probability Bins
+  types:
+  - int
+- description: Power matrix for the isolated wave energy device.
+  identifier: device.wave_power_matrix
+  labels:
+  - Te
+  - Hm0
+  - Dir
+  structure: XGrid3D
+  title: Single Device Power Matrix
+  units:
+  - s
+  - m
+  - deg
+  - kW
