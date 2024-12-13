@@ -52,7 +52,7 @@ def get_variable_network(controller, pool, simulation, hub_id):
             if var_id in optional_inputs:
                 if output_df["Identifier"].isin([var_id]).any():
                     all_interfaces = output_df.loc[
-                        output_df.Identifier == var_id, "Interface"
+                        [output_df.Identifier == var_id, "Interface"]
                     ]
 
                     last_interface = all_interfaces.iloc[-1]
@@ -76,7 +76,7 @@ def get_variable_network(controller, pool, simulation, hub_id):
             else:
                 if output_df["Identifier"].isin([var_id]).any():
                     all_interfaces = output_df.loc[
-                        output_df.Identifier == var_id, "Interface"
+                        [output_df.Identifier == var_id, "Interface"]
                     ]
 
                     last_interface = all_interfaces.iloc[-1]

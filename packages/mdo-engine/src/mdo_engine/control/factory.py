@@ -72,24 +72,22 @@ class InterfaceFactory:
     def _make_connect_method(self, f=None, args=None):
         if f is None:
 
-            def connect(cls):
+            def connect1(cls):
                 return
+
+            return connect1
 
         elif args is None:
 
-            def connect(cls):
-                result = f(cls)
+            def connect2(cls):
+                return f(cls)
 
-                return result
+            return connect2
 
-        else:
+        def connect3(cls):
+            return f(cls, *args)
 
-            def connect(cls):
-                result = f(cls, *args)
-
-                return result
-
-        return connect
+        return connect3
 
     def __call__(self, metadata, data_obj):
         if not self.has_connect_method(data_obj):
