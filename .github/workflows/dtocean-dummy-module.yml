@@ -3,12 +3,14 @@ on:
   push:
     branches: [ next ]
     paths:
+      - '.codecov.yml'
       - '.github/workflows/dtocean-dummy-module.yml'
       - 'packages/dtocean-dummy-module/**'
       - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
+      - '.codecov.yml'
       - '.github/workflows/dtocean-dummy-module.yml'
       - 'packages/dtocean-dummy-module/**'
       - 'packages/polite-config/**'
