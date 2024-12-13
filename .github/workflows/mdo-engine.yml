@@ -3,6 +3,7 @@ on:
   push:
     branches: [ next ]
     paths:
+      - '.codecov.yml'
       - '.github/workflows/mdo-engine.yml'
       - 'packages/mdo-engine/**'
       - 'packages/dtocean-dummy-module/**'
@@ -10,6 +11,7 @@ on:
   pull_request:
     branches: [ next ]
     paths:
+      - '.codecov.yml'
       - '.github/workflows/mdo-engine.yml'
       - 'packages/mdo-engine/**'
       - 'packages/dtocean-dummy-module/**'
