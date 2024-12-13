@@ -38,7 +38,7 @@ except ImportError:
 from .paths import DirectoryMap
 
 
-class Config():
+class Config:
     """Base class for handling configuration files.
 
     Attributes:
@@ -219,7 +219,7 @@ class ReadINI(Config):
         validator = Validator()
         result = config.validate(validator, preserve_errors=True)
 
-        if result != True: # noqa: E712
+        if result != True:  # noqa: E712
             # Build the header and footer
             header, footer = self.make_head_foot_bar(error_title, bar_width)
 
