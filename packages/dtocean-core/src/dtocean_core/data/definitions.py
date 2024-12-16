@@ -90,13 +90,14 @@ class SeriesData(Structure):
     def equals(cls, left, right):
         return left.equals(right)
 
-    def auto_file_input(self: Mixin):
-        self.check_path()
-        assert isinstance(self._path, str)
+    @staticmethod
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
+        assert isinstance(auto._path, str)
 
-        if ".csv" in self._path:
+        if ".csv" in auto._path:
             series = pd.read_csv(
-                self._path,
+                auto._path,
                 header=None,
                 index_col=0,
             ).squeeze("columns")
@@ -106,17 +107,18 @@ class SeriesData(Structure):
                 "Supported format is .csv",
             )
 
-        self.data.result = series
+        auto.data.result = series
 
         return
 
-    def auto_file_output(self: Mixin):
-        self.check_path()
+    @staticmethod
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        s = self.data.result
+        s = auto.data.result
 
-        if ".csv" in self._path:
-            s.to_csv(self._path)
+        if ".csv" in auto._path:
+            s.to_csv(auto._path, header=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -125,8 +127,8 @@ class SeriesData(Structure):
 
         return
 
-    @classmethod
-    def get_valid_extensions(cls):
+    @staticmethod
+    def get_valid_extensions(auto: Mixin):
         return [".csv"]
 
 

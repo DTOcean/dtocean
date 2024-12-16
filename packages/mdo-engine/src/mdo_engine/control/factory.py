@@ -52,9 +52,7 @@ class InterfaceFactory:
     def _make_get_name(self, varname):
         @classmethod
         def get_name(cls):
-            auto_name = "{} {} Interface".format(
-                varname, self._AutoCls.__name__
-            )
+            auto_name = "{} {} Interface".format(varname, self._AutoCls.__name__)
 
             return auto_name
 
@@ -105,25 +103,19 @@ class InterfaceFactory:
         new_get_name = self._make_get_name(metadata.identifier)
 
         if "declare_inputs" in self._AutoCls.__abstractmethods__:
-            new_declare_inputs = self._make_varname_list_method(
-                metadata.identifier
-            )
+            new_declare_inputs = self._make_varname_list_method(metadata.identifier)
 
         else:
             new_declare_inputs = self._AutoCls.declare_inputs
 
         if "declare_optional" in self._AutoCls.__abstractmethods__:
-            new_declare_optional = self._make_varname_list_method(
-                metadata.identifier
-            )
+            new_declare_optional = self._make_varname_list_method(metadata.identifier)
 
         else:
             new_declare_optional = self._AutoCls.declare_optional
 
         if "declare_outputs" in self._AutoCls.__abstractmethods__:
-            new_declare_outputs = self._make_varname_list_method(
-                metadata.identifier
-            )
+            new_declare_outputs = self._make_varname_list_method(metadata.identifier)
 
         else:
             new_declare_outputs = self._AutoCls.declare_outputs
@@ -142,7 +134,15 @@ class InterfaceFactory:
         auto_method_names = self._AutoCls.get_method_names()
 
         if "connect" in self._AutoCls.__abstractmethods__:
+            import inspect
+
+            print(auto_connect_name)
+            print(type(data_obj))
             auto_method = getattr(data_obj, auto_connect_name)
+            print(type(auto_method))
+            t = inspect.signature(auto_method)
+            print(t)
+
             new_connect_function = self._make_connect_method(auto_method)
             abstract_dict["connect"] = new_connect_function
 
