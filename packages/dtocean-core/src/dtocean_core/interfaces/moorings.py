@@ -25,7 +25,7 @@ Note:
 
 .. module:: moorings
    :platform: Windows
-   :synopsis: Aneris interface for dtocean_core package
+   :synopsis: mdo_engine interface for dtocean_core package
    
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 .. moduleauthor:: Vincenzo Nava <vincenzo.nava@tecnalia.com>
@@ -41,9 +41,9 @@ import numpy as np
 import pandas as pd
 
 # External DTOcean libraries
-from polite.paths import Directory, ObjDirectory, UserDataDirectory
-from polite.configuration import ReadINI
-from aneris.boundary.interface import MaskVariable
+from polite_config.paths import Directory, ObjDirectory, UserDataDirectory
+from polite_config.configuration import ReadINI
+from mdo_engine.boundary.interface import MaskVariable
 from dtocean_moorings.main import Variables, Main
 
 # DTOcean Core modules

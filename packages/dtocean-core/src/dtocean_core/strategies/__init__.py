@@ -18,7 +18,7 @@
 import abc
 from copy import deepcopy
 
-from polite.abc import abstractclassmethod
+from polite_config.abc import abstractclassmethod
 
 from ..menu import ModuleMenu, ThemeMenu
 from ..pipeline import Tree

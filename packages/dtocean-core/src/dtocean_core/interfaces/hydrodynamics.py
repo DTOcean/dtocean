@@ -24,7 +24,7 @@ Note:
 
 .. module:: hydrodynamics
    :platform: Windows
-   :synopsis: Aneris interface for dtocean_core package
+   :synopsis: mdo_engine interface for dtocean_core package
    
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
@@ -37,9 +37,9 @@ import pkg_resources
 import numpy as np
 from natsort import natsorted
 
-from polite.paths import Directory, ObjDirectory, UserDataDirectory
-from polite.configuration import ReadINI
-from aneris.boundary.interface import MaskVariable
+from polite_config.paths import Directory, ObjDirectory, UserDataDirectory
+from polite_config.configuration import ReadINI
+from mdo_engine.boundary.interface import MaskVariable
 from dtocean_hydro.input import WP2_SiteData, WP2_MachineData, WP2input
 from dtocean_hydro.main import WP2
 

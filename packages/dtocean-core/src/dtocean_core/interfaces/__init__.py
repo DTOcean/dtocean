@@ -21,7 +21,7 @@ Created on Sat Apr 11 21:38:18 2015
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from aneris.boundary.interface import (FileInterface,
+from mdo_engine.boundary.interface import (FileInterface,
                                        MetaInterface,
                                        WeightedInterface)
 

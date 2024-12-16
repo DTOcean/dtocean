@@ -20,7 +20,7 @@ from datetime import timedelta
 
 from monotonic import monotonic
 
-from aneris.utilities.database import check_host_port
+from mdo_engine.utilities.database import check_host_port
 
 from .core import Connector
 from .pipeline import Tree, set_output_scope

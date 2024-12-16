@@ -18,7 +18,7 @@
 import abc
 from copy import deepcopy
 
-from aneris.boundary.interface import MapInterface
+from mdo_engine.boundary.interface import MapInterface
 
 
 class Tool(MapInterface):

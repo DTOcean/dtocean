@@ -4,12 +4,12 @@ import pytest
 import os
 from copy import deepcopy
 
-from aneris.entity import Pipeline
+from mdo_engine.entity import Pipeline
 from dtocean_core.core import Core
 from dtocean_core.interfaces import ModuleInterface, ThemeInterface
 from dtocean_core.menu import DataMenu, ModuleMenu, ProjectMenu, ThemeMenu
 from dtocean_core.pipeline import Tree
-from polite.paths import Directory
+from polite_config.paths import Directory
 
 dir_path = os.path.dirname(__file__)
 

@@ -40,9 +40,9 @@ import numpy as np
 import pandas as pd
 
 # External DTOcean libraries
-from polite.paths import Directory, ObjDirectory, UserDataDirectory
-from polite.configuration import ReadINI
-from aneris.boundary.interface import MaskVariable
+from polite_config.paths import Directory, ObjDirectory, UserDataDirectory
+from polite_config.configuration import ReadINI
+from mdo_engine.boundary.interface import MaskVariable
 from dtocean_maintenance.main import LCOE_Calculator, LCOE_Statistics
 from dtocean_maintenance.input import inputOM
 

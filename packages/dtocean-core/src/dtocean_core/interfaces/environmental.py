@@ -25,7 +25,7 @@ Note:
 
 .. module:: environmental
    :platform: Windows
-   :synopsis: Aneris interface for dtocean_core package
+   :synopsis: mdo_engine interface for dtocean_core package
    
 .. moduleauthor:: Vincenzo Nava <vincenzo.nava@tecnalia.com>
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
@@ -39,9 +39,9 @@ import pkg_resources
 import pandas as pd
 import numpy as np
 
-from polite.paths import Directory, ObjDirectory, UserDataDirectory
-from polite.configuration import ReadINI
-from aneris.boundary.interface import MaskVariable
+from polite_config.paths import Directory, ObjDirectory, UserDataDirectory
+from polite_config.configuration import ReadINI
+from mdo_engine.boundary.interface import MaskVariable
 from dtocean_environment.main import (HydroStage,
                                       ElectricalStage,
                                       MooringStage,

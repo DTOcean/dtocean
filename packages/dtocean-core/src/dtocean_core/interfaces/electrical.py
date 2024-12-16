@@ -25,7 +25,7 @@ Note:
 
 .. module:: electrical
    :platform: Windows
-   :synopsis: Aneris interface for dtocean_core package
+   :synopsis: mdo_engine interface for dtocean_core package
 
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 .. moduleauthor:: Vincenzo Nava <vincenzo.nava@tecnalia.com>
@@ -39,8 +39,8 @@ import pkg_resources
 import numpy as np
 import pandas as pd
 
-from polite.paths import Directory, ObjDirectory, UserDataDirectory
-from polite.configuration import ReadINI
+from polite_config.paths import Directory, ObjDirectory, UserDataDirectory
+from polite_config.configuration import ReadINI
 from dtocean_electrical.main import Electrical
 from dtocean_electrical.inputs import (ElectricalComponentDatabase,
                                        ElectricalMachineData,
@@ -50,7 +50,7 @@ from dtocean_electrical.inputs import (ElectricalComponentDatabase,
                                        ElectricalExportData
                                        )
 
-from aneris.boundary.interface import MaskVariable
+from mdo_engine.boundary.interface import MaskVariable
 
 from . import ModuleInterface
 from ..utils.electrical import sanitise_network

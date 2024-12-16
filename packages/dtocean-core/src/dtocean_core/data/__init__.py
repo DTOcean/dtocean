@@ -15,8 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from aneris.boundary import DataDefinition
-from aneris.entity.data import MetaData
+from mdo_engine.boundary import DataDefinition
+from mdo_engine.entity.data import MetaData
 
 class CoreMetaData(MetaData):
 

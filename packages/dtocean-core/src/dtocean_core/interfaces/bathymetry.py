@@ -21,7 +21,7 @@ Created on Fri Jul 29 17:44:49 2016
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from aneris.boundary.interface import QueryInterface
+from mdo_engine.boundary.interface import QueryInterface
 
 from ..utils.database import (init_bathy_records,
                               bathy_records_to_strata,
