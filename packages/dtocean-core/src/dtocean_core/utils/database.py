@@ -786,7 +786,7 @@ def query_builder(
         query_str = "SELECT * FROM {};".format(table_name)
         return query_str
 
-    table_shorts = ["t{}".format(i) for i in xrange(len(table_list))]
+    table_shorts = ["t{}".format(i) for i in range(len(table_list))]
     consume_shorts = table_shorts[:]
     table_short = consume_shorts.pop()
 

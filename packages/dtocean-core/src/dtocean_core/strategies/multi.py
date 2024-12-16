@@ -194,7 +194,7 @@ class MultiSensitivity(Strategy):
         pool_size = len(pool)
         number_samples = math.ceil(subsp_ratio * pool_size)
         
-        random_selection = random.sample(xrange(0,pool_size),
+        random_selection = random.sample(range(0,pool_size),
                                          int(number_samples))
         selections = [pool[x] for x in random_selection]
         

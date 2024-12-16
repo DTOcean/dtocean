@@ -195,7 +195,7 @@ dates = []
 dt = datetime(2010, 12, 01)
 step = timedelta(seconds=3600)
     
-for _ in xrange(sample_size):
+for _ in range(sample_size):
     dates.append(dt)
     dt += step
     
