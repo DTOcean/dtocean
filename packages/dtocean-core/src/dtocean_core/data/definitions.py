@@ -2531,7 +2531,7 @@ class SimpleList(Structure):
                              "Supported format are {},{},{}".format('.csv',
                                                                     '.xls',
                                                                     '.xlsx'))  
-        if not "data" in df.columns:
+        if "data" not in df.columns:
             raise TypeError("The file does not contain the correct header.",
                             "The data column needs to have the header: 'data'")
         
@@ -2664,7 +2664,7 @@ class SimpleDict(Structure):
     @staticmethod
     def auto_plot(self):
         
-        if not self.meta.result.types[0] in ["int", "float"]: return
+        if self.meta.result.types[0] not in ["int", "float"]: return
         
         num_dict = self.data.result
         
@@ -2699,7 +2699,7 @@ class SimplePie(SimpleDict):
     @staticmethod
     def auto_plot(self):
         
-        if not self.meta.result.types[0] in ["int", "float"]: return
+        if self.meta.result.types[0] not in ["int", "float"]: return
 
         num_dict = self.data.result
         labels = num_dict.keys()
@@ -3063,7 +3063,7 @@ class PointData(Structure):
                              "Supported format are {},{},{}".format('.csv',
                                                                     '.shp',
                                                                     '.xls',
-                                                                    '.xlsx'))
+                                                                    ))
         
         self.data.result = data
         
@@ -3085,7 +3085,7 @@ class PointData(Structure):
                              "Supported format are {},{},{}".format('.csv',
                                                                     '.shp',
                                                                     '.xls',
-                                                                    '.xlsx'))
+                                                                    ))
         
         return
     
@@ -3266,7 +3266,7 @@ class PointList(PointData):
                              "Supported format are {},{},{}".format('.csv',
                                                                     '.shp',
                                                                     '.xls',
-                                                                    '.xlsx'))
+                                                                    ))
         
         self.data.result = data
         
@@ -3288,7 +3288,7 @@ class PointList(PointData):
                              "Supported format are {},{},{}".format('.csv',
                                                                     '.shp',
                                                                     '.xls',
-                                                                    '.xlsx'))
+                                                                    ))
         
         return
     
@@ -3734,7 +3734,7 @@ class PolygonData(Structure):
                              "Supported format are {},{},{}".format('.csv',
                                                                     '.shp',
                                                                     '.xls',
-                                                                    '.xlsx'))
+                                                                    ))
         
         self.data.result = data
         
@@ -3756,7 +3756,7 @@ class PolygonData(Structure):
                              "Supported format are {},{},{}".format('.csv',
                                                                     '.shp',
                                                                     '.xls',
-                                                                    '.xlsx'))
+                                                                    ))
         
         return
     

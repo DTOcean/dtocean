@@ -1,6 +1,5 @@
 import pytest
 
-import pandas as pd
 import matplotlib.pyplot as plt
 
 from aneris.control.factory import InterfaceFactory

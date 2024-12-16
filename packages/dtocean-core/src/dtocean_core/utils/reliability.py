@@ -476,7 +476,7 @@ def get_reliability_dict(reliability_network,
                     
                     device_name = subsystem[2]
                     
-                    if not 'device' in device_name:
+                    if 'device' not in device_name:
         
                         msgStr = ("Device number not detected in subsystem "
                                   "data. Found '{}'").format(device_name)
@@ -515,7 +515,7 @@ def get_reliability_dict(reliability_network,
 
         elif electrical_layout == 'multiplehubs':
 
-            if not 'subhub' in system_group[1][0][0][2]:
+            if 'subhub' not in system_group[1][0][0][2]:
 
                 msgStr = ("Subhub not detected in system hierarchy. Found "
                           "'{}'").format(system_group[1][0][0][2])
@@ -543,7 +543,7 @@ def get_reliability_dict(reliability_network,
 
                         device_name = subsystem[2]
                         
-                        if not 'device' in device_name:
+                        if 'device' not in device_name:
             
                             msgStr = ("Device number not detected in "
                                       "subsystem data. Found '{}'").format(

@@ -522,7 +522,7 @@ class StrategyManager(ExtensionManager):
     def load_strategy(self, load_path, project=None):
         
         # OK need to consider if we have a pkl file
-        if not os.path.isfile(load_path) and not ".pkl" in load_path:
+        if not os.path.isfile(load_path) and ".pkl" not in load_path:
             
             errStr = ("Argument load_path must be a file with .pkl extension")
             raise ValueError(errStr)

@@ -3,7 +3,6 @@ import pytest
 
 from copy import deepcopy
 
-import numpy as np
 
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ModuleMenu, ProjectMenu 

@@ -9,7 +9,6 @@ from dtocean_core.core import Core
 from dtocean_core.interfaces import ModuleInterface, ThemeInterface
 from dtocean_core.menu import DataMenu, ModuleMenu, ProjectMenu, ThemeMenu
 from dtocean_core.pipeline import Tree
-from polite.configuration import ReadYAML
 from polite.paths import Directory
 
 dir_path = os.path.dirname(__file__)
