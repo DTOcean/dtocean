@@ -24,20 +24,20 @@ from copy import deepcopy
 
 import matplotlib.pyplot as plt
 
-from aneris.boundary.data import SerialBox
-from aneris.boundary.interface import (AutoInterface,
+from mdo_engine.boundary.data import SerialBox
+from mdo_engine.boundary.interface import (AutoInterface,
                                        MetaInterface,
                                        QueryInterface,
                                        RawInterface) 
-from aneris.control.data import DataValidation, DataStorage
-from aneris.control.factory import InterfaceFactory
-from aneris.control.pipeline import Sequencer
-from aneris.control.simulation import Controller, Loader
-from aneris.control.sockets import NamedSocket, Socket
-from aneris.entity.data import DataCatalog, DataPool
-from aneris.entity.simulation import Simulation
-from aneris.utilities.data import check_integrity
-from aneris.utilities.misc import OrderedSet
+from mdo_engine.control.data import DataValidation, DataStorage
+from mdo_engine.control.factory import InterfaceFactory
+from mdo_engine.control.pipeline import Sequencer
+from mdo_engine.control.simulation import Controller, Loader
+from mdo_engine.control.sockets import NamedSocket, Socket
+from mdo_engine.entity.data import DataCatalog, DataPool
+from mdo_engine.entity.simulation import Simulation
+from mdo_engine.utilities.data import check_integrity
+from mdo_engine.utilities.misc import OrderedSet
 
 from . import data as core_data
 from . import interfaces as core_interfaces
@@ -958,7 +958,7 @@ class Core(object):
     def new_hub(self, project):
         
         # For DTOcean the hubs are assumed to come one after another, but this
-        # is not a requirement of aneris. To facilitate this we consume the
+        # is not a requirement of mdo_engine. To facilitate this we consume the
         # _hub_queue attribute of the Project object
         simulation = project.get_simulation()
         
@@ -1551,7 +1551,7 @@ class Core(object):
 
     def connect_interface(self, project, interface):
         
-        # TODO: Is this pre-population something to do in aneris?
+        # TODO: Is this pre-population something to do in mdo_engine?
         # If its a QueryInterface try to connect the database
         if (isinstance(interface, QueryInterface) and
            project.get_database_credentials() is not None):

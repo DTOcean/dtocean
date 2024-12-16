@@ -1,7 +1,7 @@
 
 import logging
 
-from polite.paths import Directory
+from polite_config.paths import Directory
 from dtocean_core import start_logging
 from dtocean_core.utils.config import init_config
 

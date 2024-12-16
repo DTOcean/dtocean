@@ -24,7 +24,7 @@ Note:
 
 .. module:: installation
    :platform: Windows
-   :synopsis: Aneris interface for dtocean_core package
+   :synopsis: mdo_engine interface for dtocean_core package
    
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 .. moduleauthor:: Vincenzo Nava <vincenzo.nava@tecnalia.com>
@@ -40,13 +40,13 @@ import utm
 import numpy as np
 import pandas as pd
 
-from polite.paths import Directory, ObjDirectory, UserDataDirectory
-from polite.configuration import ReadINI
+from polite_config.paths import Directory, ObjDirectory, UserDataDirectory
+from polite_config.configuration import ReadINI
 from dtocean_installation.main import installation_main
 from dtocean_installation.configure import get_operations_template
 from dtocean_logistics.phases import EquipmentType
 
-from aneris.boundary.interface import MaskVariable
+from mdo_engine.boundary.interface import MaskVariable
 
 from . import ModuleInterface
 from ..utils.installation import (installation_phase_cost_output,

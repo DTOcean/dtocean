@@ -23,7 +23,7 @@ Note:
 
 .. module:: economics
    :platform: Windows
-   :synopsis: Aneris interface for dtocean_core package
+   :synopsis: mdo_engine interface for dtocean_core package
    
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """

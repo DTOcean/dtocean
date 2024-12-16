@@ -37,7 +37,7 @@ from shapely.geometry import Polygon, Point
 from descartes import PolygonPatch
 from geoalchemy2.shape import to_shape
 
-from aneris.boundary import Structure
+from mdo_engine.boundary import Structure
 from ..utils.database import (get_table_df,
                               get_one_from_column,
                               filter_one_from_column,

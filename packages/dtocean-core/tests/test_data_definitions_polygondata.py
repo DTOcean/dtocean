@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from geoalchemy2.elements import WKTElement
 from shapely.geometry import Polygon
 
-from aneris.control.factory import InterfaceFactory
+from mdo_engine.control.factory import InterfaceFactory
 from dtocean_core.core import (AutoFileInput,
                                AutoFileOutput,
                                AutoPlot,

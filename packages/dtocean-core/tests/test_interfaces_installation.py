@@ -6,7 +6,7 @@ from pprint import pprint
 
 import pytest
 
-from polite.paths import Directory
+from polite_config.paths import Directory
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ModuleMenu, ProjectMenu
 from dtocean_core.pipeline import Tree, _get_connector

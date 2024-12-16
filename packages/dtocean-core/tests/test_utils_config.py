@@ -1,7 +1,7 @@
 
 import pytest
 
-from polite.paths import Directory
+from polite_config.paths import Directory
 from dtocean_core.utils.config import (init_config,
                                        init_config_parser,
                                        init_config_interface)

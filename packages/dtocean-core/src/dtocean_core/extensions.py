@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from aneris.utilities.plugins import Plugin
+from mdo_engine.utilities.plugins import Plugin
 
 from . import strategies, tools
 from .menu import ModuleMenu

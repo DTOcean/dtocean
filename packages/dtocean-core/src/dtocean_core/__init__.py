@@ -24,11 +24,11 @@ import os
 import logging
 from pkg_resources import get_distribution
 
-from polite.configuration import ReadINI
-from polite.paths import (Directory,
+from polite_config.configuration import ReadINI
+from polite_config.paths import (Directory,
                           ObjDirectory,
-                          UserDataDirectory)
-from polite.configuration import Logger
+                          UserDataDirectory,)
+from polite_config.configuration import Logger
 
 # credentials
 __authors__ = ['DTOcean Developers']
