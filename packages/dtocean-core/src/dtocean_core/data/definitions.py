@@ -14,6 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import builtins
 import os
 from copy import deepcopy
 from datetime import datetime
@@ -30,8 +31,10 @@ import yaml
 from cycler import cycler
 from descartes import PolygonPatch
 from geoalchemy2.shape import to_shape
+from matplotlib.figure import Figure
 from mdo_engine.boundary import Structure
 from mdo_engine.boundary.interface import Box
+from mdo_engine.utilities.database import PostgreSQL
 from natsort import natsorted
 from scipy import interpolate
 from shapely.geometry import Point, Polygon
@@ -47,6 +50,11 @@ BLUE = "#6699cc"
 
 
 class Mixin(Protocol):
+    fig_handle: Figure
+
+    @property
+    def _db(self) -> PostgreSQL: ...
+
     @property
     def _path(self) -> str: ...
 
@@ -56,7 +64,7 @@ class Mixin(Protocol):
     @property
     def meta(self) -> Box: ...
 
-    def check_path(self):
+    def check_path(self, check_exists=False):
         pass
 
 
@@ -109,8 +117,6 @@ class SeriesData(Structure):
 
         auto.data.result = series
 
-        return
-
     @staticmethod
     def auto_file_output(auto: Mixin):
         auto.check_path()
@@ -124,8 +130,6 @@ class SeriesData(Structure):
                 "The specified file format is not supported.",
                 "Supported format is .csv",
             )
-
-        return
 
     @staticmethod
     def get_valid_extensions(auto: Mixin):
@@ -163,10 +167,11 @@ class TimeSeries(SeriesData):
 
         return time_series
 
-    def auto_plot(self: Mixin):
+    @staticmethod
+    def auto_plot(auto: Mixin):
         fig = plt.figure()
         ax = fig.gca()
-        self.data.result.plot(ax=ax)
+        auto.data.result.plot(ax=ax)
 
         # Pad the y-axis slightly
         ymin, ymax = ax.get_ylim()
@@ -175,29 +180,27 @@ class TimeSeries(SeriesData):
 
         ax.margins(y=ymargin)
 
-        if self.meta.result.labels is not None:
-            ylabel = self.meta.result.labels[0]
+        if auto.meta.result.labels is not None:
+            ylabel = auto.meta.result.labels[0]
         else:
             ylabel = ""
 
-        if self.meta.result.units is not None:
-            ylabel = "{} [${}$]".format(ylabel, self.meta.result.units[0])
+        if auto.meta.result.units is not None:
+            ylabel = "{} [${}$]".format(ylabel, auto.meta.result.units[0])
 
         plt.ylabel(ylabel.strip())
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(self):
+    def auto_file_input(auto: Mixin):
         fmtStr = "%Y-%m-%d %H:%M:%S.%f"
 
-        SeriesData.auto_file_input(self)
+        SeriesData.auto_file_input(auto)
 
-        s = self.data.result
+        s = auto.data.result
 
         try:
             s.index = s.index.map(lambda x: pd.to_datetime(x, format=fmtStr))
@@ -210,9 +213,7 @@ class TimeSeries(SeriesData):
             ).format(fmtStr)
             raise ValueError(errStr)
 
-        self.data.result = s
-
-        return
+        auto.data.result = s
 
 
 class TimeSeriesColumn(TimeSeries):
@@ -221,20 +222,20 @@ class TimeSeriesColumn(TimeSeries):
     specified in the labels key, but all other columns should be labelled."""
 
     @staticmethod
-    def auto_db(self):
-        schema, table = self.meta.result.tables[0].split(".")
+    def auto_db(auto: Mixin):
+        schema, table = auto.meta.result.tables[0].split(".")
 
-        df = get_table_df(self._db, schema, table, self.meta.result.tables[1:])
+        df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
 
         if df.empty:
             result = None
 
         else:
             dt_labels = ["Date", "Time"]
-            dt_labels.extend(self.meta.result.labels)
+            dt_labels.extend(auto.meta.result.labels)
 
             name_map = {
-                k: v for k, v in zip(self.meta.result.tables[1:], dt_labels)
+                k: v for k, v in zip(auto.meta.result.tables[1:], dt_labels)
             }
 
             df = df.rename(columns=name_map)
@@ -249,15 +250,13 @@ class TimeSeriesColumn(TimeSeries):
             ]
 
             df["DateTime"] = dtstrs
-            df = df.drop("Date", 1)
-            df = df.drop("Time", 1)
+            df = df.drop("Date", axis=1)
+            df = df.drop("Time", axis=1)
             df = df.set_index("DateTime")
 
-            result = df.to_records(convert_datetime64=True)
+            result = df.to_records()
 
-        self.data.result = result
-
-        return
+        auto.data.result = result
 
 
 class TableData(Structure):
@@ -359,7 +358,7 @@ class TableData(Structure):
                 ## TODO: Deal with this better
                 try:
                     dataframe[c] = dataframe[c].astype(t)
-                except:  # pylint: disable=bare-except
+                except:  # pylint: disable=bare-except  # noqa: E722
                     pass
 
         return dataframe
@@ -377,52 +376,48 @@ class TableData(Structure):
         return left.equals(right)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        self.data.result = df
-
-        return
+        auto.data.result = df
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        df = self.data.result
+        df = auto.data.result
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
 
 class TableDataColumn(TableData):
     @staticmethod
-    def auto_db(self):
-        schema, table = self.meta.result.tables[0].split(".")
+    def auto_db(auto: Mixin):
+        schema, table = auto.meta.result.tables[0].split(".")
 
-        df = get_table_df(self._db, schema, table, self.meta.result.tables[1:])
+        df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
 
         if df.empty:
             df = None
@@ -431,7 +426,7 @@ class TableDataColumn(TableData):
             name_map = {
                 k: v
                 for k, v in zip(
-                    self.meta.result.tables[1:], self.meta.result.labels
+                    auto.meta.result.tables[1:], auto.meta.result.labels
                 )
             }
             df = df.rename(columns=name_map)
@@ -440,9 +435,7 @@ class TableDataColumn(TableData):
             if pd.isnull(df).all().all():
                 df = None
 
-        self.data.result = df
-
-        return
+        auto.data.result = df
 
 
 class IndexTable(TableData):
@@ -490,20 +483,17 @@ class IndexTable(TableData):
         return dataframe
 
     @staticmethod
-    def auto_file_output(self):
-        self.data.result = self.data.result.reset_index()
-
-        TableData.auto_file_output(self)
-
-        return
+    def auto_file_output(auto: Mixin):
+        auto.data.result = auto.data.result.reset_index()
+        TableData.auto_file_output(auto)
 
 
 class IndexTableColumn(IndexTable):
     @staticmethod
-    def auto_db(self):
-        schema, table = self.meta.result.tables[0].split(".")
+    def auto_db(auto: Mixin):
+        schema, table = auto.meta.result.tables[0].split(".")
 
-        df = get_table_df(self._db, schema, table, self.meta.result.tables[1:])
+        df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
 
         if df.empty:
             df = None
@@ -512,18 +502,16 @@ class IndexTableColumn(IndexTable):
             name_map = {
                 k: v
                 for k, v in zip(
-                    self.meta.result.tables[1:], self.meta.result.labels
+                    auto.meta.result.tables[1:], auto.meta.result.labels
                 )
             }
             df = df.rename(columns=name_map)
 
             # Don't allow null values in the keys
-            if pd.isnull(df[self.meta.result.labels[0]]).any():
+            if pd.isnull(df[auto.meta.result.labels[0]]).any():
                 df = None
 
-        self.data.result = df
-
-        return
+        auto.data.result = df
 
 
 class LineTable(TableData):
@@ -559,26 +547,26 @@ class LineTable(TableData):
         return dataframe
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         # Get number of columns for legend
-        ncol = len(self.data.result.columns) / 20 + 1
+        ncol = len(auto.data.result.columns) / 20 + 1
 
         fig = plt.figure()
         ax = fig.gca()
 
-        self.data.result.plot(ax=ax)
+        auto.data.result.plot(ax=ax)
         lgd = ax.legend(bbox_to_anchor=(1.04, 1), loc="upper left", ncol=ncol)
 
-        xlabel = self.meta.result.labels[0]
+        xlabel = auto.meta.result.labels[0]
 
         if (
-            self.meta.result.units is not None
-            and self.meta.result.units[0] is not None
+            auto.meta.result.units is not None
+            and auto.meta.result.units[0] is not None
         ):
-            xlabel = "{} [${}$]".format(xlabel, self.meta.result.units[0])
+            xlabel = "{} [${}$]".format(xlabel, auto.meta.result.units[0])
 
         plt.xlabel(xlabel)
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
         # Auto adjust canvas for legend
         # https://stackoverflow.com/a/45846024
@@ -596,15 +584,11 @@ class LineTable(TableData):
         shift = ax_xmax / lgd_xmax
         plt.gcf().tight_layout(rect=(0, 0, shift, 1))
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_output(self):
-        IndexTable.auto_file_output(self)
-
-        return
+    def auto_file_output(auto: Mixin):
+        IndexTable.auto_file_output(auto)
 
 
 class LineTableExpand(LineTable):
@@ -625,10 +609,10 @@ class LineTableExpand(LineTable):
 
 class LineTableColumn(LineTable):
     @staticmethod
-    def auto_db(self):
-        schema, table = self.meta.result.tables[0].split(".")
+    def auto_db(auto: Mixin):
+        schema, table = auto.meta.result.tables[0].split(".")
 
-        df = get_table_df(self._db, schema, table, self.meta.result.tables[1:])
+        df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
 
         if df.empty:
             df = None
@@ -637,19 +621,17 @@ class LineTableColumn(LineTable):
             name_map = {
                 k: v
                 for k, v in zip(
-                    self.meta.result.tables[1:], self.meta.result.labels
+                    auto.meta.result.tables[1:], auto.meta.result.labels
                 )
             }
 
             df = df.rename(columns=name_map)
 
             # Don't allow null values in the keys
-            if pd.isnull(df[self.meta.result.labels[0]]).any():
+            if pd.isnull(df[auto.meta.result.labels[0]]).any():
                 df = None
 
-        self.data.result = df
-
-        return
+        auto.data.result = df
 
 
 class TimeTable(TableData):
@@ -682,23 +664,21 @@ class TimeTable(TableData):
         return dataframe
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         fig = plt.figure()
-        self.data.result.plot(ax=fig.gca())
+        auto.data.result.plot(ax=fig.gca())
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(self):
+    def auto_file_input(auto: Mixin):
         fmtStr = "%Y-%m-%d %H:%M:%S.%f"
 
-        TableData.auto_file_input(self)
+        TableData.auto_file_input(auto)
 
-        df = self.data.result
+        df = auto.data.result
 
         try:
             df = df.set_index("DateTime")
@@ -714,15 +694,11 @@ class TimeTable(TableData):
             ).format(fmtStr)
             raise ValueError(errStr)
 
-        self.data.result = df
-
-        return
+        auto.data.result = df
 
     @staticmethod
-    def auto_file_output(self):
-        IndexTable.auto_file_output(self)
-
-        return
+    def auto_file_output(auto: Mixin):
+        IndexTable.auto_file_output(auto)
 
 
 class TimeTableColumn(TimeTable):
@@ -732,20 +708,20 @@ class TimeTableColumn(TimeTable):
     match to values in the labels key."""
 
     @staticmethod
-    def auto_db(self):
-        schema, table = self.meta.result.tables[0].split(".")
+    def auto_db(auto: Mixin):
+        schema, table = auto.meta.result.tables[0].split(".")
 
-        df = get_table_df(self._db, schema, table, self.meta.result.tables[1:])
+        df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
 
         if df.empty:
             df = None
 
         else:
             dt_labels = ["Date", "Time"]
-            dt_labels.extend(self.meta.result.labels)
+            dt_labels.extend(auto.meta.result.labels)
 
             name_map = {
-                k: v for k, v in zip(self.meta.result.tables[1:], dt_labels)
+                k: v for k, v in zip(auto.meta.result.tables[1:], dt_labels)
             }
 
             df = df.rename(columns=name_map)
@@ -760,12 +736,10 @@ class TimeTableColumn(TimeTable):
             ]
 
             df["DateTime"] = dtstrs
-            df = df.drop("Date", 1)
-            df = df.drop("Time", 1)
+            df = df.drop("Date", axis=1)
+            df = df.drop("Time", axis=1)
 
-        self.data.result = df
-
-        return
+        auto.data.result = df
 
 
 class TriStateTable(TableData):
@@ -848,34 +822,37 @@ class Numpy2DColumn(Numpy2D):
     """Numpy2DColumn array."""
 
     @staticmethod
-    def auto_db(self):
-        schema, table = self.meta.result.tables[0].split(".")
+    def auto_db(auto: Mixin):
+        schema, table = auto.meta.result.tables[0].split(".")
 
-        df = get_table_df(self._db, schema, table, self.meta.result.tables[1:4])
+        df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:4])
 
         if df.empty:
             result = None
 
         else:
             # Don't allow first two columns to have any null
-            if pd.isnull(df[self.meta.result.tables[1:3]]).any().any():
+            if pd.isnull(df[auto.meta.result.tables[1:3]]).any().any():
                 return
 
-            df = df.set_index(self.meta.result.tables[1:3])
+            df = df.set_index(auto.meta.result.tables[1:3])
             groups = df.groupby(level=df.index.names)
 
             df = groups.first()
-            levels = map(tuple, df.index.levels)
+            index = df.index
+            assert isinstance(index, pd.MultiIndex)
+
+            levels = map(tuple, index.levels)
             index = list(product(*levels))
 
             df = df.reindex(index)
-            shape = map(len, df.index.levels)
+            index = df.index
+            assert isinstance(index, pd.MultiIndex)
 
+            shape = list(map(len, index.levels))
             result = df.values.reshape(shape)
 
-        self.data.result = result
-
-        return
+        auto.data.result = result
 
 
 class Numpy3D(NumpyND):
@@ -905,34 +882,34 @@ class Numpy3DColumn(Numpy3D):
     """Numpy3DColumn array."""
 
     @staticmethod
-    def auto_db(self):
-        schema, table = self.meta.result.tables[0].split(".")
+    def auto_db(auto: Mixin):
+        schema, table = auto.meta.result.tables[0].split(".")
 
-        df = get_table_df(self._db, schema, table, self.meta.result.tables[1:5])
+        df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:5])
 
         if df.empty:
             result = None
 
         else:
             # Don't allow first three columns to have any null
-            if pd.isnull(df[self.meta.result.tables[1:4]]).any().any():
+            if pd.isnull(df[auto.meta.result.tables[1:4]]).any().any():
                 return
 
-            df = df.set_index(self.meta.result.tables[1:4])
+            df = df.set_index(auto.meta.result.tables[1:4])
             groups = df.groupby(level=df.index.names)
 
             df = groups.first()
+            assert isinstance(df.index, pd.MultiIndex)
             levels = map(tuple, df.index.levels)
             index = list(product(*levels))
 
             df = df.reindex(index)
-            shape = map(len, df.index.levels)
+            assert isinstance(df.index, pd.MultiIndex)
+            shape = list(map(len, df.index.levels))
 
             result = df.values.reshape(shape)
 
-        self.data.result = result
-
-        return
+        auto.data.result = result
 
 
 class NumpyLine(NumpyND):
@@ -962,13 +939,13 @@ class NumpyLine(NumpyND):
         return result
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -985,16 +962,14 @@ class NumpyLine(NumpyND):
 
         # Sort on the zero axis
         data = data[np.argsort(data[:, 0])]
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        if isinstance(self.data.result, np.ndarray):
-            data_ = self.data.result
+        if isinstance(auto.data.result, np.ndarray):
+            data_ = auto.data.result
         else:
             raise TypeError(
                 "Data type not understood: possible type for a "
@@ -1005,43 +980,41 @@ class NumpyLine(NumpyND):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         plt.figure()
-        plt.plot(*zip(*self.data.result))
-        plt.title(self.meta.result.title)
+        plt.plot(*zip(*auto.data.result))
+        plt.title(auto.meta.result.title)
 
         xlabel = ""
         ylabel = ""
 
-        if self.meta.result.labels is not None:
-            xlabel = self.meta.result.labels[0]
-            ylabel = self.meta.result.labels[1]
+        if auto.meta.result.labels is not None:
+            xlabel = auto.meta.result.labels[0]
+            ylabel = auto.meta.result.labels[1]
 
             if xlabel is None:
                 xlabel = ""
             if ylabel is None:
                 ylabel = ""
 
-        if self.meta.result.units is not None:
-            xunit = self.meta.result.units[0]
-            yunit = self.meta.result.units[1]
+        if auto.meta.result.units is not None:
+            xunit = auto.meta.result.units[0]
+            yunit = auto.meta.result.units[1]
 
             if xunit is not None:
                 xlabel = "{} [${}$]".format(xlabel, xunit)
@@ -1056,45 +1029,41 @@ class NumpyLine(NumpyND):
         if ylabel:
             plt.ylabel(ylabel)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class NumpyLineArray(NumpyLine):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         result = get_one_from_column(
-            self._db, schema, table, self.meta.result.tables[1]
+            auto._db, schema, table, auto.meta.result.tables[1]
         )
 
         if result is not None and result[0] is not None:
-            self.data.result = result[0]
-
-        return
+            auto.data.result = result[0]
 
 
 class NumpyLineColumn(NumpyLine):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:3]
+            auto._db, schema, table, auto.meta.result.tables[1:3]
         )
 
         line = zip(col_lists[0], col_lists[1])
@@ -1103,9 +1072,7 @@ class NumpyLineColumn(NumpyLine):
         line = [(x, y) for (x, y) in line if x is not None]
 
         if line:
-            self.data.result = line
-
-        return
+            auto.data.result = line
 
 
 class NumpyLineDict(NumpyLine):
@@ -1142,18 +1109,18 @@ class NumpyLineDict(NumpyLine):
 
         value_check = []
 
-        for lkey, lvalue in left.iteritems():
+        for lkey, lvalue in left.items():
             rvalue = right[lkey]
             value_check.append(np.array_equal(lvalue, rvalue))
 
         return all(value_check)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            xl = pd.ExcelFile(self._path)
+        if ".xls" in auto._path:
+            xl = pd.ExcelFile(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1180,18 +1147,16 @@ class NumpyLineDict(NumpyLine):
 
             result[sheet_name] = data
 
-        self.data.result = result
-
-        return
+        auto.data.result = result
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data_dict = self.data.result
+        data_dict = auto.data.result
 
-        if ".xls" in self._path:
-            xl = pd.ExcelWriter(self._path)
+        if ".xls" in auto._path:
+            xl = pd.ExcelWriter(auto._path, engine="openpyxl")
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1210,63 +1175,59 @@ class NumpyLineDict(NumpyLine):
 
             df.to_excel(xl, sheet_name=key, index=False)
 
-        xl.save()
-
-        return
+        xl.close()
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto):
         return [".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         plt.figure()
 
         kwargs = {}
 
-        if len(self.data.result) < 10:
-            kwargs["label"] = self.data.result.keys()
+        if len(auto.data.result) < 10:
+            kwargs["label"] = auto.data.result.keys()
         else:
             kwargs["color"] = "0.5"
 
-        for line in self.data.result:
-            plt.plot(*zip(*self.data.result[line]), **kwargs)
+        for line in auto.data.result:
+            plt.plot(*zip(*auto.data.result[line]), **kwargs)
 
-        if len(self.data.result) < 10:
+        if len(auto.data.result) < 10:
             plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 
         xlabel = ""
 
-        if self.meta.result.labels is not None:
-            xlabel = self.meta.result.labels[0]
+        if auto.meta.result.labels is not None:
+            xlabel = auto.meta.result.labels[0]
 
-        if self.meta.result.units is not None:
-            xlabel = "{} [${}$]".format(xlabel, self.meta.result.units[0])
+        if auto.meta.result.units is not None:
+            xlabel = "{} [${}$]".format(xlabel, auto.meta.result.units[0])
 
         plt.xlabel(xlabel)
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class NumpyLineDictArrayColumn(NumpyLineDict):
     """Collect a column with keys and a second column containing 2D arrays"""
 
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:3]
+            auto._db, schema, table, auto.meta.result.tables[1:3]
         )
 
         all_keys = col_lists[0]
@@ -1280,9 +1241,7 @@ class NumpyLineDictArrayColumn(NumpyLineDict):
         }
 
         if result_dict:
-            self.data.result = result_dict
-
-        return
+            auto.data.result = result_dict
 
 
 class NumpyBar(NumpyLine):
@@ -1290,8 +1249,8 @@ class NumpyBar(NumpyLine):
     data"""
 
     @staticmethod
-    def _auto_plot(self):
-        return
+    def _auto_plot(auto: Mixin):
+        pass
 
 
 class Histogram(Structure):
@@ -1324,14 +1283,14 @@ class Histogram(Structure):
         return vals_equal and bins_equal
 
     @staticmethod
-    def auto_file_input(self):
+    def auto_file_input(auto: Mixin):
         column_requirements = ("bin start", "bin end", "bin value")
-        self.check_path()
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1359,15 +1318,13 @@ class Histogram(Structure):
                     "\nis not satisfied ",
                 )
 
-        self.data.result = (data[:, 2], np.unique(data[:, [0, 1]].flatten()))
-
-        return
+        auto.data.result = (data[:, 2], np.unique(data[:, [0, 1]].flatten()))
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data_ = self.data.result
+        data_ = auto.data.result
 
         data = {
             "bin start": data_["bins"][:-1],
@@ -1377,25 +1334,23 @@ class Histogram(Structure):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
-        hist = self.data.result
+    def auto_plot(auto: Mixin):
+        hist = auto.data.result
         bins = hist["bins"]
         values = hist["values"]
         nvalues = len(values)
@@ -1405,11 +1360,9 @@ class Histogram(Structure):
         plt.figure()
         plt.bar(x, values, width, align="edge")
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class HistogramColumn(Histogram):
@@ -1418,17 +1371,17 @@ class HistogramColumn(Histogram):
     """
 
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:4]
+            auto._db, schema, table, auto.meta.result.tables[1:4]
         )
 
         all_bin_values = col_lists[0]
@@ -1447,9 +1400,7 @@ class HistogramColumn(Histogram):
 
         result = (all_bin_values, bin_separators)
 
-        self.data.result = result
-
-        return
+        auto.data.result = result
 
 
 class HistogramDict(Histogram):
@@ -1484,13 +1435,13 @@ class HistogramDict(Histogram):
         return True
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
         column_requirements = ("bin start", "bin end", "bin value")
 
-        if ".xls" in self._path:
-            xl = pd.ExcelFile(self._path)
+        if ".xls" in auto._path:
+            xl = pd.ExcelFile(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1533,18 +1484,16 @@ class HistogramDict(Histogram):
                 np.unique(data[:, [0, 1]].flatten()),
             )
 
-        self.data.result = result
-
-        return
+        auto.data.result = result
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data_dict = self.data.result
+        data_dict = auto.data.result
 
-        if ".xls" in self._path:
-            xl = pd.ExcelWriter(self._path)
+        if ".xls" in auto._path:
+            xl = pd.ExcelWriter(auto._path, engine="openpyxl")
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1567,23 +1516,21 @@ class HistogramDict(Histogram):
 
             df.to_excel(xl, sheet_name=key, index=False)
 
-        xl.save()
-
-        return
+        xl.close()
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         ax.set_prop_cycle(cycler("color", ["c", "m", "y", "k"]))
 
-        for i, hist in enumerate(self.data.result):
-            bins = self.data.result[hist]["bins"]
-            values = self.data.result[hist]["values"]
+        for i, hist in enumerate(auto.data.result):
+            bins = auto.data.result[hist]["bins"]
+            values = auto.data.result[hist]["values"]
             nvalues = len(values)
             width = np.ediff1d(bins)
             x = bins[:nvalues]
@@ -1591,7 +1538,7 @@ class HistogramDict(Histogram):
             ax.bar(
                 x,
                 values,
-                zs=len(self.data.result) - i,
+                zs=len(auto.data.result) - i,
                 zdir="y",
                 width=width,
                 align="edge",
@@ -1599,17 +1546,15 @@ class HistogramDict(Histogram):
             )
 
         plt.yticks(
-            range(len(self.data.result)),
-            self.data.result.keys(),
+            range(len(auto.data.result)),
+            auto.data.result.keys(),
             rotation=-15,
             va="center",
             ha="left",
         )
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class CartesianData(NumpyND):
@@ -1637,13 +1582,13 @@ class CartesianData(NumpyND):
         return result
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1666,16 +1611,14 @@ class CartesianData(NumpyND):
                 "x, y, z(optional))"
             )
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        if isinstance(self.data.result, np.ndarray):
-            data_ = self.data.result
+        if isinstance(auto.data.result, np.ndarray):
+            data_ = auto.data.result
         else:
             raise TypeError(
                 "Data type not understood: possible type for a "
@@ -1689,42 +1632,38 @@ class CartesianData(NumpyND):
 
         df = pd.DataFrame(data, index=[0])
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
 
 class CartesianDataColumn(CartesianData):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         result = get_one_from_column(
-            self._db, schema, table, self.meta.result.tables[1]
+            auto._db, schema, table, auto.meta.result.tables[1]
         )
 
         if result is not None and result[0] is not None:
-            self.data.result = result[0]
-
-        return
+            auto.data.result = result[0]
 
 
 class CartesianList(Numpy2D):
@@ -1751,11 +1690,11 @@ class CartesianList(Numpy2D):
         return result
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         x = []
         y = []
 
-        for coords in self.data.result:
+        for coords in auto.data.result:
             x.append(coords[0])
             y.append(coords[1])
 
@@ -1768,31 +1707,29 @@ class CartesianList(Numpy2D):
         xlabel = ""
         ylabel = ""
 
-        if self.meta.result.labels is not None:
-            xlabel = self.meta.result.labels[0]
-            ylabel = self.meta.result.labels[1]
+        if auto.meta.result.labels is not None:
+            xlabel = auto.meta.result.labels[0]
+            ylabel = auto.meta.result.labels[1]
 
-        if self.meta.result.units is not None:
-            xlabel = "{} [${}$]".format(xlabel, self.meta.result.units[0])
-            ylabel = "{} [${}$]".format(ylabel, self.meta.result.units[1])
+        if auto.meta.result.units is not None:
+            xlabel = "{} [${}$]".format(xlabel, auto.meta.result.units[0])
+            ylabel = "{} [${}$]".format(ylabel, auto.meta.result.units[1])
 
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1810,16 +1747,14 @@ class CartesianList(Numpy2D):
                 "x, y, z(optional))"
             )
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        if isinstance(self.data.result, np.ndarray):
-            data_ = self.data.result
+        if isinstance(auto.data.result, np.ndarray):
+            data_ = auto.data.result
         else:
             raise TypeError(
                 "Data type not understood: possible type for a "
@@ -1833,42 +1768,38 @@ class CartesianList(Numpy2D):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
 
 class CartesianListColumn(CartesianList):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         result = get_one_from_column(
-            self._db, schema, table, self.meta.result.tables[1]
+            auto._db, schema, table, auto.meta.result.tables[1]
         )
 
         if result is not None and result[0] is not None:
-            self.data.result = result[0]
-
-        return
+            auto.data.result = result[0]
 
 
 class CartesianDict(CartesianData):
@@ -1877,7 +1808,7 @@ class CartesianDict(CartesianData):
     def get_data(self, raw, meta_data):
         safe_data = {}
 
-        for key, value in raw.iteritems():
+        for key, value in raw.items():
             safe_value = super(CartesianDict, self).get_data(value, meta_data)
 
             if meta_data.types:
@@ -1905,20 +1836,20 @@ class CartesianDict(CartesianData):
 
         value_check = []
 
-        for lkey, lvalue in left.iteritems():
+        for lkey, lvalue in left.items():
             rvalue = right[lkey]
             value_check.append(np.array_equal(lvalue, rvalue))
 
         return all(value_check)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -1946,54 +1877,50 @@ class CartesianDict(CartesianData):
         for k, v in zip(df.ID, data):
             data_[k] = v
 
-        self.data.result = data_
-
-        return
+        auto.data.result = data_
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data_ = self.data.result
+        data_ = auto.data.result
 
         columns = ["ID", "x", "y"]
 
-        if data_.itervalues().next().shape[0] == 3:
+        if list(data_.values())[0].shape[0] == 3:
             columns += ["z"]
 
         df = pd.DataFrame(columns=columns)
 
-        for k, v in data_.iteritems():
+        for k, v in data_.items():
             df2 = pd.DataFrame(
                 v.reshape((1, len(columns) - 1)), columns=columns[1:]
             )
             df2["ID"] = k
 
-            df = df.append(df2, ignore_index=True, sort=False)
+            df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         x = []
         y = []
         n = []
 
-        for key, coords in self.data.result.iteritems():
+        for key, coords in auto.data.result.items():
             x.append(coords[0])
             y.append(coords[1])
             n.append(key)
@@ -2022,26 +1949,24 @@ class CartesianDict(CartesianData):
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class CartesianDictColumn(CartesianDict):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:3]
+            auto._db, schema, table, auto.meta.result.tables[1:3]
         )
 
         result_dict = {
@@ -2051,9 +1976,7 @@ class CartesianDictColumn(CartesianDict):
         }
 
         if result_dict:
-            self.data.result = result_dict
-
-        return
+            auto.data.result = result_dict
 
 
 class CartesianListDict(CartesianList):
@@ -2062,7 +1985,7 @@ class CartesianListDict(CartesianList):
     def get_data(self, raw, meta_data):
         safe_data = {}
 
-        for key, value in raw.iteritems():
+        for key, value in raw.items():
             safe_value = super(CartesianListDict, self).get_data(
                 value, meta_data
             )
@@ -2092,20 +2015,20 @@ class CartesianListDict(CartesianList):
 
         value_check = []
 
-        for lkey, lvalue in left.iteritems():
+        for lkey, lvalue in left.items():
             rvalue = right[lkey]
             value_check.append(np.array_equal(lvalue, rvalue))
 
         return all(value_check)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -2135,47 +2058,43 @@ class CartesianListDict(CartesianList):
             else:
                 data[k] = np.c_[t.x, t.y, t.z]
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data_ = self.data.result
+        data_ = auto.data.result
 
         columns = ["ID", "x", "y"]
 
-        if data_.itervalues().next().shape[1] == 3:
+        if list(data_.values())[0].shape[1] == 3:
             columns += ["z"]
 
         df = pd.DataFrame(columns=columns)
-        for k, v in data_.iteritems():
+        for k, v in data_.items():
             df2 = pd.DataFrame(v, columns=columns[1:])
             df2["ID"] = [k] * v.shape[0]
 
-            df = df.append(df2, ignore_index=True, sort=False)
+            df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def _auto_plot(self):
-        return
+    def _auto_plot(auto: Mixin):
+        pass
 
 
 #    @staticmethod
@@ -2187,7 +2106,7 @@ class CartesianListDict(CartesianList):
 #        y = []
 #        n = []
 #
-#        for key, coords in self.data.result.iteritems():
+#        for key, coords in self.data.result.items():
 #            x.append(coords[0][0])
 #            y.append(coords[0][1])
 #            n.append(key)
@@ -2226,17 +2145,17 @@ class CartesianListDict(CartesianList):
 
 class CartesianListDictColumn(CartesianListDict):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:3]
+            auto._db, schema, table, auto.meta.result.tables[1:3]
         )
 
         result_dict = {
@@ -2246,9 +2165,7 @@ class CartesianListDictColumn(CartesianListDict):
         }
 
         if result_dict:
-            self.data.result = result_dict
-
-        return
+            auto.data.result = result_dict
 
 
 class SimpleData(Structure):
@@ -2387,38 +2304,27 @@ class SimpleList(Structure):
         return result
 
     @staticmethod
-    def auto_plot(self):
-        if self.meta.result.types[0] not in ["float", "int"]:
+    def auto_plot(auto: Mixin):
+        if auto.meta.result.types[0] not in ["float", "int"]:
             return
 
         plt.figure()
-        plt.plot(self.data.result)
-        plt.title(self.meta.result.title)
+        plt.plot(auto.data.result)
+        plt.title(auto.meta.result.title)
 
-        if self.meta.result.units is not None:
-            plt.ylabel("${}$".format(self.meta.result.units[0]))
+        if auto.meta.result.units is not None:
+            plt.ylabel("${}$".format(auto.meta.result.units[0]))
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        # Disable integer conversion for float types
-        convert_float = True
-
-        if (
-            self.meta.result.types is not None
-            and self.meta.result.types[0] == "float"
-        ):
-            convert_float = False
-
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path, convert_float=convert_float)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
@@ -2430,31 +2336,27 @@ class SimpleList(Structure):
                 "The data column needs to have the header: 'data'",
             )
 
-        self.data.result = list(df.data)
-
-        return
+        auto.data.result = list(df.data)
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data = self.data.result
+        data = auto.data.result
         df = pd.DataFrame(data, columns=["data"])
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
 
@@ -2469,7 +2371,7 @@ class SimpleDict(Structure):
             typed_dict = {}
 
             try:
-                for key, value in raw_dict.iteritems():
+                for key, value in raw_dict.items():
                     typed_value = _assign_type(value, meta_data.types)
                     typed_dict[key] = typed_value
 
@@ -2485,7 +2387,7 @@ class SimpleDict(Structure):
 
         # Test keys against valid values
         if meta_data.valid_values is not None:
-            for key in typed_dict.iterkeys():
+            for key in typed_dict.keys():
                 if key not in meta_data.valid_values:
                     valid_str = ", ".join(meta_data.valid_values)
                     errStr = (
@@ -2500,19 +2402,13 @@ class SimpleDict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        # Disable integer conversion for float types
-        convert_float = True
-
-        if self.meta.result.types[0] == "float":
-            convert_float = False
-
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path, convert_float=convert_float)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
 
         if not ("data" in df.columns and "ID" in df.columns):
             raise ValueError(
@@ -2521,35 +2417,31 @@ class SimpleDict(Structure):
                 "and the key colum needs to have the header: 'ID'",
             )
 
-        self.data.result = dict(zip(df.ID, df.data))
-
-        return
+        auto.data.result = dict(zip(df.ID, df.data))
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        dc = self.data.result
-        data = [[k, v] for k, v in dc.iteritems()]
+        dc = auto.data.result
+        data = [[k, v] for k, v in dc.items()]
         df = pd.DataFrame(data, columns=["ID", "data"])
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
-
-        return
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
-        if self.meta.result.types[0] not in ["int", "float"]:
+    def auto_plot(auto: Mixin):
+        if auto.meta.result.types[0] not in ["int", "float"]:
             return
 
-        num_dict = self.data.result
+        num_dict = auto.data.result
 
         labels = num_dict.keys()
         labels = natsorted(labels)
@@ -2560,25 +2452,23 @@ class SimpleDict(Structure):
         plt.bar(range(len(sizes)), sizes, align="center")
         plt.xticks(range(len(sizes)), labels, rotation=30, ha="right")
 
-        if self.meta.result.units is not None:
-            plt.ylabel("[${}$]".format(self.meta.result.units[0]))
+        if auto.meta.result.units is not None:
+            plt.ylabel("[${}$]".format(auto.meta.result.units[0]))
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
         plt.tight_layout()
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class SimplePie(SimpleDict):
     @staticmethod
-    def auto_plot(self):
-        if self.meta.result.types[0] not in ["int", "float"]:
+    def auto_plot(auto: Mixin):
+        if auto.meta.result.types[0] not in ["int", "float"]:
             return
 
-        num_dict = self.data.result
+        num_dict = auto.data.result
         labels = num_dict.keys()
         sizes = num_dict.values()
 
@@ -2599,9 +2489,12 @@ class SimplePie(SimpleDict):
 
         plt.figure()
 
-        _, _, autotexts = plt.pie(
+        pie = plt.pie(
             sizes, labels=labels, autopct="%1.1f%%", shadow=True, startangle=90
         )
+
+        assert len(pie) == 3
+        _, _, autotexts = pie
 
         for autotext in autotexts:
             autotext.set_color("white")
@@ -2611,33 +2504,29 @@ class SimplePie(SimpleDict):
 
         # Set aspect ratio to be equal so that pie is drawn as a circle.
         plt.axis("equal")
-        plt.title(self.meta.result.title, y=1.08)
+        plt.title(auto.meta.result.title, y=1.08)
         plt.tight_layout()
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class SimpleDataColumn(SimpleData):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         result = get_one_from_column(
-            self._db, schema, table, self.meta.result.tables[1]
+            auto._db, schema, table, auto.meta.result.tables[1]
         )
 
         if result is not None and result[0] is not None:
-            self.data.result = result[0]
-
-        return
+            auto.data.result = result[0]
 
 
 class SimpleDataForeignColumn(SimpleData):
@@ -2652,91 +2541,85 @@ class SimpleDataForeignColumn(SimpleData):
     """
 
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         table_two_id = get_one_from_column(
-            self._db, schema, table, self.meta.result.tables[2]
+            auto._db, schema, table, auto.meta.result.tables[2]
         )
 
         if table_two_id is None or table_two_id[0] is None:
             return
 
-        schema, table = self.meta.result.tables[1].split(".")
+        schema, table = auto.meta.result.tables[1].split(".")
 
         result = filter_one_from_column(
-            self._db,
+            auto._db,
             schema,
             table,
-            self.meta.result.tables[4],
-            self.meta.result.tables[3],
+            auto.meta.result.tables[4],
+            auto.meta.result.tables[3],
             table_two_id[0],
         )
 
         if result is not None and result[0] is not None:
-            self.data.result = result[0]
-
-        return
+            auto.data.result = result[0]
 
 
 class DirectoryDataColumn(DirectoryData):
     @staticmethod
-    def auto_db(self):
-        SimpleDataColumn.auto_db(self)
-
-        return
+    def auto_db(auto: Mixin):
+        SimpleDataColumn.auto_db(auto)
 
 
 class SimpleListColumn(SimpleList):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, [self.meta.result.tables[1]]
+            auto._db, schema, table, [auto.meta.result.tables[1]]
         )
 
         result = col_lists[0]
 
         if result and set(result) != set([None]):
-            self.data.result = result
-
-        return
+            auto.data.result = result
 
     @staticmethod
-    def _auto_file_input(self):
-        return
+    def _auto_file_input(auto: Mixin):
+        pass
 
     @staticmethod
-    def _auto_file_output(self):
-        return
+    def _auto_file_output(auto: Mixin):
+        pass
 
 
 class SimpleDictColumn(SimpleDict):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:3]
+            auto._db, schema, table, auto.meta.result.tables[1:3]
         )
 
         result = {
@@ -2746,9 +2629,7 @@ class SimpleDictColumn(SimpleDict):
         }
 
         if result:
-            self.data.result = result
-
-        return
+            auto.data.result = result
 
 
 class DateTimeData(Structure):
@@ -2777,7 +2658,7 @@ class DateTimeDict(DateTimeData):
         checked_dict = {}
 
         try:
-            for key, value in raw_dict.iteritems():
+            for key, value in raw_dict.items():
                 date_item = super(DateTimeDict, self).get_data(value, meta_data)
                 checked_dict[key] = date_item
 
@@ -2800,13 +2681,13 @@ class DateTimeDict(DateTimeData):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
 
         if not ("data" in df.columns and "ID" in df.columns):
             raise ValueError(
@@ -2827,29 +2708,25 @@ class DateTimeDict(DateTimeData):
         if not result:
             result = None
 
-        self.data.result = result
-
-        return
+        auto.data.result = result
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        dc = self.data.result
-        data = [[k, v] for k, v in dc.iteritems()]
+        dc = auto.data.result
+        data = [[k, v] for k, v in dc.items()]
         df = pd.DataFrame(data, columns=["ID", "data"])
 
-        if ".xls" in self._path:
-            writer = pd.ExcelWriter(self._path, engine="xlsxwriter")
+        if ".xls" in auto._path:
+            writer = pd.ExcelWriter(auto._path, engine="openpyxl")
             df.to_excel(writer, index=False)
-            writer.save()
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
-
-        return
+            writer.close()
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
 
@@ -2858,7 +2735,7 @@ class TriStateData(Structure):
     a string"""
 
     def get_data(self, raw, meta_data):
-        if isinstance(raw, basestring):
+        if isinstance(raw, str):
             if raw in ["true", "false", "unknown"]:
                 return raw
 
@@ -2902,13 +2779,13 @@ class PointData(Structure):
         return result
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path or ".csv" in self._path:
-            data = PointData._read_table(self._path)
-        elif ".shp" in self._path:
-            data = PointData._read_shapefile(self._path)
+        if ".xls" in auto._path or ".csv" in auto._path:
+            data = PointData._read_table(auto._path)
+        elif ".shp" in auto._path:
+            data = PointData._read_shapefile(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported. ",
@@ -2919,20 +2796,18 @@ class PointData(Structure):
                 ),
             )
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        points = [self.data.result]
+        points = [auto.data.result]
 
-        if ".xls" in self._path or ".csv" in self._path:
-            PointData._write_table(self._path, points)
-        elif ".shp" in self._path:
-            PointData._write_shapefile(self._path, points)
+        if ".xls" in auto._path or ".csv" in auto._path:
+            PointData._write_table(auto._path, points)
+        elif ".shp" in auto._path:
+            PointData._write_shapefile(auto._path, points)
         else:
             raise TypeError(
                 "The specified file format is not supported. ",
@@ -2942,8 +2817,6 @@ class PointData(Structure):
                     ".xls",
                 ),
             )
-
-        return
 
     @staticmethod
     def _read_table(path):
@@ -2973,7 +2846,7 @@ class PointData(Structure):
         point = points[0]
 
         if isinstance(point, Point):
-            data_ = np.array(point).reshape((1, -1))
+            data_ = np.array(point.coords).reshape((1, -1))
         else:
             raise TypeError(
                 "Data type not understood: type for a "
@@ -2988,11 +2861,9 @@ class PointData(Structure):
         df = pd.DataFrame(data)
 
         if ".xls" in path:
-            df.to_excel(path, index=False)
+            df.to_excel(path, engine="openpyxl", index=False)
         elif ".csv" in path:
             df.to_csv(path, index=False)
-
-        return
 
     @staticmethod
     def _read_shapefile(path):
@@ -3029,31 +2900,27 @@ class PointData(Structure):
     def _write_shapefile(path, points):
         point = points[0]
 
-        if isinstance(point, Point):
-            data = np.array(point)
-        else:
+        if not isinstance(point, Point):
             raise TypeError("Data is not a valid Point object.")
 
         with shapefile.Writer(path) as shp:
             shp.field("name", "C")
 
-            if len(data) == 3:
-                shp.pointz(*data)
+            if point.has_z:
+                shp.pointz(x=point.x, y=point.y, z=point.z)  # type:ignore
             else:
-                shp.point(*data)
+                shp.point(x=point.x, y=point.y)
 
             shp.record("point1")
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".shp", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
-        x = self.data.result.x
-        y = self.data.result.y
+    def auto_plot(auto: Mixin):
+        x = auto.data.result.x
+        y = auto.data.result.y
 
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
@@ -3064,23 +2931,21 @@ class PointData(Structure):
         xlabel = ""
         ylabel = ""
 
-        if self.meta.result.labels is not None:
-            xlabel = self.meta.result.labels[0]
-            ylabel = self.meta.result.labels[1]
+        if auto.meta.result.labels is not None:
+            xlabel = auto.meta.result.labels[0]
+            ylabel = auto.meta.result.labels[1]
 
-        if self.meta.result.units is not None:
-            xlabel = "{} [${}$]".format(xlabel, self.meta.result.units[0])
-            ylabel = "{} [${}$]".format(ylabel, self.meta.result.units[1])
+        if auto.meta.result.units is not None:
+            xlabel = "{} [${}$]".format(xlabel, auto.meta.result.units[0])
+            ylabel = "{} [${}$]".format(ylabel, auto.meta.result.units[1])
 
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.ticklabel_format(useOffset=False)
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class PointList(PointData):
@@ -3102,13 +2967,13 @@ class PointList(PointData):
         return new_point_list
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path or ".csv" in self._path:
-            data = PointList._read_table(self._path)
-        elif ".shp" in self._path:
-            data = PointList._read_shapefile(self._path)
+        if ".xls" in auto._path or ".csv" in auto._path:
+            data = PointList._read_table(auto._path)
+        elif ".shp" in auto._path:
+            data = PointList._read_shapefile(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported. ",
@@ -3119,20 +2984,18 @@ class PointList(PointData):
                 ),
             )
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        points = self.data.result
+        points = auto.data.result
 
-        if ".xls" in self._path or ".csv" in self._path:
-            PointList._write_table(self._path, points)
-        elif ".shp" in self._path:
-            PointList._write_shapefile(self._path, points)
+        if ".xls" in auto._path or ".csv" in auto._path:
+            PointList._write_table(auto._path, points)
+        elif ".shp" in auto._path:
+            PointList._write_shapefile(auto._path, points)
         else:
             raise TypeError(
                 "The specified file format is not supported. ",
@@ -3142,8 +3005,6 @@ class PointList(PointData):
                     ".xls",
                 ),
             )
-
-        return
 
     @staticmethod
     def _read_table(path):
@@ -3187,11 +3048,9 @@ class PointList(PointData):
         df = pd.DataFrame(data)
 
         if ".xls" in path:
-            df.to_excel(path, index=False)
+            df.to_excel(path, engine="openpyxl", index=False)
         elif ".csv" in path:
             df.to_csv(path, index=False)
-
-        return
 
     @staticmethod
     def _read_shapefile(path):
@@ -3235,7 +3094,7 @@ class PointList(PointData):
                     "PointData subclass is shapely Point"
                 )
 
-        data = np.array([np.array(point) for point in points])
+        data = np.array([np.array(point.coords) for point in points])
 
         with shapefile.Writer(path) as shp:
             shp.field("name", "C")
@@ -3247,18 +3106,16 @@ class PointList(PointData):
 
             shp.record("multipoint1")
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".shp", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         x = []
         y = []
 
-        for coords in self.data.result:
+        for coords in auto.data.result:
             x.append(coords.x)
             y.append(coords.y)
 
@@ -3271,23 +3128,21 @@ class PointList(PointData):
         xlabel = ""
         ylabel = ""
 
-        if self.meta.result.labels is not None:
-            xlabel = self.meta.result.labels[0]
-            ylabel = self.meta.result.labels[1]
+        if auto.meta.result.labels is not None:
+            xlabel = auto.meta.result.labels[0]
+            ylabel = auto.meta.result.labels[1]
 
-        if self.meta.result.units is not None:
-            xlabel = "{} [${}$]".format(xlabel, self.meta.result.units[0])
-            ylabel = "{} [${}$]".format(ylabel, self.meta.result.units[1])
+        if auto.meta.result.units is not None:
+            xlabel = "{} [${}$]".format(xlabel, auto.meta.result.units[0])
+            ylabel = "{} [${}$]".format(ylabel, auto.meta.result.units[1])
 
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.ticklabel_format(useOffset=False)
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class PointDict(PointData):
@@ -3312,13 +3167,13 @@ class PointDict(PointData):
         return new_points_dict
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported. ",
@@ -3337,17 +3192,15 @@ class PointDict(PointData):
                 "ID, x, y, z(optional))"
             )
 
-        self.data.result = dict(zip(df.ID, [Point(xyz) for xyz in data]))
-
-        return
+        auto.data.result = dict(zip(df.ID, [Point(xyz) for xyz in data]))
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        if isinstance(self.data.result, dict):
+        if isinstance(auto.data.result, dict):
             data_ = np.array(
-                [[k] + list(np.array(el)) for k, el in self.data.result.items()]
+                [[k] + list(np.array(el)) for k, el in auto.data.result.items()]
             )
         else:
             raise TypeError(
@@ -3362,28 +3215,26 @@ class PointDict(PointData):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
                 "The specified file format is not supported.",
                 "Supported format are {},{},{}".format(".csv", ".xls", ".xlsx"),
             )
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         x = []
         y = []
 
-        for coords in self.data.result.itervalues():
+        for coords in auto.data.result.values():
             x.append(coords.x)
             y.append(coords.y)
 
@@ -3393,7 +3244,7 @@ class PointDict(PointData):
         ax1.margins(0.1, 0.1)
         ax1.autoscale_view()
 
-        for key, point in self.data.result.iteritems():
+        for key, point in auto.data.result.items():
             coords = list(point.coords)[0]
             ax1.annotate(
                 str(key),
@@ -3409,19 +3260,19 @@ class PointDict(PointData):
         xlabel = ""
         ylabel = ""
 
-        if self.meta.result.labels is not None:
-            xlabel = self.meta.result.labels[0]
-            ylabel = self.meta.result.labels[1]
+        if auto.meta.result.labels is not None:
+            xlabel = auto.meta.result.labels[0]
+            ylabel = auto.meta.result.labels[1]
 
-        if self.meta.result.units is not None:
-            xlabel = "{} [${}$]".format(xlabel, self.meta.result.units[0])
-            ylabel = "{} [${}$]".format(ylabel, self.meta.result.units[1])
+        if auto.meta.result.units is not None:
+            xlabel = "{} [${}$]".format(xlabel, auto.meta.result.units[0])
+            ylabel = "{} [${}$]".format(ylabel, auto.meta.result.units[1])
 
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.ticklabel_format(useOffset=False)
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
         """
         xlabel = self.meta.result.labels[0]
@@ -3438,45 +3289,41 @@ class PointDict(PointData):
         plt.ylabel(ylabel)
         """
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class PointDataColumn(PointData):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         result = get_one_from_column(
-            self._db, schema, table, self.meta.result.tables[1]
+            auto._db, schema, table, auto.meta.result.tables[1]
         )
 
         if result is not None and result[0] is not None:
-            self.data.result = to_shape(result[0])
-
-        return
+            auto.data.result = to_shape(result[0])
 
 
 class PointDictColumn(PointDict):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:3]
+            auto._db, schema, table, auto.meta.result.tables[1:3]
         )
 
         filter_dict = {
@@ -3490,9 +3337,7 @@ class PointDictColumn(PointDict):
         }
 
         if point_dict:
-            self.data.result = point_dict
-
-        return
+            auto.data.result = point_dict
 
 
 class PolygonData(Structure):
@@ -3531,16 +3376,16 @@ class PolygonData(Structure):
         return result
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
         patch = PolygonPatch(
-            self.data.result, fc=BLUE, ec=BLUE, fill=False, linewidth=2
+            auto.data.result, fc=BLUE, ec=BLUE, fill=False, linewidth=2
         )
         ax1.add_patch(patch)
 
-        coords = list(self.data.result.exterior.coords)
+        coords = list(auto.data.result.exterior.coords)
 
         for i, xy in enumerate(coords[:-1]):
             ax1.annotate(
@@ -3562,21 +3407,19 @@ class PolygonData(Structure):
         plt.ticklabel_format(useOffset=False)
         plt.xticks(rotation=30, ha="right")
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
         plt.tight_layout()
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path or ".csv" in self._path:
-            data = PolygonData._read_table(self._path)
-        elif ".shp" in self._path:
-            data = PolygonData._read_shapefile(self._path)
+        if ".xls" in auto._path or ".csv" in auto._path:
+            data = PolygonData._read_table(auto._path)
+        elif ".shp" in auto._path:
+            data = PolygonData._read_shapefile(auto._path)
         else:
             raise TypeError(
                 "The specified file format is not supported. ",
@@ -3587,20 +3430,18 @@ class PolygonData(Structure):
                 ),
             )
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        poly = self.data.result
+        poly = auto.data.result
 
-        if ".xls" in self._path or ".csv" in self._path:
-            PolygonData._write_table(self._path, poly)
-        elif ".shp" in self._path:
-            PolygonData._write_shapefile(self._path, poly)
+        if ".xls" in auto._path or ".csv" in auto._path:
+            PolygonData._write_table(auto._path, poly)
+        elif ".shp" in auto._path:
+            PolygonData._write_shapefile(auto._path, poly)
         else:
             raise TypeError(
                 "The specified file format is not supported. ",
@@ -3610,8 +3451,6 @@ class PolygonData(Structure):
                     ".xls",
                 ),
             )
-
-        return
 
     @staticmethod
     def _read_table(path):
@@ -3661,11 +3500,9 @@ class PolygonData(Structure):
         df = pd.DataFrame(data, columns=columns)
 
         if ".xls" in path:
-            df.to_excel(path, index=False)
+            df.to_excel(path, engine="openpyxl", index=False)
         elif ".csv" in path:
             df.to_csv(path, index=False)
-
-        return
 
     @staticmethod
     def _read_shapefile(path):
@@ -3724,32 +3561,28 @@ class PolygonData(Structure):
 
             shp.record("polygon1")
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".shp", ".xls", ".xlsx"]
 
 
 class PolygonDataColumn(PolygonData):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         result = get_one_from_column(
-            self._db, schema, table, self.meta.result.tables[1]
+            auto._db, schema, table, auto.meta.result.tables[1]
         )
 
         if result is not None and result[0] is not None:
-            self.data.result = to_shape(result[0])
-
-        return
+            auto.data.result = to_shape(result[0])
 
 
 class PolygonList(PolygonData):
@@ -3769,13 +3602,13 @@ class PolygonList(PolygonData):
         return ring_list
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
 
         if (
             "ID" in df.columns
@@ -3805,15 +3638,13 @@ class PolygonList(PolygonData):
                 "ID, x, y, z(optional)"
             )
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        polys = self.data.result
+        polys = auto.data.result
         data = []
         for ip, poly in enumerate(polys):
             if isinstance(poly, Polygon):
@@ -3842,25 +3673,23 @@ class PolygonList(PolygonData):
             df2 = pd.DataFrame(v, columns=columns[1:])
             df2["ID"] = [k] * v.shape[0]
 
-            df = df.append(df2, ignore_index=True, sort=False)
+            df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
-
-        return
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
-        for polygon in self.data.result:
+        for polygon in auto.data.result:
             patch = PolygonPatch(
                 polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
             )
@@ -3877,35 +3706,31 @@ class PolygonList(PolygonData):
         plt.ticklabel_format(useOffset=False)
         plt.xticks(rotation=30, ha="right")
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
         plt.tight_layout()
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class PolygonListColumn(PolygonList):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, [self.meta.result.tables[1]]
+            auto._db, schema, table, [auto.meta.result.tables[1]]
         )
 
         all_entries = col_lists[0]
 
         if all_entries and set(all_entries) != set([None]):
-            self.data.result = [to_shape(wkb_poly) for wkb_poly in all_entries]
-
-        return
+            auto.data.result = [to_shape(wkb_poly) for wkb_poly in all_entries]
 
 
 class PolygonDict(PolygonData):
@@ -3929,13 +3754,13 @@ class PolygonDict(PolygonData):
         return ring_dict
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path()
+    def auto_file_input(auto: Mixin):
+        auto.check_path()
 
-        if ".xls" in self._path:
-            df = pd.read_excel(self._path)
-        elif ".csv" in self._path:
-            df = pd.read_csv(self._path)
+        if ".xls" in auto._path:
+            df = pd.read_excel(auto._path)
+        elif ".csv" in auto._path:
+            df = pd.read_csv(auto._path)
 
         data = {}
 
@@ -3965,18 +3790,16 @@ class PolygonDict(PolygonData):
                 "ID, x, y, z(optional)"
             )
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        polys = self.data.result
+        polys = auto.data.result
         data = []
 
-        for name, poly in polys.iteritems():
+        for name, poly in polys.items():
             if isinstance(poly, Polygon):
                 data.append((name, np.array(poly.exterior.coords[:])[:-1]))
             else:
@@ -3999,34 +3822,32 @@ class PolygonDict(PolygonData):
             df2 = pd.DataFrame(v, columns=columns[1:])
             df2["ID"] = [k] * v.shape[0]
 
-            df = df.append(df2, ignore_index=True, sort=False)
+            df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in self._path:
-            df.to_excel(self._path, index=False)
-        elif ".csv" in self._path:
-            df.to_csv(self._path, index=False)
-
-        return
+        if ".xls" in auto._path:
+            df.to_excel(auto._path, engine="openpyxl", index=False)
+        elif ".csv" in auto._path:
+            df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(self):
+    def auto_plot(auto: Mixin):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
-        for key, polygon in self.data.result.iteritems():
+        for key, polygon in auto.data.result.items():
             patch = PolygonPatch(
                 polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
             )
             ax1.add_patch(patch)
 
-            centroid = np.array(polygon.centroid)
+            centroid = tuple(np.array(polygon.centroid)[:2])
             ax1.annotate(
                 str(key),
-                xy=centroid[:2],
+                xy=centroid,
                 xytext=(0, 0),
                 xycoords="data",
                 textcoords="offset pixels",
@@ -4046,27 +3867,25 @@ class PolygonDict(PolygonData):
         plt.ticklabel_format(useOffset=False)
         plt.xticks(rotation=30, ha="right")
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
         plt.tight_layout()
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class PolygonDictColumn(PolygonDict):
     @staticmethod
-    def auto_db(self):
-        if self.meta.result.tables is None:
+    def auto_db(auto: Mixin):
+        if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
-                self.meta.result.identifier
+                auto.meta.result.identifier
             )
             raise ValueError(errStr)
 
-        schema, table = self.meta.result.tables[0].split(".")
+        schema, table = auto.meta.result.tables[0].split(".")
 
         col_lists = get_all_from_columns(
-            self._db, schema, table, self.meta.result.tables[1:3]
+            auto._db, schema, table, auto.meta.result.tables[1:3]
         )
 
         filter_dict = {
@@ -4080,9 +3899,7 @@ class PolygonDictColumn(PolygonDict):
         }
 
         if poly_dict:
-            self.data.result = poly_dict
-
-        return
+            auto.data.result = poly_dict
 
 
 class XGridND(Structure):
@@ -4201,35 +4018,31 @@ class XGridND(Structure):
         return left.identical(right)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path(True)
+    def auto_file_input(auto: Mixin):
+        auto.check_path(True)
 
-        dataset = xr.open_dataset(self._path)
+        dataset = xr.open_dataset(auto._path)
 
         coord_list = []
 
-        for coord in self.meta.result.labels:
+        for coord in auto.meta.result.labels:
             coord_list.append(dataset.coords[coord])
 
         raw_dict = {"values": dataset["data"].values, "coords": coord_list}
 
-        self.data.result = raw_dict
-
-        return
+        auto.data.result = raw_dict
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data = self.data.result
+        data = auto.data.result
 
         data = data.to_dataset(name="data")
-        data.to_netcdf(self._path, format="NETCDF4")
-
-        return
+        data.to_netcdf(auto._path, format="NETCDF4")
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".nc"]
 
 
@@ -4241,9 +4054,9 @@ class XGrid2D(XGridND):
         return 2
 
     @staticmethod
-    def auto_plot(self):
-        xcoord = self.data.result.coords[self.meta.result.labels[0]]
-        ycoord = self.data.result.coords[self.meta.result.labels[1]]
+    def auto_plot(auto: Mixin):
+        xcoord = auto.data.result.coords[auto.meta.result.labels[0]]
+        ycoord = auto.data.result.coords[auto.meta.result.labels[1]]
 
         if xcoord.values.dtype.kind in {"U", "S"}:
             xuniques = xcoord.values
@@ -4259,21 +4072,21 @@ class XGrid2D(XGridND):
 
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
-        plt.contourf(x, y, self.data.result.T)
+        plt.contourf(x, y, auto.data.result.T)
         clb = plt.colorbar()
 
-        xlabel = self.meta.result.labels[0]
-        ylabel = self.meta.result.labels[1]
+        xlabel = auto.meta.result.labels[0]
+        ylabel = auto.meta.result.labels[1]
 
-        if self.meta.result.units is not None:
-            if self.meta.result.units[0] is not None:
-                xlabel = "{} [${}$]".format(xlabel, self.meta.result.units[0])
+        if auto.meta.result.units is not None:
+            if auto.meta.result.units[0] is not None:
+                xlabel = "{} [${}$]".format(xlabel, auto.meta.result.units[0])
 
-            if self.meta.result.units[1] is not None:
-                ylabel = "{} [${}$]".format(ylabel, self.meta.result.units[1])
+            if auto.meta.result.units[1] is not None:
+                ylabel = "{} [${}$]".format(ylabel, auto.meta.result.units[1])
 
-            if self.meta.result.units[2] is not None:
-                clb.set_label("${}$".format(self.meta.result.units[2]))
+            if auto.meta.result.units[2] is not None:
+                clb.set_label("${}$".format(auto.meta.result.units[2]))
 
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
@@ -4282,23 +4095,21 @@ class XGrid2D(XGridND):
             plt.xticks(x, xuniques)
         else:
             locs, _ = plt.xticks()
-            f = interpolate.interp1d(x, xuniques, fill_value="extrapolate")
+            f = interpolate.interp1d(x, xuniques, fill_value="extrapolate")  # type:ignore
             new_labels = ["{0:.8g}".format(tick) for tick in f(locs)]
-            plt.xticks(locs, new_labels)
+            ax1.set_xticklabels(new_labels)
 
         if ycoord.values.dtype.kind in {"U", "S"}:
             plt.yticks(y, yuniques)
         else:
             locs, _ = plt.yticks()
-            f = interpolate.interp1d(y, yuniques, fill_value="extrapolate")
+            f = interpolate.interp1d(y, yuniques, fill_value="extrapolate")  # type:ignore
             new_labels = ["{0:.8g}".format(tick) for tick in f(locs)]
-            plt.yticks(locs, new_labels)
+            ax1.set_yticklabels(new_labels)
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
 
 class XGrid3D(XGridND):
@@ -4384,6 +4195,7 @@ class XSetND(XGridND):
                 raise ValueError(errStr)
 
             if all_units is not None:
+                assert coord_units is not None
                 unit_idx = set_names.index(k)
                 local_units = coord_units[:]
                 local_units.append(all_units[unit_idx + n_dims])
@@ -4405,40 +4217,36 @@ class XSetND(XGridND):
         return data_set
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path(True)
+    def auto_file_input(auto: Mixin):
+        auto.check_path(True)
 
-        dataset = xr.open_dataset(self._path)
+        dataset = xr.open_dataset(auto._path)
 
         values_dict = {}
 
-        for key, dataarray in dataset.data_vars.iteritems():
+        for key, dataarray in dataset.data_vars.items():
             values_dict[key] = dataarray.values
 
         n_vars = len(values_dict)
 
         coord_list = []
 
-        for coord in self.meta.result.labels[:-n_vars]:
+        for coord in auto.meta.result.labels[:-n_vars]:
             coord_list.append(dataset.coords[coord])
 
         raw_dict = {"values": values_dict, "coords": coord_list}
 
-        self.data.result = raw_dict
-
-        return
+        auto.data.result = raw_dict
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        data = self.data.result
-        data.to_netcdf(self._path, format="NETCDF4")
-
-        return
+        data = auto.data.result
+        data.to_netcdf(auto._path, format="NETCDF4")
 
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".nc"]
 
 
@@ -4463,14 +4271,14 @@ class Strata(XSet3D):
     values. This is a bespoke class for sediment layer retrieval."""
 
     @staticmethod
-    def auto_plot(self):
-        bathy = self.data.result["depth"].sel(layer="layer 1")
+    def auto_plot(auto: Mixin):
+        bathy = auto.data.result["depth"].sel(layer="layer 1")
 
-        x = bathy.coords[self.meta.result.labels[0]]
-        y = bathy.coords[self.meta.result.labels[1]]
+        x = bathy.coords[auto.meta.result.labels[0]]
+        y = bathy.coords[auto.meta.result.labels[1]]
 
         fig = plt.figure()
-        ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
+        fig.add_subplot(1, 1, 1, aspect="equal")
         plt.contourf(x, y, bathy.T)
         clb = plt.colorbar()
 
@@ -4484,20 +4292,18 @@ class Strata(XSet3D):
         plt.ticklabel_format(useOffset=False)
         plt.xticks(rotation=30, ha="right")
 
-        plt.title(self.meta.result.title)
+        plt.title(auto.meta.result.title)
         plt.tight_layout()
 
-        self.fig_handle = plt.gcf()
-
-        return
+        auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path(True)
+    def auto_file_input(auto: Mixin):
+        auto.check_path(True)
 
-        strata = xr.open_dataset(self._path)
+        strata = xr.open_dataset(auto._path)
 
-        sediment_path = self._path.replace("depth", "sediment")
+        sediment_path = auto._path.replace("depth", "sediment")
         sediment_data = xr.open_dataset(sediment_path)
         sediment_data = sediment_data.where(sediment_data["sediment"] != "None")
         sediment_data = sediment_data.fillna(None)
@@ -4510,36 +4316,32 @@ class Strata(XSet3D):
         }
 
         coord_list = [
-            strata.coords[self.meta.result.labels[0]],
-            strata.coords[self.meta.result.labels[1]],
+            strata.coords[auto.meta.result.labels[0]],
+            strata.coords[auto.meta.result.labels[1]],
             strata.coords["layer"],
         ]
 
         raw_dict = {"values": values_dict, "coords": coord_list}
 
-        self.data.result = raw_dict
-
-        return
+        auto.data.result = raw_dict
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        root_path = os.path.splitext(self._path)[0]
+        root_path = os.path.splitext(auto._path)[0]
 
-        depth_data = self.data.result["depth"]
+        depth_data = auto.data.result["depth"]
         depth_set = depth_data.to_dataset()
         data_path = "{}_depth.nc".format(root_path)
         depth_set.to_netcdf(data_path, format="NETCDF4")
 
-        sediment_data = self.data.result["sediment"]
+        sediment_data = auto.data.result["sediment"]
         sediment_data = sediment_data.astype(str)
 
         sediment_set = sediment_data.to_dataset()
         data_path = "{}_sediment.nc".format(root_path)
         sediment_set.to_netcdf(data_path, format="NETCDF4")
-
-        return
 
 
 class Network(Structure):
@@ -4570,29 +4372,25 @@ class Network(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_input(self):
-        self.check_path(True)
+    def auto_file_input(auto: Mixin):
+        auto.check_path(True)
 
-        with open(self._path, "r") as stream:
+        with open(auto._path, "r") as stream:
             data = yaml.load(stream, Loader=yaml.FullLoader)
 
-        self.data.result = data
-
-        return
+        auto.data.result = data
 
     @staticmethod
-    def auto_file_output(self):
-        self.check_path()
+    def auto_file_output(auto: Mixin):
+        auto.check_path()
 
-        network_dict = self.data.result
+        network_dict = auto.data.result
 
-        with open(self._path, "w") as stream:
+        with open(auto._path, "w") as stream:
             yaml.dump(network_dict, stream, default_flow_style=False)
 
-        return
-
     @staticmethod
-    def get_valid_extensions(cls):
+    def get_valid_extensions(auto: Mixin):
         return [".yaml"]
 
 
@@ -4606,14 +4404,12 @@ class EIADict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_output(self):
-        SimpleDict.auto_file_output(self)
-
-        return
+    def auto_file_output(auto: Mixin):
+        SimpleDict.auto_file_output(auto)
 
     @staticmethod
-    def get_valid_extensions(cls):
-        return SimpleDict.get_valid_extensions(cls)
+    def get_valid_extensions(auto: Mixin):
+        return SimpleDict.get_valid_extensions(auto)
 
 
 class RecommendationDict(Structure):
@@ -4626,17 +4422,14 @@ class RecommendationDict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_output(self):
-        SimpleDict.auto_file_output(self)
-
-        return
+    def auto_file_output(auto: Mixin):
+        SimpleDict.auto_file_output(auto)
 
     @staticmethod
-    def get_valid_extensions(cls):
-        return SimpleDict.get_valid_extensions(cls)
+    def get_valid_extensions(auto: Mixin):
+        return SimpleDict.get_valid_extensions(auto)
 
 
 def _assign_type(raw, type_list):
-    TypeCls = getattr(__builtin__, type_list[0])
-
+    TypeCls = getattr(builtins, type_list[0])
     return TypeCls(raw)
