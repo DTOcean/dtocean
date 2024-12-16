@@ -36,6 +36,11 @@ optional = true
 pyright = "^1.1.390"
 ruff = "^0.8.3"
 
+[tool.poetry-monoranger-plugin]
+enabled = true
+monorepo-root = "../../"
+version-rewrite-rule = '=='
+
 [tool.coverage.run]
 branch = true
 omit = [
