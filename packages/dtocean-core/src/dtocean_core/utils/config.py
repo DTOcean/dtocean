@@ -24,8 +24,8 @@ import logging
 import argparse
 import datetime
 
-from polite_config.paths import (ObjDirectory,
-                          UserDataDirectory,
+from polite_config.paths import (ModPath,
+                          UserDataPath,
                           DirectoryMap)
 
 from . import SmartFormatter
@@ -40,8 +40,8 @@ def init_config(logging=False, database=False, files=False, overwrite=False):
     
     if not any([logging, database, files]): return
     
-    objdir = ObjDirectory(__name__, "..", "config")
-    datadir = UserDataDirectory("dtocean_core", "DTOcean", "config")
+    objdir = ModPath(__name__, "..", "config")
+    datadir = UserDataPath("dtocean_core", "DTOcean", "config")
     dirmap = DirectoryMap(datadir, objdir)
     
     if logging: dirmap.copy_file("logging.yaml", overwrite=overwrite)
