@@ -20,76 +20,61 @@
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-import os
 import logging
-from pkg_resources import get_distribution
+from logging import NullHandler
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
+from typing import cast
 
-from polite_config.configuration import ReadINI
-from polite_config.paths import (Directory,
-                          ObjDirectory,
-                          UserDataDirectory,)
-from polite_config.configuration import Logger
-
-# credentials
-__authors__ = ['DTOcean Developers']
-__version__ = get_distribution('dtocean-core').version
-
-# Set default logging handler to avoid "No handler found" warnings.
-try:  # Python 2.7+
-    from logging import NullHandler
-except ImportError:
-    class NullHandler(logging.Handler):
-        def emit(self, record):
-            pass
+from polite_config.configuration import Logger, ReadINI
+from polite_config.paths import ModPath, UserDataPath
 
 logging.getLogger(__name__).addHandler(NullHandler())
 
 
 def start_logging():
-    
     """Start python logger"""
-    
+
     # Pick up the configuration from the user directory if it exists
-    userdir = UserDataDirectory("dtocean_core", "DTOcean", "config")
-    
+    userdir = UserDataPath("dtocean_core", "DTOcean", "config")
+
     # Look for files.ini
-    if userdir.isfile("files.ini"):
+    if (userdir / "files.ini").is_file():
         configdir = userdir
     else:
-        configdir = ObjDirectory("dtocean_core", "config")
-    
+        configdir = ModPath("dtocean_core", "config")
+
     files_ini = ReadINI(configdir, "files.ini")
-    files_config = files_ini.get_config()
-    
-    appdir_path = userdir.get_path("..")
+    files_config = cast(dict, files_ini.get_config())
+
+    appdir_path = userdir.parent
     log_folder = files_config["logs"]["path"]
-    log_path = os.path.join(appdir_path, log_folder)
-    logdir = Directory(log_path)
-    
+    logdir = Path(appdir_path, log_folder)
+
     # Look for logging.yaml
-    if userdir.isfile("logging.yaml"):
+    if (userdir / "logging.yaml").is_file():
         configdir = userdir
     else:
-        configdir = ObjDirectory("dtocean_core", "config")
-    
+        configdir = ModPath("dtocean_core", "config")
+
     log = Logger(configdir)
     log_config_dict = log.read()
-    
+
     # Update the file logger if present
     if "file" in log_config_dict["handlers"]:
         log_filename = log_config_dict["handlers"]["file"]["filename"]
-        log_path = logdir.get_path(log_filename)
+        log_path = logdir / log_filename
         log_config_dict["handlers"]["file"]["filename"] = log_path
-        logdir.makedir()
-    
+        logdir.mkdir()
+
     log.configure_logger(log_config_dict)
     logger = log.add_named_logger("dtocean_core")
-    
+
     # Rotate any rotating file handlers
     for handler in logger.handlers:
-        if handler.__class__.__name__ == 'RotatingFileHandler':
+        if isinstance(handler, RotatingFileHandler):
             handler.doRollover()
-    
+
     logger.info("Begin logging for dtocean_core")
-    
+
     return
