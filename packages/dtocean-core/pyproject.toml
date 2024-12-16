@@ -58,6 +58,12 @@ enabled = true
 monorepo-root = "../../"
 version-rewrite-rule = '=='
 
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
