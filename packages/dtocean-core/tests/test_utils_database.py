@@ -7,7 +7,7 @@ import pytest
 import pandas as pd
 from shapely.geometry import Point
 
-from polite.paths import Directory
+from polite_config.paths import Directory
 from dtocean_core.utils.config import init_config
 from dtocean_core.utils.database import (bathy_records_to_strata,
                                          query_builder,

@@ -35,9 +35,9 @@ from shapely import geos, wkb
 from win32com.client import Dispatch
 
 # DTOcean modules
-from aneris.utilities.database import PostgreSQL
-from polite.paths import ObjDirectory, UserDataDirectory
-from polite.configuration import ReadYAML
+from mdo_engine.utilities.database import PostgreSQL
+from polite_config.paths import ObjDirectory, UserDataDirectory
+from polite_config.configuration import ReadYAML
 
 # Local modules
 from . import SmartFormatter

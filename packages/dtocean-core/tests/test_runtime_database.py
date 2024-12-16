@@ -5,7 +5,7 @@ from copy import deepcopy
 
 from sqlalchemy.engine import Engine
 
-from aneris.boundary.interface import QueryInterface
+from mdo_engine.boundary.interface import QueryInterface
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ProjectMenu 
 from dtocean_core.pipeline import Tree

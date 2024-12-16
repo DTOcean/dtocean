@@ -17,7 +17,7 @@
 
 import numpy as np
 
-from aneris.boundary.interface import QueryInterface, MaskVariable
+from mdo_engine.boundary.interface import QueryInterface, MaskVariable
 
 from . import ProjectInterface
 

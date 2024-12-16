@@ -24,7 +24,7 @@ Note:
 
 .. module:: hydrodynamics
    :platform: Windows
-   :synopsis: Aneris interface for dtocean_core package
+   :synopsis: mdo_engine interface for dtocean_core package
    
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
@@ -35,7 +35,7 @@ from packaging.version import Version
 import numpy as np
 from shapely.geometry import Polygon, box
 
-from aneris.boundary.interface import MaskVariable
+from mdo_engine.boundary.interface import MaskVariable
 from dtocean_hydro.array import Array_pkg
 from dtocean_hydro.utils.bathymetry_utility import get_unfeasible_regions
 from dtocean_hydro.utils.set_wdirs_multibody import anglewrap, convertangle

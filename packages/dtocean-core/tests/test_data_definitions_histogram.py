@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 
-from aneris.control.factory import InterfaceFactory
+from mdo_engine.control.factory import InterfaceFactory
 from dtocean_core.core import (AutoFileInput,
                                AutoFileOutput,
                                AutoPlot,

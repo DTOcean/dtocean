@@ -24,7 +24,7 @@ import logging
 import argparse
 import datetime
 
-from polite.paths import (ObjDirectory,
+from polite_config.paths import (ObjDirectory,
                           UserDataDirectory,
                           DirectoryMap)
 
