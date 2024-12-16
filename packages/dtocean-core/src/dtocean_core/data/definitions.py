@@ -1,6 +1,6 @@
 
 #    Copyright (C) 2016 Mathew Topper, David Bould, Rui Duarte, Francesco Ferri
-#    Copyright (C) 2017-2021 Mathew Topper
+#    Copyright (C) 2017-2024 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ from scipy import interpolate
 from natsort import natsorted
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as PathEffects
-from mpl_toolkits.mplot3d import Axes3D
 
 from shapely.geometry import Polygon, Point
 from descartes import PolygonPatch
