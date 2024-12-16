@@ -3,16 +3,12 @@ import pytest
 
 from copy import deepcopy
 
-import numpy as np
-from shapely.geometry import Polygon
 from sqlalchemy.engine import Engine
 
 from aneris.boundary.interface import QueryInterface
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ProjectMenu 
 from dtocean_core.pipeline import Tree
-from dtocean_core.data import CoreMetaData
-from dtocean_core.data.definitions import PolygonDataColumn
 from dtocean_core.utils.database import get_database
 
 class MuleInterface(QueryInterface):

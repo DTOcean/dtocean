@@ -895,7 +895,7 @@ class InputVariable(Variable):
         if interface is None:
             
             errStr = ("No raw input interface found for "
-                      "variable ").format(self._id)
+                      "variable ").format()
             raise RuntimeError(errStr)
 
         interface.set_variables({self._id: value})
@@ -915,7 +915,7 @@ class InputVariable(Variable):
         if interface is None:
             
             errStr = ("No file input interface found for "
-                      "variable ").format(self._id)
+                      "variable ").format()
             raise RuntimeError(errStr)
         
         interface.set_file_path(file_path)
@@ -940,7 +940,7 @@ class InputVariable(Variable):
         if interface is None:
             
             errStr = ("No database access interface found for "
-                      "variable ").format(self._id)
+                      "variable ").format()
             raise RuntimeError(errStr)
         
         self._interface = interface

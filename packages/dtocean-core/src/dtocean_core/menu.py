@@ -265,7 +265,7 @@ class ProjectMenu(ConnectorMenu):
         # Load the top level data - check the status of the database.
         if project.get_database_credentials() is None: return
         
-        if not "Site and System Options" in self.get_active(core, project):
+        if "Site and System Options" not in self.get_active(core, project):
                                       
             errStr = ("The pipeline must be initialised before "
                       "initalising the database options.")
@@ -293,7 +293,7 @@ class ProjectMenu(ConnectorMenu):
         # Load the top level data - check the status of the database.
         if project.get_database_credentials() is None: return
             
-        if not "Site Boundary Selection" in self.get_active(core, project):
+        if "Site Boundary Selection" not in self.get_active(core, project):
                                       
             errStr = ("Database options must be initialised prior to "
                       "initalising the bathymetry.")
@@ -325,7 +325,7 @@ class ProjectMenu(ConnectorMenu):
         # Load the top level data - check the status of the database.
         if project.get_database_credentials() is None: return
 
-        if not "Database Filtering Interface" in self.get_active(core,
+        if "Database Filtering Interface" not in self.get_active(core,
                                                                  project):
                                       
             errStr = ("Database options must be initialised prior to "
