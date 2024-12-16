@@ -21,73 +21,62 @@ Created on Sat Apr 11 21:38:18 2015
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from mdo_engine.boundary.interface import (FileInterface,
-                                       MetaInterface,
-                                       WeightedInterface)
+from mdo_engine.boundary.interface import (
+    FileInterface,
+    MetaInterface,
+    WeightedInterface,
+)
 
 
 class ProjectInterface(MetaInterface):
-    
-    '''QueryInterface subclass for database queries'''
+    """QueryInterface subclass for database queries"""
 
 
 class ModuleInterface(WeightedInterface, MetaInterface):
-    
-    '''MapInterface subclass for the computational modules'''
+    """MapInterface subclass for the computational modules"""
 
 
 class ThemeInterface(WeightedInterface, MetaInterface):
-    
-    '''MapInterface subclass for the thematic assessement modules'''
+    """MapInterface subclass for the thematic assessement modules"""
 
 
 class FileInputInterface(FileInterface, MetaInterface):
-    
-    '''FileInterface subclass for inputting data through files'''
-    
+    """FileInterface subclass for inputting data through files"""
+
     @classmethod
     def declare_inputs(cls):
-        
         return None
-    
+
     @classmethod
     def declare_optional(cls):
-        
         return None
 
 
 class FileOutputInterface(FileInterface, MetaInterface):
-    
-    '''FileInterface subclass for outputting data through files'''
-    
+    """FileInterface subclass for outputting data through files"""
+
     @classmethod
     def declare_optional(cls):
-        
         return None
-    
+
     @classmethod
     def declare_outputs(cls):
-        
         return None
 
 
 class PlotInterface(MetaInterface):
+    """MapInterface subclass for the thematic assessement modules"""
 
-    '''MapInterface subclass for the thematic assessement modules'''
-    
     def __init__(self):
-        
         super(PlotInterface, self).__init__()
         self.fig_handle = None
-        
+
         return
-    
+
     @classmethod
     def declare_optional(cls):
-        
         return None
-    
+
     @classmethod
     def declare_outputs(cls):
-        
         return None
