@@ -75,8 +75,12 @@ def get_subclass_names_from_module(module_name, super_name):
     """Get all classes in a module that are subclasses of the given super
     class type"""
 
-    clsmembers = get_class_descriptions_from_module(module_name)
     match_super = []
+
+    try:
+        clsmembers = get_class_descriptions_from_module(module_name)
+    except ImportError:
+        return match_super
 
     for name, cls in clsmembers.items():
         all_supers = [x.__name__ for x in inspect.getmro(cls)]
