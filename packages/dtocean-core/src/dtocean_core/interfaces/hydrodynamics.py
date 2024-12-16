@@ -36,7 +36,6 @@ import pkg_resources
 
 import numpy as np
 from natsort import natsorted
-from shapely.geometry import box
 
 from polite.paths import Directory, ObjDirectory, UserDataDirectory
 from polite.configuration import ReadINI

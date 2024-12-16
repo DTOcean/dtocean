@@ -29,7 +29,6 @@ import datetime as dt
 # External modules
 import yaml
 import argparse
-import geoalchemy2
 import numpy as np
 import pandas as pd
 from shapely import geos, wkb
