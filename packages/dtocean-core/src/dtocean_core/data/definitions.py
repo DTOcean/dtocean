@@ -19,7 +19,7 @@ import os
 from copy import deepcopy
 from datetime import datetime
 from itertools import product
-from typing import Protocol
+from typing import Optional, Protocol
 
 import matplotlib.patheffects as PathEffects
 import matplotlib.pyplot as plt
@@ -49,23 +49,29 @@ from ..utils.database import (
 BLUE = "#6699cc"
 
 
-class Mixin(Protocol):
-    fig_handle: Figure
-
-    @property
-    def _db(self) -> PostgreSQL: ...
-
-    @property
-    def _path(self) -> str: ...
-
+class BaseMixin(Protocol):
     @property
     def data(self) -> Box: ...
 
     @property
     def meta(self) -> Box: ...
 
+
+class FileMixin(BaseMixin):
+    @property
+    def _path(self) -> str: ...
+
     def check_path(self, check_exists=False):
         pass
+
+
+class DBMixin(BaseMixin):
+    @property
+    def _db(self) -> PostgreSQL: ...
+
+
+class PlotMixin(BaseMixin):
+    fig_handle: Figure
 
 
 class UnknownData(Structure):
@@ -99,7 +105,7 @@ class SeriesData(Structure):
         return left.equals(right)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
         assert isinstance(auto._path, str)
 
@@ -118,7 +124,7 @@ class SeriesData(Structure):
         auto.data.result = series
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         s = auto.data.result
@@ -132,7 +138,7 @@ class SeriesData(Structure):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv"]
 
 
@@ -154,7 +160,7 @@ class TimeSeries(SeriesData):
 
         dates, values = zip(*raw)
 
-        if not all(isinstance(x, datetime) for x in dates):
+        if not np.issubdtype(dates.dtype, np.datetime64):
             errStr = (
                 "TimeSeries requires a datetime.datetime object as first"
                 "index of all given tuples."
@@ -168,7 +174,7 @@ class TimeSeries(SeriesData):
         return time_series
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         fig = plt.figure()
         ax = fig.gca()
         auto.data.result.plot(ax=ax)
@@ -189,22 +195,17 @@ class TimeSeries(SeriesData):
             ylabel = "{} [${}$]".format(ylabel, auto.meta.result.units[0])
 
         plt.ylabel(ylabel.strip())
-
         plt.title(auto.meta.result.title)
-
         auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
-        fmtStr = "%Y-%m-%d %H:%M:%S.%f"
-
+    def auto_file_input(auto: FileMixin):
         SeriesData.auto_file_input(auto)
-
         s = auto.data.result
+        fmtStr = "ISO8601"
 
         try:
             s.index = s.index.map(lambda x: pd.to_datetime(x, format=fmtStr))
-
         except ValueError:  # wrong datetime object format
             errStr = (
                 "TimeSeries requires a datetime.datetime object "
@@ -222,39 +223,38 @@ class TimeSeriesColumn(TimeSeries):
     specified in the labels key, but all other columns should be labelled."""
 
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         schema, table = auto.meta.result.tables[0].split(".")
-
         df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
+        result: Optional[pd.Series] = None
 
         if df.empty:
-            result = None
+            auto.data.result = result
+            return
 
-        else:
-            dt_labels = ["Date", "Time"]
-            dt_labels.extend(auto.meta.result.labels)
+        dt_labels = ["Date", "Time"]
+        dt_labels.extend(auto.meta.result.labels)
 
-            name_map = {
-                k: v for k, v in zip(auto.meta.result.tables[1:], dt_labels)
-            }
+        name_map = {
+            k: v for k, v in zip(auto.meta.result.tables[1:], dt_labels)
+        }
 
-            df = df.rename(columns=name_map)
+        df = df.rename(columns=name_map)
 
-            # Don't allow Date to have any null
-            if pd.isnull(df["Date"]).any():
-                return
+        # Don't allow Date to have any null
+        if pd.isnull(df["Date"]).any():
+            return
 
-            dtstrs = [
-                datetime.combine(date, time)
-                for date, time in zip(df["Date"], df["Time"])
-            ]
+        dtstrs = [
+            datetime.combine(date, time)
+            for date, time in zip(df["Date"], df["Time"])
+        ]
 
-            df["DateTime"] = dtstrs
-            df = df.drop("Date", axis=1)
-            df = df.drop("Time", axis=1)
-            df = df.set_index("DateTime")
-
-            result = df.to_records()
+        df["DateTime"] = dtstrs
+        df = df.drop("Date", axis=1)
+        df = df.drop("Time", axis=1)
+        df = df.set_index("DateTime")
+        result = df.iloc[:, 0]
 
         auto.data.result = result
 
@@ -376,7 +376,7 @@ class TableData(Structure):
         return left.equals(right)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -392,7 +392,7 @@ class TableData(Structure):
         auto.data.result = df
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         df = auto.data.result
@@ -408,13 +408,13 @@ class TableData(Structure):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
 
 class TableDataColumn(TableData):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         schema, table = auto.meta.result.tables[0].split(".")
 
         df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
@@ -483,14 +483,14 @@ class IndexTable(TableData):
         return dataframe
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.data.result = auto.data.result.reset_index()
         TableData.auto_file_output(auto)
 
 
 class IndexTableColumn(IndexTable):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         schema, table = auto.meta.result.tables[0].split(".")
 
         df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
@@ -547,7 +547,7 @@ class LineTable(TableData):
         return dataframe
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         # Get number of columns for legend
         ncol = len(auto.data.result.columns) / 20 + 1
 
@@ -587,7 +587,7 @@ class LineTable(TableData):
         auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         IndexTable.auto_file_output(auto)
 
 
@@ -609,7 +609,7 @@ class LineTableExpand(LineTable):
 
 class LineTableColumn(LineTable):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         schema, table = auto.meta.result.tables[0].split(".")
 
         df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
@@ -664,7 +664,7 @@ class TimeTable(TableData):
         return dataframe
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         fig = plt.figure()
         auto.data.result.plot(ax=fig.gca())
 
@@ -673,7 +673,7 @@ class TimeTable(TableData):
         auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         fmtStr = "%Y-%m-%d %H:%M:%S.%f"
 
         TableData.auto_file_input(auto)
@@ -697,7 +697,7 @@ class TimeTable(TableData):
         auto.data.result = df
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         IndexTable.auto_file_output(auto)
 
 
@@ -708,7 +708,7 @@ class TimeTableColumn(TimeTable):
     match to values in the labels key."""
 
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         schema, table = auto.meta.result.tables[0].split(".")
 
         df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:])
@@ -822,7 +822,7 @@ class Numpy2DColumn(Numpy2D):
     """Numpy2DColumn array."""
 
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         schema, table = auto.meta.result.tables[0].split(".")
 
         df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:4])
@@ -882,7 +882,7 @@ class Numpy3DColumn(Numpy3D):
     """Numpy3DColumn array."""
 
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         schema, table = auto.meta.result.tables[0].split(".")
 
         df = get_table_df(auto._db, schema, table, auto.meta.result.tables[1:5])
@@ -939,7 +939,7 @@ class NumpyLine(NumpyND):
         return result
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -965,7 +965,7 @@ class NumpyLine(NumpyND):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         if isinstance(auto.data.result, np.ndarray):
@@ -995,7 +995,7 @@ class NumpyLine(NumpyND):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         plt.figure()
         plt.plot(*zip(*auto.data.result))
         plt.title(auto.meta.result.title)
@@ -1034,7 +1034,7 @@ class NumpyLine(NumpyND):
 
 class NumpyLineArray(NumpyLine):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -1053,7 +1053,7 @@ class NumpyLineArray(NumpyLine):
 
 class NumpyLineColumn(NumpyLine):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -1116,7 +1116,7 @@ class NumpyLineDict(NumpyLine):
         return all(value_check)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -1150,7 +1150,7 @@ class NumpyLineDict(NumpyLine):
         auto.data.result = result
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data_dict = auto.data.result
@@ -1182,7 +1182,7 @@ class NumpyLineDict(NumpyLine):
         return [".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         plt.figure()
 
         kwargs = {}
@@ -1217,7 +1217,7 @@ class NumpyLineDictArrayColumn(NumpyLineDict):
     """Collect a column with keys and a second column containing 2D arrays"""
 
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -1249,7 +1249,7 @@ class NumpyBar(NumpyLine):
     data"""
 
     @staticmethod
-    def _auto_plot(auto: Mixin):
+    def _auto_plot(auto: PlotMixin):
         pass
 
 
@@ -1283,7 +1283,7 @@ class Histogram(Structure):
         return vals_equal and bins_equal
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         column_requirements = ("bin start", "bin end", "bin value")
         auto.check_path()
 
@@ -1321,7 +1321,7 @@ class Histogram(Structure):
         auto.data.result = (data[:, 2], np.unique(data[:, [0, 1]].flatten()))
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data_ = auto.data.result
@@ -1345,11 +1345,11 @@ class Histogram(Structure):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         hist = auto.data.result
         bins = hist["bins"]
         values = hist["values"]
@@ -1371,7 +1371,7 @@ class HistogramColumn(Histogram):
     """
 
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -1435,7 +1435,7 @@ class HistogramDict(Histogram):
         return True
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         column_requirements = ("bin start", "bin end", "bin value")
@@ -1487,7 +1487,7 @@ class HistogramDict(Histogram):
         auto.data.result = result
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data_dict = auto.data.result
@@ -1519,11 +1519,11 @@ class HistogramDict(Histogram):
         xl.close()
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         ax.set_prop_cycle(cycler("color", ["c", "m", "y", "k"]))
@@ -1582,7 +1582,7 @@ class CartesianData(NumpyND):
         return result
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -1614,7 +1614,7 @@ class CartesianData(NumpyND):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         if isinstance(auto.data.result, np.ndarray):
@@ -1643,13 +1643,13 @@ class CartesianData(NumpyND):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
 
 class CartesianDataColumn(CartesianData):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -1690,7 +1690,7 @@ class CartesianList(Numpy2D):
         return result
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         x = []
         y = []
 
@@ -1723,7 +1723,7 @@ class CartesianList(Numpy2D):
         auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -1750,7 +1750,7 @@ class CartesianList(Numpy2D):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         if isinstance(auto.data.result, np.ndarray):
@@ -1779,13 +1779,13 @@ class CartesianList(Numpy2D):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
 
 class CartesianListColumn(CartesianList):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -1843,7 +1843,7 @@ class CartesianDict(CartesianData):
         return all(value_check)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -1880,7 +1880,7 @@ class CartesianDict(CartesianData):
         auto.data.result = data_
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data_ = auto.data.result
@@ -1911,11 +1911,11 @@ class CartesianDict(CartesianData):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         x = []
         y = []
         n = []
@@ -1956,7 +1956,7 @@ class CartesianDict(CartesianData):
 
 class CartesianDictColumn(CartesianDict):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -2022,7 +2022,7 @@ class CartesianListDict(CartesianList):
         return all(value_check)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -2061,7 +2061,7 @@ class CartesianListDict(CartesianList):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data_ = auto.data.result
@@ -2089,11 +2089,11 @@ class CartesianListDict(CartesianList):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def _auto_plot(auto: Mixin):
+    def _auto_plot(auto: PlotMixin):
         pass
 
 
@@ -2145,7 +2145,7 @@ class CartesianListDict(CartesianList):
 
 class CartesianListDictColumn(CartesianListDict):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -2304,7 +2304,7 @@ class SimpleList(Structure):
         return result
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         if auto.meta.result.types[0] not in ["float", "int"]:
             return
 
@@ -2318,7 +2318,7 @@ class SimpleList(Structure):
         auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -2339,7 +2339,7 @@ class SimpleList(Structure):
         auto.data.result = list(df.data)
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data = auto.data.result
@@ -2356,7 +2356,7 @@ class SimpleList(Structure):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
 
@@ -2402,7 +2402,7 @@ class SimpleDict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -2420,7 +2420,7 @@ class SimpleDict(Structure):
         auto.data.result = dict(zip(df.ID, df.data))
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         dc = auto.data.result
@@ -2433,11 +2433,11 @@ class SimpleDict(Structure):
             df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         if auto.meta.result.types[0] not in ["int", "float"]:
             return
 
@@ -2464,7 +2464,7 @@ class SimpleDict(Structure):
 
 class SimplePie(SimpleDict):
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         if auto.meta.result.types[0] not in ["int", "float"]:
             return
 
@@ -2512,7 +2512,7 @@ class SimplePie(SimpleDict):
 
 class SimpleDataColumn(SimpleData):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -2541,7 +2541,7 @@ class SimpleDataForeignColumn(SimpleData):
     """
 
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -2574,13 +2574,13 @@ class SimpleDataForeignColumn(SimpleData):
 
 class DirectoryDataColumn(DirectoryData):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         SimpleDataColumn.auto_db(auto)
 
 
 class SimpleListColumn(SimpleList):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -2599,17 +2599,17 @@ class SimpleListColumn(SimpleList):
             auto.data.result = result
 
     @staticmethod
-    def _auto_file_input(auto: Mixin):
+    def _auto_file_input(auto: FileMixin):
         pass
 
     @staticmethod
-    def _auto_file_output(auto: Mixin):
+    def _auto_file_output(auto: FileMixin):
         pass
 
 
 class SimpleDictColumn(SimpleDict):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -2681,7 +2681,7 @@ class DateTimeDict(DateTimeData):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -2711,7 +2711,7 @@ class DateTimeDict(DateTimeData):
         auto.data.result = result
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         dc = auto.data.result
@@ -2726,7 +2726,7 @@ class DateTimeDict(DateTimeData):
             df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
 
@@ -2779,7 +2779,7 @@ class PointData(Structure):
         return result
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path or ".csv" in auto._path:
@@ -2799,7 +2799,7 @@ class PointData(Structure):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         points = [auto.data.result]
@@ -2915,11 +2915,11 @@ class PointData(Structure):
             shp.record("point1")
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".shp", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         x = auto.data.result.x
         y = auto.data.result.y
 
@@ -2968,7 +2968,7 @@ class PointList(PointData):
         return new_point_list
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path or ".csv" in auto._path:
@@ -2988,7 +2988,7 @@ class PointList(PointData):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         points = auto.data.result
@@ -3108,11 +3108,11 @@ class PointList(PointData):
             shp.record("multipoint1")
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".shp", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         x = []
         y = []
 
@@ -3168,7 +3168,7 @@ class PointDict(PointData):
         return new_points_dict
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -3196,12 +3196,15 @@ class PointDict(PointData):
         auto.data.result = dict(zip(df.ID, [Point(xyz) for xyz in data]))
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         if isinstance(auto.data.result, dict):
             data_ = np.array(
-                [[k] + list(np.array(el)) for k, el in auto.data.result.items()]
+                [
+                    [k] + list(np.array(el.coords)[0])
+                    for k, el in auto.data.result.items()
+                ]
             )
         else:
             raise TypeError(
@@ -3227,11 +3230,11 @@ class PointDict(PointData):
             )
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         x = []
         y = []
 
@@ -3295,7 +3298,7 @@ class PointDict(PointData):
 
 class PointDataColumn(PointData):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -3314,7 +3317,7 @@ class PointDataColumn(PointData):
 
 class PointDictColumn(PointDict):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -3377,7 +3380,7 @@ class PolygonData(Structure):
         return result
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
@@ -3414,7 +3417,7 @@ class PolygonData(Structure):
         auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path or ".csv" in auto._path:
@@ -3434,7 +3437,7 @@ class PolygonData(Structure):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         poly = auto.data.result
@@ -3563,13 +3566,13 @@ class PolygonData(Structure):
             shp.record("polygon1")
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".shp", ".xls", ".xlsx"]
 
 
 class PolygonDataColumn(PolygonData):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -3603,7 +3606,7 @@ class PolygonList(PolygonData):
         return ring_list
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -3642,7 +3645,7 @@ class PolygonList(PolygonData):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         polys = auto.data.result
@@ -3682,11 +3685,11 @@ class PolygonList(PolygonData):
             df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
@@ -3715,7 +3718,7 @@ class PolygonList(PolygonData):
 
 class PolygonListColumn(PolygonList):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -3755,7 +3758,7 @@ class PolygonDict(PolygonData):
         return ring_dict
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path()
 
         if ".xls" in auto._path:
@@ -3794,7 +3797,7 @@ class PolygonDict(PolygonData):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         polys = auto.data.result
@@ -3831,11 +3834,11 @@ class PolygonDict(PolygonData):
             df.to_csv(auto._path, index=False)
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".csv", ".xls", ".xlsx"]
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
@@ -3876,7 +3879,7 @@ class PolygonDict(PolygonData):
 
 class PolygonDictColumn(PolygonDict):
     @staticmethod
-    def auto_db(auto: Mixin):
+    def auto_db(auto: DBMixin):
         if auto.meta.result.tables is None:
             errStr = ("Tables not defined for variable " "'{}'.").format(
                 auto.meta.result.identifier
@@ -4019,7 +4022,7 @@ class XGridND(Structure):
         return left.identical(right)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path(True)
 
         dataset = xr.open_dataset(auto._path)
@@ -4034,7 +4037,7 @@ class XGridND(Structure):
         auto.data.result = raw_dict
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data = auto.data.result
@@ -4043,7 +4046,7 @@ class XGridND(Structure):
         data.to_netcdf(auto._path, format="NETCDF4")
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".nc"]
 
 
@@ -4055,7 +4058,7 @@ class XGrid2D(XGridND):
         return 2
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         xcoord = auto.data.result.coords[auto.meta.result.labels[0]]
         ycoord = auto.data.result.coords[auto.meta.result.labels[1]]
 
@@ -4218,7 +4221,7 @@ class XSetND(XGridND):
         return data_set
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path(True)
 
         dataset = xr.open_dataset(auto._path)
@@ -4240,14 +4243,14 @@ class XSetND(XGridND):
         auto.data.result = raw_dict
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         data = auto.data.result
         data.to_netcdf(auto._path, format="NETCDF4")
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".nc"]
 
 
@@ -4272,7 +4275,7 @@ class Strata(XSet3D):
     values. This is a bespoke class for sediment layer retrieval."""
 
     @staticmethod
-    def auto_plot(auto: Mixin):
+    def auto_plot(auto: PlotMixin):
         bathy = auto.data.result["depth"].sel(layer="layer 1")
 
         x = bathy.coords[auto.meta.result.labels[0]]
@@ -4299,7 +4302,7 @@ class Strata(XSet3D):
         auto.fig_handle = plt.gcf()
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path(True)
 
         strata = xr.open_dataset(auto._path)
@@ -4327,7 +4330,7 @@ class Strata(XSet3D):
         auto.data.result = raw_dict
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         root_path = os.path.splitext(auto._path)[0]
@@ -4373,7 +4376,7 @@ class Network(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_input(auto: Mixin):
+    def auto_file_input(auto: FileMixin):
         auto.check_path(True)
 
         with open(auto._path, "r") as stream:
@@ -4382,7 +4385,7 @@ class Network(Structure):
         auto.data.result = data
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         auto.check_path()
 
         network_dict = auto.data.result
@@ -4391,7 +4394,7 @@ class Network(Structure):
             yaml.dump(network_dict, stream, default_flow_style=False)
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return [".yaml"]
 
 
@@ -4405,11 +4408,11 @@ class EIADict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         SimpleDict.auto_file_output(auto)
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return SimpleDict.get_valid_extensions(auto)
 
 
@@ -4423,11 +4426,11 @@ class RecommendationDict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def auto_file_output(auto: Mixin):
+    def auto_file_output(auto: FileMixin):
         SimpleDict.auto_file_output(auto)
 
     @staticmethod
-    def get_valid_extensions(auto: Mixin):
+    def get_valid_extensions(auto: BaseMixin):
         return SimpleDict.get_valid_extensions(auto)
 
 
