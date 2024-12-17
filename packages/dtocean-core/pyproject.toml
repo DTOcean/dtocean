@@ -27,7 +27,6 @@ polite-config = {path = "../polite-config", develop = true}
 cma = "^4.0.0"
 contours = "^0.0.2"
 cycler = "^0.12.1"
-descartes = "^1.1.0"
 geoalchemy2 = "^0.16.0"
 matplotlib = "^3.8.4"
 natsort = "^8.4.0"
