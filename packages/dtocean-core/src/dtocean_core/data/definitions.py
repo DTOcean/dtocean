@@ -29,7 +29,6 @@ import shapefile
 import xarray as xr
 import yaml
 from cycler import cycler
-from descartes import PolygonPatch
 from geoalchemy2.shape import to_shape
 from matplotlib.figure import Figure
 from mdo_engine.boundary import Structure
@@ -159,14 +158,7 @@ class TimeSeries(SeriesData):
             return raw
 
         dates, values = zip(*raw)
-
-        if not np.issubdtype(dates.dtype, np.datetime64):
-            errStr = (
-                "TimeSeries requires a datetime.datetime object as first"
-                "index of all given tuples."
-            )
-            raise ValueError(errStr)
-
+        dates = np.array(dates, dtype=np.datetime64)
         dt_index = pd.DatetimeIndex(dates)
         time_series = pd.Series(values, index=dt_index)
         time_series = time_series.sort_index()
@@ -674,7 +666,7 @@ class TimeTable(TableData):
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
-        fmtStr = "%Y-%m-%d %H:%M:%S.%f"
+        fmtStr = "ISO8601"
 
         TableData.auto_file_input(auto)
 
@@ -3039,8 +3031,7 @@ class PointList(PointData):
                     "PointData subclass is shapely Point"
                 )
 
-        data_ = np.array([np.array(point) for point in points])
-
+        data_ = np.array([np.array(point.coords[0]) for point in points])
         data = {"x": data_[:, 0], "y": data_[:, 1]}
 
         if data_.shape[1] == 3:
@@ -3095,15 +3086,15 @@ class PointList(PointData):
                     "PointData subclass is shapely Point"
                 )
 
-        data = np.array([np.array(point.coords) for point in points])
+        data = np.array([np.array(point.coords[0]) for point in points])
 
         with shapefile.Writer(path) as shp:
             shp.field("name", "C")
 
             if data.shape[1] == 3:
-                shp.multipointz(data[0])
+                shp.multipointz(data)
             else:
-                shp.multipoint(data[0])
+                shp.multipoint(data)
 
             shp.record("multipoint1")
 
@@ -3384,10 +3375,10 @@ class PolygonData(Structure):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
-        patch = PolygonPatch(
-            auto.data.result, fc=BLUE, ec=BLUE, fill=False, linewidth=2
-        )
-        ax1.add_patch(patch)
+        # patch = PolygonPatch(
+        #     auto.data.result, fc=BLUE, ec=BLUE, fill=False, linewidth=2
+        # )
+        # ax1.add_patch(patch)
 
         coords = list(auto.data.result.exterior.coords)
 
@@ -3693,11 +3684,11 @@ class PolygonList(PolygonData):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
-        for polygon in auto.data.result:
-            patch = PolygonPatch(
-                polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
-            )
-            ax1.add_patch(patch)
+        # for polygon in auto.data.result:
+        #     patch = PolygonPatch(
+        #         polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
+        #     )
+        #     ax1.add_patch(patch)
 
         ax1.margins(0.1, 0.1)
         ax1.autoscale_view()
@@ -3843,12 +3834,12 @@ class PolygonDict(PolygonData):
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
         for key, polygon in auto.data.result.items():
-            patch = PolygonPatch(
-                polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
-            )
-            ax1.add_patch(patch)
+            #     patch = PolygonPatch(
+            #         polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
+            #     )
+            #     ax1.add_patch(patch)
 
-            centroid = tuple(np.array(polygon.centroid)[:2])
+            centroid = tuple(np.array(polygon.centroid.coords[0])[:2])
             ax1.annotate(
                 str(key),
                 xy=centroid,
@@ -4030,7 +4021,7 @@ class XGridND(Structure):
         coord_list = []
 
         for coord in auto.meta.result.labels:
-            coord_list.append(dataset.coords[coord])
+            coord_list.append(dataset.coords[coord].values)
 
         raw_dict = {"values": dataset["data"].values, "coords": coord_list}
 
@@ -4209,11 +4200,9 @@ class XSetND(XGridND):
             coords, attrs = self._get_coords_attrs(
                 dims, raw["coords"], local_units
             )
-
             data_array = xr.DataArray(
                 raw["values"][k], coords=coords, attrs=attrs
             )
-
             set_dict[k] = data_array
 
         data_set = xr.Dataset(set_dict)
@@ -4320,11 +4309,10 @@ class Strata(XSet3D):
         }
 
         coord_list = [
-            strata.coords[auto.meta.result.labels[0]],
-            strata.coords[auto.meta.result.labels[1]],
-            strata.coords["layer"],
+            strata.coords[auto.meta.result.labels[0]].values,
+            strata.coords[auto.meta.result.labels[1]].values,
+            strata.coords["layer"].values,
         ]
-
         raw_dict = {"values": values_dict, "coords": coord_list}
 
         auto.data.result = raw_dict
@@ -4341,8 +4329,6 @@ class Strata(XSet3D):
         depth_set.to_netcdf(data_path, format="NETCDF4")
 
         sediment_data = auto.data.result["sediment"]
-        sediment_data = sediment_data.astype(str)
-
         sediment_set = sediment_data.to_dataset()
         data_path = "{}_sediment.nc".format(root_path)
         sediment_set.to_netcdf(data_path, format="NETCDF4")

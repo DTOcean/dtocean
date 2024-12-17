@@ -23,9 +23,7 @@ ny = len(y)
 X, Y = np.meshgrid(x,y)
 Z = -X * 0.1 - 1
 depths = Z.T[:, :, np.newaxis]
-
-sediments = np.chararray((nx,ny,1), itemsize=20)
-sediments[:] = "rock"
+sediments = np.full((nx, ny, 1), "rock")
    
 strata = {"values": {'depth': depths,
                      'sediment': sediments},

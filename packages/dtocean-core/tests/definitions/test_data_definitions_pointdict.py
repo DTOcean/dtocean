@@ -166,7 +166,6 @@ def test_PointDictColumn_auto_db(mocker):
         mocker.patch(
             "dtocean_core.data.definitions.get_all_from_columns",
             return_value=mock_lists,
-            autospec=True,
         )
 
         meta = CoreMetaData(
