@@ -2905,11 +2905,12 @@ class PointData(Structure):
 
         with shapefile.Writer(path) as shp:
             shp.field("name", "C")
+            xyz = point.coords[0]
 
             if point.has_z:
-                shp.pointz(x=point.x, y=point.y, z=point.z)  # type:ignore
+                shp.pointz(*xyz)  # type:ignore
             else:
-                shp.point(x=point.x, y=point.y)
+                shp.point(*xyz)
 
             shp.record("point1")
 
@@ -3100,9 +3101,9 @@ class PointList(PointData):
             shp.field("name", "C")
 
             if data.shape[1] == 3:
-                shp.multipointz(data)
+                shp.multipointz(data[0])
             else:
-                shp.multipoint(data)
+                shp.multipoint(data[0])
 
             shp.record("multipoint1")
 
