@@ -17,3 +17,15 @@ class SeriesData(Structure):
     @classmethod
     def equals(cls, left, right):
         return left.equals(right)
+
+
+class AnotherStructure(Structure):
+    def get_data(self, raw, meta_data):
+        pass
+
+    def get_value(self, data):
+        pass
+
+
+class AnotherStructureSubClass(AnotherStructure):
+    pass

@@ -62,9 +62,10 @@ def test_get_class_descriptions_from_module():
 def test_get_subclass_names_from_module():
     """Test if the the SeriesData class is a subclass of the Data class."""
     data_sub_mods = get_subclass_names_from_module(
-        "mdo_engine.test.data.definitions", "Structure"
+        "mdo_engine.test.data.definitions", "AnotherStructure"
     )
-    assert "SeriesData" in data_sub_mods
+    assert "AnotherStructure" not in data_sub_mods
+    assert "AnotherStructureSubClass" in data_sub_mods
 
 
 def test_get_class_attr_warn(monkeypatch):
