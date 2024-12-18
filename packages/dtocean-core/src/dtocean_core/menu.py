@@ -511,7 +511,7 @@ class DataMenu:
         self._useryaml, self._dbconfig = get_database_config()
 
     def get_available_databases(self):
-        return self._dbconfig.keys()
+        return list(self._dbconfig.keys())
 
     def get_database_dict(self, identifier):
         if identifier not in self._dbconfig:
@@ -525,7 +525,7 @@ class DataMenu:
 
         return db_dict
 
-    def update_database(self, identifier, db_dict, allow_new=False):
+    def update_database(self, identifier, db_dict: dict, allow_new=False):
         if not identifier:
             errStr = "Database identifier must be a valid string."
             raise ValueError(errStr)
@@ -539,7 +539,7 @@ class DataMenu:
 
         safe_db_dict = {}
 
-        for k, v in db_dict.iteritems():
+        for k, v in db_dict.items():
             if not v:
                 continue
             safe_db_dict[k] = v
