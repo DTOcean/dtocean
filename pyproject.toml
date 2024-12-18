@@ -7,3 +7,19 @@ polite-config = { path = "packages/polite-config", develop = true }
 mdo-engine = { path = "packages/mdo-engine", develop = true }
 dtocean-dummy-module = { path = "packages/dtocean-dummy-module", develop = true }
 dtocean-core = { path = "packages/dtocean-core", develop = true }
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
+mock = "^5.1.0"
+pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.390"
