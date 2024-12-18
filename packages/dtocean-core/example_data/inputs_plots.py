@@ -241,5 +241,5 @@ if __name__ == "__main__":
     file_path = os.path.abspath(__file__)
     pkl_path = pickle_test_data(file_path, test_data)
     
-    print "generate test data: {}".format(pkl_path)
+    print("generate test data: {}".format(pkl_path))
 
