@@ -83,6 +83,9 @@ def get_subclass_names_from_module(module_name, super_name):
         return match_super
 
     for name, cls in clsmembers.items():
+        if name == super_name:
+            continue
+
         all_supers = [x.__name__ for x in inspect.getmro(cls)]
 
         if super_name in all_supers:
