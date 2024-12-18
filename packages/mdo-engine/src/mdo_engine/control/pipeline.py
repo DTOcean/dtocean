@@ -6,6 +6,7 @@ Created on Tue Mar 31 10:53:17 2015
 """
 
 import logging
+from typing import Sequence
 
 from ..boundary.interface import WeightedInterface
 from ..control.sockets import Socket
@@ -34,13 +35,16 @@ class Sequencer:
         return
 
     def _init_sockets(
-        self, interface_types, interface_module, warn_import=False
+        self,
+        interface_types: Sequence[str],
+        interface_module,
+        warn_import=False,
     ):
         """Create a socket classes to locate and communicate with the chosen
         interface class. Store name mappings.
         """
 
-        sockets = {}
+        sockets: dict[str, Socket] = {}
 
         for cls_name in interface_types:
             socket_obj = Socket()
