@@ -524,9 +524,8 @@ class Variable:
         dict_value_attr=None,
     ):
         providers = self._find_providing_interfaces(core, interface_name)
-        provider_names = [x.get_name() for x in providers]
 
-        if auto_interface_name is None:
+        if auto_interface_name is not None:
             auto_providers = self._find_providing_interfaces(
                 core, auto_interface_name
             )
@@ -753,27 +752,21 @@ class InputVariable(Variable):
         if include_auto:
             kargs["auto_interface_name"] = "AutoFileInput"
 
-        provider_names = self._get_providers(**kargs)
-
-        return provider_names
+        return self._get_providers(**kargs)
 
     def get_raw_interfaces(self, core, include_auto=False):
         args = [core, "RawInterface"]
         if include_auto:
             args.append("AutoRaw")
 
-        provider_names = self._get_providers(*args)
-
-        return provider_names
+        return self._get_providers(*args)
 
     def get_query_interfaces(self, core, include_auto=False):
         args = [core, "QueryInterface"]
         if include_auto:
             args.append("AutoQuery")
 
-        provider_names = self._get_providers(*args)
-
-        return provider_names
+        return self._get_providers(*args)
 
     def set_raw_interface(self, core, value, interface_name=None):
         interface = self._get_providing_interface(
