@@ -52,6 +52,22 @@ xlsxwriter = "^3.2.0"
 xlwt = "^1.3.0"
 basemap = "^1.4.1"
 
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
+mock = "^5.1.0"
+pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.390"
+
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
