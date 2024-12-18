@@ -25,42 +25,38 @@
 from collections import deque
 
 import numpy as np
-
 from cma.utilities.math import Mh
 
 
-class MovingAverage(object):
-    
+class MovingAverage:
     def __init__(self, window_length, init=None):
-        
-        if init is None: init = []
-        
+        if init is None:
+            init = []
+
         self._length = window_length
         self._data = deque(init, window_length)
         self._predict = None
-        
+
         return
-    
+
     def add(self, new_data=None):
-        
         if new_data is not None:
             self._data.append(new_data)
-        
+
         if len(self._data) < self._length:
             result = None
         else:
             result = sum(self._data) / float(self._length)
-        
+
         self._predict = result
-        
+
         return
-    
+
     def __call__(self):
         return self._predict
 
 
-
-class NoiseHandler(object):
+class NoiseHandler:
     """Noise handling according to [Hansen et al 2009, A Method for
     Handling Uncertainty in Evolutionary Optimization...]
     The interface of this class is yet versatile and subject to changes.
@@ -138,15 +134,13 @@ class NoiseHandler(object):
     to smaller values.
     :See also: `fmin`, `CMAEvolutionStrategy.ask_and_eval`
     """
-    # TODO: for const additive noise a better version might be with alphasigma 
-    # also used for sigma-increment, while all other variance changing sources 
-    # are removed (because they are intrinsically biased). Then using kappa to 
-    # get convergence (with unit sphere samples): noiseS=0 leads to a certain 
+
+    # TODO: for const additive noise a better version might be with alphasigma
+    # also used for sigma-increment, while all other variance changing sources
+    # are removed (because they are intrinsically biased). Then using kappa to
+    # get convergence (with unit sphere samples): noiseS=0 leads to a certain
     # kappa increasing rate?
-    def __init__(self, N,
-                       maxevals=None,
-                       reevals=None,
-                       epsilon=1e-7):
+    def __init__(self, N, maxevals=None, reevals=None, epsilon=1e-7):
         """Parameters are:
         ``N``
             dimension, (only) necessary to adjust the internal
@@ -172,20 +166,23 @@ class NoiseHandler(object):
             multiplier for perturbation of the reevaluated solutions
         :See also: `fmin`, `CMAOptions`, `CMAEvolutionStrategy.ask_and_eval`
         """
-        
-        if maxevals is None: maxevals = [1, 1, 1]
-        
+
+        if maxevals is None:
+            maxevals = [1, 1, 1]
+
         self.lam_reeval = reevals  # 2 + popsize/20, see method indices(), originally 2 + popsize/10
         self.epsilon = epsilon
         ## meta_parameters.noise_theta == 0.5
         self.theta = 0.5  # 0.5  # originally 0.2
         self.cum = 0.3  # originally 1, 0.3 allows one disagreement of current point with resulting noiseS
         ## meta_parameters.noise_alphasigma == 2.0
-        self.alphasigma = 1 + 1.0 / (N + 10) # 2, unit sphere sampling: 1 + 1 / (N + 10)
+        self.alphasigma = 1 + 1.0 / (
+            N + 10
+        )  # 2, unit sphere sampling: 1 + 1 / (N + 10)
         ## meta_parameters.noise_alphaevals == 2.0
         self.alphaevals = 1 + 2.0 / (N + 10)  # 2, originally 1.5
         ## meta_parameters.noise_alphaevalsdown_exponent == -0.25
-        self.alphaevalsdown = self.alphaevals** -0.25  # originally 1/1.5
+        self.alphaevalsdown = self.alphaevals**-0.25  # originally 1/1.5
         # zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
         if 11 < 3 and maxevals[2] > 1e18:  # for testing purpose
             self.alphaevals = 1.5
@@ -195,7 +192,7 @@ class NoiseHandler(object):
         """number of f-evaluations to get a single measurement by aggregation"""
         self.minevals = 1
         self.maxevals = int(np.max(maxevals))
-        if hasattr(maxevals, '__contains__'):  # i.e. can deal with ``in``
+        if hasattr(maxevals, "__contains__"):  # i.e. can deal with ``in``
             if len(maxevals) > 1:
                 self.minevals = min(maxevals)
                 self.evaluations = self.minevals
@@ -204,7 +201,9 @@ class NoiseHandler(object):
         self.n_evals = max(int(self.evaluations), 1)
         self.last_n_evals = None
         ## meta_parameters.noise_aggregate == None
-        self.evaluations_just_done = 0  # actually conducted evals, only for documentation
+        self.evaluations_just_done = (
+            0  # actually conducted evals, only for documentation
+        )
         self.noiseS = 0
         self.idx = None
         self.popsize = None
@@ -212,22 +211,22 @@ class NoiseHandler(object):
         self.fitre = None
         self._X = None
         self._sols = None
-        self._sigma_fac = 1.
+        self._sigma_fac = 1.0
         self._noise_predict = MovingAverage(3)
-        
+
         return
-    
+
     @property
     def sigma_fac(self):
         return self._sigma_fac
-    
+
     def get_predicted_noise(self):
-        
         result = self._noise_predict()
-        if result is None: result = 0.
-        
+        if result is None:
+            result = 0.0
+
         return result
-    
+
     def prepare(self, X, fit):
         """Prepare noise measurement.
         Parameters
@@ -242,25 +241,27 @@ class NoiseHandler(object):
         this order. ``self.evaluations`` is adapted within the method
         `treat`.
         """
-        
+
         self.last_n_evals = self.n_evals
         self.n_evals = int(self.evaluations)
         self.evaluations_just_done = 0
         self._sols = None
-        
-        if not self.maxevals or self.lam_reeval == 0: return
-        
+
+        if not self.maxevals or self.lam_reeval == 0:
+            return
+
         self.idx = self._indices(list(fit))
         self.popsize = len(self.idx)
-        
-        if self.idx.size == 0: return
-        
+
+        if self.idx.size == 0:
+            return
+
         self.fit = list(fit)
         self.fitre = list(fit)
         self._X = X
-        
+
         return
-    
+
     def ask(self, ask=None):
         """Give solutions for noise measurement.
         Parameters
@@ -270,80 +271,79 @@ class NoiseHandler(object):
             argument is (only) mandatory if ``epsilon`` is not zero, see
             `__init__`.
         """
-        
+
         if self.epsilon:
             sols = [ask(1, self._X[i], self.epsilon)[0] for i in self.idx]
         else:
             sols = [self._X[i] for i in self.idx]
-        
+
         # Store a copy of the solutions for checking in tell
         self._sols = sols[:]
-        
+
         return sols
-    
+
     def tell(self, sols, function_values):
         """Get function values for noise measurement, set anew attributes ``evaluations``
         (proposed number of evaluations to "treat" noise) and ``evaluations_just_done``
         and return a factor for increasing sigma.
         """
-        
+
         def get_sol_match(i, test_sol):
-        
             for j, sol in enumerate(self._sols):
                 if np.isclose(test_sol, sol).all():
                     return j, function_values[i]
-            
+
             test_sol_strs = [str(x) for x in test_sol]
             test_sol_str = ", ".join(test_sol_strs)
             err_msg = "Solution {} was not asked for".format(test_sol_str)
             raise RuntimeError(err_msg)
-        
+
         # Case where prepare has not been called
         if None in [self.fit, self.fitre]:
             return
-        
+
         # Case where ask has not been called
         if self._sols is None:
             return
-        
+
         # No return values given (probably due to constraint violation)
         if not sols or not function_values:
-            
             self.fit = None
             self.fitre = None
             self._sigma_fac = 1.0
-            
+
             return
-        
+
         # Check the given solutions and sort the function values
         n_sols = len(self._sols)
-        
+
         if len(sols) != n_sols or len(function_values) != n_sols:
-            
-            err_msg = ("Exactly {} solutions and function values must be "
-                       "provided").format(n_sols)
+            err_msg = (
+                "Exactly {} solutions and function values must be " "provided"
+            ).format(n_sols)
             raise ValueError(err_msg)
-        
+
         f_sorted = np.zeros(n_sols)
-        
+
         for i, test_sol in enumerate(sols):
             j, f = get_sol_match(i, test_sol)
             f_sorted[j] = f
-        
+
         real_evals = 0
-        
+
         for j, i in enumerate(self.idx):
-            if np.isnan(f_sorted[j]): continue
+            if np.isnan(f_sorted[j]):
+                continue
             self.fitre[i] = f_sorted[j]
             real_evals += 1
-        
+
         self._update_measure()
         self.evaluations_just_done = real_evals
         self._sigma_fac = self._treat()
         self._sols = None
-        
+
         return
-    
+
     def _indices(self, fit):
         """return the set of indices to be reevaluated for noise
         measurement.
@@ -351,8 +351,9 @@ class NoiseHandler(object):
         also with a time changing objective.
         """
         ## meta_parameters.noise_reeval_multiplier == 1.0
-        lam_reev = 1.0 * (self.lam_reeval if self.lam_reeval
-                            else 2 + len(fit) / 20.)
+        lam_reev = 1.0 * (
+            self.lam_reeval if self.lam_reeval else 2 + len(fit) / 20.0
+        )
         lam_reev = int(lam_reev) + ((lam_reev % 1) > np.random.rand())
         ## meta_parameters.noise_choose_reeval == 1
         choice = 1
@@ -360,8 +361,11 @@ class NoiseHandler(object):
             # take n_first first and reev - n_first best of the remaining
             n_first = lam_reev - lam_reev // 2
             sort_idx = np.argsort(np.array(fit, copy=False)[n_first:]) + n_first
-            return np.array(list(range(0, n_first)) +
-                            list(sort_idx[0:lam_reev - n_first]), copy=False)
+            return np.array(
+                list(range(0, n_first))
+                + list(sort_idx[0 : lam_reev - n_first]),
+                copy=False,
+            )
         elif choice == 2:
             idx_sorted = np.argsort(np.array(fit, copy=False))
             # take lam_reev equally spaced, starting with best
@@ -369,66 +373,80 @@ class NoiseHandler(object):
             return idx_sorted[[int(i) for i in linsp]]
         # take the ``lam_reeval`` best from the first ``2 * lam_reeval + 2`` values.
         elif choice == 3:
-            return np.argsort(np.array(fit, copy=False)[:2 * (lam_reev + 1)])[:lam_reev]
+            return np.argsort(np.array(fit, copy=False)[: 2 * (lam_reev + 1)])[
+                :lam_reev
+            ]
         else:
-            raise ValueError('unrecognized choice value %d for noise reev'
-                             % choice)
-    
+            raise ValueError(
+                "unrecognized choice value %d for noise reev" % choice
+            )
+
     def _update_measure(self):
         """updated noise level measure using two fitness lists ``self.fit`` and
         ``self.fitre``, return ``self.noiseS, all_individual_measures``.
         Assumes that ``self.idx`` contains the indices where the fitness
         lists differ.
         """
-        
+
         lam = len(self.fit)
         idx = np.argsort(self.fit + self.fitre)
         ranks = np.argsort(idx).reshape((2, lam))
         rankDelta = ranks[0] - ranks[1] - np.sign(ranks[0] - ranks[1])
-        
+
         # compute rank change limits using both ranks[0] and ranks[1]
         r = np.arange(1, 2 * lam)  # 2 * lam - 2 elements
-        limits = [0.5 * (Mh.prctile(np.abs(r - (ranks[0, i] + 1 - (ranks[0, i] > ranks[1, i]))),
-                                      self.theta * 50) +
-                         Mh.prctile(np.abs(r - (ranks[1, i] + 1 - (ranks[1, i] > ranks[0, i]))),
-                                      self.theta * 50))
-                    for i in self.idx]
+        limits = [
+            0.5
+            * (
+                Mh.prctile(
+                    np.abs(r - (ranks[0, i] + 1 - (ranks[0, i] > ranks[1, i]))),
+                    self.theta * 50,
+                )
+                + Mh.prctile(
+                    np.abs(r - (ranks[1, i] + 1 - (ranks[1, i] > ranks[0, i]))),
+                    self.theta * 50,
+                )
+            )
+            for i in self.idx
+        ]
         # compute measurement
         #                               max: 1 rankchange in 2*lambda is always fine
-        s = np.abs(rankDelta[self.idx]) - Mh.amax(limits, 1)  # lives roughly in 0..2*lambda
+        s = np.abs(rankDelta[self.idx]) - Mh.amax(
+            limits, 1
+        )  # lives roughly in 0..2*lambda
         self.noiseS += self.cum * (np.mean(s) - self.noiseS)
         self._noise_predict.add(self.noiseS)
-        
+
         self.fit = None
         self.fitre = None
-        
+
         return self.noiseS, s
-    
+
     def _treat(self):
         """adapt self.evaluations depending on the current measurement
         value and return ``sigma_fac in (1.0, self.alphasigma)``
         """
-        
+
         # Use noise prediction
         predicted_noise = self._noise_predict()
-        
+
         if predicted_noise is None:
             return 1.0
-        
+
         if predicted_noise > 0:
-            
-            self.evaluations = min((self.evaluations * self.alphaevals,
-                                    self.maxevals))
-            
+            self.evaluations = min(
+                (self.evaluations * self.alphaevals, self.maxevals)
+            )
+
             if self.evaluations == self.maxevals:
                 sigma_fac = 1.0
             else:
                 sigma_fac = self.alphasigma
-        
+
         else:
-            
-            self.evaluations = max((self.evaluations * self.alphaevalsdown,
-                                    self.minevals))
+            self.evaluations = max(
+                (self.evaluations * self.alphaevalsdown, self.minevals)
+            )
             sigma_fac = 1.0
-        
+
         return sigma_fac
