@@ -351,10 +351,8 @@ def test_Variable_get_auto_raw_interfaces(core, project, module_menu, tree):
     var_id = "device.cut_in_velocity"
 
     module_menu.activate(core, project, mod_name)
-
     hydro_branch = tree.get_branch(core, project, mod_name)
     new_var = hydro_branch.get_input_variable(core, project, var_id)
-
     list_raw = new_var.get_raw_interfaces(core, include_auto=True)
 
     assert "device.cut_in_velocity AutoRaw Interface" in list_raw
