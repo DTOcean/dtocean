@@ -583,7 +583,7 @@ protected_table = pd.read_csv(table_path, index_col=None)
 name_map1 ={ "subclass or group": "Subclass or Group",
                      "observed": "Observed"}
 protected_table = protected_table.rename(columns=name_map1)
-print protected_table
+print(protected_table)
 
 table_path = os.path.join(env_dir, "species_receptors.csv")
 receptors_table = pd.read_csv(table_path, index_col=None)
@@ -766,5 +766,5 @@ if __name__ == "__main__":
     file_path = os.path.abspath(__file__)
     pkl_path = pickle_test_data(file_path, test_data)
     
-    print "generate test data: {}".format(pkl_path)
+    print("generate test data: {}".format(pkl_path))
 

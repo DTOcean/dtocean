@@ -1155,7 +1155,7 @@ class Core(object):
         with open(load_path, "rb") as json_file:
             dump_dict = json.load(json_file)
 
-        state_data = dump_dict["data"]
+        state_data: dict = dump_dict["data"]
 
         # Now unpickle the pool
         pool_file_path = os.path.join(dts_dir_path, "pool.pkl")
@@ -1180,7 +1180,7 @@ class Core(object):
         var_ids = []
         var_objs = []
 
-        for var_id, data_index in state_data.iteritems():
+        for var_id, data_index in state_data.items():
             if not self.is_valid_variable(var_id):
                 msgStr = (
                     'Variable ID "{}" is not contained in the data ' "catalog"
