@@ -864,7 +864,7 @@ class Controller(Loader):
             interface_cls_name in completed_interfaces
             and not last_completed == interface_cls_name
         ):
-            completed_interface_names = completed_interfaces.keys()
+            completed_interface_names = list(completed_interfaces.keys())
 
             interface_index = completed_interface_names.index(
                 interface_cls_name
@@ -1129,8 +1129,7 @@ def _get_executed_outputs(
     end_index,
     exectuted_outputs,
 ):
-    completed_interface_names = completed_interfaces.keys()
-
+    completed_interface_names = list(completed_interfaces.keys())
     next_completed_interfaces = completed_interface_names[start_index:end_index]
 
     for next_cls_name in next_completed_interfaces:
