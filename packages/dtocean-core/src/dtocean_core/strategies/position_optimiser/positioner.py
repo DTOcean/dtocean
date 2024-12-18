@@ -37,7 +37,7 @@ except ImportError:
     raise ImportError(err_msg)
 
 
-class DevicePositioner(object):
+class DevicePositioner:
     __metaclass__ = abc.ABCMeta
 
     def __init__(
@@ -440,7 +440,7 @@ class CompassPositioner(DevicePositioner):
         return nearest_nodes
 
 
-class PolyCompass(object):
+class PolyCompass:
     def __init__(self, polygon, centre=None):
         self._polygon = polygon
         self._cx = None

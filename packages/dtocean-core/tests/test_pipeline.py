@@ -14,7 +14,7 @@ from dtocean_core.pipeline import (
     set_output_scope,
 )
 
-dir_path = os.path.dirname(__file__)
+DIR_PATH = os.path.dirname(__file__)
 
 
 class MockModule(ModuleInterface):

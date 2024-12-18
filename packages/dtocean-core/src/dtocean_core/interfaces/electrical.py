@@ -568,7 +568,7 @@ class ElectricalInterface(ModuleInterface):
 
     @classmethod
     def get_input_dict(cls, data):
-        #    class ElectricalSiteData(object):
+        #    class ElectricalSiteData:
         #
         #        '''Define the electrical systems site data object. This includes all
         #        geotechnical and geophysical data.
@@ -640,7 +640,7 @@ class ElectricalInterface(ModuleInterface):
             bathymetry, nogo_areas, None, None, None, None, None, None
         )
 
-        #    class ElectricalExportData(object):
+        #    class ElectricalExportData:
         #
         #        '''Define the electrical systems export data object. This includes all
         #        geotechnical and geophysical data.
@@ -724,7 +724,7 @@ class ElectricalInterface(ModuleInterface):
             None,
         )
 
-        #    class ElectricalMachineData(object):
+        #    class ElectricalMachineData:
         #
         #        '''Container class to carry the OEC device object.
         #
@@ -781,7 +781,7 @@ class ElectricalInterface(ModuleInterface):
             data.sysdraft,
         )
 
-        #    class ElectricalArrayData(object):
+        #    class ElectricalArrayData:
         #
         #        '''Container class to carry the array object. This inherets the machine.
         #
@@ -873,7 +873,7 @@ class ElectricalInterface(ModuleInterface):
             **opt_args,
         )
 
-        #    class ConfigurationOptions(object):
+        #    class ConfigurationOptions:
         #
         #        '''Container class for the configuration options defined in the core. These
         #        can be specificed by the user at GUI interface or by the core during the

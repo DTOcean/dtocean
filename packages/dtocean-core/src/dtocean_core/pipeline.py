@@ -25,7 +25,7 @@ from .core import Connector
 module_logger = logging.getLogger(__name__)
 
 
-class Tree(object):
+class Tree:
     """Interface class for the pipeline at the tree level"""
 
     def get_available_branches(self, core, project, hub_names=None):
@@ -140,7 +140,7 @@ class Tree(object):
         return all_branch_names
 
 
-class Branch(object):
+class Branch:
     """Interface class for the pipeline at the branch level"""
 
     def __init__(self, hub_name, name):
@@ -385,7 +385,7 @@ class Branch(object):
         _read_variables(core, project, variables, overwrite=overwrite)
 
 
-class Variable(object):
+class Variable:
     """Interface class for the pipeline at the variable level"""
 
     def __init__(self, identifier):

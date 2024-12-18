@@ -29,7 +29,7 @@ from .utils.database import get_database_config
 module_logger = logging.getLogger(__name__)
 
 
-class ConnectorMenu(object):
+class ConnectorMenu:
     """Hub agnostic superclass for menu functions"""
 
     __metaclass__ = abc.ABCMeta
@@ -501,7 +501,7 @@ class ThemeMenu(ConnectorMenu):
         theme_connector.auto_execute(core, project, level)
 
 
-class DataMenu(object):
+class DataMenu:
     """The DataMenu class is for actions relating to populating the core with
     data from various sources.
     """

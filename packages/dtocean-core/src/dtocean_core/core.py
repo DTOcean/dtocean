@@ -303,7 +303,7 @@ class OrderedSim(Simulation):
         return list(set(all_ids))
 
 
-class Project(object):
+class Project:
     """Class to store simulations, data pool and other project related data."""
 
     def __init__(self, title):
@@ -551,7 +551,7 @@ class Project(object):
         return len(self._simulations)
 
 
-class Core(object):
+class Core:
     """Class to initiate and manipulate projects."""
 
     # Socket configuration constants
@@ -1697,7 +1697,7 @@ class Core(object):
         return list(unavailable_set)
 
 
-class Connector(object):
+class Connector:
     """Class for working with interface hubs."""
 
     def __init__(self, hub_name):

@@ -34,7 +34,7 @@ from scipy.special import gamma
 module_logger = logging.getLogger(__name__)
 
 
-class UniVariateKDE(object):
+class UniVariateKDE:
     def __init__(self, data, bandwidth=0.3):
         self._kde = stats.gaussian_kde(data, bw_method=bandwidth)
         self._cdf = None
@@ -136,7 +136,7 @@ class UniVariateKDE(object):
         return kde_ppf
 
 
-class BiVariateKDE(object):
+class BiVariateKDE:
     def __init__(self, x, y):
         self.x = x
         self.y = y
