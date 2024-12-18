@@ -24,7 +24,7 @@ class Plugin:
         names = get_module_names_from_package(package)
         names.append(package.__name__)
 
-        cls_map = {}
+        cls_map: dict[str, type] = {}
 
         for mod_name in names:
             data_sub_mods = get_subclass_names_from_module(mod_name, super_cls)
