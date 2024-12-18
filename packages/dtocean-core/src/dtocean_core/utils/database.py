@@ -993,7 +993,7 @@ def get_database_config(db_config_name="database.yaml"):
     userconfigdir = UserDataPath("dtocean_core", "DTOcean", "config")
     useryaml = ReadYAML(userconfigdir, db_config_name)
 
-    if userconfigdir.isfile(db_config_name):
+    if (userconfigdir / db_config_name).is_file():
         configdir = userconfigdir
     else:
         configdir = ModPath("dtocean_core", "config")

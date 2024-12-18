@@ -3,7 +3,6 @@ from copy import deepcopy
 
 import pytest
 from mdo_engine.entity import Pipeline
-from polite_config.paths import Directory
 
 from dtocean_core.core import Core
 from dtocean_core.interfaces import ModuleInterface, ThemeInterface
@@ -174,6 +173,8 @@ def project(core):
     device_type = options_branch.get_input_variable(
         core, new_project, "device.system_type"
     )
+
+    assert device_type is not None
     device_type.set_raw_interface(core, "Tidal Fixed")
     device_type.read(core, new_project)
 
@@ -230,16 +231,19 @@ def test_ModuleMenu_activate_module(core, project, module_menu):
     assert isinstance(module, MockModule)
 
 
-def test_ModuleMenu_execute_current_nothemes(core, project, module_menu):
+def test_ModuleMenu_execute_current_nothemes(
+    core,
+    project,
+    module_menu,
+    inputs_wp2_tidal,
+):
     var_tree = Tree()
     project = deepcopy(project)
     mod_name = "Mock Module"
 
     module_menu.activate(core, project, mod_name)
     mod_branch = var_tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     module_menu.execute_current(core, project, execute_themes=False)
 
@@ -289,14 +293,14 @@ def test_ThemeMenu_execute_all(core, project, theme_menu):
     assert result == 2
 
 
-def test_DataMenu_get_available_databases(mocker, tmpdir):
+def test_DataMenu_get_available_databases(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -307,14 +311,14 @@ def test_DataMenu_get_available_databases(mocker, tmpdir):
     assert len(dbs) > 0
 
 
-def test_DataMenu_get_database_dict(mocker, tmpdir):
+def test_DataMenu_get_database_dict(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -328,14 +332,14 @@ def test_DataMenu_get_database_dict(mocker, tmpdir):
     assert "host" in db_dict.keys()
 
 
-def test_DataMenu_update_database(mocker, tmpdir):
+def test_DataMenu_update_database(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -347,17 +351,17 @@ def test_DataMenu_update_database(mocker, tmpdir):
     db_dict = data_menu.get_database_dict(db_id)
     data_menu.update_database(db_id, db_dict)
 
-    assert len(config_tmpdir.listdir()) == 1
+    assert len(list(config_tmpdir.iterdir())) == 1
 
 
-def test_DataMenu_select_database(mocker, tmpdir, project):
+def test_DataMenu_select_database(mocker, tmp_path, project):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -379,14 +383,14 @@ def test_DataMenu_select_database(mocker, tmpdir, project):
     assert project.get_database_credentials()
 
 
-def test_DataMenu_select_database_no_info(mocker, tmpdir, project):
+def test_DataMenu_select_database_no_info(mocker, tmp_path, project):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -397,14 +401,14 @@ def test_DataMenu_select_database_no_info(mocker, tmpdir, project):
         data_menu.select_database(project)
 
 
-def test_DataMenu_select_database_bad_id(mocker, tmpdir, project):
+def test_DataMenu_select_database_bad_id(mocker, tmp_path, project):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -415,14 +419,14 @@ def test_DataMenu_select_database_bad_id(mocker, tmpdir, project):
         data_menu.select_database(project, "bad_id")
 
 
-def test_DataMenu_select_database_no_port(mocker, tmpdir, project):
+def test_DataMenu_select_database_no_port(mocker, tmp_path, project):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -435,14 +439,14 @@ def test_DataMenu_select_database_no_port(mocker, tmpdir, project):
         )
 
 
-def test_DataMenu_select_database_no_port_dbname(mocker, tmpdir, project):
+def test_DataMenu_select_database_no_port_dbname(mocker, tmp_path, project):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -453,14 +457,14 @@ def test_DataMenu_select_database_no_port_dbname(mocker, tmpdir, project):
         data_menu.select_database(project, credentials={"host": "-1.-1.-1.-1"})
 
 
-def test_DataMenu_deselect_database(mocker, tmpdir, project):
+def test_DataMenu_deselect_database(mocker, tmp_path, project):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -486,14 +490,21 @@ def test_DataMenu_deselect_database(mocker, tmpdir, project):
     assert project.get_database_credentials() is None
 
 
-def test_DataMenu_export_data(mocker, tmpdir, core, project, module_menu):
+def test_DataMenu_export_data(
+    mocker,
+    tmp_path,
+    core,
+    project,
+    module_menu,
+    inputs_wp2_tidal,
+):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -504,25 +515,30 @@ def test_DataMenu_export_data(mocker, tmpdir, core, project, module_menu):
 
     module_menu.activate(core, project, mod_name)
     mod_branch = var_tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp2_tidal)
 
-    dts_path = os.path.join(str(tmpdir), "test.dts")
+    dts_path = os.path.join(str(tmp_path), "test.dts")
 
     data_menu.export_data(core, project, dts_path)
 
     assert os.path.isfile(dts_path)
 
 
-def test_DataMenu_import_data(mocker, tmpdir, core, project, module_menu):
+def test_DataMenu_import_data(
+    mocker,
+    tmp_path,
+    core,
+    project,
+    module_menu,
+    inputs_wp2_tidal,
+):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -535,13 +551,11 @@ def test_DataMenu_import_data(mocker, tmpdir, core, project, module_menu):
 
     module_menu.activate(core, project, mod_name)
     mod_branch = var_tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     pre_length = len(project._pool)
 
-    dts_path = os.path.join(str(tmpdir), "test.dts")
+    dts_path = os.path.join(str(tmp_path), "test.dts")
 
     data_menu.export_data(core, project, dts_path)
 
