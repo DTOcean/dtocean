@@ -21,8 +21,6 @@ class Plugin:
     def _discover_plugins(self, package, super_cls, warn_import=False):
         """Retrieve all of the matching subclass names found in the package"""
 
-        #        interfaces = import_module(package)
-
         names = get_module_names_from_package(package)
         names.append(package.__name__)
 

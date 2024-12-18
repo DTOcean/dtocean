@@ -16,14 +16,13 @@ from copy import deepcopy
 
 from ..boundary.data import SerialBox
 from ..boundary.interface import MaskVariable
-from ..entity.data import (  # Used by eval
-    BaseState,
-    DataCatalog,
-    DataState,
-    PseudoState,
-)
+from ..entity import Simulation
+from ..entity.data import DataState  # Used by eval
+from ..entity.data import BaseState, DataCatalog, PseudoState
 from ..utilities.identity import get_unique_id
 from ..utilities.misc import OrderedSet
+from .data import DataStorage
+from .pipeline import Sequencer
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -35,8 +34,8 @@ class Loader:
     directly with interfaces, which Controller can not.
     """
 
-    def __init__(self, datastore):
-        self._store = datastore
+    def __init__(self, datastore: DataStorage):
+        self._store: DataStorage = datastore
 
         return
 
@@ -130,7 +129,7 @@ class Loader:
     def add_datastate(
         self,
         pool,
-        simulation,
+        simulation: Simulation,
         level=None,
         data_catalog=None,
         identifiers=None,
@@ -217,7 +216,7 @@ class Loader:
 
         return
 
-    def create_merged_state(self, simulation, use_existing=True):
+    def create_merged_state(self, simulation: Simulation, use_existing=True):
         if use_existing:
             merged_state = simulation.get_merged_state()
         else:
@@ -228,7 +227,12 @@ class Loader:
 
         return merged_state
 
-    def serialise_states(self, simulation, state_dir="states", root_dir=None):
+    def serialise_states(
+        self,
+        simulation: Simulation,
+        state_dir="states",
+        root_dir=None,
+    ):
         used_identifiers = []
 
         active_states = simulation._active_states
@@ -263,7 +267,7 @@ class Loader:
 
         return
 
-    def deserialise_states(self, simulation, root_dir=None):
+    def deserialise_states(self, simulation: Simulation, root_dir=None):
         active_boxes = simulation._active_states
         active_states = []
 
@@ -335,7 +339,10 @@ class Loader:
         return input_ids
 
     def _merge_active_states(
-        self, simulation, level=None, remove_none_keys=True
+        self,
+        simulation: Simulation,
+        level=None,
+        remove_none_keys=True,
     ):
         """Combine all the datastates into one datastate. If the datastate is
         masked then ignore it. If remove_none_keys is True then should a
@@ -449,9 +456,9 @@ class Controller(Loader):
     DataStore and a Sequencer.
     """
 
-    def __init__(self, datastore, sequencer):
+    def __init__(self, datastore, sequencer: Sequencer):
         super(Controller, self).__init__(datastore)
-        self._sequencer = sequencer
+        self._sequencer: Sequencer = sequencer
 
         return
 
@@ -490,7 +497,7 @@ class Controller(Loader):
         self,
         src_pool,
         dst_pool,
-        simulation,
+        simulation: Simulation,
         force_title=None,
         null_title=False,
         no_merge=False,
@@ -518,7 +525,7 @@ class Controller(Loader):
 
         return new_simulation
 
-    def remove_simulation(self, pool, simulation):
+    def remove_simulation(self, pool, simulation: Simulation):
         # Copy all states
         all_states = _copy_all_sim_states(simulation)
 
@@ -530,7 +537,11 @@ class Controller(Loader):
         return
 
     def create_new_hub(
-        self, simulation, interface_type, hub_id, no_complete=False
+        self,
+        simulation: Simulation,
+        interface_type,
+        hub_id,
+        no_complete=False,
     ):
         hub = self._sequencer.create_new_hub(interface_type, no_complete)
         simulation.set_hub(hub_id, hub)
@@ -538,50 +549,59 @@ class Controller(Loader):
         return
 
     def create_new_pipeline(
-        self, simulation, interface_type, hub_id, no_complete=False
+        self,
+        simulation: Simulation,
+        interface_type,
+        hub_id,
+        no_complete=False,
     ):
         hub = self._sequencer.create_new_pipeline(interface_type, no_complete)
         simulation.set_hub(hub_id, hub)
 
         return
 
-    def get_available_interfaces(self, simulation, hub_id):
+    def get_available_interfaces(self, simulation: Simulation, hub_id):
         hub = simulation.get_hub(hub_id)
         names = self._sequencer.get_available_names(hub)
 
         return names
 
-    def get_sequenced_interfaces(self, simulation, hub_id):
+    def get_sequenced_interfaces(self, simulation: Simulation, hub_id):
         hub = simulation.get_hub(hub_id)
         names = self._sequencer.get_sequenced_names(hub)
 
         return names
 
-    def get_scheduled_interfaces(self, simulation, hub_id):
+    def get_scheduled_interfaces(self, simulation: Simulation, hub_id):
         hub = simulation.get_hub(hub_id)
         names = self._sequencer.get_scheduled_names(hub)
 
         return names
 
-    def get_completed_interfaces(self, simulation, hub_id):
+    def get_completed_interfaces(self, simulation: Simulation, hub_id):
         hub = simulation.get_hub(hub_id)
         names = self._sequencer.get_completed_names(hub)
 
         return names
 
-    def has_interface(self, simulation, hub_id, interface_name):
+    def has_interface(self, simulation: Simulation, hub_id, interface_name):
         hub = simulation.get_hub(hub_id)
         result = self._sequencer.has_name(hub, interface_name)
 
         return result
 
-    def get_next_interface(self, simulation, hub_id):
+    def get_next_interface(self, simulation: Simulation, hub_id):
         hub = simulation.get_hub(hub_id)
         next_interface = self._sequencer.get_next_name(hub)
 
         return next_interface
 
-    def get_interface_weight(self, simulation, hub_id, interface_name):
+    def get_interface_weight(
+        self,
+        simulation: Simulation,
+        hub_id,
+        interface_name,
+    ):
         """Get the weighting of the interface if set"""
 
         hub = simulation.get_hub(hub_id)
@@ -589,7 +609,12 @@ class Controller(Loader):
 
         return result
 
-    def sequence_interface(self, simulation, hub_id, interface_name):
+    def sequence_interface(
+        self,
+        simulation: Simulation,
+        hub_id,
+        interface_name,
+    ):
         hub = simulation.get_hub(hub_id)
 
         if not self._sequencer.is_available(hub, interface_name):
@@ -1099,7 +1124,10 @@ def _copy_all_sim_states(simulation):
 
 
 def _get_executed_outputs(
-    completed_interfaces, start_index, end_index, exectuted_outputs
+    completed_interfaces,
+    start_index,
+    end_index,
+    exectuted_outputs,
 ):
     completed_interface_names = completed_interfaces.keys()
 
