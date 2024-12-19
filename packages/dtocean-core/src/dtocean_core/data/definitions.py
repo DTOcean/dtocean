@@ -19,6 +19,7 @@ import os
 from copy import deepcopy
 from datetime import datetime
 from itertools import product
+from pathlib import Path
 from typing import Optional, Protocol
 
 import matplotlib.patheffects as PathEffects
@@ -58,7 +59,7 @@ class BaseMixin(Protocol):
 
 class FileMixin(BaseMixin):
     @property
-    def _path(self) -> str: ...
+    def _path(self) -> Path: ...
 
     def check_path(self, check_exists=False):
         pass
@@ -108,7 +109,7 @@ class SeriesData(Structure):
         auto.check_path()
         assert isinstance(auto._path, str)
 
-        if ".csv" in auto._path:
+        if auto._path.suffix == ".csv":
             series = pd.read_csv(
                 auto._path,
                 header=None,
@@ -128,7 +129,7 @@ class SeriesData(Structure):
 
         s = auto.data.result
 
-        if ".csv" in auto._path:
+        if auto._path.suffix == ".csv":
             s.to_csv(auto._path, header=False)
         else:
             raise TypeError(
@@ -371,9 +372,9 @@ class TableData(Structure):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -389,9 +390,9 @@ class TableData(Structure):
 
         df = auto.data.result
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -934,9 +935,9 @@ class NumpyLine(NumpyND):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -972,9 +973,9 @@ class NumpyLine(NumpyND):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -1111,7 +1112,7 @@ class NumpyLineDict(NumpyLine):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             xl = pd.ExcelFile(auto._path)
         else:
             raise TypeError(
@@ -1147,7 +1148,7 @@ class NumpyLineDict(NumpyLine):
 
         data_dict = auto.data.result
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             xl = pd.ExcelWriter(auto._path, engine="openpyxl")
         else:
             raise TypeError(
@@ -1279,9 +1280,9 @@ class Histogram(Structure):
         column_requirements = ("bin start", "bin end", "bin value")
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -1326,9 +1327,9 @@ class Histogram(Structure):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -1432,7 +1433,7 @@ class HistogramDict(Histogram):
 
         column_requirements = ("bin start", "bin end", "bin value")
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             xl = pd.ExcelFile(auto._path)
         else:
             raise TypeError(
@@ -1484,7 +1485,7 @@ class HistogramDict(Histogram):
 
         data_dict = auto.data.result
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             xl = pd.ExcelWriter(auto._path, engine="openpyxl")
         else:
             raise TypeError(
@@ -1577,9 +1578,9 @@ class CartesianData(NumpyND):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -1624,9 +1625,9 @@ class CartesianData(NumpyND):
 
         df = pd.DataFrame(data, index=[0])
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -1718,9 +1719,9 @@ class CartesianList(Numpy2D):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -1760,9 +1761,9 @@ class CartesianList(Numpy2D):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -1838,9 +1839,9 @@ class CartesianDict(CartesianData):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -1892,9 +1893,9 @@ class CartesianDict(CartesianData):
 
             df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -2017,9 +2018,9 @@ class CartesianListDict(CartesianList):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -2070,9 +2071,9 @@ class CartesianListDict(CartesianList):
 
             df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -2313,9 +2314,9 @@ class SimpleList(Structure):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -2337,9 +2338,9 @@ class SimpleList(Structure):
         data = auto.data.result
         df = pd.DataFrame(data, columns=["data"])
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -2397,9 +2398,9 @@ class SimpleDict(Structure):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
 
         if not ("data" in df.columns and "ID" in df.columns):
@@ -2419,9 +2420,9 @@ class SimpleDict(Structure):
         data = [[k, v] for k, v in dc.items()]
         df = pd.DataFrame(data, columns=["ID", "data"])
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
 
     @staticmethod
@@ -2676,9 +2677,9 @@ class DateTimeDict(DateTimeData):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
 
         if not ("data" in df.columns and "ID" in df.columns):
@@ -2710,11 +2711,11 @@ class DateTimeDict(DateTimeData):
         data = [[k, v] for k, v in dc.items()]
         df = pd.DataFrame(data, columns=["ID", "data"])
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             writer = pd.ExcelWriter(auto._path, engine="openpyxl")
             df.to_excel(writer, index=False)
             writer.close()
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
 
     @staticmethod
@@ -2774,9 +2775,9 @@ class PointData(Structure):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path or ".csv" in auto._path:
+        if auto._path.suffix == ".xls" or auto._path.suffix == ".csv":
             data = PointData._read_table(auto._path)
-        elif ".shp" in auto._path:
+        elif auto._path.suffix == ".shp":
             data = PointData._read_shapefile(auto._path)
         else:
             raise TypeError(
@@ -2796,9 +2797,9 @@ class PointData(Structure):
 
         points = [auto.data.result]
 
-        if ".xls" in auto._path or ".csv" in auto._path:
+        if auto._path.suffix == ".xls" or auto._path.suffix == ".csv":
             PointData._write_table(auto._path, points)
-        elif ".shp" in auto._path:
+        elif auto._path.suffix == ".shp":
             PointData._write_shapefile(auto._path, points)
         else:
             raise TypeError(
@@ -2963,9 +2964,9 @@ class PointList(PointData):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path or ".csv" in auto._path:
+        if auto._path.suffix == ".xls" or auto._path.suffix == ".csv":
             data = PointList._read_table(auto._path)
-        elif ".shp" in auto._path:
+        elif auto._path.suffix == ".shp":
             data = PointList._read_shapefile(auto._path)
         else:
             raise TypeError(
@@ -2985,9 +2986,9 @@ class PointList(PointData):
 
         points = auto.data.result
 
-        if ".xls" in auto._path or ".csv" in auto._path:
+        if auto._path.suffix == ".xls" or auto._path.suffix == ".csv":
             PointList._write_table(auto._path, points)
-        elif ".shp" in auto._path:
+        elif auto._path.suffix == ".shp":
             PointList._write_shapefile(auto._path, points)
         else:
             raise TypeError(
@@ -3162,9 +3163,9 @@ class PointDict(PointData):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
         else:
             raise TypeError(
@@ -3210,9 +3211,9 @@ class PointDict(PointData):
 
         df = pd.DataFrame(data)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
         else:
             raise TypeError(
@@ -3411,9 +3412,9 @@ class PolygonData(Structure):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path or ".csv" in auto._path:
+        if auto._path.suffix == ".xls" or auto._path.suffix == ".csv":
             data = PolygonData._read_table(auto._path)
-        elif ".shp" in auto._path:
+        elif auto._path.suffix == ".shp":
             data = PolygonData._read_shapefile(auto._path)
         else:
             raise TypeError(
@@ -3433,9 +3434,9 @@ class PolygonData(Structure):
 
         poly = auto.data.result
 
-        if ".xls" in auto._path or ".csv" in auto._path:
+        if auto._path.suffix == ".xls" or auto._path.suffix == ".csv":
             PolygonData._write_table(auto._path, poly)
-        elif ".shp" in auto._path:
+        elif auto._path.suffix == ".shp":
             PolygonData._write_shapefile(auto._path, poly)
         else:
             raise TypeError(
@@ -3600,9 +3601,9 @@ class PolygonList(PolygonData):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
 
         if (
@@ -3670,9 +3671,9 @@ class PolygonList(PolygonData):
 
             df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
 
     @staticmethod
@@ -3752,9 +3753,9 @@ class PolygonDict(PolygonData):
     def auto_file_input(auto: FileMixin):
         auto.check_path()
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df = pd.read_excel(auto._path)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df = pd.read_csv(auto._path)
 
         data = {}
@@ -3819,9 +3820,9 @@ class PolygonDict(PolygonData):
 
             df = pd.concat([df, df2], ignore_index=True, sort=False)
 
-        if ".xls" in auto._path:
+        if auto._path.suffix == ".xls":
             df.to_excel(auto._path, engine="openpyxl", index=False)
-        elif ".csv" in auto._path:
+        elif auto._path.suffix == ".csv":
             df.to_csv(auto._path, index=False)
 
     @staticmethod
@@ -4296,7 +4297,7 @@ class Strata(XSet3D):
 
         strata = xr.open_dataset(auto._path)
 
-        sediment_path = auto._path.replace("depth", "sediment")
+        sediment_path = str(auto._path).replace("depth", "sediment")
         sediment_data = xr.open_dataset(sediment_path)
         sediment_data = sediment_data.where(sediment_data["sediment"] != "None")
         sediment_data = sediment_data.fillna(None)
