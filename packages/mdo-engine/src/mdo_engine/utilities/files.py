@@ -320,22 +320,24 @@ def dds_to_xl(dds_list, xl_path, root_cols=None):
     writer.close()
 
     # Fit the columns (Windows only)
-    if platform.system() == "Windows":
-        from win32com.client import Dispatch
+    if platform.system() != "Windows":
+        return
 
-        excel = Dispatch("Excel.Application")
-        wb = excel.Workbooks.Open(os.path.abspath(xl_path))
+    from win32com.client import Dispatch
 
-        for i in range(wb.Sheets.Count):
-            # Activate each sheet
-            excel.Worksheets(i + 1).Activate()
+    excel = Dispatch("Excel.Application")
+    wb = excel.Workbooks.Open(os.path.abspath(xl_path))
 
-            # Autofit column in active sheet
-            excel.ActiveSheet.Columns.AutoFit()
+    for i in range(wb.Sheets.Count):
+        # Activate each sheet
+        excel.Worksheets(i + 1).Activate()
 
-        # Save changes
-        wb.Save()
-        wb.Close()
+        # Autofit column in active sheet
+        excel.ActiveSheet.Columns.AutoFit()
+
+    # Save changes
+    wb.Save()
+    wb.Close()
 
     return
 

@@ -71,9 +71,9 @@ class Database(ABC):
 
     def _init_adapter(self, adapter_name):
         if not self._is_valid_adapter(adapter_name):
-            errStr = (
-                "Adapter {} is not valid for this SQL " "manager."
-            ).format(adapter_name)
+            errStr = ("Adapter {} is not valid for this SQL manager.").format(
+                adapter_name
+            )
             raise ValueError(errStr)
 
         return adapter_name
@@ -120,8 +120,7 @@ class Database(ABC):
     @abc.abstractmethod
     def get_connection_string(self):
         raise NotImplementedError(
-            "This superclass can not be used to "
-            "generate a connection string."
+            "This superclass can not be used to generate a connection string."
         )
 
     def configure(self, engine_args=None, connect_args=None):
@@ -276,7 +275,7 @@ class PostgreSQL(Database):
 
     @property
     def valid_adapters(self):
-        return ["psycopg2"]
+        return ["psycopg"]
 
     def get_connection_string(self):
         credentials = self.get_credentials()
@@ -388,9 +387,7 @@ class PostgreSQL(Database):
         return db_names
 
     def has_permission(self, table_name):
-        query_str = ("select " "has_table_privilege('{}','select');").format(
-            table_name
-        )
+        query_str = ("select has_table_privilege('{}','select');").format(table_name)
 
         with self.exectute_query(query_str) as result:
             permissions = [row[0] for row in result]
