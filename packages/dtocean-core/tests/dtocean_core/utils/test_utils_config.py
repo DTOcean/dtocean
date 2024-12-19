@@ -20,7 +20,7 @@ def test_init_config(mocker, tmp_path):
 
     init_config(logging=True, database=True, files=True)
 
-    assert len(config_tmpdir.listdir()) == 3
+    assert len(list(config_tmpdir.iterdir())) == 3
 
 
 @pytest.mark.parametrize("test_input", ["logging", "database", "files"])
@@ -57,4 +57,4 @@ def test_init_config_interface(mocker, tmp_path):
 
     init_config_interface()
 
-    assert len(config_tmpdir.listdir()) == 1
+    assert len(list(config_tmpdir.iterdir())) == 1

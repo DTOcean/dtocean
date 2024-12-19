@@ -26,8 +26,8 @@ this_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(this_dir, "..", "test_data")
 
 
-def test_bathy_records_to_strata():
-    df = pd.read_csv(os.path.join(data_dir, "bathy_test_good.csv"))
+def test_bathy_records_to_strata(test_data_path):
+    df = pd.read_csv(test_data_path / "bathy_test_good.csv")
     points = []
     for x, y in zip(df["x"], df["y"]):
         point = Point(x, y)
@@ -44,8 +44,8 @@ def test_bathy_records_to_strata():
     assert set(raw["values"].keys()) == set(["depth", "sediment"])
 
 
-def test_bathy_records_to_strata_fail():
-    df = pd.read_csv(os.path.join(data_dir, "bathy_test_bad.csv"))
+def test_bathy_records_to_strata_fail(test_data_path):
+    df = pd.read_csv(test_data_path / "bathy_test_bad.csv")
     points = []
     for x, y in zip(df["x"], df["y"]):
         point = Point(x, y)
@@ -139,7 +139,7 @@ def test_convert_geo_SRID(mocker):
     df = pd.DataFrame(df_dict)
 
     mocker.patch(
-        "dtocean_core.utils.database.geos.lgeos.GEOSGetSRID",
+        "dtocean_core.utils.database.get_srid",
         return_value=1,
         autospec=True,
     )
