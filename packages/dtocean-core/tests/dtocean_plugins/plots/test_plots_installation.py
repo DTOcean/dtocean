@@ -59,7 +59,7 @@ class MockModule(ModuleInterface):
         return None
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         id_map = {
             "dummy": "project.installation_plan",
             "dummy1": "project.install_support_structure_dates",

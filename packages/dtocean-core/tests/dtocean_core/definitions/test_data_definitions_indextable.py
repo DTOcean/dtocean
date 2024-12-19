@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -54,7 +55,7 @@ def test_get_None():
 @pytest.mark.parametrize("fext", [".csv", ".xls", ".xlsx"])
 def test_IndexTable_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     labels = []
     while len(labels) != 10:
@@ -79,7 +80,7 @@ def test_IndexTable_auto_file(tmpdir, fext):
     FOutCls = fout_factory(meta, test)
 
     fout = FOutCls()
-    fout._path = test_path_str
+    fout._path = test_path_path
     fout.data.result = test.get_data(raw, meta)
 
     fout.connect()
@@ -90,7 +91,7 @@ def test_IndexTable_auto_file(tmpdir, fext):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     fin.connect()
     result = test.get_data(fin.data.result, meta)

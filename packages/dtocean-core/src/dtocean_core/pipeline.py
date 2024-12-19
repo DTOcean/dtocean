@@ -22,7 +22,7 @@ from typing import Union
 import matplotlib.pyplot as plt
 from mdo_engine.boundary.interface import FileInterface
 
-from .core import Connector
+from .core import Connector, Core
 
 StrOrPath = Union[str, Path]
 
@@ -506,7 +506,7 @@ class Variable:
 
         return interface
 
-    def _find_providing_interfaces(self, core, socket_cls_name):
+    def _find_providing_interfaces(self, core: Core, socket_cls_name):
         socket = core.socket_map[socket_cls_name]
         providers = socket.get_providing_interfaces(self._id)
 
@@ -514,7 +514,7 @@ class Variable:
 
         return interfaces
 
-    def _find_receiving_interfaces(self, core, socket_cls_name):
+    def _find_receiving_interfaces(self, core: Core, socket_cls_name):
         socket = core.socket_map[socket_cls_name]
         receivers = socket.get_receiving_interfaces(self._id)
         interfaces = self._get_socket_interfaces(socket, receivers)

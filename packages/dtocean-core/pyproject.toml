@@ -51,6 +51,7 @@ xarray = "^2024.11.0"
 xlrd = "^2.0.1"
 basemap = "^1.4.1"
 pywin32 = {version = "^308", platform = "win32"}
+cmocean = "^4.0.3"
 
 [tool.poetry.group.test]
 optional = true

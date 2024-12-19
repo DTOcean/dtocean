@@ -13,15 +13,33 @@ def test_data_path():
 
 
 @pytest.fixture(scope="session")
-def inputs_wp2_tidal(test_data_path):
-    yield _make_test_data(test_data_path, "inputs_wp2_tidal")
-    _remove_test_data("inputs_wp2_tidal")
+def inputs_boundary(test_data_path):
+    yield _make_test_data(test_data_path, "inputs_boundary")
+    _remove_test_data("inputs_boundary")
 
 
 @pytest.fixture(scope="session")
 def inputs_economics(test_data_path):
     yield _make_test_data(test_data_path, "inputs_economics")
     _remove_test_data("inputs_economics")
+
+
+@pytest.fixture(scope="session")
+def inputs_wp2_tidal(test_data_path):
+    yield _make_test_data(test_data_path, "inputs_wp2_tidal")
+    _remove_test_data("inputs_wp2_tidal")
+
+
+@pytest.fixture(scope="session")
+def inputs_wp2_wave(test_data_path):
+    yield _make_test_data(test_data_path, "inputs_wp2_wave")
+    _remove_test_data("inputs_wp2_wave")
+
+
+@pytest.fixture(scope="session")
+def inputs_wp3(test_data_path):
+    yield _make_test_data(test_data_path, "inputs_wp3")
+    _remove_test_data("inputs_wp3")
 
 
 def _make_test_data(data_dir: Path, name: str):

@@ -6,7 +6,7 @@ import pytest
 
 from dtocean_core.core import Core
 from dtocean_core.menu import ModuleMenu, ProjectMenu
-from dtocean_core.pipeline import Tree
+from dtocean_core.pipeline import InputVariable, Tree
 from dtocean_plugins.modules.modules import ModuleInterface
 
 dir_path = os.path.dirname(__file__)
@@ -90,7 +90,7 @@ def project(core, tree):
     return new_project
 
 
-def test_CombinedBathyPlot_available(core, project, tree):
+def test_CombinedBathyPlot_available(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -100,17 +100,16 @@ def test_CombinedBathyPlot_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp3.pkl")
-    )
-
+    mod_branch.read_test_data(core, project, inputs_wp3)
     bathy = mod_branch.get_input_variable(core, project, "bathymetry.layers")
+
+    assert isinstance(bathy, InputVariable)
     result = bathy.get_available_plots(core, project)
 
     assert "Combined Bathymetry" in result
 
 
-def test_CombinedBathyPlot(core, project, tree):
+def test_CombinedBathyPlot(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -120,9 +119,7 @@ def test_CombinedBathyPlot(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp3.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp3)
 
     bathy = mod_branch.get_input_variable(core, project, "bathymetry.layers")
     bathy.plot(core, project, "Combined Bathymetry")
@@ -132,7 +129,7 @@ def test_CombinedBathyPlot(core, project, tree):
     plt.close("all")
 
 
-def test_CombinedSedimentPlot_available(core, project, tree):
+def test_CombinedSedimentPlot_available(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -142,9 +139,7 @@ def test_CombinedSedimentPlot_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp3.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp3)
 
     bathy = mod_branch.get_input_variable(core, project, "bathymetry.layers")
     result = bathy.get_available_plots(core, project)
@@ -152,7 +147,7 @@ def test_CombinedSedimentPlot_available(core, project, tree):
     assert "Combined Sediment (First Layer)" in result
 
 
-def test_CombinedSedimentPlot(core, project, tree):
+def test_CombinedSedimentPlot(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -162,9 +157,7 @@ def test_CombinedSedimentPlot(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp3.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp3)
 
     bathy = mod_branch.get_input_variable(core, project, "bathymetry.layers")
     bathy.plot(core, project, "Combined Sediment (First Layer)")

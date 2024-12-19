@@ -15,9 +15,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from typing import cast
+
 import cmocean
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.patches import Rectangle
 
 from .plots import PlotInterface
 
@@ -55,7 +58,7 @@ class CombinedBathyPlot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -102,14 +105,22 @@ class CombinedBathyPlot(PlotInterface):
         y = deployment_bathy.coords["y"]
 
         plt.contourf(
-            x, y, deployment_bathy.T, levels=levels, cmap=cmocean.cm.deep_r
+            x,
+            y,
+            deployment_bathy.T,
+            levels=levels,
+            cmap=cmocean.cm.cmap_d["deep"],
         )
 
         x = cable_corridor_bathy.coords["x"]
         y = cable_corridor_bathy.coords["y"]
 
         plt.contourf(
-            x, y, cable_corridor_bathy.T, levels=levels, cmap=cmocean.cm.deep_r
+            x,
+            y,
+            cable_corridor_bathy.T,
+            levels=levels,
+            cmap=cmocean.cm.cmap_d["deep"],
         )
 
         clb = plt.colorbar()
@@ -166,7 +177,7 @@ class CombinedSedimentPlot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -195,7 +206,7 @@ class CombinedSedimentPlot(PlotInterface):
 
     def connect(self):
         # These are the "Tableau 20" colors as RGB.
-        tableau20 = [
+        tableau20: list[tuple[float, float, float]] = [
             (31, 119, 180),
             (174, 199, 232),
             (255, 127, 14),
@@ -273,6 +284,7 @@ class CombinedSedimentPlot(PlotInterface):
 
         levels = [0] + all_codes
         legend_names = [sediment_map_r[x] for x in all_codes]
+        legend_names = cast(list[str], legend_names)
 
         color_index = [int(x - 1) for x in all_codes]
         colors = [tableau20[x] for x in color_index]
@@ -313,7 +325,7 @@ class CombinedSedimentPlot(PlotInterface):
         )
 
         proxy = [
-            plt.Rectangle((0, 0), 1, 1, fc=pc.get_facecolor()[0])
+            Rectangle((0, 0), 1, 1, fc=pc.get_facecolor()[0])
             for pc in cs.collections
         ]
 
@@ -350,4 +362,5 @@ class CombinedSedimentPlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
+        return
         return

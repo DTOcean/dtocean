@@ -68,7 +68,7 @@ def tree():
 
 
 @pytest.fixture(scope="module")
-def project(core, tree):
+def project(core, tree, inputs_boundary):
     """Share a Project object"""
 
     project_title = "Test"
@@ -91,9 +91,7 @@ def project(core, tree):
     boundaries_branch = tree.get_branch(
         core, new_project, "Site Boundary Selection"
     )
-    boundaries_branch.read_test_data(
-        core, new_project, os.path.join(dir_path, "inputs_boundary.pkl")
-    )
+    boundaries_branch.read_test_data(core, new_project, inputs_boundary)
     project_menu._execute(
         core, new_project, "Site Boundary Selection", set_output_level=False
     )
@@ -165,7 +163,7 @@ def test_AllBoundaryPlot(core, project, tree):
     plt.close("all")
 
 
-def test_DesignBoundaryPlot_available(core, project, tree):
+def test_DesignBoundaryPlot_available(core, project, tree, inputs_boundary):
     project = deepcopy(project)
 
     module_menu = ModuleMenu()
@@ -175,9 +173,7 @@ def test_DesignBoundaryPlot_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     installation_branch = tree.get_branch(core, project, "Mock Module")
-    installation_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_boundary.pkl")
-    )
+    installation_branch.read_test_data(core, project, inputs_boundary)
     installation_branch.read_auto(core, project)
 
     lease_entry = installation_branch.get_input_variable(
@@ -189,7 +185,7 @@ def test_DesignBoundaryPlot_available(core, project, tree):
     assert "Design Boundaries" in result
 
 
-def test_DesignBoundaryPlot(core, project, tree):
+def test_DesignBoundaryPlot(core, project, tree, inputs_boundary):
     project = deepcopy(project)
 
     module_menu = ModuleMenu()
@@ -199,9 +195,7 @@ def test_DesignBoundaryPlot(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     installation_branch = tree.get_branch(core, project, "Mock Module")
-    installation_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_boundary.pkl")
-    )
+    installation_branch.read_test_data(core, project, inputs_boundary)
     installation_branch.read_auto(core, project)
 
     # Add nogo area

@@ -1,4 +1,5 @@
 from copy import deepcopy
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -112,7 +113,7 @@ def test_NumpyLineDict_not_equal_keys():
 @pytest.mark.parametrize("fext", [".xls", ".xlsx"])
 def test_NumpyLine_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     coarse_sample = np.linspace(0.0, 2 * np.pi, num=5)
     fine_sample = np.linspace(0.0, 2 * np.pi, num=9)
@@ -137,7 +138,7 @@ def test_NumpyLine_auto_file(tmpdir, fext):
     FOutCls = fout_factory(meta, test)
 
     fout = FOutCls()
-    fout._path = test_path_str
+    fout._path = test_path_path
     fout.data.result = test.get_data(raw, meta)
 
     fout.connect()
@@ -148,7 +149,7 @@ def test_NumpyLine_auto_file(tmpdir, fext):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     fin.connect()
     result = test.get_data(fin.data.result, meta)

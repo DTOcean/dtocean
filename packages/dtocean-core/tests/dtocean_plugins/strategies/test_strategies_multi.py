@@ -179,7 +179,7 @@ def test_multi_run_simulation(mocker, multi):
     )
 
     mock_basic = mocker.patch(
-        "dtocean_core.strategies.multi.BasicStrategy", autospec=True
+        "dtocean_plugins.strategies.multi.BasicStrategy", autospec=True
     )
 
     core = mocker.MagicMock()
@@ -274,6 +274,8 @@ def test_multi_run_simulation_not_activated(mocker, multi):
 
     with pytest.raises(ValueError) as excinfo:
         multi._run_simulation(core, project, sorted_df, "Default")
+
+    assert "has not been activated" in str(excinfo)
 
     assert "has not been activated" in str(excinfo)
 

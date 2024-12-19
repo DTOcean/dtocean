@@ -95,7 +95,7 @@ def project(core, tree):
     return new_project
 
 
-def test_TeHm0Plot_available(core, project, tree):
+def test_TeHm0Plot_available(core, project, tree, inputs_wp2_wave):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -105,9 +105,7 @@ def test_TeHm0Plot_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_wave.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp2_wave)
 
     wave_series = mod_branch.get_input_variable(
         core, project, "farm.wave_series"
@@ -117,7 +115,7 @@ def test_TeHm0Plot_available(core, project, tree):
     assert "Te & Hm0 Time Series" in result
 
 
-def test_TeHm0Plot(core, project, tree):
+def test_TeHm0Plot(core, project, tree, inputs_wp2_wave):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -127,9 +125,7 @@ def test_TeHm0Plot(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_wave.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp2_wave)
 
     wave_series = mod_branch.get_input_variable(
         core, project, "farm.wave_series"

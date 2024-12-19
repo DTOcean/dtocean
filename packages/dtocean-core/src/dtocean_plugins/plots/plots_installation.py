@@ -25,10 +25,12 @@ Created on Wed Apr 06 15:59:04 2016
 
 from datetime import timedelta
 from textwrap import wrap
+from typing import Optional
 
 import matplotlib.font_manager as font_manager
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from matplotlib.dates import (
     MONTHLY,
     DateFormatter,
@@ -117,7 +119,7 @@ class InstallationGanttChartPlot(PlotInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -201,16 +203,19 @@ def installation_gantt_chart(
     install_pile_anchor_dates=None,
     install_drag_embedment_dates=None,
     install_suction_embedment_dates=None,
-    install_device_times=None,
-    install_electrical_times=None,
-    install_mooring_times=None,
+    install_device_times: Optional[pd.DataFrame] = None,
+    install_electrical_times: Optional[pd.DataFrame] = None,
+    install_mooring_times: Optional[pd.DataFrame] = None,
 ):
     if plan is None:
         return None
 
     installation = {}
     # sort data
-    if any("support structure" in phase for phase in plan):
+    if (
+        any("support structure" in phase for phase in plan)
+        and install_device_times is not None
+    ):
         component_time = install_device_times.loc["Support Structure"]
 
         values = installation_gantt_dates(
@@ -219,7 +224,10 @@ def installation_gantt_chart(
 
         installation["Installation of support structure"] = values
 
-    if any("devices" in phase for phase in plan):
+    if (
+        any("devices" in phase for phase in plan)
+        and install_device_times is not None
+    ):
         component_time = install_device_times.loc["Device"]
 
         values = installation_gantt_dates(
@@ -228,7 +236,10 @@ def installation_gantt_chart(
 
         installation["Installation of devices"] = values
 
-    if any("dynamic" in phase for phase in plan):
+    if (
+        any("dynamic" in phase for phase in plan)
+        and install_electrical_times is not None
+    ):
         component_time = install_electrical_times.loc["Dynamic Cables"]
 
         values = installation_gantt_dates(
@@ -237,7 +248,10 @@ def installation_gantt_chart(
 
         installation["Installation of dynamic cables"] = values
 
-    if any("export" in phase for phase in plan):
+    if (
+        any("export" in phase for phase in plan)
+        and install_electrical_times is not None
+    ):
         component_time = install_electrical_times.loc["Export Cables"]
 
         values = installation_gantt_dates(
@@ -246,7 +260,10 @@ def installation_gantt_chart(
 
         installation["Installation of static export cables"] = values
 
-    if any("array" in phase for phase in plan):
+    if (
+        any("array" in phase for phase in plan)
+        and install_electrical_times is not None
+    ):
         component_time = install_electrical_times.loc["Inter-Array Cables"]
 
         values = installation_gantt_dates(
@@ -255,7 +272,10 @@ def installation_gantt_chart(
 
         installation["Installation of static array cables"] = values
 
-    if any("surface piercing" in phase for phase in plan):
+    if (
+        any("surface piercing" in phase for phase in plan)
+        and install_electrical_times is not None
+    ):
         component_time = install_electrical_times.loc["Collection Points"]
 
         values = installation_gantt_dates(
@@ -267,7 +287,10 @@ def installation_gantt_chart(
             values
         )
 
-    if any("seabed" in phase for phase in plan):
+    if (
+        any("seabed" in phase for phase in plan)
+        and install_electrical_times is not None
+    ):
         component_time = install_electrical_times.loc["Collection Points"]
 
         values = installation_gantt_dates(
@@ -276,7 +299,10 @@ def installation_gantt_chart(
 
         installation["Installation of collection point (seabed)"] = values
 
-    if any("cable protection" in phase for phase in plan):
+    if (
+        any("cable protection" in phase for phase in plan)
+        and install_electrical_times is not None
+    ):
         component_time = install_electrical_times.loc[
             "External Cable Protection"
         ]
@@ -287,7 +313,10 @@ def installation_gantt_chart(
 
         installation["Installation of external cable protection"] = values
 
-    if any("driven piles" in phase for phase in plan):
+    if (
+        any("driven piles" in phase for phase in plan)
+        and install_mooring_times is not None
+    ):
         component_time = install_mooring_times.loc["Driven Piles"]
 
         values = installation_gantt_dates(
@@ -298,7 +327,10 @@ def installation_gantt_chart(
             values
         )
 
-    if any("direct-embedment" in phase for phase in plan):
+    if (
+        any("direct-embedment" in phase for phase in plan)
+        and install_mooring_times is not None
+    ):
         component_time = install_mooring_times.loc["Direct-Embedment Anchors"]
 
         values = installation_gantt_dates(
@@ -309,7 +341,10 @@ def installation_gantt_chart(
             "Installation of mooring systems with direct-embedment " "anchors"
         ] = values
 
-    if any("gravity based" in phase for phase in plan):
+    if (
+        any("gravity based" in phase for phase in plan)
+        and install_mooring_times is not None
+    ):
         component_time = install_mooring_times.loc["Gravity Based Foundations"]
 
         values = installation_gantt_dates(
@@ -318,7 +353,10 @@ def installation_gantt_chart(
 
         installation["Installation of gravity based foundations"] = values
 
-    if any("pile anchor" in phase for phase in plan):
+    if (
+        any("pile anchor" in phase for phase in plan)
+        and install_mooring_times is not None
+    ):
         component_time = install_mooring_times.loc["Pile Anchors"]
 
         values = installation_gantt_dates(
@@ -329,7 +367,10 @@ def installation_gantt_chart(
             values
         )
 
-    if any("drag-embedment" in phase for phase in plan):
+    if (
+        any("drag-embedment" in phase for phase in plan)
+        and install_mooring_times is not None
+    ):
         component_time = install_mooring_times.loc["Drag-Embedment Anchors"]
 
         values = installation_gantt_dates(
@@ -340,7 +381,10 @@ def installation_gantt_chart(
             "Installation of mooring systems with drag-embedment " "anchors"
         ] = values
 
-    if any("suction-embedment" in phase for phase in plan):
+    if (
+        any("suction-embedment" in phase for phase in plan)
+        and install_mooring_times is not None
+    ):
         component_time = install_mooring_times.loc["Suction-Caisson Anchors"]
 
         values = installation_gantt_dates(
@@ -353,7 +397,7 @@ def installation_gantt_chart(
 
     # Data
     num_phases = len(plan)
-    pos = np.arange(0.5, num_phases / 2.0 + 1.0, 0.5)
+    pos = np.arange(0.5, num_phases / 2.0 + 0.5, 0.5)
 
     ylabels = []
     customDates = []
