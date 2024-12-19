@@ -33,13 +33,16 @@ import abc
 import logging
 import os
 from abc import ABC
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 import pandas as pd
 from box import Box
 from sqlalchemy.exc import DBAPIError
 
 from ..utilities.misc import Injective
+
+StrOrPath = Union[str, Path]
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -182,9 +185,9 @@ class Interface(ABC):
         """
 
         if identifier not in self.data:
-            errStr = (
-                "Identifier {} not recognised for " "interface {}."
-            ).format(identifier, self.get_name())
+            errStr = ("Identifier {} not recognised for interface {}.").format(
+                identifier, self.get_name()
+            )
             raise KeyError(errStr)
 
         self.data[identifier] = data
@@ -587,7 +590,7 @@ class RawInterface(Interface):
 class FileInterface(MapInterface):
     def __init__(self):
         super(FileInterface, self).__init__()
-        self._path = None
+        self._path: Optional[Path] = None
 
         return
 
@@ -614,34 +617,34 @@ class FileInterface(MapInterface):
 
         return self._path
 
-    def set_file_path(self, file_path):
+    def set_file_path(self, file_path: StrOrPath):
         """Set the path to the file to be read
 
         Args:
          file_path (str): File path"""
 
-        self._path = file_path
+        self._path = Path(file_path)
 
         return
 
     def check_path(self, check_exists=False):
         # Test for file path
         if self._path is None:
-            errStr = "The file path must be set for FileInterface " "classes."
+            errStr = "The file path must be set for FileInterface classes."
             raise ValueError(errStr)
 
-        _, file_ext = os.path.splitext(self._path)
+        file_ext = self._path.suffix
 
         if file_ext not in self.get_valid_extensions():
             extStr = ", ".join(self.get_valid_extensions())
             errStr = (
-                "File extension '{}' is not valid. Available are " "'{}'"
+                "File extension '{}' is not valid. Available are '{}'"
             ).format(file_ext, extStr)
 
             raise IOError(errStr)
 
         if check_exists and not os.path.exists(self._path):
-            errStr = ("No file or directory exists for path " "'{}'").format(
+            errStr = ("No file or directory exists for path '{}'").format(
                 self._path
             )
             raise IOError(errStr)
