@@ -6,6 +6,7 @@ Created on Tue Mar 31 10:53:17 2015
 """
 
 import logging
+from types import ModuleType
 from typing import Sequence
 
 from ..boundary.interface import WeightedInterface
@@ -23,13 +24,13 @@ class Sequencer:
     def __init__(
         self,
         interface_types,
-        interface_module,
+        interface_modules,
         sort_weighted=True,
         warn_import=False,
     ):
         self._sort_weighted = sort_weighted
         self._sockets = self._init_sockets(
-            interface_types, interface_module, warn_import
+            interface_types, interface_modules, warn_import
         )
 
         return
@@ -37,7 +38,7 @@ class Sequencer:
     def _init_sockets(
         self,
         interface_types: Sequence[str],
-        interface_module,
+        interface_modules: Sequence[ModuleType],
         warn_import=False,
     ):
         """Create a socket classes to locate and communicate with the chosen
@@ -48,9 +49,8 @@ class Sequencer:
 
         for cls_name in interface_types:
             socket_obj = Socket()
-            socket_obj.discover_interfaces(
-                interface_module, cls_name, warn_import
-            )
+            for interface_module in interface_modules:
+                socket_obj.discover_interfaces(interface_module, cls_name, warn_import)
 
             sockets[cls_name] = socket_obj
 
@@ -75,9 +75,7 @@ class Sequencer:
 
             if dupes:
                 dupes_str = ", ".join(dupes)
-                errStr = ("Duplicate interfaces names found: {}").format(
-                    dupes_str
-                )
+                errStr = ("Duplicate interfaces names found: {}").format(dupes_str)
                 raise ValueError(errStr)
 
             socket_names[cls_name] = names_map
@@ -117,9 +115,7 @@ class Sequencer:
 
         new_pipeline = Pipeline(interface_type, no_complete)
 
-        log_msg = ("New Pipeline created for interface {}.").format(
-            interface_type
-        )
+        log_msg = ("New Pipeline created for interface {}.").format(interface_type)
         module_logger.info(log_msg)
 
         return new_pipeline
@@ -236,9 +232,7 @@ class Sequencer:
     def sequence(self, hub, interface_name):
         """Sequence an interface for execution."""
 
-        interface_cls_name, interface_obj = self._get_interface(
-            hub, interface_name
-        )
+        interface_cls_name, interface_obj = self._get_interface(hub, interface_name)
 
         # Store an object of the interface
         hub.add_interface(interface_cls_name, interface_obj)

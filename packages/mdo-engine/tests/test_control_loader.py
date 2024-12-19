@@ -31,7 +31,7 @@ def controller():
     data_store = DataStorage(data_plugins)
 
     try:
-        sequencer = Sequencer(["DummyInterface"], interfaces)
+        sequencer = Sequencer(["DummyInterface"], [interfaces])
     except ModuleNotFoundError as e:
         if "dtocean_dummy" in str(e):
             pytest.skip("dtocean-dummy-module not installed")

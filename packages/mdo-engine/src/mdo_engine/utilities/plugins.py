@@ -10,6 +10,7 @@ import inspect
 import logging
 import pkgutil
 import traceback
+from types import ModuleType
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ class Plugin:
         return cls_map
 
 
-def get_module_names_from_package(package):
+def get_module_names_from_package(package: ModuleType):
     """Return the names of modules in the given package"""
 
     prefix = package.__name__ + "."
@@ -133,9 +134,9 @@ def get_module_attr(mod_name, warn_import=False):
     try:
         module = importlib.import_module(mod_name)
     except Exception:
-        msgStr = (
-            "Importing module {} failed with an unexpected error:\n{}"
-        ).format(mod_name, traceback.format_exc())
+        msgStr = ("Importing module {} failed with an unexpected error:\n{}").format(
+            mod_name, traceback.format_exc()
+        )
         if warn_import:
             module_logger.warning(msgStr)
             return
