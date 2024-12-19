@@ -2,10 +2,14 @@
 
 # pylint: disable=redefined-outer-name,protected-access
 
+# Check for module
+import pytest
+
+pytest.importorskip("dtocean_hydro")
+
 import sys
 
 import numpy as np
-import pytest
 import yaml
 from shapely.geometry import Polygon
 
@@ -14,8 +18,8 @@ from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import Strata
 from dtocean_core.menu import ModuleMenu
 from dtocean_core.pipeline import Branch
-from dtocean_core.strategies.basic import BasicStrategy
-from dtocean_core.strategies.position_optimiser.iterator import (  # pylint: disable=no-name-in-module
+from dtocean_plugins.strategies.basic import BasicStrategy
+from dtocean_plugins.strategies.position_optimiser.iterator import (  # pylint: disable=no-name-in-module
     _get_basic_strategy,
     _get_branch,
     get_positioner,
@@ -25,10 +29,9 @@ from dtocean_core.strategies.position_optimiser.iterator import (  # pylint: dis
     prepare,
     write_result_file,
 )
-from dtocean_core.strategies.position_optimiser.positioner import ParaPositioner
-
-# Check for module
-pytest.importorskip("dtocean_hydro")
+from dtocean_plugins.strategies.position_optimiser.positioner import (
+    ParaPositioner,
+)
 
 
 @pytest.fixture

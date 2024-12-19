@@ -2,12 +2,15 @@
 
 # pylint: disable=redefined-outer-name,protected-access,bad-whitespace,no-member
 
+import pytest
+
+pytest.importorskip("dtocean-hydro")
+
 import contextlib
 import logging
 import os
 
 import numpy as np
-import pytest
 from shapely.geometry import Polygon
 from yaml import dump
 
@@ -20,7 +23,7 @@ import dtocean_core.utils.optimiser as opt
 from dtocean_core.core import Core
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import Strata
-from dtocean_core.strategies.position_optimiser import (
+from dtocean_plugins.strategies.position_optimiser import (
     PositionCounter,
     PositionEvaluator,
     PositionOptimiser,
@@ -33,7 +36,9 @@ from dtocean_core.strategies.position_optimiser import (
     dump_config,
     load_config,
 )
-from dtocean_core.strategies.position_optimiser.positioner import ParaPositioner
+from dtocean_plugins.strategies.position_optimiser.positioner import (
+    ParaPositioner,
+)
 
 
 @contextlib.contextmanager
@@ -1411,4 +1416,8 @@ def test_PositionOptimiser_get_nh(mocker):
     mock_cma_main = mocker.MagicMock()
     test._cma_main = mock_cma_main
 
+    assert isinstance(test.get_nh(), mocker.MagicMock)
+
+    assert isinstance(test.get_nh(), mocker.MagicMock)
+    assert isinstance(test.get_nh(), mocker.MagicMock)
     assert isinstance(test.get_nh(), mocker.MagicMock)

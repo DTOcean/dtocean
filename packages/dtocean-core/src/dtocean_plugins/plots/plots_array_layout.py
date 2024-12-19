@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from shapely.geometry import Point, Polygon
 
-from . import PlotInterface
+from .plots import PlotInterface
 
 BLUE = "#6699cc"
 GREEN = "#32CD32"
@@ -358,7 +358,7 @@ class ArrayCablesPlot(PlotInterface):
         )
 
         plt.title("Electrical Cable Layout")
-        plt.tight_layout(rect=[0, 0.04, 0.84, 0.96])
+        plt.tight_layout(rect=(0.0, 0.04, 0.84, 0.96))
 
         self.fig_handle = plt.gcf()
 
