@@ -8,11 +8,12 @@ from copy import deepcopy
 import pytest
 
 from dtocean_core.core import Connector, Core, OrderedSim, Project
-from dtocean_core.interfaces import ModuleInterface, ThemeInterface
 from dtocean_core.menu import ModuleMenu, ProjectMenu, ThemeMenu
 from dtocean_core.pipeline import Tree
+from dtocean_plugins.modules.modules import ModuleInterface
+from dtocean_plugins.themes.themes import ThemeInterface
 
-dir_path = os.path.dirname(__file__)
+DIR_PATH = os.path.dirname(__file__)
 
 
 class MockModule(ModuleInterface):
