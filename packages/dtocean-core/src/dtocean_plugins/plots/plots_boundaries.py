@@ -29,7 +29,7 @@ import pyproj
 from mpl_toolkits.basemap import Basemap
 from shapely.ops import transform
 
-from . import PlotInterface
+from .plots import PlotInterface
 
 BLUE = "#6699cc"
 GREEN = "#32CD32"

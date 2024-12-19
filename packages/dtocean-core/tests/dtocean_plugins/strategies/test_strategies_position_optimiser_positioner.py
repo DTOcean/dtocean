@@ -2,14 +2,18 @@
 
 # pylint: disable=redefined-outer-name,protected-access,bad-whitespace
 
-import numpy as np
+# Check for module
 import pytest
+
+pytest.importorskip("dtocean_hydro")
+
+import numpy as np
 from shapely.affinity import translate
 from shapely.geometry import Point, Polygon, box
 
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import Strata
-from dtocean_core.strategies.position_optimiser.positioner import (
+from dtocean_plugins.strategies.position_optimiser.positioner import (
     CompassPositioner,
     DummyPositioner,
     ParaPositioner,
@@ -23,9 +27,6 @@ from dtocean_core.strategies.position_optimiser.positioner import (
     _nearest_n_nodes,
     _parametric_point_in_polygon,
 )
-
-# Check for module
-pytest.importorskip("dtocean_hydro")
 
 
 @pytest.fixture

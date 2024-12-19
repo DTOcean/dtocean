@@ -5,7 +5,7 @@
 import pytest
 
 from dtocean_core.core import OrderedSim, Project
-from dtocean_core.strategies.basic import BasicStrategy
+from dtocean_plugins.strategies.basic import BasicStrategy
 
 
 @pytest.fixture()
@@ -27,19 +27,18 @@ def test_basic_get_variables(basic):
 
 
 def test_basic_execute(mocker, basic):
-    
-    mocker.patch.object(basic._module_menu,
-                        'get_current',
-                        side_effect=["a", "b", None],
-                        autospec=True)
-    
-    mocker.patch.object(basic._module_menu,
-                        'execute_current',
-                        autospec=True)
-    
+    mocker.patch.object(
+        basic._module_menu,
+        "get_current",
+        side_effect=["a", "b", None],
+        autospec=True,
+    )
+
+    mocker.patch.object(basic._module_menu, "execute_current", autospec=True)
+
     project = Project("mock")
     project.add_simulation(OrderedSim("Default"))
-    
+
     basic.execute(None, project)
-    
+
     assert basic._module_menu.execute_current.call_count == 2
