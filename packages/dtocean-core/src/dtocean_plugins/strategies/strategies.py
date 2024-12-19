@@ -17,6 +17,7 @@
 
 import abc
 from copy import deepcopy
+from typing import Any, Optional
 
 from dtocean_core.menu import ModuleMenu, ThemeMenu
 from dtocean_core.pipeline import Tree
@@ -50,7 +51,7 @@ class Strategy(object):
 
         # Record any detailed information about the simulation (assume this
         # is picklable)
-        self.sim_details = None
+        self.sim_details: Optional[Any] = None
 
         return
 

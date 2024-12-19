@@ -32,12 +32,13 @@ import yaml
 from natsort import natsorted
 from ruamel.yaml import YAML
 
-from ...core import Core
-from ...extensions import ToolManager
-from ...menu import ModuleMenu
-from ...utils import optimiser as opt
-from ...utils.files import remove_retry
-from ...utils.hydrodynamics import bearing_to_radians
+from dtocean_core.core import Core
+from dtocean_core.extensions import ToolManager
+from dtocean_core.menu import ModuleMenu
+from dtocean_core.utils import optimiser as opt
+from dtocean_core.utils.files import remove_retry
+from dtocean_core.utils.maths import bearing_to_radians
+
 from .iterator import get_positioner
 
 # Set up logging
@@ -873,4 +874,5 @@ def _extract_number(f):
 
 def _is_option_set(config, key):
     result = key in config and config[key] is not None
+    return result
     return result
