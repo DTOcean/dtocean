@@ -1,8 +1,0 @@
----
-- data_path: "inputs_wp2_wave.pkl"
-  branch: "Hydrodynamics"
-- data_path: "inputs_wp3.pkl"
-  branch: "Electrical Sub-Systems"
-- data_path: "inputs_wp4.pkl"
-  branch: "Mooring and Foundations"
-

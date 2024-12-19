@@ -23,3 +23,4 @@ optional = true
 [tool.poetry.group.audit.dependencies]
 ruff = "^0.8.3"
 pyright = "^1.1.390"
+deptry = "^0.21.1"

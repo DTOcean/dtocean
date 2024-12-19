@@ -15,14 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division, print_function
-
 import argparse
 import datetime as dt
 import logging
-
-# Standard Library
 import os
+import platform
 import re
 import shutil
 import string
@@ -30,18 +27,12 @@ import time
 
 import numpy as np
 import pandas as pd
-
-# External modules
 import yaml
-
-# DTOcean modules
 from mdo_engine.utilities.database import PostgreSQL
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
 from shapely import geos, wkb
-from win32com.client import Dispatch
 
-# Local modules
 from . import SmartFormatter
 from .files import onerror
 
@@ -425,18 +416,18 @@ def database_to_files(
         return
 
     def _autofit_columns(xlpath):
+        if platform.system() != "Windows":
+            return
+
+        from win32com.client import Dispatch
+
         excel = Dispatch("Excel.Application")
         wb = excel.Workbooks.Open(os.path.abspath(xlpath))
 
-        # Activate second sheet
         excel.Worksheets(1).Activate()
-
-        # Autofit column in active sheet
         excel.ActiveSheet.Columns.AutoFit()
 
-        # Or simply save changes in a current file
         wb.Save()
-
         wb.Close()
 
         return
@@ -526,13 +517,13 @@ def database_to_files(
                 print_function(msg_str)
 
                 # Create a Pandas Excel writer using XlsxWriter as the engine.
-                writer = pd.ExcelWriter(tab_path, engine="xlsxwriter")
+                writer = pd.ExcelWriter(tab_path, engine="openpyxl")
 
                 # Convert the dataframe to an XlsxWriter Excel object.
                 table_df.to_excel(writer, index=False)
 
                 # Close the Pandas Excel writer and output the Excel file.
-                writer.save()
+                writer.close()
 
                 # Fit the column widths (don't let failure be catastrophic)
                 try:
@@ -1004,7 +995,7 @@ def get_database_config(db_config_name="database.yaml"):
     return useryaml, config
 
 
-def get_database(credentials, echo=False, timeout=None, db_adapter="psycopg2"):
+def get_database(credentials, echo=False, timeout=None, db_adapter="psycopg"):
     database = PostgreSQL(db_adapter)
     database.set_credentials(credentials)
     database.set_echo(echo)
