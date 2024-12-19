@@ -8,20 +8,24 @@ FILE = Path(__file__).resolve()
 
 
 @pytest.fixture(scope="session")
-def inputs_wp2_tidal():
-    yield _make_test_data("inputs_wp2_tidal")
+def test_data_path():
+    return FILE.parents[2] / "test_data"
+
+
+@pytest.fixture(scope="session")
+def inputs_wp2_tidal(test_data_path):
+    yield _make_test_data(test_data_path, "inputs_wp2_tidal")
     _remove_test_data("inputs_wp2_tidal")
 
 
 @pytest.fixture(scope="session")
-def inputs_economics():
-    yield _make_test_data("inputs_economics")
+def inputs_economics(test_data_path):
+    yield _make_test_data(test_data_path, "inputs_economics")
     _remove_test_data("inputs_economics")
 
 
-def _make_test_data(name: str):
+def _make_test_data(data_dir: Path, name: str):
     # Pickle data files and move to test directory
-    data_dir = FILE.parents[1] / "test_data"
     test_dir = FILE.parent
 
     src_path_py = (data_dir / name).with_suffix(".py")

@@ -30,8 +30,10 @@ import time
 import traceback
 from collections import OrderedDict
 from copy import deepcopy
+from logging import handlers
 from math import ceil
 from subprocess import Popen
+from typing import Any, Sequence
 
 import cma
 import numpy as np
@@ -40,7 +42,7 @@ from numpy.linalg import norm
 from ..files import init_dir
 
 # Convenience import
-from .noisehandler import NoiseHandler
+from .noisehandler import NoiseHandler  # noqa: F401
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -182,7 +184,7 @@ class Evaluator:
         self._base_project = base_project
         self._root_project_base_name = root_project_base_name
         self._worker_directory = worker_directory
-        self._counter = self._init_counter()
+        self._counter: Counter = self._init_counter()
 
         if not restart:
             init_dir(worker_directory, clean_existing_dir)
@@ -190,28 +192,33 @@ class Evaluator:
         return
 
     @abc.abstractmethod
-    def _init_counter(self):
+    def _init_counter(self) -> Counter:
         "Initialise and return the counter stored in the _counter attr"
-        return
+        pass
 
     @abc.abstractmethod
-    def _get_popen_args(self, worker_project_path, n_evals, *args):
+    def _get_popen_args(
+        self,
+        worker_project_path,
+        n_evals,
+        *args,
+    ) -> Sequence[str]:
         "Return the arguments to create a new process thread using Popen"
-        return
+        pass
 
     @abc.abstractmethod
-    def _get_worker_results(self, evaluation):
+    def _get_worker_results(self, evaluation) -> dict[str, Any]:
         """Return the results for the given evaluation as a dictionary that
         must include the key "cost". For constraint violation the cost key
         should be set to np.nan"""
-        return
+        pass
 
     @abc.abstractmethod
     def _set_counter_params(
         self, evaluation, worker_project_path, results, flag, n_evals, *args
     ):
         """Update the counter object with new data."""
-        return
+        pass
 
     def pre_constraints_hook(self, *args):  # pylint: disable=no-self-use,unused-argument
         """Allows checking of constraints prior to execution. Should return
@@ -295,10 +302,16 @@ class Evaluator:
         indices are added to the result queue following the calculated cost.
         """
 
+        def check1():
+            return not q.empty()
+
+        def check2():
+            return True
+
         if stop_empty:
-            check = lambda: not q.empty()
+            check = check1
         else:
-            check = lambda: True
+            check = check2
 
         while check():
             item = q.get()
@@ -340,13 +353,13 @@ class Main:
         self._maximise = maximise
         self._spare_sols = 1
         self._n_hist = int(10 + 30 * self.es.N / self.es.sp.popsize)
-        self._max_resample_loops = None
-        self._n_record_resample = None
         self._stop = False
         self._sol_penalty = False
         self._dirty_restart = False
-        self._thread_queue = None
         self._sol_feasible = None
+        self._max_resample_loops: int
+        self._n_record_resample: int
+        self._thread_queue: queue.Queue
 
         self._init_resamples(max_resample_loop_factor, auto_resample_iterations)
         self._init_threads()
@@ -449,6 +462,8 @@ class Main:
         return
 
     def _next_nh(self):
+        assert self.nh is not None
+
         # self._sol_penalty is set by self._get_solutions_costs
         if self.es.countiter == 0 or self._sol_penalty or self._dirty_restart:
             scaled_solutions_extra = None
@@ -667,7 +682,7 @@ class Main:
             category = categories[i]
             sol = run_solutions[i]
 
-            item = [result_queue]
+            item: list[Any] = [result_queue]
             item.append(local_n_evals)
             item.append(descaled_sol)
             item.extend([i, category, sol])
@@ -777,7 +792,7 @@ class Main:
             )
 
             for solution in descaled_solutions:
-                for idx, val in ordered_index_map.iteritems():  # pylint: disable=no-member
+                for idx, val in ordered_index_map.items():  # pylint: disable=no-member
                     solution.insert(idx, val)
 
         return descaled_solutions
@@ -885,14 +900,15 @@ def load_outputs(worker_directory):
 def set_TimedRotatingFileHandler_rollover(timeout=None):
     # If theres no timeout choose a big number
     if timeout is None:
-        timeout = sys.maxint  # pylint: disable=no-member
+        timeout = sys.maxsize
 
     logger = logging.Logger.manager.loggerDict["dtocean_core"]
+    assert isinstance(logger, logging.Logger)
 
     for handler in logger.handlers:
-        if handler.__class__.__name__ == "TimedRotatingFileHandler":
+        if isinstance(handler, handlers.TimedRotatingFileHandler):
             handler.interval = timeout
-            handler.rolloverAt = handler.computeRollover(time.time())
+            handler.rolloverAt = handler.computeRollover(int(time.time()))
 
     return
 
