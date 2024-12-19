@@ -9,7 +9,7 @@ FILE = Path(__file__).resolve()
 
 @pytest.fixture(scope="session")
 def test_data_path():
-    return FILE.parents[2] / "test_data"
+    return FILE.parents[1] / "test_data"
 
 
 @pytest.fixture(scope="session")

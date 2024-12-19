@@ -64,8 +64,8 @@ def start_logging():
     if "file" in log_config_dict["handlers"]:
         log_filename = log_config_dict["handlers"]["file"]["filename"]
         log_path = logdir / log_filename
-        log_config_dict["handlers"]["file"]["filename"] = log_path
-        logdir.mkdir()
+        log_config_dict["handlers"]["file"]["filename"] = str(log_path)
+        logdir.mkdir(exist_ok=True)
 
     log.configure_logger(log_config_dict)
     logger = log.add_named_logger("dtocean_core")

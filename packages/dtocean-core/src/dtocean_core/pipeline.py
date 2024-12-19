@@ -15,11 +15,16 @@
 
 import logging
 import sys
+from pathlib import Path
 from pickle import load as load_pkl
+from typing import Union
 
 import matplotlib.pyplot as plt
+from mdo_engine.boundary.interface import FileInterface
 
 from .core import Connector
+
+StrOrPath = Union[str, Path]
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -780,7 +785,12 @@ class InputVariable(Variable):
         interface.set_variables({self._id: value})
         self._interface = interface
 
-    def set_file_interface(self, core, file_path, interface_name=None):
+    def set_file_interface(
+        self,
+        core,
+        file_path: StrOrPath,
+        interface_name=None,
+    ):
         interface = self._get_providing_interface(
             core, "FileInputInterface", "AutoFileInput", interface_name
         )
@@ -789,6 +799,7 @@ class InputVariable(Variable):
             errStr = ("No file input interface found for " "variable ").format()
             raise RuntimeError(errStr)
 
+        assert isinstance(interface, FileInterface)
         interface.set_file_path(file_path)
         self._interface = interface
 
@@ -829,10 +840,14 @@ class InputVariable(Variable):
         self.read(core, project, overwrite, True, log_exceptions)
 
     def read_file(
-        self, core, project, file_path, file_interface=None, overwrite=True
+        self,
+        core,
+        project,
+        file_path: StrOrPath,
+        file_interface=None,
+        overwrite=True,
     ):
         self.set_file_interface(core, file_path, file_interface)
-
         self.read(core, project, overwrite)
 
     def _get_query_interface(self, core, project, interface_name=None):
