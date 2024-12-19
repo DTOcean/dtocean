@@ -23,6 +23,7 @@ Created on Wed Apr 06 15:59:04 2016
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
 from shapely.geometry import Point, Polygon
 
 from .plots import PlotInterface
@@ -76,7 +77,7 @@ class ArrayLeasePlot(PlotInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -180,7 +181,7 @@ class ArrayLeasePlotNumbers(PlotInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -286,7 +287,7 @@ class ArrayCablesPlot(PlotInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -409,7 +410,7 @@ class ArrayFoundationsPlot(PlotInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -482,7 +483,7 @@ class ArrayFoundationsPlot(PlotInterface):
             plot_name = foundation_name[name]
 
             coords = group[["UTM X", "UTM Y"]].values
-            plot_dict = {i: Point(xy) for i, xy in enumerate(coords)}
+            plot_dict = {str(i): Point(xy) for i, xy in enumerate(coords)}
             fplot = plot_point_dict(
                 ax1, plot_dict, plot_marker, plot_name, markersize=8
             )
@@ -525,7 +526,7 @@ class ArrayFoundationsPlot(PlotInterface):
 
 def plot_point_dict(
     ax,
-    layout,
+    layout: dict[str, Point],
     marker,
     label=None,
     annotate=False,
@@ -541,7 +542,7 @@ def plot_point_dict(
     x = []
     y = []
 
-    for coords in layout.itervalues():
+    for coords in layout.values():
         x.append(coords.x)
         y.append(coords.y)
 
@@ -557,10 +558,10 @@ def plot_point_dict(
     if not annotate:
         return pplot[0]
 
-    for key, point in layout.iteritems():
-        coords = list(point.coords)[0]
+    for key, point in layout.items():
+        coords = list(point.coords[0])
         ax.annotate(
-            str(key),
+            key,
             xy=coords[:2],
             xytext=(0, 10),
             xycoords="data",
@@ -600,7 +601,7 @@ def plot_lease_boundary(ax, lease_boundary, padding=None):
 
 def annotate_poly(ax, lease_poly):
     maxy = lease_poly.bounds[3] + 50.0
-    centroid = np.array(lease_poly.centroid)
+    centroid = np.array(lease_poly.centroid.coords[0])
 
     ymin, ymax = ax.get_ylim()
 
@@ -636,7 +637,7 @@ def plot_cables(ax, cable_routes):
         xmin = min(list(x) + [xmin])
         ymin = min(list(y) + [ymin])
 
-        line = plt.Line2D(x, y)
+        line = Line2D(x, y)
         ax.add_line(line)
 
     return

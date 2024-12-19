@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
@@ -61,10 +63,10 @@ def test_Strata_auto_file(tmpdir, fext):
     test_dir = tmpdir.mkdir("sub")
 
     test_path_out = test_dir.join("test{}".format(fext))
-    test_path_out_str = str(test_path_out)
+    test_path_out_path = Path(test_path_out)
 
     test_path_in = test_dir.join("test_depth{}".format(fext))
-    test_path_in_str = str(test_path_in)
+    test_path_in_path = Path(test_path_in)
 
     x = np.linspace(0.0, 1000.0, 101)
     y = np.linspace(0.0, 300.0, 31)
@@ -96,7 +98,7 @@ def test_Strata_auto_file(tmpdir, fext):
     FOutCls = fout_factory(meta, test)
 
     fout = FOutCls()
-    fout._path = test_path_out_str
+    fout._path = test_path_out_path
     fout.data.result = test.get_data(raw, meta)
 
     fout.connect()
@@ -108,7 +110,7 @@ def test_Strata_auto_file(tmpdir, fext):
 
     fin = FInCls()
     fin.meta.result = meta
-    fin._path = test_path_in_str
+    fin._path = test_path_in_path
 
     fin.connect()
     result = test.get_data(fin.data.result, meta)
@@ -154,4 +156,5 @@ def test_Strata_auto_plot(tmpdir):
     plot.connect()
 
     assert len(plt.get_fignums()) == 1
+    plt.close("all")
     plt.close("all")

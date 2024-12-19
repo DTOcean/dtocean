@@ -98,7 +98,9 @@ def project(core, tree):
     return new_project
 
 
-def test_TidalPowerPerformancePlot_available(core, project, tree):
+def test_TidalPowerPerformancePlot_available(
+    core, project, tree, inputs_wp2_tidal
+):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -108,9 +110,7 @@ def test_TidalPowerPerformancePlot_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     hydro_branch = tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     ct_curve = hydro_branch.get_input_variable(
         core, project, "device.turbine_performance"
@@ -120,7 +120,7 @@ def test_TidalPowerPerformancePlot_available(core, project, tree):
     assert "Tidal Power Performance" in result
 
 
-def test_TidalPowerPerformancePlot(core, project, tree):
+def test_TidalPowerPerformancePlot(core, project, tree, inputs_wp2_tidal):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -130,9 +130,7 @@ def test_TidalPowerPerformancePlot(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     hydro_branch = tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     ct_curve = hydro_branch.get_input_variable(
         core, project, "device.turbine_performance"
@@ -144,7 +142,7 @@ def test_TidalPowerPerformancePlot(core, project, tree):
     plt.close("all")
 
 
-def test_TidalVelocityPlot_available(core, project, tree):
+def test_TidalVelocityPlot_available(core, project, tree, inputs_wp2_tidal):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -154,9 +152,7 @@ def test_TidalVelocityPlot_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     hydro_branch = tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     currents = hydro_branch.get_input_variable(
         core, project, "farm.tidal_series"
@@ -166,7 +162,7 @@ def test_TidalVelocityPlot_available(core, project, tree):
     assert "Tidal Currents" in result
 
 
-def test_TidalVelocityPlot(core, project, tree):
+def test_TidalVelocityPlot(core, project, tree, inputs_wp2_tidal):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -176,9 +172,7 @@ def test_TidalVelocityPlot(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     hydro_branch = tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     currents = hydro_branch.get_input_variable(
         core, project, "farm.tidal_series"

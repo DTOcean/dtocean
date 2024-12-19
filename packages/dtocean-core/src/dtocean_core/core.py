@@ -41,7 +41,10 @@ from mdo_engine.entity.simulation import Simulation
 from mdo_engine.utilities.data import check_integrity
 from mdo_engine.utilities.misc import OrderedSet
 
-from dtocean_plugins import core as core_interfaces
+import dtocean_plugins.core as core_interfaces
+import dtocean_plugins.modules as module_interfaces
+import dtocean_plugins.plots as plot_interfaces
+import dtocean_plugins.themes as theme_interfaces
 from dtocean_plugins.core import FileInputInterface, FileOutputInterface
 from dtocean_plugins.plots.plots import PlotInterface
 
@@ -51,8 +54,13 @@ from .utils.files import package_dir, unpack_archive
 
 StrOrPath = Union[str, Path]
 
-# Set up logging
-module_logger = logging.getLogger(__name__)
+MODULE_LOGGER = logging.getLogger(__name__)
+INTERFACE_MODULES = [
+    core_interfaces,
+    module_interfaces,
+    plot_interfaces,
+    theme_interfaces,
+]
 
 
 class AutoRaw(AutoInterface, RawInterface):
@@ -180,7 +188,7 @@ class OrderedSim(Simulation):
         return self._force_unvailable
 
     def set_inspection_level(self, level):
-        module_logger.debug("Setting inspection level to {}".format(level))
+        MODULE_LOGGER.debug("Setting inspection level to {}".format(level))
 
         self._inspection_level = level
 
@@ -190,7 +198,7 @@ class OrderedSim(Simulation):
         return self._inspection_level
 
     def set_execution_level(self, level):
-        module_logger.debug("Setting execution level to {}".format(level))
+        MODULE_LOGGER.debug("Setting execution level to {}".format(level))
 
         self._execution_level = level
 
@@ -600,7 +608,7 @@ class Core:
     def _create_control(self):
         data_store = DataStorage(core_data)
         sequencer = Sequencer(
-            self._hub_sockets, core_interfaces, warn_import=True
+            self._hub_sockets, INTERFACE_MODULES, warn_import=True
         )
 
         loader = Loader(data_store)
@@ -615,7 +623,7 @@ class Core:
 
         return catalog
 
-    def _create_sockets(self):
+    def _create_sockets(self) -> dict[str, Socket]:
         socket_dict = {}
 
         for socket_str in self._ext_sockets:
@@ -722,7 +730,7 @@ class Core:
 
         # A sequencer is also required
         sequencer = Sequencer(
-            self._hub_sockets, core_interfaces, warn_import=True
+            self._hub_sockets, INTERFACE_MODULES, warn_import=True
         )
 
         # Flag to remove project directory
@@ -1001,7 +1009,7 @@ class Core:
                 msg_str += "identifiers:\n{}".format(id_str)
 
             if log_identifiers:
-                module_logger.info(msg_str)
+                MODULE_LOGGER.info(msg_str)
 
         if not update_status:
             return
@@ -1191,7 +1199,7 @@ class Core:
                 msgStr = (
                     'Variable ID "{}" is not contained in the data ' "catalog"
                 ).format(var_id)
-                module_logger.warning(msgStr)
+                MODULE_LOGGER.warning(msgStr)
 
                 continue
 
@@ -1200,7 +1208,7 @@ class Core:
                     'Variable ID "{}" is not an input to the current '
                     "simulation"
                 ).format(var_id)
-                module_logger.info(msgStr)
+                MODULE_LOGGER.info(msgStr)
 
                 continue
 
@@ -1341,12 +1349,12 @@ class Core:
 
             if skip_missing:
                 msgStr += ". Skipping"
-                module_logger.debug(msgStr)
+                MODULE_LOGGER.debug(msgStr)
                 return
 
             raise RuntimeError(msgStr)
 
-        module_logger.info("Inspecting level {}".format(level))
+        MODULE_LOGGER.info("Inspecting level {}".format(level))
 
         # Remove all existing masks
         self.unmask_states(project, no_merge=True, update_status=False)
@@ -1402,14 +1410,14 @@ class Core:
 
                 if skip_missing:
                     msgStr += ". Skipping"
-                    module_logger.debug(msgStr)
+                    MODULE_LOGGER.debug(msgStr)
                     return
 
                 raise RuntimeError(msgStr)
 
         self.inspect_level(project, level, update_status=False, force=True)
 
-        module_logger.info("Resetting to level {}".format(level))
+        MODULE_LOGGER.info("Resetting to level {}".format(level))
 
         # Mask all register states after the given level
         self.mask_states(
@@ -1508,7 +1516,8 @@ class Core:
 
     def _build_named_socket(self, socket_str):
         socket = NamedSocket(socket_str)
-        socket.discover_interfaces(core_interfaces)
+        for interface_module in INTERFACE_MODULES:
+            socket.discover_interfaces(interface_module)
 
         return socket
 
@@ -2003,11 +2012,11 @@ class Connector:
 
                 else:
                     log_msg = "Skipping interface {}".format(interface_name)
-                    module_logger.info(log_msg)
+                    MODULE_LOGGER.info(log_msg)
                     continue
 
             log_msg = "Auto executing interface {}".format(interface_name)
-            module_logger.info(log_msg)
+            MODULE_LOGGER.info(log_msg)
 
             # Execute the interface
             self.execute_interface(

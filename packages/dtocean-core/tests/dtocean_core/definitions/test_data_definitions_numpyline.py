@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
@@ -59,7 +61,7 @@ def test_NumpyLine_auto_file(tmpdir, fext):
     raw = list(zip(coarse_sample, np.sin(coarse_sample)))
 
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     meta = CoreMetaData(
         {
@@ -76,7 +78,7 @@ def test_NumpyLine_auto_file(tmpdir, fext):
     FOutCls = fout_factory(meta, test)
 
     fout = FOutCls()
-    fout._path = test_path_str
+    fout._path = test_path_path
     fout.data.result = test.get_data(raw, meta)
 
     fout.connect()
@@ -87,7 +89,7 @@ def test_NumpyLine_auto_file(tmpdir, fext):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     fin.connect()
     result = test.get_data(fin.data.result, meta)

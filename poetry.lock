@@ -172,6 +172,25 @@ constrained-solution-tracking = ["moarchiving"]
 plotting = ["matplotlib"]
 
 [[package]]
+name = "cmocean"
+version = "4.0.3"
+description = "Colormaps for Oceanography"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "cmocean-4.0.3-py3-none-any.whl", hash = "sha256:f2fc1d5e349db122ee0c9eac80bba969aa92dd2806548fce58dc8bef962f309e"},
+    {file = "cmocean-4.0.3.tar.gz", hash = "sha256:37868399fb5f41b4eac596e69803f9bfaea49946514dfb2e7f48886854250d7c"},
+]
+
+[package.dependencies]
+matplotlib = "*"
+numpy = "*"
+packaging = "*"
+
+[package.extras]
+plots = ["colorspacious", "viscm"]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -394,6 +413,7 @@ develop = true
 [package.dependencies]
 basemap = "^1.4.1"
 cma = "^4.0.0"
+cmocean = "^4.0.3"
 cycler = "^0.12.1"
 geoalchemy2 = "^0.16.0"
 matplotlib = "^3.8.4"

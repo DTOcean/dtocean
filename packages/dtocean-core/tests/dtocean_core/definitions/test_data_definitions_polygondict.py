@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
@@ -95,7 +97,7 @@ def test_get_None():
 @pytest.mark.parametrize("fext", [".csv", ".xls", ".xlsx"])
 def test_PolygonDict_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     raws = [
         {
@@ -125,7 +127,7 @@ def test_PolygonDict_auto_file(tmpdir, fext):
         FOutCls = fout_factory(meta, test)
 
         fout = FOutCls()
-        fout._path = test_path_str
+        fout._path = test_path_path
         fout.data.result = test.get_data(raw, meta)
 
         fout.connect()
@@ -136,7 +138,7 @@ def test_PolygonDict_auto_file(tmpdir, fext):
         FInCls = fin_factory(meta, test)
 
         fin = FInCls()
-        fin._path = test_path_str
+        fin._path = test_path_path
 
         fin.connect()
         result = test.get_data(fin.data.result, meta)
@@ -166,7 +168,7 @@ def test_PolygonDict_auto_file_input_bad_header(mocker):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = "file.xlsx"
+    fin._path = Path("file.xlsx")
 
     with pytest.raises(ValueError):
         fin.connect()
@@ -174,7 +176,7 @@ def test_PolygonDict_auto_file_input_bad_header(mocker):
 
 def test_PolygonDict_auto_file_output_bad_data(tmpdir):
     test_path = tmpdir.mkdir("sub").join("test{}".format(".csv"))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     raw = {
         "block 1": [(0.0, 0.0), (1.0, 1.0), (2.0, 2.0)],
@@ -191,7 +193,7 @@ def test_PolygonDict_auto_file_output_bad_data(tmpdir):
     FOutCls = fout_factory(meta, test)
 
     fout = FOutCls()
-    fout._path = test_path_str
+    fout._path = test_path_path
     fout.data.result = raw
 
     with pytest.raises(TypeError):

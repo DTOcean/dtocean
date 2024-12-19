@@ -22,11 +22,13 @@ Created on Wed Apr 06 15:59:04 2016
 """
 
 from functools import partial
+from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pyproj
 from mpl_toolkits.basemap import Basemap
+from shapely import Polygon
 from shapely.ops import transform
 
 from .plots import PlotInterface
@@ -69,7 +71,7 @@ class SiteBoundaryPlot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -99,7 +101,7 @@ class SiteBoundaryPlot(PlotInterface):
     def connect(self):
         site_poly = self.data.boundaries[self.data.name]
 
-        centroid = np.array(site_poly.centroid)
+        centroid = np.array(site_poly.centroid.coords[0])
         llcrnrlon = centroid[0] - 5.0
         llcrnrlat = centroid[1] - 5.0
         urcrnrlon = centroid[0] + 5.0
@@ -124,6 +126,8 @@ class SiteBoundaryPlot(PlotInterface):
         m.drawparallels(np.arange(-90, 90, 5), labels=[1, 0, 0, 0], fontsize=10)
 
         x, y = m(*centroid)
+        assert isinstance(x, float)
+        assert isinstance(y, float)
 
         m.plot(
             x, y, "s", mew=3, ms=20, fillstyle="none", markeredgecolor="yellow"
@@ -194,7 +198,7 @@ class AllBoundaryPlot(PlotInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -289,7 +293,7 @@ class DesignBoundaryPlot(PlotInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -337,8 +341,8 @@ def boundaries_plot(
     site_poly=None,
     projection=None,
     lease_poly=None,
-    corridor_poly=None,
-    nogo_polys=None,
+    corridor_poly: Optional[Polygon] = None,
+    nogo_polys: Optional[dict[str, Polygon]] = None,
     corridor_nogo_polys=None,
     landing_point=None,
     lease_entry_point=None,
@@ -375,7 +379,7 @@ def boundaries_plot(
         # ax1.add_patch(patch)
 
         maxy = lease_poly.bounds[3] + 50.0
-        centroid = np.array(lease_poly.centroid)
+        centroid = np.array(lease_poly.centroid.coords[0])
 
         ax1.annotate(
             "Lease Area",
@@ -395,7 +399,7 @@ def boundaries_plot(
         # ax1.add_patch(patch)
 
         miny = corridor_poly.bounds[1] - 50.0
-        centroid = np.array(corridor_poly.centroid)
+        centroid = np.array(corridor_poly.centroid.coords[0])
 
         ax1.annotate(
             "Cable Corridor",
@@ -407,7 +411,7 @@ def boundaries_plot(
         )
 
     if nogo_polys is not None:
-        for key, polygon in nogo_polys.iteritems():
+        for key, polygon in nogo_polys.items():
             # patch = PolygonPatch(polygon,
             #                      fc=RED,
             #                      ec=RED,
@@ -416,10 +420,10 @@ def boundaries_plot(
             #                      linewidth=2)
             # ax1.add_patch(patch)
 
-            centroid = np.array(polygon.centroid)
+            centroid = np.array(polygon.centroid.coords[0])
             ax1.annotate(
-                str(key),
-                xy=centroid[:2],
+                key,
+                xy=tuple(centroid[:2]),
                 xytext=(0, 0),
                 xycoords="data",
                 textcoords="offset pixels",
@@ -429,19 +433,19 @@ def boundaries_plot(
             )
 
     if corridor_nogo_polys is not None:
-        for key, polygon in nogo_polys.iteritems():
+        for key, polygon in corridor_nogo_polys.items():
             # patch = PolygonPatch(polygon,
             #                      fc=RED,
             #                      ec=RED,
             #                      fill=True,
             #                      alpha=0.3,
             #                      linewidth=2)
-            ax1.add_patch(patch)
+            # ax1.add_patch(patch)
 
-            centroid = np.array(polygon.centroid)
+            centroid = np.array(polygon.centroid.coords[0])
             ax1.annotate(
-                str(key),
-                xy=centroid[:2],
+                key,
+                xy=tuple(centroid[:2]),
                 xytext=(0, 0),
                 xycoords="data",
                 textcoords="offset pixels",
