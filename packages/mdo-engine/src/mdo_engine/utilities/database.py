@@ -358,7 +358,7 @@ class PostgreSQL(Database):
     def get_table_names(self, schema=None):
         query_str = "SELECT table_name FROM information_schema.tables"
         if schema is not None:
-            query_str += (" WHERE table_schema = " "'{}'").format(schema)
+            query_str += (" WHERE table_schema = '{}'").format(schema)
         query_str += ";"
 
         table_names = self._get_first_entries(query_str)
@@ -371,7 +371,7 @@ class PostgreSQL(Database):
             "WHERE table_name = '{}'"
         ).format(table)
         if schema is not None:
-            query_str += (" AND table_schema = " "'{}'").format(schema)
+            query_str += (" AND table_schema = '{}'").format(schema)
         query_str += ";"
 
         column_names = self._get_first_entries(query_str)
@@ -387,7 +387,9 @@ class PostgreSQL(Database):
         return db_names
 
     def has_permission(self, table_name):
-        query_str = ("select has_table_privilege('{}','select');").format(table_name)
+        query_str = ("select has_table_privilege('{}','select');").format(
+            table_name
+        )
 
         with self.exectute_query(query_str) as result:
             permissions = [row[0] for row in result]

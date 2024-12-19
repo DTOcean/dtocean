@@ -75,7 +75,7 @@ class Sequencer:
 
             if dupes:
                 dupes_str = ", ".join(dupes)
-                errStr = ("Duplicate interfaces names found: " "{}").format(
+                errStr = ("Duplicate interfaces names found: {}").format(
                     dupes_str
                 )
                 raise ValueError(errStr)
@@ -96,30 +96,28 @@ class Sequencer:
 
     def create_new_hub(self, interface_type, no_complete=False):
         if interface_type not in self._sockets:
-            errStr = ("No socket available for interface type " "{}").format(
+            errStr = ("No socket available for interface type {}").format(
                 interface_type
             )
             raise ValueError(errStr)
 
         new_hub = Hub(interface_type, no_complete)
 
-        log_msg = ("New Hub created for interface " "{}.").format(
-            interface_type
-        )
+        log_msg = ("New Hub created for interface {}.").format(interface_type)
         module_logger.info(log_msg)
 
         return new_hub
 
     def create_new_pipeline(self, interface_type, no_complete=False):
         if interface_type not in self._sockets:
-            errStr = ("No socket available for interface type " "{}").format(
+            errStr = ("No socket available for interface type {}").format(
                 interface_type
             )
             raise ValueError(errStr)
 
         new_pipeline = Pipeline(interface_type, no_complete)
 
-        log_msg = ("New Pipeline created for interface " "{}.").format(
+        log_msg = ("New Pipeline created for interface {}.").format(
             interface_type
         )
         module_logger.info(log_msg)

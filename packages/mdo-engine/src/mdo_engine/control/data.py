@@ -3,8 +3,8 @@
 Control classes relating to Data entities
 """
 
-import os
 import logging
+import os
 import traceback
 from copy import deepcopy
 
@@ -239,7 +239,7 @@ class DataStorage(Plugin):
         pool. If the data in the pool has no remaining links then delete it."""
 
         if datastate.get_level() is not None:
-            log_msg = ("Trying to remove datastate with level " "{}").format(
+            log_msg = ("Trying to remove datastate with level {}").format(
                 datastate.get_level()
             )
         else:
@@ -502,7 +502,7 @@ class DataStorage(Plugin):
             error = traceback.format_exc()
 
             errStr = (
-                "Reading variable {} led to the following " "traceback:\n\n{}"
+                "Reading variable {} led to the following traceback:\n\n{}"
             ).format(metadata.identifier, error)
             raise RuntimeError(errStr)
 
@@ -595,7 +595,7 @@ class DataStorage(Plugin):
 
         if data_obj is None:
             warnStr = (
-                "No valid data object found for data with index " "{}"
+                "No valid data object found for data with index {}"
             ).format(data_index)
             module_logger.warning(warnStr)
 

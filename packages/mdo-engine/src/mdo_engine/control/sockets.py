@@ -130,7 +130,7 @@ class Socket(Plugin):
 
             if not monotonic:
                 errStr = (
-                    "Interface weights are not monotonic. Found " "weights: {}"
+                    "Interface weights are not monotonic. Found weights: {}"
                 ).format(sorted_weights)
                 raise ValueError(errStr)
 
