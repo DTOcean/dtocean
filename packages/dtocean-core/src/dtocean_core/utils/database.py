@@ -22,8 +22,8 @@ import os
 import platform
 import re
 import shutil
-import string
 import time
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -31,7 +31,7 @@ import yaml
 from mdo_engine.utilities.database import PostgreSQL
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
-from shapely import geos, wkb
+from shapely import get_srid, wkb
 
 from . import SmartFormatter
 from .files import onerror
@@ -44,7 +44,7 @@ def bathy_records_to_strata(bathy_records=None, pre_bathy=None):
     """Convert the bathymetry layers table returned by the database into
     Strata structure raw input"""
 
-    loop_start_time = time.clock()
+    loop_start_time = time.process_time()
 
     # Allow a predefined bathymetry table and grid dimensions to be passed
     # instead of the DB records.
@@ -53,7 +53,9 @@ def bathy_records_to_strata(bathy_records=None, pre_bathy=None):
         raise ValueError(errStr)
 
     elif bathy_records is not None:
-        bathy_table, xi, yj = init_bathy_records(bathy_records)
+        bathy_parts = init_bathy_records(bathy_records)
+        assert bathy_parts is not None
+        bathy_table, xi, yj = bathy_parts
 
     elif pre_bathy is not None:
         bathy_table, xi, yj = pre_bathy
@@ -89,7 +91,7 @@ def bathy_records_to_strata(bathy_records=None, pre_bathy=None):
         "coords": [xi, yj, layer_names],
     }
 
-    loop_end_time = time.clock()
+    loop_end_time = time.process_time()
     loop_time = loop_end_time - loop_start_time
 
     msg = ("Time elapsed building {} layer(s) was " "{} seconds").format(
@@ -104,7 +106,7 @@ def tidal_series_records_to_xset(tidal_records):
     """Convert the bathymetry layers table returned by the database into
     tidal time series structure raw input"""
 
-    loop_start_time = time.clock()
+    loop_start_time = time.process_time()
 
     msg = "Building DataFrame from {} records".format(len(tidal_records))
     module_logger.debug(msg)
@@ -145,8 +147,8 @@ def tidal_series_records_to_xset(tidal_records):
         )
     ]
 
-    tidal_table = tidal_table.drop("measure_date", 1)
-    tidal_table = tidal_table.drop("measure_time", 1)
+    tidal_table = tidal_table.drop("measure_date", axis=1)
+    tidal_table = tidal_table.drop("measure_time", axis=1)
 
     msg = "Building time steps..."
     module_logger.debug(msg)
@@ -187,7 +189,7 @@ def tidal_series_records_to_xset(tidal_records):
         "coords": [xi, yj, steps],
     }
 
-    loop_end_time = time.clock()
+    loop_end_time = time.process_time()
     loop_time = loop_end_time - loop_start_time
 
     msg = ("Time elapsed building {} step(s) was " "{} seconds").format(
@@ -224,7 +226,10 @@ def init_bathy_records(bathy_records):
 
 
 def point_to_xy(
-    df, point_column="utm_point", decimals=2, drop_point_column=True
+    df: pd.DataFrame,
+    point_column="utm_point",
+    decimals=2,
+    drop_point_column=True,
 ):
     x = []
     y = []
@@ -245,7 +250,7 @@ def point_to_xy(
     df["y"] = y
 
     if drop_point_column:
-        df = df.drop(point_column, 1)
+        df = df.drop(point_column, axis=1)
 
     return df
 
@@ -479,7 +484,7 @@ def database_to_files(
                 msg_str = "Stripping column: {}".format(full_dict["fkey"])
                 print_function(msg_str)
 
-                table_df = table_df.drop(full_dict["fkey"], 1)
+                table_df = table_df.drop(full_dict["fkey"], axis=1)
 
             if full_dict["array"] is not None:
                 array_str = ", ".join(full_dict["array"])
@@ -528,7 +533,7 @@ def database_to_files(
                 # Fit the column widths (don't let failure be catastrophic)
                 try:
                     _autofit_columns(tab_path)
-                except:
+                except Exception:
                     print_function("*** Column adjust failed. Skipping. ***")
                     pass
 
@@ -540,6 +545,8 @@ def database_to_files(
                 print_function(msg_str)
 
                 table_df.to_csv(tab_path, index=False)
+
+        assert table_df is not None
 
         if full_dict["children"] is not None:
             # Include pid in iteration
@@ -692,7 +699,7 @@ def database_from_files(
                     )
                     print_function(msg_str)
 
-                    df = df.drop(missing_set, 1)
+                    df = df.drop(list(missing_set), axis=1)
 
             msg_str = "Writing to table: {}".format(dbname)
             print_function(msg_str)
@@ -821,7 +828,8 @@ def query_builder(
             else:
                 where_str += " AND " + eq_str
 
-        query_str += where_str
+        if where_str is not None:
+            query_str += where_str
 
     query_str += ";"
 
@@ -829,7 +837,7 @@ def query_builder(
 
 
 def convert_array(table_df, array_cols):
-    brackets = string.maketrans("[]", "{}")
+    brackets = str.maketrans("[]", "{}")
 
     def _safe_square2curly(x):
         if x is None:
@@ -867,7 +875,7 @@ def convert_geo(table_df, geo_cols):
             return
         else:
             geo_shape = wkb.loads(x, hex=True)
-            srid = geos.lgeos.GEOSGetSRID(geo_shape._geom)
+            srid = get_srid(geo_shape)
             if srid > 0:
                 result = "SRID={};{}".format(srid, geo_shape.wkt)
             else:
@@ -922,7 +930,7 @@ def check_dict(table_dict):
 def get_table_map(map_name="table_map.yaml"):
     # Load the yaml files
     objdir = ModPath(__name__, "..", "config")
-    table_yaml = objdir.get_path(map_name)
+    table_yaml = objdir / map_name
 
     with open(table_yaml, "r") as f:
         table_list = yaml.load(f, Loader=yaml.FullLoader)
@@ -1086,8 +1094,8 @@ def database_convert_interface():
 
     """
 
+    cred: dict[str, Any]
     request = database_convert_parser()
-
     _, config = get_database_config()
 
     # List the available database configurations
@@ -1112,7 +1120,7 @@ def database_convert_interface():
 
         cred = config[request["db_id"]]
 
-        for k, v in cred.iteritems():
+        for k, v in cred.items():
             print("{:>8} ::  {}".format(k, v))
 
         return

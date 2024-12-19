@@ -17,53 +17,45 @@
 
 import logging
 
-from . import Strategy
+from .strategies import Strategy
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
 
 
 class BasicStrategy(Strategy):
-    
     """A basic strategy which will run all selected modules and themes in
     sequence."""
-    
+
     @classmethod
     def get_name(cls):
-        
         return "Basic"
-    
+
     def configure(self, kwargs=None):
-        
         """Does nothing in this case"""
-        
-        return
-    
-    def get_variables(self):
-        
-        return None
-    
-    def execute(self, core, project):
-        
-        # Check the project is active and record the simulation title
-        sim_index = project.get_active_index()
-        
-        if sim_index is None:
-            
-            errStr = "Project has not been activated."
-            raise RuntimeError(errStr)
-        
-        sim_title = project.get_simulation_title(index=sim_index)
-        self.add_simulation_title(sim_title)
-        
-        current_mod = self._module_menu.get_current(core, project)
-        
-        while current_mod:
-            
-            self._module_menu.execute_current(core,
-                                              project,
-                                              allow_unavailable=True)
-            current_mod = self._module_menu.get_current(core, project)
-        
+
         return
 
+    def get_variables(self):
+        return None
+
+    def execute(self, core, project):
+        # Check the project is active and record the simulation title
+        sim_index = project.get_active_index()
+
+        if sim_index is None:
+            errStr = "Project has not been activated."
+            raise RuntimeError(errStr)
+
+        sim_title = project.get_simulation_title(index=sim_index)
+        self.add_simulation_title(sim_title)
+
+        current_mod = self._module_menu.get_current(core, project)
+
+        while current_mod:
+            self._module_menu.execute_current(
+                core, project, allow_unavailable=True
+            )
+            current_mod = self._module_menu.get_current(core, project)
+
+        return
