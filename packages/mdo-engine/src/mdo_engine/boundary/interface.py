@@ -372,9 +372,9 @@ class MapInterface(Interface):
         local_key = self.valid_id_map.get(identifier)
 
         if local_key not in self.data or local_key is None:
-            errStr = (
-                "Identifier {} not recognised for " "interface {}."
-            ).format(local_key, self.get_name())
+            errStr = ("Identifier {} not recognised for interface {}.").format(
+                local_key, self.get_name()
+            )
             raise KeyError(errStr)
 
         setattr(self.data, local_key, data)
@@ -385,9 +385,9 @@ class MapInterface(Interface):
         local_key = self.valid_id_map.get(identifier)
 
         if local_key not in self.data or local_key is None:
-            errStr = (
-                "Identifier {} not recognised for " "interface {}."
-            ).format(local_key, self.get_name())
+            errStr = ("Identifier {} not recognised for interface {}.").format(
+                local_key, self.get_name()
+            )
             raise KeyError(errStr)
 
         data = getattr(self.data, local_key)
@@ -539,9 +539,9 @@ class MetaInterface(MapInterface):
         local_key = self.valid_id_map.get(identifier)
 
         if local_key not in self.data:
-            errStr = (
-                "Identifier {} not recognised for " "interface {}."
-            ).format(local_key, self.get_name())
+            errStr = ("Identifier {} not recognised for interface {}.").format(
+                local_key, self.get_name()
+            )
             raise KeyError(errStr)
 
         setattr(self.meta, local_key, metadata)

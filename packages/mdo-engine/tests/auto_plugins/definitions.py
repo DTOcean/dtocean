@@ -46,7 +46,7 @@ class Simple(Structure):
                 simple = simple_type(simple)
             except TypeError:
                 errStr = (
-                    "Raw data is of incorrect type. Should be " "{}, but is {}."
+                    "Raw data is of incorrect type. Should be {}, but is {}."
                 ).format(meta_data._types, type(simple))
                 raise TypeError(errStr)
 
