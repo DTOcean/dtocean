@@ -31,7 +31,7 @@ def loader():
 @pytest.fixture(scope="module")
 def controller():
     data_store = DataStorage(data_plugins)
-    sequencer = Sequencer(["DummyInterface"], interfaces)
+    sequencer = Sequencer(["DummyInterface"], [interfaces])
     control = Controller(data_store, sequencer)
 
     return control
