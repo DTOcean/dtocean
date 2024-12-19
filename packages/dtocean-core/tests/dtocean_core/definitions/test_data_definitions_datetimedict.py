@@ -24,7 +24,10 @@ def test_DateTimeDict():
 
     test = DateTimeDict()
 
-    raw = {"a": datetime.datetime.now(), "b": datetime.datetime.utcnow()}
+    raw = {
+        "a": datetime.datetime.now(),
+        "b": datetime.datetime.now(datetime.UTC),
+    }
     a = test.get_data(raw, meta)
     b = test.get_value(a)
 
@@ -39,7 +42,7 @@ def test_DateTimeDict_type_error():
 
     test = DateTimeDict()
 
-    raw = {"a": "wrong", "b": datetime.datetime.utcnow()}
+    raw = {"a": "wrong", "b": datetime.datetime.now(datetime.UTC)}
 
     with pytest.raises(TypeError):
         test.get_data(raw, meta)
@@ -57,7 +60,10 @@ def test_DateTimeDict_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
     test_path_path = Path(test_path)
 
-    raw = {"a": datetime.datetime.now(), "b": datetime.datetime.utcnow()}
+    raw = {
+        "a": datetime.datetime.now(),
+        "b": datetime.datetime.now(datetime.UTC),
+    }
 
     meta = CoreMetaData(
         {"identifier": "test", "structure": "test", "title": "test"}
