@@ -107,15 +107,28 @@ class Structure(ABC):
     contains methods used for automatic interfaces associated to the Structure
     class"""
 
+    immutables = [
+        str,
+        tuple,
+        bool,
+        frozenset,
+        NoneType,
+        Number,
+        dt.date,
+        dt.time,
+        dt.datetime,
+        dt.timedelta,
+        dt.tzinfo,
+    ]
+
     @abc.abstractmethod
     def get_data(self, raw, meta_data):
         """Returns a structured data object from raw input and meta data"""
-
-        return
+        pass
 
     @abc.abstractmethod
     def get_value(self, data):
-        return
+        pass
 
     def save_value(self, data, root_path):
         file_path = "{}.pkl".format(root_path)
@@ -148,22 +161,7 @@ class Structure(ABC):
         value = self.get_value(data)
 
         # If data is immutable do not check for equivalence.
-        if isinstance(
-            data,
-            (
-                str,
-                tuple,
-                bool,
-                frozenset,
-                NoneType,
-                Number,
-                dt.date,
-                dt.time,
-                dt.datetime,
-                dt.timedelta,
-                dt.tzinfo,
-            ),
-        ):
+        if isinstance(data, tuple(self.immutables)):
             return value
 
         elif value is data:
