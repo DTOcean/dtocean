@@ -24,7 +24,7 @@ class Sequencer:
     def __init__(
         self,
         interface_types,
-        interface_modules,
+        interface_modules: Sequence[ModuleType],
         sort_weighted=True,
         warn_import=False,
     ):
