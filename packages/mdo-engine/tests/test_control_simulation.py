@@ -29,7 +29,7 @@ from mdo_engine.utilities.data import check_integrity
 @pytest.fixture(scope="module")
 def controller():
     data_store = DataStorage(data_plugins)
-    sequencer = Sequencer(["SPTInterface"], interfaces)
+    sequencer = Sequencer(["SPTInterface"], [interfaces])
     control = Controller(data_store, sequencer)
 
     return control
