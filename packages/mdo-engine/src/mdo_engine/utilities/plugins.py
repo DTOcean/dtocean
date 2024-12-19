@@ -134,7 +134,7 @@ def get_module_attr(mod_name, warn_import=False):
         module = importlib.import_module(mod_name)
     except Exception:
         msgStr = (
-            "Importing module {} failed with an unexpected " "error:\n{}"
+            "Importing module {} failed with an unexpected error:\n{}"
         ).format(mod_name, traceback.format_exc())
         if warn_import:
             module_logger.warning(msgStr)

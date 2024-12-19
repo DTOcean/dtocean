@@ -124,7 +124,7 @@ def xl_to_dds(
 
                 if keyseries.empty:
                     errStr = (
-                        "No values are set for variable {} in sheet " "{}"
+                        "No values are set for variable {} in sheet {}"
                     ).format(identifier, key)
                     raise ValueError(errStr)
 
@@ -170,7 +170,7 @@ def dds_merge(original_list, update_list, verbose=False):
 
                     if update_value != original_value and verbose:
                         print(
-                            "Modified field {} for indentifier " "{}".format(
+                            "Modified field {} for indentifier {}".format(
                                 key, identifier
                             )
                         )
@@ -179,7 +179,7 @@ def dds_merge(original_list, update_list, verbose=False):
 
                 elif verbose:
                     print(
-                        "Added field {} for indentifier " "{}".format(
+                        "Added field {} for indentifier {}".format(
                             key, identifier
                         )
                     )
@@ -558,7 +558,7 @@ def _raise_dupes_error(file_name, sheet_name, duped_list):
     dupes = [item for item, count in Counter(duped_list).items() if count > 1]
     dupes_str = "\n".join(format(x) for x in dupes)
     errStr = (
-        "The following duplicates were found in the {} sheet of " "file {}:\n"
+        "The following duplicates were found in the {} sheet of file {}:\n"
     ).format(sheet_name, file_name) + dupes_str
 
     raise KeyError(errStr)

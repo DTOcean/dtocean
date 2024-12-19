@@ -45,9 +45,9 @@ class Hub:
             interface_cls_name in self._scheduled_interface_map
             or interface_cls_name in self._completed_interface_map
         ):
-            errStr = (
-                "Interface {} is already associated to the " "hub."
-            ).format(interface_cls_name)
+            errStr = ("Interface {} is already associated to the hub.").format(
+                interface_cls_name
+            )
             raise KeyError(errStr)
 
         self._scheduled_interface_map[interface_cls_name] = interface_obj
@@ -69,7 +69,7 @@ class Hub:
             del self._completed_interface_map[interface_cls_name]
 
         else:
-            errStr = ("Class {} not found in interface " "maps.").format(
+            errStr = ("Class {} not found in interface maps.").format(
                 interface_cls_name
             )
             raise KeyError(errStr)
@@ -93,7 +93,7 @@ class Hub:
             self._completed_interface_map[interface_cls_name] = interface_obj
 
         else:
-            errStr = ("Class {} not found in interface " "maps.").format(
+            errStr = ("Class {} not found in interface maps.").format(
                 interface_cls_name
             )
             raise KeyError(errStr)
@@ -118,7 +118,7 @@ class Hub:
             obj = self._completed_interface_map[interface_cls_name]
 
         else:
-            errStr = ("Class {} not found in interface " "maps.").format(
+            errStr = ("Class {} not found in interface maps.").format(
                 interface_cls_name
             )
             raise KeyError(errStr)
@@ -268,9 +268,9 @@ class Hub:
             del self._scheduled_interface_map[interface_cls_name]
 
         else:
-            errStr = (
-                "Class {} not found in scheduled interface " "map."
-            ).format(interface_cls_name)
+            errStr = ("Class {} not found in scheduled interface map.").format(
+                interface_cls_name
+            )
             raise KeyError(errStr)
 
         # Put the completed interface at position 0 in the dict.
@@ -311,9 +311,9 @@ class Hub:
 
     def rollback(self, interface_cls_name):
         if interface_cls_name not in self.get_completed_cls_names():
-            errStr = (
-                "Class {} not found in completed interface " "map."
-            ).format(interface_cls_name)
+            errStr = ("Class {} not found in completed interface map.").format(
+                interface_cls_name
+            )
             raise KeyError(errStr)
 
         while interface_cls_name in self.get_completed_cls_names():
@@ -338,7 +338,7 @@ class Hub:
             self.rollback(interface_cls_name)
 
         else:
-            errStr = ("Interface {} can not be " "scheduled.").format(
+            errStr = ("Interface {} can not be scheduled.").format(
                 interface_cls_name
             )
             raise ValueError(errStr)
@@ -385,7 +385,7 @@ class Pipeline(Hub):
             and next_cls_name != interface_cls_name
         ):
             errStr = (
-                "Interface {} is not the next interface in the " "pipeline."
+                "Interface {} is not the next interface in the pipeline."
             ).format(interface_cls_name)
             raise ValueError(errStr)
 
@@ -404,7 +404,7 @@ class Pipeline(Hub):
             self.rollback(interface_cls_name)
 
         else:
-            errStr = ("Interface {} can not be " "scheduled.").format(
+            errStr = ("Interface {} can not be scheduled.").format(
                 interface_cls_name
             )
             raise ValueError(errStr)

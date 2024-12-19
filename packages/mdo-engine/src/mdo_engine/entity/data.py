@@ -12,7 +12,7 @@ class Frozen:
 
     def __setattr__(self, key, value):
         if self.__isfrozen and not hasattr(self, key):
-            errStr = ("{} is not an attribute of frozen " "class {}.").format(
+            errStr = ("{} is not an attribute of frozen class {}.").format(
                 key, self.__class__.__name__
             )
             raise TypeError(errStr)
@@ -116,7 +116,7 @@ class DataCatalog:
 
         except KeyError:
             errStr = (
-                "Metadata for variable {} not found in the data " "catalog."
+                "Metadata for variable {} not found in the data catalog."
             ).format(variable_id)
             raise KeyError(errStr)
 
@@ -214,7 +214,7 @@ class DataPool:
 
     def unlink(self, data_index):
         if self._links[data_index] == 0:
-            errStr = ("Data with index {} has no recorded " "links.").format(
+            errStr = ("Data with index {} has no recorded links.").format(
                 data_index
             )
             raise ValueError(errStr)

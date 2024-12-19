@@ -179,7 +179,7 @@ def get_interface_variables(
 
         if var_id not in all_vars:
             errStr = (
-                "Given variable '{}' is not found in the given data " "catalog"
+                "Given variable '{}' is not found in the given data catalog"
             ).format(var_id)
             raise KeyError(errStr)
 
@@ -202,7 +202,7 @@ def get_interface_variables(
 
         if var_id not in all_vars:
             errStr = (
-                "Given variable '{}' is not found in the given data " "catalog"
+                "Given variable '{}' is not found in the given data catalog"
             ).format(var_id)
             raise KeyError(errStr)
 
