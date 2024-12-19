@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import pytest
 from geoalchemy2.elements import WKTElement
@@ -79,7 +81,7 @@ def test_get_None():
 @pytest.mark.parametrize("fext", [".csv", ".xls", ".xlsx"])
 def test_PointDict_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     raws = [
         {"one": (0.0, 0.0), "two": (1.0, 1.0), "three": (2.0, 2.0)},
@@ -103,7 +105,7 @@ def test_PointDict_auto_file(tmpdir, fext):
         FOutCls = fout_factory(meta, test)
 
         fout = FOutCls()
-        fout._path = test_path_str
+        fout._path = test_path_path
         fout.data.result = test.get_data(raw, meta)
 
         fout.connect()
@@ -114,7 +116,7 @@ def test_PointDict_auto_file(tmpdir, fext):
         FInCls = fin_factory(meta, test)
 
         fin = FInCls()
-        fin._path = test_path_str
+        fin._path = test_path_path
 
         fin.connect()
         result = test.get_data(fin.data.result, meta)

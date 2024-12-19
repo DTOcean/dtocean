@@ -1,4 +1,4 @@
-# pylint: disable=protected-access
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -7,6 +7,8 @@ from mdo_engine.control.factory import InterfaceFactory
 from dtocean_core.core import AutoFileInput, AutoFileOutput, Core
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import SeriesData
+
+# pylint: disable=protected-access
 
 
 def test_SeriesData_available():
@@ -61,7 +63,7 @@ def test_SeriesData_not_equals():
 def test_SeriesData_auto_file(tmpdir):
     raw = np.random.rand(100)
     test_path = tmpdir.mkdir("sub").join("test.csv")
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     meta = CoreMetaData(
         {
@@ -79,7 +81,7 @@ def test_SeriesData_auto_file(tmpdir):
     FOutCls = fout_factory(meta, test)
 
     fout = FOutCls()
-    fout._path = test_path_str
+    fout._path = test_path_path
     fout.data.result = test.get_data(raw, meta)
 
     fout.connect()
@@ -90,7 +92,7 @@ def test_SeriesData_auto_file(tmpdir):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     fin.connect()
     result = test.get_data(fin.data.result, meta)

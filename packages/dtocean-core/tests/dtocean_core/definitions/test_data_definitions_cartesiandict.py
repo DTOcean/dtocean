@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
@@ -90,7 +92,7 @@ def test_CartesianDict_not_equal_keys():
 @pytest.mark.parametrize("fext", [".csv", ".xls", ".xlsx"])
 def test_CartesianDict_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     raws = [{"a": (0, 1), "b": (1, 2)}, {"a": (0, 1, -1), "b": (1, 2, -2)}]
 
@@ -105,7 +107,7 @@ def test_CartesianDict_auto_file(tmpdir, fext):
         FOutCls = fout_factory(meta, test)
 
         fout = FOutCls()
-        fout._path = test_path_str
+        fout._path = test_path_path
         fout.data.result = test.get_data(raw, meta)
 
         fout.connect()
@@ -116,7 +118,7 @@ def test_CartesianDict_auto_file(tmpdir, fext):
         FInCls = fin_factory(meta, test)
 
         fin = FInCls()
-        fin._path = test_path_str
+        fin._path = test_path_path
 
         fin.connect()
         result = test.get_data(fin.data.result, meta)

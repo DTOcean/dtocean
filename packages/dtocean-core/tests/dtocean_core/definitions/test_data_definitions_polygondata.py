@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import pytest
 import shapefile
@@ -109,7 +111,7 @@ def test_PolygonData_not_equals(left, right):
 @pytest.mark.parametrize("fext", [".csv", ".shp", ".xls", ".xlsx"])
 def test_PolygonData_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     raws = [
         [(0.0, 0.0), (1.0, 1.0), (2.0, 2.0)],
@@ -129,7 +131,7 @@ def test_PolygonData_auto_file(tmpdir, fext):
         FOutCls = fout_factory(meta, test)
 
         fout = FOutCls()
-        fout._path = test_path_str
+        fout._path = test_path_path
         fout.data.result = test.get_data(raw, meta)
 
         fout.connect()
@@ -140,7 +142,7 @@ def test_PolygonData_auto_file(tmpdir, fext):
         FInCls = fin_factory(meta, test)
 
         fin = FInCls()
-        fin._path = test_path_str
+        fin._path = test_path_path
 
         fin.connect()
         result = test.get_data(fin.data.result, meta)
@@ -152,7 +154,7 @@ def test_PolygonData_auto_file(tmpdir, fext):
 
 def test_PolygonData_auto_file_wrong_shape_type(tmpdir):
     test_path = tmpdir.mkdir("sub").join("test.shp")
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     raw = (0.0, 0.0)
 
@@ -166,7 +168,7 @@ def test_PolygonData_auto_file_wrong_shape_type(tmpdir):
     FOutCls = fout_factory(meta, src_shape)
 
     fout = FOutCls()
-    fout._path = test_path_str
+    fout._path = test_path_path
     fout.data.result = src_shape.get_data(raw, meta)
 
     fout.connect()
@@ -179,7 +181,7 @@ def test_PolygonData_auto_file_wrong_shape_type(tmpdir):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     with pytest.raises(ValueError) as excinfo:
         fin.connect()
@@ -189,9 +191,9 @@ def test_PolygonData_auto_file_wrong_shape_type(tmpdir):
 
 def test_PolygonData_auto_file_too_many_shapes(tmpdir):
     test_path = tmpdir.mkdir("sub").join("test.shp")
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
-    with shapefile.Writer(test_path_str) as shp:
+    with shapefile.Writer(test_path_path) as shp:
         shp.field("name", "C")
         shp.poly([[(0.0, 0.0), (1.0, 1.0)]])
         shp.record("polygon1")
@@ -210,7 +212,7 @@ def test_PolygonData_auto_file_too_many_shapes(tmpdir):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     with pytest.raises(ValueError) as excinfo:
         fin.connect()
@@ -220,9 +222,9 @@ def test_PolygonData_auto_file_too_many_shapes(tmpdir):
 
 def test_PolygonData_auto_file_too_many_parts(tmpdir):
     test_path = tmpdir.mkdir("sub").join("test.shp")
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
-    with shapefile.Writer(test_path_str) as shp:
+    with shapefile.Writer(test_path_path) as shp:
         shp.field("name", "C")
         shp.poly(
             [
@@ -251,7 +253,7 @@ def test_PolygonData_auto_file_too_many_parts(tmpdir):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     with pytest.raises(ValueError) as excinfo:
         fin.connect()

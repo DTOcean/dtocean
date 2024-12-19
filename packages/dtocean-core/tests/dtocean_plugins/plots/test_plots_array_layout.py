@@ -9,7 +9,7 @@ from shapely.geometry import Polygon
 
 from dtocean_core.core import Core
 from dtocean_core.menu import ModuleMenu, ProjectMenu
-from dtocean_core.pipeline import Tree
+from dtocean_core.pipeline import InputVariable, Tree
 from dtocean_plugins.modules.modules import ModuleInterface
 from dtocean_plugins.plots.plots_array_layout import clockwise
 
@@ -109,7 +109,7 @@ def project(core, tree):
     return new_project
 
 
-def test_ArrayLeasePlot_available(core, project, tree):
+def test_ArrayLeasePlot_available(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -119,9 +119,7 @@ def test_ArrayLeasePlot_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_wp3.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp3)
 
     # Force addition of lease area
     lease_area = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
@@ -130,12 +128,14 @@ def test_ArrayLeasePlot_available(core, project, tree):
     )
 
     layout = mod_branch.get_input_variable(core, project, "project.layout")
+    assert isinstance(layout, InputVariable)
+
     result = layout.get_available_plots(core, project)
 
     assert "Lease Area Array Layout" in result
 
 
-def test_ArrayLeasePlot(core, project, tree):
+def test_ArrayLeasePlot(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -145,9 +145,7 @@ def test_ArrayLeasePlot(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_wp3.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp3)
 
     # Force addition of lease area and padding
     lease_area = Polygon([(0, 0), (10, 0), (10, 10), (0, 10)])
@@ -166,7 +164,7 @@ def test_ArrayLeasePlot(core, project, tree):
     plt.close("all")
 
 
-def test_ArrayLeasePlotNumbers_available(core, project, tree):
+def test_ArrayLeasePlotNumbers_available(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -176,9 +174,7 @@ def test_ArrayLeasePlotNumbers_available(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_wp3.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp3)
 
     # Force addition of lease area
     lease_area = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
@@ -192,7 +188,7 @@ def test_ArrayLeasePlotNumbers_available(core, project, tree):
     assert "Lease Area Array Layout (With Device Numbers)" in result
 
 
-def test_ArrayLeasePlotNumbers(core, project, tree):
+def test_ArrayLeasePlotNumbers(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -202,9 +198,7 @@ def test_ArrayLeasePlotNumbers(core, project, tree):
     project_menu.initiate_dataflow(core, project)
 
     mod_branch = tree.get_branch(core, project, mod_name)
-    mod_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_wp3.pkl")
-    )
+    mod_branch.read_test_data(core, project, inputs_wp3)
 
     # Force addition of lease area
     lease_area = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -116,7 +117,7 @@ def test_TimeSeries_auto_file(tmpdir):
     raw = [(d, v) for d, v in zip(dates, values)]
 
     test_path = tmpdir.mkdir("sub").join("test.csv")
-    test_path_str = str(test_path)
+    test_path_path = Path(test_path)
 
     meta = CoreMetaData(
         {
@@ -134,7 +135,7 @@ def test_TimeSeries_auto_file(tmpdir):
     FOutCls = fout_factory(meta, test)
 
     fout = FOutCls()
-    fout._path = test_path_str
+    fout._path = test_path_path
     fout.data.result = test.get_data(raw, meta)
 
     fout.connect()
@@ -145,7 +146,7 @@ def test_TimeSeries_auto_file(tmpdir):
     FInCls = fin_factory(meta, test)
 
     fin = FInCls()
-    fin._path = test_path_str
+    fin._path = test_path_path
 
     fin.connect()
     result = test.get_data(fin.data.result, meta)
