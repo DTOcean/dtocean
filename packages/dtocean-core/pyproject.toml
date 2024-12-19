@@ -7,7 +7,7 @@ license = "GPL-3.0-or-later"
 readme = "README.md"
 packages = [
   { include = "dtocean_core", from = "src" },
-  { include = "dtocean_plugins", from = "src"}
+  { include = "dtocean_plugins", from = "src"},
 ]
 include = [
   'src/dtocean_core/data/yaml/*.yaml',
