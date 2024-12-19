@@ -4,7 +4,6 @@ import sys
 
 import pandas as pd
 import pytest
-from polite_config.paths import Directory
 from shapely.geometry import Point
 
 from dtocean_core.utils.config import init_config
@@ -35,12 +34,13 @@ def test_bathy_records_to_strata():
         points.append(point.wkb_hex)
 
     df["utm_point"] = points
-    df = df.drop("x", 1)
-    df = df.drop("y", 1)
+    df = df.drop("x", axis=1)
+    df = df.drop("y", axis=1)
 
     records = df.to_records()
     raw = bathy_records_to_strata(records)
 
+    assert raw is not None
     assert set(raw["values"].keys()) == set(["depth", "sediment"])
 
 
@@ -52,8 +52,8 @@ def test_bathy_records_to_strata_fail():
         points.append(point.wkb_hex)
 
     df["utm_point"] = points
-    df = df.drop("x", 1)
-    df = df.drop("y", 1)
+    df = df.drop("x", axis=1)
+    df = df.drop("y", axis=1)
 
     records = df.to_records()
 
@@ -121,7 +121,7 @@ def test_convert_bool():
 
 
 def test_convert_geo():
-    x = Point(0, 0).wkb.encode("hex")
+    x = Point(0, 0).wkb.hex()
 
     df_dict = {"A": [x, None], "B": [1, 2]}
     df = pd.DataFrame(df_dict)
@@ -133,7 +133,7 @@ def test_convert_geo():
 
 
 def test_convert_geo_SRID(mocker):
-    x = Point(0, 0).wkb.encode("hex")
+    x = Point(0, 0).wkb.hex()
 
     df_dict = {"A": [x, None], "B": [1, 2]}
     df = pd.DataFrame(df_dict)
@@ -203,6 +203,7 @@ def test_filter_map():
     table_list = get_table_map()
     result = filter_map(table_list, "device")
 
+    assert result is not None
     assert result["table"] == "device"
 
 
@@ -210,6 +211,7 @@ def test_filter_map_parent():
     table_list = get_table_map()
     result = filter_map(table_list, "device_shared")
 
+    assert result is not None
     assert result["table"] == "device"
 
 
@@ -217,6 +219,7 @@ def test_filter_map_two_parents():
     table_list = get_table_map()
     result = filter_map(table_list, "sub_systems_access")
 
+    assert result is not None
     assert result["table"] == "device"
 
 
@@ -227,14 +230,14 @@ def test_draw_map():
     assert result
 
 
-def test_get_user_database_config_empty(mocker, tmpdir):
+def test_get_user_database_config_empty(mocker, tmp_path):
     # Make a source directory without files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
@@ -244,20 +247,20 @@ def test_get_user_database_config_empty(mocker, tmpdir):
     assert isinstance(config, dict)
 
 
-def test_get_user_database_config(mocker, tmpdir):
+def test_get_user_database_config(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
         "dtocean_core.utils.config.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 
     mocker.patch(
         "dtocean_core.utils.database.UserDataPath",
-        return_value=mock_dir,
+        return_value=config_tmpdir,
         autospec=True,
     )
 

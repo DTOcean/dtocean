@@ -24,7 +24,9 @@ import pandas as pd
 from matplotlib import colormaps
 from mdo_engine.utilities.plugins import Plugin
 
-from . import strategies, tools
+import dtocean_plugins.strategies as strategies
+import dtocean_plugins.tools as tools
+
 from .menu import ModuleMenu
 
 # Set up logging
@@ -591,4 +593,5 @@ class ToolManager(ExtensionManager):
             raise ValueError(errStr)
 
         interface = core.load_interface(project, tool)
+        core.connect_interface(project, interface)
         core.connect_interface(project, interface)

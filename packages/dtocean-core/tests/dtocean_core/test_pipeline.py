@@ -4,7 +4,6 @@ from copy import deepcopy
 import pytest
 
 from dtocean_core.core import Core
-from dtocean_core.interfaces import ModuleInterface, ThemeInterface
 from dtocean_core.menu import ModuleMenu, ProjectMenu, ThemeMenu
 from dtocean_core.pipeline import (
     InputVariable,
@@ -13,6 +12,8 @@ from dtocean_core.pipeline import (
     Variable,
     set_output_scope,
 )
+from dtocean_plugins.modules.modules import ModuleInterface
+from dtocean_plugins.themes.themes import ThemeInterface
 
 DIR_PATH = os.path.dirname(__file__)
 

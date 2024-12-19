@@ -21,11 +21,15 @@ import sys
 import time
 import traceback
 import warnings
+from pathlib import Path
+from typing import Union
 
 from .. import start_logging
 from ..core import Core
 from ..extensions import StrategyManager
 from ..menu import ModuleMenu
+
+StrOrPath = Union[str, Path]
 
 
 def warn_with_traceback(
@@ -33,12 +37,20 @@ def warn_with_traceback(
 ):
     log = logfile if hasattr(logfile, "write") else sys.stderr
     traceback.print_stack(file=log)
+
+    assert log is not None
     log.write(warnings.formatwarning(message, category, filename, lineno, line))
 
     return
 
 
-def main(fpath, save=True, full=False, warn=False, log=False):
+def main(
+    fpath,
+    save: Union[bool, StrOrPath] = True,
+    full=False,
+    warn=False,
+    log=False,
+):
     if full:
         action_str = "all scheduled modules"
     else:

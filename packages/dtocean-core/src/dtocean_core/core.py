@@ -20,6 +20,8 @@ import pickle
 import shutil
 import tempfile
 from copy import deepcopy
+from pathlib import Path
+from typing import Union
 
 import matplotlib.pyplot as plt
 from mdo_engine.boundary.data import SerialBox
@@ -39,11 +41,15 @@ from mdo_engine.entity.simulation import Simulation
 from mdo_engine.utilities.data import check_integrity
 from mdo_engine.utilities.misc import OrderedSet
 
+from dtocean_plugins import core as core_interfaces
+from dtocean_plugins.core import FileInputInterface, FileOutputInterface
+from dtocean_plugins.plots.plots import PlotInterface
+
 from . import data as core_data
-from . import interfaces as core_interfaces
-from .interfaces import FileInputInterface, FileOutputInterface, PlotInterface
 from .utils.database import get_database
 from .utils.files import package_dir, unpack_archive
+
+StrOrPath = Union[str, Path]
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -636,7 +642,9 @@ class Core:
 
         return new_project
 
-    def dump_project(self, project, dump_path):
+    def dump_project(self, project, dump_path: StrOrPath):
+        dump_path = Path(dump_path)
+
         # A data store is required
         data_store = DataStorage(core_data)
 
@@ -692,12 +700,10 @@ class Core:
             pickle.dump(project_copy, fstream, -1)
 
         # OK need to consider if we want a prj file or a directory first.
-        if os.path.splitext(dump_path)[1] == ".prj":
+        if dump_path.suffix == ".prj":
             archive = True
-
-        elif os.path.isdir(dump_path):
+        elif dump_path.is_dir():
             archive = False
-
         else:
             errStr = (
                 "Argument dump_path must either be an existing "
@@ -2066,4 +2072,5 @@ class Connector:
             ).format(interface_name)
             raise ValueError(errStr)
 
+        return
         return

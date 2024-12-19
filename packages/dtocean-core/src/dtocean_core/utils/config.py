@@ -19,14 +19,12 @@
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-import sys
-import logging
 import argparse
 import datetime
+import logging
+import sys
 
-from polite_config.paths import (ModPath,
-                          UserDataPath,
-                          DirectoryMap)
+from polite_config.paths import DirectoryMap, ModPath, UserDataPath
 
 from . import SmartFormatter
 
@@ -35,80 +33,88 @@ module_logger = logging.getLogger(__name__)
 
 
 def init_config(logging=False, database=False, files=False, overwrite=False):
-    
     """Copy config files to user data directory"""
-    
-    if not any([logging, database, files]): return
-    
+
+    if not any([logging, database, files]):
+        return
+
     objdir = ModPath(__name__, "..", "config")
     datadir = UserDataPath("dtocean_core", "DTOcean", "config")
     dirmap = DirectoryMap(datadir, objdir)
-    
-    if logging: dirmap.copy_file("logging.yaml", overwrite=overwrite)
-    if database: dirmap.copy_file("database.yaml", overwrite=overwrite)
-    if files: dirmap.copy_file("files.ini", overwrite=overwrite)
-            
-    return datadir.get_path()
+
+    if logging:
+        dirmap.copy_file("logging.yaml", overwrite=overwrite)
+    if database:
+        dirmap.copy_file("database.yaml", overwrite=overwrite)
+    if files:
+        dirmap.copy_file("files.ini", overwrite=overwrite)
+
+    return datadir
 
 
 def init_config_parser(args):
-    
-    '''Command line parser for init_config.
-    
+    """Command line parser for init_config.
+
     Example:
-    
+
         To get help::
-        
+
             $ dtocean-core-config -h
-            
-    '''
-       
+
+    """
 
     now = datetime.datetime.now()
-    epiStr = 'The DTOcean Developers (c) {}.'.format(now.year)
-              
-    desStr = ("Copy user modifiable configuration files to "
-              "<UserName>\AppData\Roaming\DTOcean\dtocean-core\config")
+    epiStr = "The DTOcean Developers (c) {}.".format(now.year)
 
-    parser = argparse.ArgumentParser(description=desStr,
-                                     epilog=epiStr,
-                                     formatter_class=SmartFormatter)
-    
-    parser.add_argument("action",
-                        choices=['logging', 'database', 'files'],
-                        help="R|Select an action, where\n"
-                             " logging = copy logging configuration\n"
-                             " database = copy database configuration\n"
-                             " files = copy file location configuration")
+    desStr = (
+        "Copy user modifiable configuration files to "
+        r"<UserName>\AppData\Roaming\DTOcean\dtocean-core\config"
+    )
 
-    parser.add_argument("--overwrite",
-                        help=("overwrite any existing configuration files"),
-                        action="store_true")
-    
+    parser = argparse.ArgumentParser(
+        description=desStr, epilog=epiStr, formatter_class=SmartFormatter
+    )
+
+    parser.add_argument(
+        "action",
+        choices=["logging", "database", "files"],
+        help="R|Select an action, where\n"
+        " logging = copy logging configuration\n"
+        " database = copy database configuration\n"
+        " files = copy file location configuration",
+    )
+
+    parser.add_argument(
+        "--overwrite",
+        help=("overwrite any existing configuration files"),
+        action="store_true",
+    )
+
     args = parser.parse_args(args)
-                        
+
     action = args.action
     overwrite = args.overwrite
-    
+
     return action, overwrite
 
 
 def init_config_interface():
-    
-    '''Command line interface for init_config.'''
-    
+    """Command line interface for init_config."""
+
     action, overwrite = init_config_parser(sys.argv[1:])
-    
-    kwargs = {"logging": False,
-              "database": False,
-              "files": False,
-              "overwrite": overwrite}
-    
+
+    kwargs = {
+        "logging": False,
+        "database": False,
+        "files": False,
+        "overwrite": overwrite,
+    }
+
     kwargs[action] = True
-    
+
     dir_path = init_config(**kwargs)
-    
+
     if dir_path is not None:
-        print "Copying configuration files to {}".format(dir_path)
+        print("Copying configuration files to {}".format(dir_path))
 
     return
