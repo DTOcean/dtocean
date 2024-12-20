@@ -4109,8 +4109,8 @@ class XGrid2D(XGridND):
             plt.yticks(y, yuniques)
         else:
             locs, _ = plt.yticks()
-            f = interpolate.interp1d(y, yuniques, fill_value="extrapolate")  # type:ignore
             ycoords = [x.get_loc() for x in locs]
+            f = interpolate.interp1d(y, yuniques, fill_value="extrapolate")  # type:ignore
             new_labels = ["{0:.8g}".format(tick) for tick in f(ycoords)]
             ax1.set_yticks(ycoords)
             ax1.set_yticklabels(new_labels)
