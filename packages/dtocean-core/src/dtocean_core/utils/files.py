@@ -29,8 +29,9 @@ import tarfile
 import tempfile
 import time
 import zipfile
+from collections.abc import Callable
 from pathlib import Path
-from typing import Union
+from typing import Protocol, Union
 
 StrOrPath = Union[str, Path]
 
@@ -101,7 +102,7 @@ def unpack_archive(src_path, dst_path):
     # Determine if archive is new tar style or legacy zip
     if tarfile.is_tarfile(src_path):
         tar = tarfile.open(src_path, "r:gz")
-        tar.extractall(dst_path)
+        tar.extractall(dst_path, filter="data")
         tar.close()
     else:
         zf = zipfile.ZipFile(src_path, "r")
@@ -136,7 +137,17 @@ def onerror(func, path, exc_info):
         raise
 
 
-def os_retry(func):
+class OSRetry(Protocol):
+    def __call__(
+        self,
+        src_path: str,
+        max_attempts: int = 60,
+        sleep_seconds: int = 1,
+        fail_silent: bool = False,
+    ): ...
+
+
+def os_retry(func: Callable[[str], None]) -> OSRetry:
     def wrapper(src_path, max_attempts=60, sleep_seconds=1, fail_silent=False):
         file_locked = True
         n_attempts = 0
@@ -161,21 +172,17 @@ def os_retry(func):
             except OSError:
                 time.sleep(sleep_seconds)
 
-        return
-
     return wrapper
 
 
 @os_retry
 def rmtree_retry(src_path):
     shutil.rmtree(src_path)
-    return
 
 
 @os_retry
 def remove_retry(src_path):
     os.remove(src_path)
-    return
 
 
 def init_dir(dir_name, clean_existing=False):

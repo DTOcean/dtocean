@@ -242,7 +242,7 @@ def test_evaluator_threaded(mocker):
     result_queue = queue.Queue()
 
     worker = threading.Thread(target=test, args=(thread_queue,))
-    worker.setDaemon(True)
+    worker.daemon = True
     worker.start()
 
     item: list[Any] = [result_queue]

@@ -324,11 +324,7 @@ class CombinedSedimentPlot(PlotInterface):
             linewidths=(1.2,),
         )
 
-        proxy = [
-            Rectangle((0, 0), 1, 1, fc=pc.get_facecolor()[0])
-            for pc in cs.collections
-        ]
-
+        proxy = [Rectangle((0, 0), 1, 1, fc=cs.get_facecolor()[0])]
         lgd = ax.legend(
             proxy, legend_names, bbox_to_anchor=(1.04, 1), loc="upper left"
         )
