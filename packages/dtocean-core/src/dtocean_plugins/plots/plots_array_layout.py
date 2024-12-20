@@ -24,7 +24,8 @@ Created on Wed Apr 06 15:59:04 2016
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
-from shapely.geometry import Point, Polygon
+from shapely import Point, Polygon
+from shapely.plotting import patch_from_polygon
 
 from .plots import PlotInterface
 
@@ -579,7 +580,7 @@ def plot_lease_boundary(ax, lease_boundary, padding=None):
 
     if padding is None:
         lease_boundary = Polygon(outer_coords)
-        # patch = PolygonPatch(lease_boundary, ec=GREY, fill=False)
+        patch = patch_from_polygon(lease_boundary, ec=GREY, fill=False)
 
     else:
         inner_boundary = lease_boundary.buffer(-padding)
@@ -590,11 +591,15 @@ def plot_lease_boundary(ax, lease_boundary, padding=None):
             inner_coords = inner_coords[::-1]
 
         lease_boundary = Polygon(outer_coords, [inner_coords])
-        # patch = PolygonPatch(
-        #     lease_boundary, fc=RED, fill=True, alpha=0.3, ls=None
-        # )
+        patch = patch_from_polygon(
+            lease_boundary,
+            fc=RED,
+            fill=True,
+            alpha=0.3,
+            ls=None,
+        )
 
-    # ax.add_patch(patch)
+    ax.add_patch(patch)
 
     return
 

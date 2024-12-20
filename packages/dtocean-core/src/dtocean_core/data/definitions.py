@@ -38,7 +38,8 @@ from mdo_engine.boundary.interface import Box
 from mdo_engine.utilities.database import PostgreSQL
 from natsort import natsorted
 from scipy import interpolate
-from shapely.geometry import Point, Polygon
+from shapely import Point, Polygon
+from shapely.plotting import patch_from_polygon
 
 from ..utils.database import (
     filter_one_from_column,
@@ -3373,10 +3374,14 @@ class PolygonData(Structure):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
-        # patch = PolygonPatch(
-        #     auto.data.result, fc=BLUE, ec=BLUE, fill=False, linewidth=2
-        # )
-        # ax1.add_patch(patch)
+        patch = patch_from_polygon(
+            auto.data.result,
+            fc=BLUE,
+            ec=BLUE,
+            fill=False,
+            linewidth=2,
+        )
+        ax1.add_patch(patch)
 
         coords = list(auto.data.result.exterior.coords)
 
@@ -3690,11 +3695,15 @@ class PolygonList(PolygonData):
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
-        # for polygon in auto.data.result:
-        #     patch = PolygonPatch(
-        #         polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
-        #     )
-        #     ax1.add_patch(patch)
+        for polygon in auto.data.result:
+            patch = patch_from_polygon(
+                polygon,
+                fc=BLUE,
+                ec=BLUE,
+                fill=False,
+                linewidth=2,
+            )
+            ax1.add_patch(patch)
 
         ax1.margins(0.1, 0.1)
         ax1.autoscale_view()
@@ -3847,10 +3856,14 @@ class PolygonDict(PolygonData):
         ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
 
         for key, polygon in auto.data.result.items():
-            #     patch = PolygonPatch(
-            #         polygon, fc=BLUE, ec=BLUE, fill=False, linewidth=2
-            #     )
-            #     ax1.add_patch(patch)
+            patch = patch_from_polygon(
+                polygon,
+                fc=BLUE,
+                ec=BLUE,
+                fill=False,
+                linewidth=2,
+            )
+            ax1.add_patch(patch)
 
             centroid = tuple(np.array(polygon.centroid.coords[0])[:2])
             ax1.annotate(
