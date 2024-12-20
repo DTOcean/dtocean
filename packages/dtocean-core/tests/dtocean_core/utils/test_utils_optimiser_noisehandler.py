@@ -5,6 +5,7 @@
 import contextlib
 import logging
 from collections import namedtuple
+from typing import Optional
 
 import numpy as np
 import pytest
@@ -97,7 +98,7 @@ def sphere_cost(x, c=0.0):
 class MockEvaluator(Evaluator):
     def __init__(self, *args, **kwargs):
         super(MockEvaluator, self).__init__(*args, **kwargs)
-        self.scaler = None
+        self.scaler: Optional[NormScaler] = None
         self._args = None
         self._n_evals = None
 
@@ -117,18 +118,20 @@ class MockEvaluator(Evaluator):
         must include the key "cost". For constraint violation the cost key
         should be set to np.nan"""
 
+        assert self._n_evals is not None
         x = np.array(self._args)
-
         all_costs = []
 
-        for _ in range(self._n_evals):  # pylint: disable=undefined-variable
+        for _ in range(self._n_evals):
             base = sphere_cost(x)
             noise = 0.5 * np.random.randn()
             cost = base + noise
             all_costs.append(cost)
 
         all_costs = np.array(all_costs)
-        cost = np.nanmean(all_costs)
+        cost = (
+            np.NaN if np.all(all_costs != all_costs) else np.nanmean(all_costs)
+        )
 
         return {"cost": cost}
 
@@ -386,6 +389,8 @@ def test_dump_load_outputs(mocker, tmpdir):
 
     new_es, new_counter_dict, new_nh = load_outputs(str(tmpdir))
 
-    assert es.fit.hist == new_es.fit.hist
+    assert es.fit.hist == new_es.fit.hist  # type: ignore
     assert new_counter_dict == counter_dict
+
+    assert new_nh is not None
     assert new_nh._noise_predict() == nh._noise_predict()

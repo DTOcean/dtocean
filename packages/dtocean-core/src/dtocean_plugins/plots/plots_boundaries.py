@@ -21,15 +21,13 @@ Created on Wed Apr 06 15:59:04 2016
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from functools import partial
 from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pyproj
 from mpl_toolkits.basemap import Basemap
-from shapely import Polygon
-from shapely.ops import transform
+from pyproj import Transformer
+from shapely import Polygon, transform
 
 from .plots import PlotInterface
 
@@ -338,7 +336,7 @@ class DesignBoundaryPlot(PlotInterface):
 
 
 def boundaries_plot(
-    site_poly=None,
+    site_poly: Optional[Polygon] = None,
     projection=None,
     lease_poly=None,
     corridor_poly: Optional[Polygon] = None,
@@ -355,13 +353,21 @@ def boundaries_plot(
 
     # Convert the site polygon to local coordinate system
     if site_poly is not None:
-        project = partial(
-            pyproj.transform,
-            pyproj.Proj(init="epsg:4326"),  # source coordinate system
-            pyproj.Proj(projection),
-        )  # destination coordinate system
+        transformer = Transformer.from_crs(
+            "EPSG:4326", projection, always_xy=True
+        )
 
-        local_site_poly = transform(project, site_poly)  # apply projection
+        def transform_ndarray(x: np.ndarray):
+            transformed = transformer.transform(x[:, 0], x[:, 1])
+            return np.array(transformed).T
+
+        local_site_poly = transform(
+            site_poly,
+            transform_ndarray,
+            include_z=False,
+        )
+
+        # apply projection
 
         # patch = PolygonPatch(local_site_poly,
         #                      fc=RED,
