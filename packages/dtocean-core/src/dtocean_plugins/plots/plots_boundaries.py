@@ -28,6 +28,7 @@ import numpy as np
 from mpl_toolkits.basemap import Basemap
 from pyproj import Transformer
 from shapely import Polygon, transform
+from shapely.plotting import patch_from_polygon
 
 from .plots import PlotInterface
 
@@ -367,22 +368,24 @@ def boundaries_plot(
             include_z=False,
         )
 
-        # apply projection
-
-        # patch = PolygonPatch(local_site_poly,
-        #                      fc=RED,
-        #                      ec=RED,
-        #                      fill=False,
-        #                      linewidth=1)
-        # ax1.add_patch(patch)
+        patch = patch_from_polygon(
+            local_site_poly,
+            fc=RED,
+            ec=RED,
+            fill=False,
+            linewidth=1,
+        )
+        ax1.add_patch(patch)
 
     if lease_poly is not None:
-        # patch = PolygonPatch(lease_poly,
-        #                      fc=BLUE,
-        #                      ec=BLUE,
-        #                      fill=False,
-        #                      linewidth=2)
-        # ax1.add_patch(patch)
+        patch = patch_from_polygon(
+            lease_poly,
+            fc=BLUE,
+            ec=BLUE,
+            fill=False,
+            linewidth=2,
+        )
+        ax1.add_patch(patch)
 
         maxy = lease_poly.bounds[3] + 50.0
         centroid = np.array(lease_poly.centroid.coords[0])
@@ -397,12 +400,14 @@ def boundaries_plot(
         )
 
     if corridor_poly is not None:
-        # patch = PolygonPatch(corridor_poly,
-        #                      fc=GREEN,
-        #                      ec=GREEN,
-        #                      fill=False,
-        #                      linewidth=2)
-        # ax1.add_patch(patch)
+        patch = patch_from_polygon(
+            corridor_poly,
+            fc=GREEN,
+            ec=GREEN,
+            fill=False,
+            linewidth=2,
+        )
+        ax1.add_patch(patch)
 
         miny = corridor_poly.bounds[1] - 50.0
         centroid = np.array(corridor_poly.centroid.coords[0])
@@ -418,13 +423,15 @@ def boundaries_plot(
 
     if nogo_polys is not None:
         for key, polygon in nogo_polys.items():
-            # patch = PolygonPatch(polygon,
-            #                      fc=RED,
-            #                      ec=RED,
-            #                      fill=True,
-            #                      alpha=0.3,
-            #                      linewidth=2)
-            # ax1.add_patch(patch)
+            patch = patch_from_polygon(
+                polygon,
+                fc=RED,
+                ec=RED,
+                fill=True,
+                alpha=0.3,
+                linewidth=2,
+            )
+            ax1.add_patch(patch)
 
             centroid = np.array(polygon.centroid.coords[0])
             ax1.annotate(
@@ -440,13 +447,15 @@ def boundaries_plot(
 
     if corridor_nogo_polys is not None:
         for key, polygon in corridor_nogo_polys.items():
-            # patch = PolygonPatch(polygon,
-            #                      fc=RED,
-            #                      ec=RED,
-            #                      fill=True,
-            #                      alpha=0.3,
-            #                      linewidth=2)
-            # ax1.add_patch(patch)
+            patch = patch_from_polygon(
+                polygon,
+                fc=RED,
+                ec=RED,
+                fill=True,
+                alpha=0.3,
+                linewidth=2,
+            )
+            ax1.add_patch(patch)
 
             centroid = np.array(polygon.centroid.coords[0])
             ax1.annotate(

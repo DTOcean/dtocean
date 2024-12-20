@@ -272,7 +272,12 @@ class NoiseHandler:
             `__init__`.
         """
 
+        if self._X is None or self.idx is None:
+            raise RuntimeError("Call prepare first")
+
         if self.epsilon:
+            if ask is None:
+                raise ValueError("ask must be defined if epsilon is not zero")
             sols = [ask(1, self._X[i], self.epsilon)[0] for i in self.idx]
         else:
             sols = [self._X[i] for i in self.idx]
@@ -288,7 +293,13 @@ class NoiseHandler:
         and return a factor for increasing sigma.
         """
 
+        if self.idx is None or self.fitre is None:
+            raise RuntimeError("Call prepare first")
+
         def get_sol_match(i, test_sol):
+            if self._sols is None:
+                raise RuntimeError("Call ask first")
+
             for j, sol in enumerate(self._sols):
                 if np.isclose(test_sol, sol).all():
                     return j, function_values[i]
@@ -388,6 +399,9 @@ class NoiseHandler:
         lists differ.
         """
 
+        if self.fit is None or self.fitre is None or self.idx is None:
+            raise RuntimeError("Call prepare first")
+
         lam = len(self.fit)
         idx = np.argsort(self.fit + self.fitre)
         ranks = np.argsort(idx).reshape((2, lam))
@@ -395,22 +409,26 @@ class NoiseHandler:
 
         # compute rank change limits using both ranks[0] and ranks[1]
         r = np.arange(1, 2 * lam)  # 2 * lam - 2 elements
-        limits = [
-            0.5
-            * (
-                Mh.prctile(
-                    np.abs(r - (ranks[0, i] + 1 - (ranks[0, i] > ranks[1, i]))),
-                    self.theta * 50,
-                )
-                + Mh.prctile(
-                    np.abs(r - (ranks[1, i] + 1 - (ranks[1, i] > ranks[0, i]))),
-                    self.theta * 50,
-                )
+
+        limits = []
+
+        for i in self.idx:
+            first = Mh.prctile(
+                np.abs(r - (ranks[0, i] + 1 - (ranks[0, i] > ranks[1, i]))),
+                self.theta * 50,
             )
-            for i in self.idx
-        ]
+            second = Mh.prctile(
+                np.abs(r - (ranks[1, i] + 1 - (ranks[1, i] > ranks[0, i]))),
+                self.theta * 50,
+            )
+            assert isinstance(first, float)
+            assert isinstance(second, float)
+
+            limit = 0.5 * (first + second)
+            limits.append(limit)
+
         # compute measurement
-        #                               max: 1 rankchange in 2*lambda is always fine
+        # max: 1 rankchange in 2*lambda is always fine
         s = np.abs(rankDelta[self.idx]) - Mh.amax(
             limits, 1
         )  # lives roughly in 0..2*lambda
