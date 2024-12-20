@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+import pytz
 from mdo_engine.control.factory import InterfaceFactory
 
 from dtocean_core.core import AutoFileInput, AutoFileOutput, Core
@@ -91,9 +92,11 @@ def test_DateTimeDict_auto_file(tmpdir, fext):
     fin.connect()
     result = test.get_data(fin.data.result, meta)
 
-    # Microseconds are lost in xls case
+    # Time zone awareness is lost and microseconds are lost in xls case and
     assert result["a"].replace(microsecond=0) == raw["a"].replace(microsecond=0)
-    assert result["b"].replace(microsecond=0) == raw["b"].replace(microsecond=0)
+    assert result["b"].replace(microsecond=0) == raw["b"].astimezone(
+        pytz.utc
+    ).replace(tzinfo=None).replace(microsecond=0)
 
 
 def test_DateTimeDict_auto_file_input_bad_header(mocker):

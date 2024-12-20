@@ -26,6 +26,7 @@ import matplotlib.patheffects as PathEffects
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pytz
 import shapefile
 import xarray as xr
 import yaml
@@ -2711,7 +2712,10 @@ class DateTimeDict(DateTimeData):
         auto.check_path()
 
         dc = auto.data.result
-        data = [[k, v] for k, v in dc.items()]
+        data = [
+            [k, v.astimezone(pytz.utc).replace(tzinfo=None)]
+            for k, v in dc.items()
+        ]
         df = pd.DataFrame(data, columns=["ID", "data"])
 
         if ".xls" in auto._path.suffix:
@@ -4099,20 +4103,20 @@ class XGrid2D(XGridND):
             plt.xticks(x, xuniques)
         else:
             locs, _ = plt.xticks()
-            xcoords = [x.get_loc() for x in locs]
+            assert isinstance(locs, np.ndarray)
             f = interpolate.interp1d(x, xuniques, fill_value="extrapolate")  # type:ignore
-            new_labels = ["{0:.8g}".format(tick) for tick in f(xcoords)]
-            ax1.set_xticks(xcoords)
+            new_labels = ["{0:.8g}".format(tick) for tick in f(locs)]
+            ax1.set_xticks(locs)
             ax1.set_xticklabels(new_labels)
 
         if ycoord.values.dtype.kind in {"U", "S"}:
             plt.yticks(y, yuniques)
         else:
             locs, _ = plt.yticks()
-            ycoords = [x.get_loc() for x in locs]
+            assert isinstance(locs, np.ndarray)
             f = interpolate.interp1d(y, yuniques, fill_value="extrapolate")  # type:ignore
-            new_labels = ["{0:.8g}".format(tick) for tick in f(ycoords)]
-            ax1.set_yticks(ycoords)
+            new_labels = ["{0:.8g}".format(tick) for tick in f(locs)]
+            ax1.set_yticks(locs)
             ax1.set_yticklabels(new_labels)
 
         plt.title(auto.meta.result.title)

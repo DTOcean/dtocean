@@ -421,7 +421,7 @@ class Main:
             worker = threading.Thread(
                 target=self.evaluator, args=(self._thread_queue,)
             )
-            worker.setDaemon(True)
+            worker.daemon = True
             worker.start()
 
         return
