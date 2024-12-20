@@ -3657,12 +3657,20 @@ class PolygonList(PolygonData):
             errStr = "I'm a doctor, not a bricklayer."
             raise SystemError(errStr)
 
-        df = pd.DataFrame(columns=columns)
+        df = None
+
         for k, v in data:
             df2 = pd.DataFrame(v, columns=columns[1:])
             df2["ID"] = [k] * v.shape[0]
 
+            if df is None:
+                df = df2
+                continue
+
             df = pd.concat([df, df2], ignore_index=True, sort=False)
+
+        if df is None:
+            df = pd.DataFrame(columns=columns)
 
         if ".xls" in auto._path.suffix:
             df.to_excel(auto._path, engine="openpyxl", index=False)
@@ -3805,13 +3813,20 @@ class PolygonDict(PolygonData):
             errStr = "I'm a doctor, not a coal miner."
             raise SystemError(errStr)
 
-        df = pd.DataFrame(columns=columns)
+        df = None
 
         for k, v in data:
             df2 = pd.DataFrame(v, columns=columns[1:])
             df2["ID"] = [k] * v.shape[0]
 
+            if df is None:
+                df = df2
+                continue
+
             df = pd.concat([df, df2], ignore_index=True, sort=False)
+
+        if df is None:
+            df = pd.DataFrame(columns=columns)
 
         if ".xls" in auto._path.suffix:
             df.to_excel(auto._path, engine="openpyxl", index=False)
@@ -4084,8 +4099,10 @@ class XGrid2D(XGridND):
             plt.xticks(x, xuniques)
         else:
             locs, _ = plt.xticks()
+            xcoords = [x.get_loc() for x in locs]
             f = interpolate.interp1d(x, xuniques, fill_value="extrapolate")  # type:ignore
-            new_labels = ["{0:.8g}".format(tick) for tick in f(locs)]
+            new_labels = ["{0:.8g}".format(tick) for tick in f(xcoords)]
+            ax1.set_xticks(xcoords)
             ax1.set_xticklabels(new_labels)
 
         if ycoord.values.dtype.kind in {"U", "S"}:
@@ -4093,7 +4110,9 @@ class XGrid2D(XGridND):
         else:
             locs, _ = plt.yticks()
             f = interpolate.interp1d(y, yuniques, fill_value="extrapolate")  # type:ignore
-            new_labels = ["{0:.8g}".format(tick) for tick in f(locs)]
+            ycoords = [x.get_loc() for x in locs]
+            new_labels = ["{0:.8g}".format(tick) for tick in f(ycoords)]
+            ax1.set_yticks(ycoords)
             ax1.set_yticklabels(new_labels)
 
         plt.title(auto.meta.result.title)
