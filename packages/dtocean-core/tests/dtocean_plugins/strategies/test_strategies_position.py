@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=redefined-outer-name,protected-access,bad-whitespace,no-member
-import pytest
-
-pytest.importorskip("dtocean-hydro")
-
 import contextlib
 import logging
 import os
@@ -12,6 +8,7 @@ import pickle
 import time
 
 import numpy as np
+import pytest
 from yaml import dump
 
 try:
@@ -29,6 +26,8 @@ from dtocean_plugins.strategies.position import (
     _read_yaml,
     _run_favorite,
 )
+
+pytest.importorskip("dtocean-hydro")
 
 
 @contextlib.contextmanager
@@ -179,6 +178,7 @@ def test_advanced_get_optimiser_status_complete(tmpdir):
         None, config
     )
 
+    assert status_str is not None
     assert status_code == 1
     assert "complete" in status_str
 
@@ -197,6 +197,7 @@ def test_advanced_get_optimiser_status_incomplete(mocker, tmpdir):
         None, config
     )
 
+    assert status_str is not None
     assert status_code == 2
     assert "incomplete" in status_str
 
@@ -748,7 +749,7 @@ def test_post_process(caplog, tmpdir):
 
     assert p in tmpdir.listdir()
 
-    with open(str(p), "r") as f:
+    with open(str(p), "rb") as f:
         data = pickle.load(f)
 
     assert data == {
@@ -842,7 +843,7 @@ def test_advanced_execute_theaded(mocker, advanced):
 
 def test_advanced_execute_theaded_stop(mocker, advanced):
     mock_core = mocker.MagicMock()
-    mock_opt = MockOpt(mock_core, countdown=1e4)
+    mock_opt = MockOpt(mock_core, countdown=int(1e4))
 
     mocker.patch.object(
         advanced, "_pre_execute", return_value=mock_opt, autospec=True
@@ -1064,7 +1065,7 @@ def test_get_results_table():
     ]
 
     assert np.isclose(
-        result["grid_orientation"].values, [90, 0, 270, 180, 90]
+        result["grid_orientation"].to_numpy(), [90, 0, 270, 180, 90]
     ).all()
 
 
@@ -1098,7 +1099,7 @@ def test_get_results_table_single():
         "mock",
     ]
 
-    assert np.isclose(result["grid_orientation"].values, 90)
+    assert np.isclose(result["grid_orientation"].to_numpy(), 90)
 
 
 def test_advanced_get_favorite_result_not_available(tmpdir):
@@ -1265,7 +1266,7 @@ def test_advanced_get_all_results(mocker, tmpdir):
     ]
 
     assert np.isclose(
-        result["grid_orientation"].values, [90, 0, 270, 180, 90]
+        result["grid_orientation"].to_numpy(), [90, 0, 270, 180, 90]
     ).all()
 
 

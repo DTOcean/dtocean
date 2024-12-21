@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Rui Duarte, Mathew Topper
-#    Copyright (C) 2017-2018 Mathew Topper
+#    Copyright (C) 2017-2024 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,11 +23,14 @@ Created on Wed Apr 06 15:59:04 2016
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
+from typing import Literal, Sequence, cast
+
 import matplotlib.cm as cm
 import matplotlib.patches as patches
 import matplotlib.patheffects as path_effects
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.axes import Axes
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 
 from .plots import PlotInterface
@@ -66,7 +69,7 @@ class EISPlot_hydro(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -136,7 +139,7 @@ class EISPlot_elec(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -207,7 +210,7 @@ class EISPlot_moor(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -277,7 +280,7 @@ class GEISPlot_hydro(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -342,7 +345,7 @@ class GEISPlot_elec(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -407,7 +410,7 @@ class GEISPlot_moor(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -443,7 +446,8 @@ def cmap_env(position=None, bit=True):
     """Colormap for the environmental package"""
 
     colors = [
-        (128, 0, 128)(255, 0, 255),
+        (128, 0, 128),
+        (255, 0, 255),
         (255, 0, 0),
         (255, 64, 0),
         (255, 128, 0),
@@ -459,7 +463,7 @@ def cmap_env(position=None, bit=True):
 
     bit_rgb = np.linspace(0, 1, 256)
 
-    if position == None:
+    if position is None:
         position = np.linspace(0, 1, len(colors))
     else:
         if len(position) != len(colors):
@@ -475,13 +479,24 @@ def cmap_env(position=None, bit=True):
                 bit_rgb[colors[i][2]],
             )
 
-    cdict = {"red": [], "green": [], "blue": []}
+    cdict = {
+        "red": [],
+        "green": [],
+        "blue": [],
+    }
 
     for pos, color in zip(position, colors):
         cdict["red"].append((pos, color[0], color[0]))
         cdict["green"].append((pos, color[1], color[1]))
         cdict["blue"].append((pos, color[2], color[2]))
 
+    cdict = cast(
+        dict[
+            Literal["red", "green", "blue", "alpha"],
+            Sequence[tuple[float, ...]],
+        ],
+        cdict,
+    )
     cmap = LinearSegmentedColormap("environment", cdict, 256)
 
     return cmap
@@ -504,13 +519,13 @@ def geis_plot(geis):
         pos_impact = 0.0
         value[0] = 0.0
     else:
-        pos_impact = np.int(np.around(value[0]))
+        pos_impact = int(np.around(value[0]))
 
     if np.isnan(value[1]):
         neg_impact = 0.0
         value[1] = 0.0
     else:
-        neg_impact = np.int(np.around(value[1]))
+        neg_impact = int(np.around(value[1]))
 
     env_cmap = cmap_env()
     norm = Normalize(-100, 50)
@@ -551,22 +566,22 @@ def geis_plot(geis):
     if np.isnan(geis["Min Negative Impact"]):
         min_neg = 0.0
     else:
-        min_neg = np.int(np.around(geis["Min Negative Impact"]))
+        min_neg = int(np.around(geis["Min Negative Impact"]))
 
     if np.isnan(geis["Max Negative Impact"]):
         max_neg = 0.0
     else:
-        max_neg = np.int(np.around(geis["Max Negative Impact"]))
+        max_neg = int(np.around(geis["Max Negative Impact"]))
 
     if np.isnan(geis["Min Positive Impact"]):
         min_pos = 0.0
     else:
-        min_pos = np.int(np.around(geis["Min Positive Impact"]))
+        min_pos = int(np.around(geis["Min Positive Impact"]))
 
     if np.isnan(geis["Max Positive Impact"]):
         max_pos = 0.0
     else:
-        max_pos = np.int(np.around(geis["Max Positive Impact"]))
+        max_pos = int(np.around(geis["Max Positive Impact"]))
 
     for r in rectangles:
         ax1.add_artist(rectangles[r])
@@ -586,7 +601,7 @@ def geis_plot(geis):
         )
 
         ax1.annotate(
-            score[r],
+            str(score[r]),
             (cx + 0.15 * scalex, cy),
             color="b",
             fontsize=64,
@@ -596,7 +611,7 @@ def geis_plot(geis):
 
         if r == "Positive":
             ax1.annotate(
-                [min_pos, max_pos],
+                str([min_pos, max_pos]),
                 (cx + 0.5 * scalex, cy),
                 color="k",
                 weight="bold",
@@ -607,7 +622,7 @@ def geis_plot(geis):
 
         if r == "Negative":
             ax1.annotate(
-                [min_neg, max_neg],
+                str([min_neg, max_neg]),
                 (cx + 0.5 * scalex, cy),
                 color="k",
                 weight="bold",
@@ -623,7 +638,7 @@ def geis_plot(geis):
 
     pos1 = ax1.get_position()
 
-    cbar_ax = fig.add_axes([pos1.x0, pos1.y0 - 0.1, pos1.width, 0.025])
+    cbar_ax = fig.add_axes((pos1.x0, pos1.y0 - 0.1, pos1.width, 0.025))
 
     cmmapable = cm.ScalarMappable(norm, env_cmap)
     cmmapable.set_array(range(-100, 50))
@@ -708,7 +723,7 @@ def eis_plot(eis, confidence_dict, plot_title):
 
     plt.gca().invert_yaxis()
 
-    ax2 = ax1.twinx()
+    ax2 = cast(Axes, ax1.twinx())
     ax2.barh(x, np.zeros(len(x)), align="center")
     ax2.yaxis.tick_right()
     ax2.set_yticks(x)
@@ -720,7 +735,7 @@ def eis_plot(eis, confidence_dict, plot_title):
 
     pos1 = ax1.get_position()
 
-    cbar_ax = fig.add_axes([pos1.x0, pos1.y0 - 0.06, pos1.width, 0.025])
+    cbar_ax = fig.add_axes((pos1.x0, pos1.y0 - 0.06, pos1.width, 0.025))
 
     cmmapable = cm.ScalarMappable(norm, env_cmap)
     cmmapable.set_array(range(-100, 50))
@@ -732,4 +747,5 @@ def eis_plot(eis, confidence_dict, plot_title):
 
     fig_handle = plt.gcf()
 
+    return fig_handle
     return fig_handle

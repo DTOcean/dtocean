@@ -65,7 +65,7 @@ class TidalPowerPerformancePlot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -94,11 +94,12 @@ class TidalPowerPerformancePlot(PlotInterface):
         return id_map
 
     def connect(self):
+        assert self.meta is not None
+
         self.data.perf_curves.plot()
 
         cut_in = self.data.cut_in
         cut_in_title = self.meta.cut_in.title
-
         plt.axvline(x=cut_in, color="r", linestyle="--")
         plt.text(
             cut_in + 0.1,
@@ -110,7 +111,6 @@ class TidalPowerPerformancePlot(PlotInterface):
 
         cut_out = self.data.cut_out
         cut_out_title = self.meta.cut_out.title
-
         plt.axvline(x=cut_out, color="r", linestyle="--")
         plt.text(
             cut_out + 0.1,
@@ -161,7 +161,7 @@ class TidalVelocityPlot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -198,7 +198,7 @@ class TidalVelocityPlot(PlotInterface):
         y = time_slice.coords["UTM y"]
 
         fig = plt.figure()
-        ax1 = fig.add_subplot(1, 1, 1, aspect="equal")
+        fig.add_subplot(1, 1, 1, aspect="equal")
 
         mag = np.sqrt(time_slice.U**2 + time_slice.V**2)
 
@@ -206,7 +206,7 @@ class TidalVelocityPlot(PlotInterface):
         clb = plt.colorbar()
         clb.set_label("$m/s$")
 
-        Q = plt.quiver(
+        plt.quiver(
             x[::6],
             y[::6],
             time_slice.U.T[::6, ::6],

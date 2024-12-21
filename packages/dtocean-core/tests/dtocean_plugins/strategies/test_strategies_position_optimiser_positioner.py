@@ -2,12 +2,10 @@
 
 # pylint: disable=redefined-outer-name,protected-access,bad-whitespace
 
+import numpy as np
+
 # Check for module
 import pytest
-
-pytest.importorskip("dtocean_hydro")
-
-import numpy as np
 from shapely.affinity import translate
 from shapely.geometry import Point, Polygon, box
 
@@ -27,6 +25,8 @@ from dtocean_plugins.strategies.position_optimiser.positioner import (
     _nearest_n_nodes,
     _parametric_point_in_polygon,
 )
+
+pytest.importorskip("dtocean_hydro")
 
 
 @pytest.fixture
@@ -178,8 +178,8 @@ def test_make_grid_nodes_rotate():
     n_point = 0
 
     for xy in coords:
-        point = Point(xy)
-        if centre_box.intersects(point):
+        point_ = Point(xy)
+        if centre_box.intersects(point_):
             n_point += 1
 
     density = float(n_point) / 132
@@ -234,6 +234,7 @@ def test_DummyPositioner_valid_poly(lease_polygon, layer_depths):
         lease_polygon, layer_depths, max_depth=-21, lease_padding=10
     )
 
+    assert test._valid_poly is not None
     assert test._valid_poly.bounds == (210.0, 60.0, 890.0, 240.0)
 
 
@@ -248,6 +249,7 @@ def test_DummyPositioner_valid_poly_nogo(
         lease_padding=10,
     )
 
+    assert test._valid_poly is not None
     assert test._valid_poly.bounds == (210.0, 60.0, 790.0, 240.0)
 
 
