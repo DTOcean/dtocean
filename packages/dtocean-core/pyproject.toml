@@ -75,6 +75,11 @@ enabled = true
 monorepo-root = "../../"
 version-rewrite-rule = '=='
 
+[tool.pytest.ini_options]
+filterwarnings = [
+    'ignore:numpy.ndarray size changed:RuntimeWarning',
+]
+
 [tool.pyright]
 typeCheckingMode = "basic"
 
