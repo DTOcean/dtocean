@@ -5,6 +5,7 @@
 import contextlib
 import logging
 import queue
+import sys
 import threading
 from collections import namedtuple
 from typing import Any, Optional
@@ -171,7 +172,7 @@ class MockEvaluator(Evaluator):
         if self.scaler is not None:
             args = [self.scaler.inverse(x) for x in args]
         self._args = args
-        return ["python", "-V"]
+        return [sys.executable, "-V"]
 
     def _get_worker_results(self, evaluation):
         """Return the results for the given evaluation as a dictionary that
