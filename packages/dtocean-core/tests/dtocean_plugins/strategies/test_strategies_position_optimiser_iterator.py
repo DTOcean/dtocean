@@ -17,21 +17,23 @@ from dtocean_core.data.definitions import Strata
 from dtocean_core.menu import ModuleMenu
 from dtocean_core.pipeline import Branch
 from dtocean_plugins.strategies.basic import BasicStrategy
-from dtocean_plugins.strategies.position_optimiser.iterator import (  # pylint: disable=no-name-in-module
-    _get_basic_strategy,
-    _get_branch,
-    get_positioner,
-    interface,
-    iterate,
-    main,
-    prepare,
-    write_result_file,
-)
-from dtocean_plugins.strategies.position_optimiser.positioner import (
-    ParaPositioner,
-)
 
-pytest.importorskip("dtocean_hydro")
+dtocean_hydro = pytest.importorskip("dtocean_hydro")
+
+if dtocean_hydro:
+    from dtocean_plugins.strategies.position_optimiser.iterator import (  # pylint: disable=no-name-in-module
+        _get_basic_strategy,
+        _get_branch,
+        get_positioner,
+        interface,
+        iterate,
+        main,
+        prepare,
+        write_result_file,
+    )
+    from dtocean_plugins.strategies.position_optimiser.positioner import (
+        ParaPositioner,
+    )
 
 
 @pytest.fixture
