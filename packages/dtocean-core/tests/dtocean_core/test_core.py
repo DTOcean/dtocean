@@ -67,7 +67,7 @@ class MockModule(ModuleInterface):
         return id_map
 
     def connect(self, debug_entry=False, export_data=True):
-        return
+        pass
 
 
 class MockTheme(ThemeInterface):
@@ -107,7 +107,7 @@ class MockTheme(ThemeInterface):
         return id_map
 
     def connect(self, debug_entry=False, export_data=True):
-        return
+        pass
 
 
 # Using a py.test fixture to reduce boilerplate and test times.

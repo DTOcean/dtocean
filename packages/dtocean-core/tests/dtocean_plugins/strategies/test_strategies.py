@@ -15,13 +15,12 @@ class MockStrategy(Strategy):
     def configure(self, kwargs=None):  # pylint: disable=arguments-differ
         mock = {"mock": "mock"}
         self.set_config(mock)
-        return
 
     def get_variables(self):
         return None
 
     def execute(self, core, project):
-        return
+        pass
 
 
 def test_strategy_get_config():

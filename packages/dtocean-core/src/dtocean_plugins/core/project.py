@@ -141,8 +141,6 @@ class SystemTypeInterface(ProjectInterface):
 
         self.data.output = True
 
-        return
-
 
 class OptionsInterface(ProjectInterface):
     """Interface for providing database filtering option values"""
@@ -306,8 +304,6 @@ class OptionsInterface(ProjectInterface):
             self.data.site_names = self.data.all_sites["site_name"]
             self.data.corridor_selected = False
             self.data.lease_selected = False
-
-        return
 
 
 class SiteBoundaryInterface(ProjectInterface):
@@ -491,8 +487,6 @@ class SiteBoundaryInterface(ProjectInterface):
 
         self.data.proj_string = proj_strings.values[0]
 
-        return
-
 
 class FilterInterface(ProjectInterface, QueryInterface):
     """Interface to filter the database for a selected site and technology."""
@@ -500,8 +494,6 @@ class FilterInterface(ProjectInterface, QueryInterface):
     def __init__(self):
         ProjectInterface.__init__(self)
         QueryInterface.__init__(self)
-
-        return
 
     @classmethod
     def get_name(cls):
@@ -644,6 +636,9 @@ class FilterInterface(ProjectInterface, QueryInterface):
         # data. This is done using stored proceedure calls. Firstly, get the
         # ID given the name
 
+        if self._db is None:
+            raise RuntimeError("No database connected")
+
         if self.data.selected_system is not None:
             systems_df = self.data.all_systems
             system_matches = (
@@ -695,8 +690,6 @@ class FilterInterface(ProjectInterface, QueryInterface):
             )
 
             self.data.site_filtered = True
-
-        return
 
 
 class BoundariesInterface(ProjectInterface):
@@ -829,5 +822,4 @@ class BoundariesInterface(ProjectInterface):
           self.data.my_output_variable = value
 
         """
-
-        return
+        pass

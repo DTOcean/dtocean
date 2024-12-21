@@ -125,8 +125,6 @@ class TidalPowerPerformancePlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
-        return
-
 
 class TidalVelocityPlot(PlotInterface):
     @classmethod
@@ -228,5 +226,3 @@ class TidalVelocityPlot(PlotInterface):
         plt.title("Tidal Current Velocities: {}".format(time_str))
 
         self.fig_handle = plt.gcf()
-
-        return

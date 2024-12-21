@@ -129,8 +129,6 @@ class WaveOccurrencePlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
-        return
-
 
 class PowerMatrixPlot(PlotInterface):
     @classmethod
@@ -236,8 +234,6 @@ class PowerMatrixPlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
-        return
-
 
 class TeHm0Plot(PlotInterface):
     @classmethod
@@ -310,5 +306,3 @@ class TeHm0Plot(PlotInterface):
         plt.title("Te & Hm0 Time Series")
 
         self.fig_handle = plt.gcf()
-
-        return

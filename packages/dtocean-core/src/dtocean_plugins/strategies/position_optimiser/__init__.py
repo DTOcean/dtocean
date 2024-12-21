@@ -140,8 +140,6 @@ class PositionEvaluator(opt.Evaluator):
 
         self._set_objective_var(objective_var)
 
-        return
-
     def _set_objective_var(self, objective_var):
         sim = self._base_project.get_simulation(title="Default")
 
@@ -153,8 +151,6 @@ class PositionEvaluator(opt.Evaluator):
             raise RuntimeError(err_str)
 
         self._objective_var = objective_var
-
-        return
 
     def _init_counter(self):
         return PositionCounter()
@@ -238,8 +234,6 @@ class PositionEvaluator(opt.Evaluator):
             *args,
         )
 
-        return
-
     def pre_constraints_hook(self, *args):
         (grid_orientation, delta_row, delta_col, n_nodes, t1, t2, _) = args
 
@@ -292,7 +286,6 @@ class PositionEvaluator(opt.Evaluator):
     def _cleanup_hook(self, worker_project_path, flag, lines):  # pylint: disable=arguments-differ,unused-argument
         """Hook to clean up simulation files as required"""
         remove_retry(worker_project_path)
-        return
 
     def _log_violation(self, details, *args):
         largs = [str(arg) for arg in args]
@@ -301,8 +294,6 @@ class PositionEvaluator(opt.Evaluator):
 
         with open(self._violation_log_path, "a") as f:
             f.write(log_str)
-
-        return
 
 
 class PositionOptimiser:
@@ -322,8 +313,6 @@ class PositionOptimiser:
         self._dump_config = False
         self._worker_directory = None
         self._cma_main = None
-
-        return
 
     def start(self, config, project=None):
         module_logger.info("Beginning position optimisation")
@@ -503,8 +492,6 @@ class PositionOptimiser:
         # Disable logging rollovers
         opt.set_TimedRotatingFileHandler_rollover(timeout)
 
-        return
-
     def is_restart(self, worker_directory):
         config_path = os.path.join(worker_directory, self._config_fname)
 
@@ -642,8 +629,6 @@ class PositionOptimiser:
         # Disable logging rollovers
         opt.set_TimedRotatingFileHandler_rollover(timeout)
 
-        return
-
     def next(self):
         if self._cma_main is None:
             err_msg = (
@@ -678,8 +663,6 @@ class PositionOptimiser:
 
         if "auto" not in str(max_resample_factor):
             self._dump_config = False
-
-        return
 
     def get_es(self):
         if self._cma_main is None:
@@ -811,8 +794,6 @@ def _dump_results_control(
     with open(fpath, "w") as f:
         f.write(dump_str)
 
-    return
-
 
 def load_config(config_path):
     ruyaml = YAML()
@@ -845,8 +826,6 @@ def dump_config(config_path, config=None, use_template=True):
     with open(config_path, "w") as stream:
         ruyaml.dump(config_template, stream)
 
-    return
-
 
 def _load_config_template(config_name="config.yaml"):
     config_path = os.path.join(THIS_DIR, config_name)
@@ -866,8 +845,6 @@ def _clean_numbered_files_above(directory, search_pattern, highest_valid):
 
     for path in paths_to_clean:
         remove_retry(path)
-
-    return
 
 
 def _extract_number(f):

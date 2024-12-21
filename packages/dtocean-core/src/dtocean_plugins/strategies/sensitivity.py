@@ -35,8 +35,6 @@ class UnitSensitivity(Strategy):
         # Borrow the Basic strategy
         self._basic = BasicStrategy()
 
-        return
-
     @classmethod
     def get_name(cls):
         return "Unit Sensitivity"
@@ -52,8 +50,6 @@ class UnitSensitivity(Strategy):
         }
 
         self.set_config(config_dict)
-
-        return
 
     def get_variables(self):
         if self._config is None:
@@ -157,8 +153,6 @@ class UnitSensitivity(Strategy):
 
         if success_flag:
             self.add_simulation_title(new_title)
-
-        return
 
     def _safe_exe(self, core, project, sim_title):
         msg = 'Executing simulation "{}"'.format(sim_title)

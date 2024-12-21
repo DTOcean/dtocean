@@ -33,7 +33,7 @@ from dtocean_core.pipeline import Tree
 from .positioner import ParaPositioner
 
 try:
-    import dtocean_hydro  # pylint: disable=unused-import  # noqa: F401
+    import dtocean_hydro  # type: ignore # pylint: disable=unused-import  # noqa: F401
 except ImportError:
     err_msg = (
         "The DTOcean hydrodynamics module must be installed in order "
@@ -121,8 +121,6 @@ def main(
 
     write_result_file(core, project, prj_base_path, params_dict, flag, e)
 
-    return
-
 
 def iterate(
     core,
@@ -154,8 +152,6 @@ def iterate(
     basic_strategy = _get_basic_strategy()
     basic_strategy.execute(core, project)
 
-    return
-
 
 def prepare(
     core,
@@ -184,6 +180,8 @@ def prepare(
     user_array_layout = hydro_branch.get_input_variable(
         core, project, "options.user_array_layout"
     )
+
+    assert user_array_layout is not None
     user_array_layout.set_raw_interface(core, positions)
     user_array_layout.read(core, project)
 
@@ -192,6 +190,8 @@ def prepare(
     rated_power = hydro_branch.get_input_variable(
         core, project, "project.rated_power"
     )
+
+    assert rated_power is not None
     rated_power.set_raw_interface(core, power_rating * n_nodes)
     rated_power.read(core, project)
 
@@ -203,6 +203,8 @@ def prepare(
         devices_per_string = elec_branch.get_input_variable(
             core, project, "project.devices_per_string"
         )
+
+        assert devices_per_string is not None
         devices_per_string.set_raw_interface(core, dev_per_string)
         devices_per_string.read(core, project)
 
@@ -211,10 +213,10 @@ def prepare(
         data_points = oandm_branch.get_input_variable(
             core, project, "options.maintenance_data_points"
         )
+
+        assert data_points is not None
         data_points.set_raw_interface(core, n_evals)
         data_points.read(core, project)
-
-    return
 
 
 def _get_branch(core, project, branch_name):
@@ -311,8 +313,6 @@ def write_result_file(
 
     with open(yaml_path, "w") as stream:
         yaml.dump(yaml_dict, stream, default_flow_style=False)
-
-    return
 
 
 def interface():

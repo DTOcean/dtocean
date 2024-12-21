@@ -116,5 +116,3 @@ def init_config_interface():
 
     if dir_path is not None:
         print("Copying configuration files to {}".format(dir_path))
-
-    return

@@ -150,6 +150,9 @@ class LeaseBathyInterface(QueryInterface):
 
         """
 
+        if self._db is None:
+            raise RuntimeError("No database connected")
+
         # Manipulate wkt string for function requirements
         poly_wkt = self.data.lease_poly.to_wkt()
         func_poly_str = poly_wkt.replace("POLYGON ((", "")[:-2]
@@ -171,8 +174,6 @@ class LeaseBathyInterface(QueryInterface):
 
         raw_strata = bathy_records_to_strata(pre_bathy=pre_bathy)
         self.data.bathymetry = raw_strata
-
-        return
 
 
 class CorridorBathyInterface(QueryInterface):
@@ -294,6 +295,8 @@ class CorridorBathyInterface(QueryInterface):
           self.data.my_output_variable = value
 
         """
+        if self._db is None:
+            raise RuntimeError("No database connected")
 
         # Manipulate wkt string for function requirements
         poly_wkt = self.data.corridor_poly.to_wkt()
@@ -315,8 +318,6 @@ class CorridorBathyInterface(QueryInterface):
 
         raw_strata = bathy_records_to_strata(result)
         self.data.corridor = raw_strata
-
-        return
 
 
 class TidalEnergyInterface(QueryInterface):
@@ -438,6 +439,8 @@ class TidalEnergyInterface(QueryInterface):
           self.data.my_output_variable = value
 
         """
+        if self._db is None:
+            raise RuntimeError("No database connected")
 
         # Manipulate wkt string for function requirements
         poly_wkt = self.data.lease_poly.to_wkt()
@@ -460,7 +463,3 @@ class TidalEnergyInterface(QueryInterface):
         result = self._db.server_execute_query(query_str)
         raw_strata = tidal_series_records_to_xset(result)
         self.data.tidal_series = raw_strata
-
-        return
-
-        return

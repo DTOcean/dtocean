@@ -141,8 +141,6 @@ class CombinedBathyPlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
-        return
-
 
 class CombinedSedimentPlot(PlotInterface):
     @classmethod
@@ -357,6 +355,3 @@ class CombinedSedimentPlot(PlotInterface):
         plt.gcf().tight_layout(rect=(0, 0, shift, 1))
 
         self.fig_handle = plt.gcf()
-
-        return
-        return

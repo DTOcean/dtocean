@@ -145,8 +145,6 @@ class SiteBoundaryPlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
-        return
-
 
 class AllBoundaryPlot(PlotInterface):
     @classmethod
@@ -235,8 +233,6 @@ class AllBoundaryPlot(PlotInterface):
             corridor_poly=self.data.corridor_poly,
             landing_point=self.data.landing_point,
         )
-
-        return
 
 
 class DesignBoundaryPlot(PlotInterface):
@@ -332,8 +328,6 @@ class DesignBoundaryPlot(PlotInterface):
             landing_point=self.data.landing_point,
             lease_entry_point=self.data.lease_entry_point,
         )
-
-        return
 
 
 def boundaries_plot(
