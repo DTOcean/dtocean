@@ -35,25 +35,24 @@ def test_unpack_archive_zip(tmpdir):
     assert len(os.listdir(dst_path)) == 1
 
 
-if not sys.platform.startswith("win"):
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Windows only")
+def test_onerror(tmpdir):
+    config_tmpdir = tmpdir.mkdir("config")
+    test_file = config_tmpdir.join("locked.file")
+    test_file.write("a")
 
-    def test_onerror(tmpdir):
-        config_tmpdir = tmpdir.mkdir("config")
-        test_file = config_tmpdir.join("locked.file")
-        test_file.write("a")
+    os.chmod(str(test_file), S_IREAD | S_IRGRP | S_IROTH)
 
-        os.chmod(str(test_file), S_IREAD | S_IRGRP | S_IROTH)
+    assert len(os.listdir(str(tmpdir))) == 1
 
-        assert len(os.listdir(str(tmpdir))) == 1
+    with pytest.raises(Exception):
+        shutil.rmtree(str(config_tmpdir))
 
-        with pytest.raises(Exception):
-            shutil.rmtree(str(config_tmpdir))
+    assert len(os.listdir(str(tmpdir))) == 1
 
-        assert len(os.listdir(str(tmpdir))) == 1
+    shutil.rmtree(str(config_tmpdir), onerror=onerror)
 
-        shutil.rmtree(str(config_tmpdir), onerror=onerror)
-
-        assert len(os.listdir(str(tmpdir))) == 0
+    assert len(os.listdir(str(tmpdir))) == 0
 
 
 def test_os_retry_max_attempts():
