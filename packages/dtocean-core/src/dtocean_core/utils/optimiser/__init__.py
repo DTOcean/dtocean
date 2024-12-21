@@ -51,7 +51,6 @@ module_logger = logging.getLogger(__name__)
 class SafeCMAEvolutionStrategy(cma.CMAEvolutionStrategy):
     def plot(self):
         cma.plot(self.logger.name_prefix)
-        return
 
 
 class NormScaler:
@@ -66,8 +65,6 @@ class NormScaler:
             range_min, range_max, x0, self.sigma, self.range_n_sigmas
         )
         self._x0 = self.scaled(x0)
-
-        return
 
     @property
     def x0(self):
@@ -93,8 +90,6 @@ class Counter:
         self._evaluation = evaluation
         self._search_dict = search_dict
         self._lock = threading.Lock()
-
-        return
 
     @property
     def search_dict(self):
@@ -124,12 +119,10 @@ class Counter:
         finally:
             self._lock.release()
 
-        return
-
     @abc.abstractmethod
     def _set_params(self, *args):
         """Build a params (probably namedtuple) object to record evaluation."""
-        return
+        pass
 
     def get_cost(self, *args):
         self._lock.acquire()
@@ -153,7 +146,7 @@ class Counter:
     def _get_cost(self, params, *args):  # pylint: disable=unused-argument
         """Return cost if parameters in params object match input args, else
         return None."""
-        return
+        pass
 
     def next_evaluation(self):
         self._lock.acquire()
@@ -188,8 +181,6 @@ class Evaluator:
 
         if not restart:
             init_dir(worker_directory, clean_existing_dir)
-
-        return
 
     @abc.abstractmethod
     def _init_counter(self) -> Counter:
@@ -227,7 +218,7 @@ class Evaluator:
 
     def _cleanup_hook(self, worker_project_path, flag, results):  # pylint: disable=no-self-use,unused-argument
         """Hook to clean up simulation files as required"""
-        return
+        pass
 
     def get_counter_search_dict(self):
         return self._counter.search_dict
@@ -293,8 +284,6 @@ class Evaluator:
 
         results_queue.put((cost,) + extra)
 
-        return
-
     def __call__(self, q, stop_empty=False):
         """Call the evaluator with a queue.Queue() where index 0 is another
         queue to collect results, index 1 is the number of evaluations for
@@ -317,8 +306,6 @@ class Evaluator:
             item = q.get()
             self._iterate(*item)
             q.task_done()
-
-        return
 
 
 class Main:
@@ -363,8 +350,6 @@ class Main:
 
         self._init_resamples(max_resample_loop_factor, auto_resample_iterations)
         self._init_threads()
-
-        return
 
     @property
     def stop(self):
@@ -412,8 +397,6 @@ class Main:
             self._max_resample_loops = 0
             self._n_record_resample = auto_resample_iterations
 
-        return
-
     def _init_threads(self):
         self._thread_queue = queue.Queue()
 
@@ -423,8 +406,6 @@ class Main:
             )
             worker.daemon = True
             worker.start()
-
-        return
 
     def next(self):
         if self.es.stop():
@@ -452,14 +433,10 @@ class Main:
         ).format(self._n_hist, tolfunhist)
         module_logger.info(msg_str)
 
-        return
-
     def _next(self):
         default, _ = self._get_solutions_costs(self.es)
         self.es.tell(default["solutions"], default["costs"])
         self.es.logger.add()
-
-        return
 
     def _next_nh(self):
         assert self.nh is not None
@@ -500,8 +477,6 @@ class Main:
 
         self.es.logger.add(more_data=[self.nh.evaluations, log_noise])
         self.nh.prepare(default["solutions"], default["costs"])
-
-        return
 
     def _get_solutions_costs(
         self,
@@ -876,8 +851,6 @@ def dump_outputs(worker_directory, es, evaluator, nh=None):
     nh_path = os.path.join(worker_directory, "saved-nh-object.pkl")
     pickle.dump(nh, open(nh_path, "wb"), -1)
 
-    return
-
 
 def load_outputs(worker_directory):
     es_path = os.path.join(worker_directory, "saved-cma-object.pkl")
@@ -909,8 +882,6 @@ def set_TimedRotatingFileHandler_rollover(timeout=None):
         if isinstance(handler, handlers.TimedRotatingFileHandler):
             handler.interval = timeout
             handler.rolloverAt = handler.computeRollover(int(time.time()))
-
-    return
 
 
 def _get_scale_factor(range_min, range_max, x0, sigma, n_sigmas):
@@ -980,5 +951,3 @@ def _log_exception(e, flag):
     msg_strs = traceback.format_exception(exc_type, exc_value, exc_traceback)
     msg_str = "".join(msg_strs)
     module_logger.debug(msg_str)
-
-    return

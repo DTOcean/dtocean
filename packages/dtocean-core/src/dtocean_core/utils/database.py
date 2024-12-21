@@ -418,8 +418,6 @@ def database_to_files(
             print_function,
         )
 
-        return
-
     def _autofit_columns(xlpath):
         if platform.system() != "Windows":
             return
@@ -434,8 +432,6 @@ def database_to_files(
 
         wb.Save()
         wb.Close()
-
-        return
 
     for table_dict in table_list:
         table_df = None
@@ -601,8 +597,6 @@ def database_to_files(
                     new_where_list,
                 )
 
-    return
-
 
 def database_from_files(
     root_path,
@@ -761,8 +755,6 @@ def database_from_files(
                     truncate=truncate,
                     print_function=print_function,
                 )
-
-    return
 
 
 def query_builder(
@@ -1171,5 +1163,3 @@ def database_convert_interface():
         return
 
     raise RuntimeError("Highly illogical...")
-
-    return

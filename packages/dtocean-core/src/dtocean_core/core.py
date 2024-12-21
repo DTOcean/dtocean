@@ -68,8 +68,6 @@ class AutoRaw(AutoInterface, RawInterface):
         AutoInterface.__init__(self)
         RawInterface.__init__(self)
 
-        return
-
     @classmethod
     def get_connect_name(cls):
         return None
@@ -79,8 +77,6 @@ class AutoQuery(AutoInterface, QueryInterface):
     def __init__(self):
         AutoInterface.__init__(self)
         QueryInterface.__init__(self)
-
-        return
 
     @classmethod
     def get_connect_name(cls):
@@ -92,8 +88,6 @@ class AutoPlot(AutoInterface, PlotInterface):
         AutoInterface.__init__(self)
         PlotInterface.__init__(self)
 
-        return
-
     @classmethod
     def get_connect_name(cls):
         return "auto_plot"
@@ -103,8 +97,6 @@ class AutoFileInput(AutoInterface, FileInputInterface):
     def __init__(self):
         AutoInterface.__init__(self)
         FileInputInterface.__init__(self)
-
-        return
 
     @classmethod
     def get_connect_name(cls):
@@ -119,8 +111,6 @@ class AutoFileOutput(AutoInterface, FileOutputInterface):
     def __init__(self):
         AutoInterface.__init__(self)
         FileOutputInterface.__init__(self)
-
-        return
 
     @classmethod
     def get_connect_name(cls):
@@ -182,8 +172,6 @@ class OrderedSim(Simulation):
     def set_unavailable_variables(self, variable_names=None):
         self._force_unvailable = variable_names
 
-        return
-
     def get_unavailable_variables(self):
         return self._force_unvailable
 
@@ -192,8 +180,6 @@ class OrderedSim(Simulation):
 
         self._inspection_level = level
 
-        return
-
     def get_inspection_level(self):
         return self._inspection_level
 
@@ -201,8 +187,6 @@ class OrderedSim(Simulation):
         MODULE_LOGGER.debug("Setting execution level to {}".format(level))
 
         self._execution_level = level
-
-        return
 
     def get_execution_level(self):
         return self._execution_level
@@ -218,8 +202,6 @@ class OrderedSim(Simulation):
         self._hubs[hub_id] = hub
         self._hub_order.append(hub_id)
 
-        return
-
     def get_hub_order(self):
         if not self._hub_order:
             result = None
@@ -231,12 +213,8 @@ class OrderedSim(Simulation):
     def set_input_status(self, hub_input_status):
         self._hub_input_status = hub_input_status
 
-        return
-
     def set_output_status(self, hub_output_status):
         self._hub_output_status = hub_output_status
-
-        return
 
     def get_input_ids(
         self, hub_id=None, interface_name=None, valid_statuses=None
@@ -327,8 +305,6 @@ class Project:
         self._active_index = None
         self._db_cred = None
 
-        return
-
     def is_active(self):
         result = False
         if self._active_index is not None:
@@ -362,15 +338,11 @@ class Project:
 
         self._set_active_index(index)
 
-        return
-
     def add_simulation(self, simulation, set_active=False):
         index = self._set_simulation(simulation)
 
         if self._active_index is None or set_active:
             self._set_active_index(index)
-
-        return
 
     def remove_simulation(self, index=None, title=None, active_index=None):
         if index is None and title is None:
@@ -445,8 +417,6 @@ class Project:
 
         self._set_simulation(simulation)
 
-        return
-
     def get_pool(self):
         return self._pool
 
@@ -455,8 +425,6 @@ class Project:
 
     def set_database_credentials(self, database_cred):
         self._db_cred = database_cred
-
-        return
 
     def get_database_credentials(self):
         return self._db_cred
@@ -504,8 +472,6 @@ class Project:
             raise ValueError(errStr)
 
         self._active_index = index
-
-        return
 
     def _get_simulation(self, index=None, title=None):
         """If both index and title are none then return the active simulation."""
@@ -603,8 +569,6 @@ class Core:
         # Set up plotting (must happen after sockets are created)
         self._init_plots()
 
-        return
-
     def _create_control(self):
         data_store = DataStorage(core_data)
         sequencer = Sequencer(
@@ -641,8 +605,6 @@ class Core:
         in an imported module)"""
 
         plt.ioff()
-
-        return
 
     def new_project(self, project_title, simulation_title="Default"):
         new_project = Project(project_title)
@@ -721,8 +683,6 @@ class Core:
 
         # Package the directory
         package_dir(prj_dir_path, dump_path, archive)
-
-        return
 
     def load_project(self, load_path):
         # A data store is required
@@ -822,8 +782,6 @@ class Core:
 
         self.register_level(project, self._markers["initial"], None)
 
-        return
-
     def clone_simulation(
         self,
         project,
@@ -849,8 +807,6 @@ class Core:
 
         project.add_simulation(simulation_clone, set_active)
 
-        return
-
     def import_simulation(
         self,
         src_project,
@@ -873,8 +829,6 @@ class Core:
 
         dst_project.add_simulation(dst_simulation, set_active)
 
-        return
-
     def remove_simulation(
         self, project, sim_index=None, sim_title=None, active_index=None
     ):
@@ -884,8 +838,6 @@ class Core:
         )
 
         self.control.remove_simulation(pool, simulation)
-
-        return
 
     def new_hub(self, project):
         # For DTOcean the hubs are assumed to come one after another, but this
@@ -913,8 +865,6 @@ class Core:
 
         else:
             raise ValueError
-
-        return
 
     def get_metadata(self, identifier):
         self.check_valid_variable(identifier)
@@ -1016,8 +966,6 @@ class Core:
 
         self.set_interface_status(project)
 
-        return
-
     def mask_states(
         self,
         project,
@@ -1040,8 +988,6 @@ class Core:
 
         self.set_interface_status(project)
 
-        return
-
     def unmask_states(
         self,
         project,
@@ -1060,8 +1006,6 @@ class Core:
             return
 
         self.set_interface_status(project)
-
-        return
 
     def dump_datastate(self, project, dump_path, mask=None):
         data_store = DataStorage(core_data)
@@ -1125,8 +1069,6 @@ class Core:
 
         # Package the directory
         package_dir(dts_dir_path, dump_path, archive)
-
-        return
 
     def load_datastate(self, project, load_path, exclude=None, overwrite=True):
         # A data store is required
@@ -1224,8 +1166,6 @@ class Core:
             project, identifiers=var_ids, values=var_objs, use_objects=True
         )
 
-        return
-
     def get_levels(
         self, project, show_masked=True, sim_index=None, sim_title=None
     ):
@@ -1307,8 +1247,6 @@ class Core:
 
         simulation.level_map[level] = interface_name
 
-        return
-
     def inspect_level(
         self,
         project,
@@ -1373,8 +1311,6 @@ class Core:
             return
 
         self.set_interface_status(project)
-
-        return
 
     def reset_level(
         self,
@@ -1450,15 +1386,11 @@ class Core:
 
         self.set_interface_status(project)
 
-        return
-
     def set_interface_status(self, project, simulation=None):
         # This order is important as the input status relies on the output
         # status
         self._set_outputs_status(project, simulation)
         self._set_inputs_status(project, simulation)
-
-        return
 
     def can_load_interface(self, project, interface, check_id=None):
         pool = project.get_pool()
@@ -1644,8 +1576,6 @@ class Core:
 
         simulation.set_output_status(hub_dict)
 
-        return
-
     def _set_inputs_status(self, project, simulation=None):
         pool = project.get_pool()
         if simulation is None:
@@ -1688,8 +1618,6 @@ class Core:
 
         simulation.set_input_status(hub_dict)
 
-        return
-
     def _get_unavailable_outputs(self, project, hub_id, simulation=None):
         # Collect the not satisfied outputs of the modules for the input
         # status of the themes.
@@ -1730,8 +1658,6 @@ class Connector:
         hub.force_completed = value
 
         core.set_interface_status(project)
-
-        return
 
     def get_available_interfaces(self, core, project):
         simulation = project.get_simulation()
@@ -1897,8 +1823,6 @@ class Connector:
 
         core.set_interface_status(project)
 
-        return
-
     def get_interface(
         self, core, project, interface_name, allow_unavailable=False
     ):
@@ -1984,8 +1908,6 @@ class Connector:
         if register_level and output_level is not None:
             simulation.set_execution_level(output_level)
 
-        return
-
     def auto_execute(
         self,
         core,
@@ -2022,8 +1944,6 @@ class Connector:
             self.execute_interface(
                 core, project, interface_name, force_level, register_level
             )
-
-        return
 
     def _set_inputs(self, core, project, interface, interface_name):
         (_, optional_inputs) = interface.get_inputs()
@@ -2080,6 +2000,3 @@ class Connector:
                 "Not all inputs of interface {} have been " "satisfied."
             ).format(interface_name)
             raise ValueError(errStr)
-
-        return
-        return

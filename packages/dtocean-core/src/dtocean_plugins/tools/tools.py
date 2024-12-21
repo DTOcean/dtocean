@@ -33,11 +33,10 @@ class Tool(MapInterface):
         """The configure method is collect information required for executing
         the tool.
         """
-        return
+        pass
 
     def get_config(self):
         return deepcopy(self._config)
 
     def set_config(self, config_dict):
         self._config = config_dict
-        return

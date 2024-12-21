@@ -53,8 +53,6 @@ class Strategy(object):
         # is picklable)
         self.sim_details: Optional[Any] = None
 
-        return
-
     @classmethod
     @abc.abstractmethod
     def get_name(cls):
@@ -72,23 +70,17 @@ class Strategy(object):
         the strategy.
         """
 
-        return
-
     @abc.abstractmethod
     def get_variables(self):
         """The get_variables method returns the list of any variables that
         will be set by the strategy
         """
 
-        return
-
     @abc.abstractmethod
     def execute(self, core, project):
         """The execute method is used to execute the strategy. It should always
         take a Core and a Project class as the only inputs.
         """
-
-        return
 
     def get_config(self):
         return deepcopy(self._config)
