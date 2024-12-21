@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -48,7 +49,7 @@ def _make_test_data(data_dir: Path, name: str):
 
     src_path_py = (data_dir / name).with_suffix(".py")
     result = subprocess.run(
-        ["python", src_path_py],
+        [sys.executable, src_path_py],
         capture_output=True,
         text=True,
     )
