@@ -43,7 +43,7 @@ class MockModule(ModuleInterface):
         return None
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         id_map = {
             "dummy1": "device.turbine_performance",
             "dummy2": "device.cut_in_velocity",
@@ -84,7 +84,7 @@ class MockTheme(ThemeInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         id_map = {
             "dummy1": "project.discount_rate",
             "dummy2": "project.capex_total",
@@ -126,7 +126,7 @@ class MockTheme2(ThemeInterface):
         return option_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         id_map = {
             "dummy1": "project.discount_rate",
             "dummy2": "project.discounted_capex",

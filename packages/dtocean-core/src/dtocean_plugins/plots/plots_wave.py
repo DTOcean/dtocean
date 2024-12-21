@@ -21,6 +21,7 @@ Created on Wed Apr 06 15:59:04 2016
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 
@@ -60,7 +61,7 @@ class WaveOccurrencePlot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -98,28 +99,28 @@ class WaveOccurrencePlot(PlotInterface):
             cellStrs.append(rowStrs)
 
         fig = plt.figure()
-        ax1 = fig.add_subplot(111, frameon=True, xticks=[], yticks=[])
+        fig.add_subplot(111, frameon=True, xticks=[], yticks=[])
 
         # Add headers and a table at the bottom of the axes
-        header_0 = plt.table(
+        plt.table(
             cellText=[[""]],
             colLabels=["Te [$s$]"],
             loc="center",
             bbox=[0, 0.85, 1.0, 0.1],
         )
 
-        header_1 = plt.table(
+        plt.table(
             cellText=[["Bob"]],
             rowLabels=["Hm0 [$m$]          "],
             loc="center",
             bbox=[0, 0, 1, 0.845],
         )
 
-        the_table = plt.table(
+        plt.table(
             cellText=cellStrs,
             rowLabels=occurrence_flat.Hm0.values,
             colLabels=occurrence_flat.Te.values,
-            cellColours=plt.cm.RdYlGn_r(col_normals(vals)),
+            cellColours=mpl.colormaps["RdYlGn_r"](col_normals(vals)),
             loc="center",
             bbox=[0, 0, 1, 0.9],
         )
@@ -164,7 +165,7 @@ class PowerMatrixPlot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -202,17 +203,17 @@ class PowerMatrixPlot(PlotInterface):
             cellStrs.append(rowStrs)
 
         fig = plt.figure()
-        ax1 = fig.add_subplot(111, frameon=True, xticks=[], yticks=[])
+        fig.add_subplot(111, frameon=True, xticks=[], yticks=[])
 
         # Add headers and a table at the bottom of the axes
-        header_0 = plt.table(
+        plt.table(
             cellText=[[""]],
             colLabels=["Te [$s$]"],
             loc="center",
             bbox=[0, 0.85, 1.0, 0.1],
         )
 
-        header_1 = plt.table(
+        plt.table(
             cellText=[["Bob"]],
             rowLabels=["Hm0 [$m$]          "],
             loc="center",
@@ -222,11 +223,11 @@ class PowerMatrixPlot(PlotInterface):
         short_hm0 = ["{:.2f}".format(x) for x in occurrence_flat.Hm0.values]
         short_te = ["{:.2f}".format(x) for x in occurrence_flat.Te.values]
 
-        the_table = plt.table(
+        plt.table(
             cellText=cellStrs,
             rowLabels=short_hm0,
             colLabels=short_te,
-            cellColours=plt.cm.RdYlGn_r(col_normals(vals)),
+            cellColours=mpl.colormaps["RdYlGn_r"](col_normals(vals)),
             loc="center",
             bbox=[0, 0, 1, 0.9],
         )
@@ -271,7 +272,7 @@ class TeHm0Plot(PlotInterface):
         return input_list
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.

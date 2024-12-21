@@ -26,6 +26,7 @@ import os
 import re
 from collections import namedtuple
 from copy import deepcopy
+from typing import Any
 
 import numpy as np
 import yaml
@@ -510,7 +511,7 @@ class PositionOptimiser:
         try:
             config = load_config(config_path)
             opt.load_outputs(worker_directory)
-        except:  # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except  # noqa: E722
             log_msg = "Can not find state of previous optimisation"
             module_logger.debug(log_msg, exc_info=True)
             return False
@@ -669,6 +670,7 @@ class PositionOptimiser:
 
         max_resample_factor = self._cma_main.get_max_resample_factor()
 
+        assert self._worker_directory is not None
         config_path = os.path.join(self._worker_directory, self._config_fname)
         config = load_config(config_path)
         config["max_resample_factor"] = self._cma_main.max_resample_loops
@@ -697,7 +699,7 @@ def _get_param_control(core, project, config):
     integer_variables = []
     fixed_params = {}
 
-    result = {
+    result: dict[str, Any] = {
         "ranges": ranges,
         "x0s": x0s,
         "x_ops": x_ops,
@@ -785,6 +787,7 @@ def _get_param_control(core, project, config):
 
     if not fixed_params:
         fixed_params = None
+
     result["fixed_params"] = fixed_params
 
     return result
@@ -868,7 +871,7 @@ def _clean_numbered_files_above(directory, search_pattern, highest_valid):
 
 
 def _extract_number(f):
-    s = re.findall("(\d+).", f)
+    s = re.findall(r"(\d+).", f)
     return int(s[0]) if s else -1
 
 

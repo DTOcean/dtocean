@@ -678,7 +678,7 @@ def _release_logging_locks():
             for h in v.handlers:
                 try:
                     h.release()
-                except:  # pylint: disable=bare-except
+                except:  # pylint: disable=bare-except  # noqa: E722
                     pass
 
     return
