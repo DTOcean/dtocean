@@ -37,8 +37,6 @@ class MovingAverage:
         self._data = deque(init, window_length)
         self._predict = None
 
-        return
-
     def add(self, new_data=None):
         if new_data is not None:
             self._data.append(new_data)
@@ -49,8 +47,6 @@ class MovingAverage:
             result = sum(self._data) / float(self._length)
 
         self._predict = result
-
-        return
 
     def __call__(self):
         return self._predict
@@ -214,8 +210,6 @@ class NoiseHandler:
         self._sigma_fac = 1.0
         self._noise_predict = MovingAverage(3)
 
-        return
-
     @property
     def sigma_fac(self):
         return self._sigma_fac
@@ -259,8 +253,6 @@ class NoiseHandler:
         self.fit = list(fit)
         self.fitre = list(fit)
         self._X = X
-
-        return
 
     def ask(self, ask=None):
         """Give solutions for noise measurement.
@@ -352,8 +344,6 @@ class NoiseHandler:
         self.evaluations_just_done = real_evals
         self._sigma_fac = self._treat()
         self._sols = None
-
-        return
 
     def _indices(self, fit):
         """return the set of indices to be reevaluated for noise

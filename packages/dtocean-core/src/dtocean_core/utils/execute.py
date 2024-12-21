@@ -41,8 +41,6 @@ def warn_with_traceback(
     assert log is not None
     log.write(warnings.formatwarning(message, category, filename, lineno, line))
 
-    return
-
 
 def main(
     fpath,
@@ -111,8 +109,6 @@ def main(
     print(msg_str)
 
     my_core.dump_project(my_project, save_path)
-
-    return
 
 
 def main_interface():
@@ -190,5 +186,3 @@ def main_interface():
         save = True
 
     main(fpath, save, full, warn, log)
-
-    return

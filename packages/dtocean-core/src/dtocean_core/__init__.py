@@ -76,5 +76,3 @@ def start_logging():
             handler.doRollover()
 
     logger.info("Begin logging for dtocean_core")
-
-    return

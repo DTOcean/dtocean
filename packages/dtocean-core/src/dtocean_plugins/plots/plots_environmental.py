@@ -103,8 +103,6 @@ class EISPlot_hydro(PlotInterface):
 
         self.fig_handle = eis_plot(eis, confidence_dict, plot_title)
 
-        return
-
 
 class EISPlot_elec(PlotInterface):
     @classmethod
@@ -174,8 +172,6 @@ class EISPlot_elec(PlotInterface):
 
         self.fig_handle = eis_plot(eis, confidence_dict, plot_title)
 
-        return
-
 
 class EISPlot_moor(PlotInterface):
     @classmethod
@@ -244,8 +240,6 @@ class EISPlot_moor(PlotInterface):
 
         self.fig_handle = eis_plot(eis, confidence_dict, plot_title)
 
-        return
-
 
 class GEISPlot_hydro(PlotInterface):
     @classmethod
@@ -308,8 +302,6 @@ class GEISPlot_hydro(PlotInterface):
         geis = self.data.geis
 
         self.fig_handle = geis_plot(geis)
-
-        return
 
 
 class GEISPlot_elec(PlotInterface):
@@ -374,8 +366,6 @@ class GEISPlot_elec(PlotInterface):
 
         self.fig_handle = geis_plot(geis)
 
-        return
-
 
 class GEISPlot_moor(PlotInterface):
     @classmethod
@@ -438,8 +428,6 @@ class GEISPlot_moor(PlotInterface):
         geis = self.data.geis
 
         self.fig_handle = geis_plot(geis)
-
-        return
 
 
 def cmap_env(position=None, bit=True):

@@ -44,8 +44,6 @@ class UniVariateKDE:
         self._ppf = None
         self._x0 = 0.0
 
-        return
-
     def pdf(self, values):
         return self._kde(values)
 

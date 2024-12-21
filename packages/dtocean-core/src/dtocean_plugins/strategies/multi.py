@@ -57,8 +57,6 @@ class MultiSensitivity(Strategy):
 
         self.set_config(config_dict)
 
-        return
-
     def get_variables(self):
         if self._config is None:
             return None
@@ -152,8 +150,6 @@ class MultiSensitivity(Strategy):
 
         # Build the simulation details frame
         self.sim_details = pd.concat(sim_frames, keys=sim_keys)
-
-        return
 
     def _get_title_str(self, meta, value):
         title_str = "{} = {}".format(meta.title, value)
@@ -260,5 +256,3 @@ class MultiSensitivity(Strategy):
 
         # Run the simulation
         basic.execute(core, project)
-
-        return

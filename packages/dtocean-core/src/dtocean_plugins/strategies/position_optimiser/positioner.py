@@ -65,8 +65,6 @@ class DevicePositioner:
             nogo_polygons, lease_padding, turbine_interdistance
         )
 
-        return
-
     def _set_valid_polygon(
         self, nogo_polygons, lease_padding, turbine_interdistance
     ):
@@ -93,8 +91,6 @@ class DevicePositioner:
         self._valid_poly = _buffer_lease_polygon(
             valid_poly, lease_padding, turbine_interdistance
         )
-
-        return
 
     def _make_grid_nodes(
         self, grid_orientation, delta_row, delta_col, beta, psi
@@ -192,8 +188,6 @@ def _check_grid_dims(delta_row, delta_col, beta, psi):
     if not np.pi / -2 < psi < np.pi / 2:
         err_str = "Argument 'psi' must lie in the range (-pi / 2, pi / 2)"
         raise ValueError(err_str)
-
-    return
 
 
 def _make_grid_nodes(
@@ -461,8 +455,6 @@ class PolyCompass:
         else:
             self._cx, self._cy = centre
 
-        return
-
     def _get_bbox_centroid(self):
         return box(*self._polygon.bounds).centroid.coords[:][0]
 
@@ -474,8 +466,6 @@ class PolyCompass:
             point.y for point in self._polygon.exterior.intersection(ns_line)
         ]
 
-        return
-
     def _add_we_intersections(self):
         assert isinstance(self._cy, float)
         we_line_ends = [(-9e8, self._cy), (9e8, self._cy)]
@@ -483,8 +473,6 @@ class PolyCompass:
         self._we_intersections = [
             point.x for point in self._polygon.exterior.intersection(we_line)
         ]
-
-        return
 
     def _add_swne_intersections(self):
         def f(x):
@@ -496,8 +484,6 @@ class PolyCompass:
             swne_line
         )
 
-        return
-
     def _add_nwse_intersections(self):
         def f(x):
             return -x + self._cy + self._cx
@@ -507,8 +493,6 @@ class PolyCompass:
         self._nwse_intersections = self._polygon.exterior.intersection(
             nwse_line
         )
-
-        return
 
     def _get_north(self):
         if self._ns_intersections is None:

@@ -192,8 +192,6 @@ class MockEvaluator(Evaluator):
 
         self._counter.set_params(evaluation, cost, *args)
 
-        return
-
 
 #    def _log_exception(self, e, flag):
 #

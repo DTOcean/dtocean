@@ -136,8 +136,6 @@ class ArrayLeasePlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
-        return
-
 
 class ArrayLeasePlotNumbers(PlotInterface):
     @classmethod
@@ -239,8 +237,6 @@ class ArrayLeasePlotNumbers(PlotInterface):
         plt.tight_layout()
 
         self.fig_handle = plt.gcf()
-
-        return
 
 
 class ArrayCablesPlot(PlotInterface):
@@ -363,8 +359,6 @@ class ArrayCablesPlot(PlotInterface):
         plt.tight_layout(rect=(0.0, 0.04, 0.84, 0.96))
 
         self.fig_handle = plt.gcf()
-
-        return
 
 
 class ArrayFoundationsPlot(PlotInterface):
@@ -522,8 +516,6 @@ class ArrayFoundationsPlot(PlotInterface):
 
         self.fig_handle = plt.gcf()
 
-        return
-
 
 def plot_point_dict(
     ax,
@@ -601,8 +593,6 @@ def plot_lease_boundary(ax, lease_boundary, padding=None):
 
     ax.add_patch(patch)
 
-    return
-
 
 def annotate_poly(ax, lease_poly):
     maxy = lease_poly.bounds[3] + 50.0
@@ -621,8 +611,6 @@ def annotate_poly(ax, lease_poly):
         weight="bold",
         size="large",
     )
-
-    return
 
 
 def plot_cables(ax, cable_routes):
@@ -644,8 +632,6 @@ def plot_cables(ax, cable_routes):
 
         line = Line2D(x, y)
         ax.add_line(line)
-
-    return
 
 
 def clockwise(x, y):

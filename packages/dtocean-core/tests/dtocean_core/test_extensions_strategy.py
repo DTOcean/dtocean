@@ -27,8 +27,7 @@ class MockStrategy(Strategy):
         """The configure method is collect information required for executing
         the strategy.
         """
-
-        return
+        pass
 
     def get_variables(self):
         """The get_variables method returns the list of any variables that
@@ -41,8 +40,7 @@ class MockStrategy(Strategy):
         """The execute method is used to execute the strategy. It should always
         take a Core and a Project class as the only inputs.
         """
-
-        return
+        pass
 
 
 @pytest.fixture()

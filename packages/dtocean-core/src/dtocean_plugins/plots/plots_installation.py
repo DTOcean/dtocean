@@ -184,8 +184,6 @@ class InstallationGanttChartPlot(PlotInterface):
             self.data.install_mooring_times,
         )
 
-        return
-
 
 def installation_gantt_chart(
     plan=None,

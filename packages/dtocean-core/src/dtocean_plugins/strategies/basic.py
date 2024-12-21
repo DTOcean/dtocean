@@ -34,8 +34,6 @@ class BasicStrategy(Strategy):
     def configure(self, kwargs=None):
         """Does nothing in this case"""
 
-        return
-
     def get_variables(self):
         return None
 
@@ -57,5 +55,3 @@ class BasicStrategy(Strategy):
                 core, project, allow_unavailable=True
             )
             current_mod = self._module_menu.get_current(core, project)
-
-        return

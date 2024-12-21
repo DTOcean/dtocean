@@ -83,8 +83,6 @@ class OptimiserThread(threading.Thread):
         _release_logging_locks()
         self._stopped = True
 
-        return
-
     def _set_paused(self, state):
         if state:
             state_msg = "paused"
@@ -95,8 +93,6 @@ class OptimiserThread(threading.Thread):
         module_logger.info(log_msg)
 
         self._paused = state
-
-        return
 
     def stop(self):
         if self._stop_event.is_set():
@@ -110,8 +106,6 @@ class OptimiserThread(threading.Thread):
         if not self._continue_event.is_set():
             self._continue_event.set()
 
-        return
-
     def pause(self):
         if self._stop_event.is_set() or not self._continue_event.is_set():
             return
@@ -120,8 +114,6 @@ class OptimiserThread(threading.Thread):
         module_logger.info(log_msg)
 
         self._continue_event.clear()
-
-        return
 
     def resume(self):
         if self._stop_event.is_set() or self._continue_event.is_set():
@@ -132,16 +124,12 @@ class OptimiserThread(threading.Thread):
 
         self._continue_event.set()
 
-        return
-
     def _exit_hook(self):  # pylint: disable=no-self-use,method-hidden
-        return
+        pass
 
     def set_exit_hook(self, func):
         method = _method_decorator(func)
         self._exit_hook = types.MethodType(method, self)
-
-        return
 
     def clear_exit_hook(self):
         def empty():
@@ -149,8 +137,6 @@ class OptimiserThread(threading.Thread):
 
         method = _method_decorator(empty)
         self._exit_hook = types.MethodType(method, self)
-
-        return
 
     def run(self):
         continue_event_state = self._continue_event.is_set()
@@ -181,8 +167,6 @@ class OptimiserThread(threading.Thread):
         _run_favorite(self._optimiser)
         _post_process(self._config, self._log_interval)
         self._set_stopped()
-
-        return
 
     def get_es(self):
         if self.stopped:
@@ -223,8 +207,6 @@ class AdvancedPosition(Strategy):
             raise ValueError(err_msg)
 
         self.set_config(config_dict)
-
-        return
 
     @classmethod
     def get_config_status(cls, config):
@@ -320,13 +302,9 @@ class AdvancedPosition(Strategy):
         hydro_branch = tree.get_branch(core, project, "Hydrodynamics")
         hydro_branch.reset(core, project)
 
-        return
-
     def _post_process(self, optimiser, log_interval=100):
         _run_favorite(optimiser)
         _post_process(self._config, log_interval)
-
-        return
 
     @classmethod
     def get_favorite_result(cls, config):
@@ -413,8 +391,6 @@ class AdvancedPosition(Strategy):
         core.import_simulation(src_project, project, sim_title)
         self.add_simulation_title(sim_title)
 
-        return
-
     def load_simulation_ids(
         self,
         core,
@@ -499,8 +475,6 @@ class AdvancedPosition(Strategy):
 
             self.add_simulation_title(sim_title)
 
-        return
-
     def remove_simulations(
         self, core, project, sim_titles=None, exclude_default=True
     ):
@@ -519,8 +493,6 @@ class AdvancedPosition(Strategy):
             if sim_title in self._sim_record:
                 self.remove_simulation_title(sim_title)
 
-        return
-
     @classmethod
     def load_config(cls, config_path):
         config = load_config(config_path)
@@ -529,12 +501,10 @@ class AdvancedPosition(Strategy):
     def dump_config(self, config_path):
         config = self.dump_config_hook(self._config)
         dump_config(config_path, config)
-        return
 
     @classmethod
     def export_config_template(cls, export_path):
         dump_config(export_path)
-        return
 
     @classmethod
     def allow_run(cls, core, project, config):
@@ -681,8 +651,6 @@ def _release_logging_locks():
                 except:  # pylint: disable=bare-except  # noqa: E722
                     pass
 
-    return
-
 
 def _method_decorator(func):
     def wrapper(self):  # pylint: disable=unused-argument
@@ -761,8 +729,6 @@ def _run_favorite(
     prj_file_path = "{}.prj".format(prj_base_path)
     core.dump_project(project, prj_file_path)
 
-    return
-
 
 def _post_process(config, log_interval=100):
     msg_str = "Beginning post-processing of simulations"
@@ -838,8 +804,6 @@ def _post_process(config, log_interval=100):
 
     msg_str = "Post-processing complete"
     module_logger.info(msg_str)
-
-    return
 
 
 def _get_root_project_base_name(root_project_path):

@@ -72,8 +72,6 @@ class MockModule(ModuleInterface):
         self.data.dummy6 = 1.0
         self.data.dummy7 = 1
 
-        return
-
 
 class AnotherMockModule(ModuleInterface):
     @classmethod
@@ -117,8 +115,6 @@ class AnotherMockModule(ModuleInterface):
 
     def connect(self, debug_entry=False, export_data=True):
         self.data.dummy4 = 1.0
-
-        return
 
 
 class MockTheme(ThemeInterface):
@@ -177,8 +173,6 @@ class MockTheme(ThemeInterface):
             total += self.data.dummy3
 
         self.data.dummy4 = total
-
-        return
 
 
 # Using a py.test fixture to reduce boilerplate and test times.

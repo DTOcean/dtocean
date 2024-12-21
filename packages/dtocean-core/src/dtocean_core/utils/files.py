@@ -95,8 +95,6 @@ def package_dir(src_dir_path, dst_path: StrOrPath, archive=False):
     rmtree_retry(src_dir_path, fail_silent=True)  # pylint: disable=unexpected-keyword-arg
     rmtree_retry(tgz_dir_path, fail_silent=True)  # pylint: disable=unexpected-keyword-arg
 
-    return
-
 
 def unpack_archive(src_path, dst_path):
     # Determine if archive is new tar style or legacy zip
@@ -108,8 +106,6 @@ def unpack_archive(src_path, dst_path):
         zf = zipfile.ZipFile(src_path, "r")
         zf.extractall(dst_path)
         zf.close()
-
-    return
 
 
 def onerror(func, path, exc_info):
@@ -210,5 +206,3 @@ def init_dir(dir_name, clean_existing=False):
                 entry_path
             )
             raise RuntimeError(err_str)
-
-    return
