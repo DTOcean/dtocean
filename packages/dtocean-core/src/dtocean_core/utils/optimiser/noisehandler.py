@@ -293,9 +293,6 @@ class NoiseHandler:
         and return a factor for increasing sigma.
         """
 
-        if self.idx is None or self.fitre is None:
-            raise RuntimeError("Call prepare first")
-
         def get_sol_match(i, test_sol):
             if self._sols is None:
                 raise RuntimeError("Call ask first")
@@ -341,6 +338,9 @@ class NoiseHandler:
             f_sorted[j] = f
 
         real_evals = 0
+
+        assert self.idx is not None
+        assert self.fitre is not None
 
         for j, i in enumerate(self.idx):
             if np.isnan(f_sorted[j]):
