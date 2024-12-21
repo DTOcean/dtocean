@@ -23,12 +23,11 @@
 import abc
 
 import numpy as np
-from polylabel import polylabel
 from shapely.geometry import LineString, Point, Polygon, box
-from shapely.ops import nearest_points
+from shapely.ops import nearest_points, polylabel
 
 try:
-    from dtocean_hydro.utils.bathymetry_utility import get_unfeasible_regions
+    import dtocean_hydro.utils.bathymetry_utility as bathymetry_utility  # type:ignore
 except ImportError:
     err_msg = (
         "The DTOcean hydrodynamics module must be installed in order "
@@ -165,7 +164,10 @@ def _get_depth_exclusion_poly(layer_depths, min_depth=-np.inf, max_depth=0):
     xyz = np.dstack([xv.flatten(), yv.flatten(), zv.flatten()])[0]
     safe_xyz = xyz[~np.isnan(xyz).any(axis=1)]
 
-    exclude, _ = get_unfeasible_regions(safe_xyz, [min_depth, max_depth])
+    exclude, _ = bathymetry_utility.get_unfeasible_regions(
+        safe_xyz,
+        [min_depth, max_depth],
+    )
 
     return exclude
 
@@ -288,6 +290,8 @@ class ParaPositioner(DevicePositioner):
         self._start_coords = None
 
     def _adapt_nodes(self, nodes, *args, **kwargs):
+        assert self._valid_poly is not None
+
         t1 = args[5]
         t2 = args[6]
 
@@ -321,7 +325,8 @@ class ParaPositioner(DevicePositioner):
 
 
 def _parametric_point_in_polygon(poly, t1, t2):
-    tparam = lambda x0, x1, x2: x0 + t1 * (x1 - x0) + t2 * (x2 - x0)
+    def tparam(x0, x1, x2):
+        return x0 + t1 * (x1 - x0) + t2 * (x2 - x0)
 
     coords = poly.minimum_rotated_rectangle.exterior.coords
     p0_idx = _get_p0_index(coords)
@@ -412,10 +417,11 @@ class CompassPositioner(DevicePositioner):
         self._start_coords = None
 
     def _adapt_nodes(self, nodes, *args, **kwargs):
+        assert self._valid_poly is not None
         point_code = args[5]
 
         if point_code.lower() == "centre" or point_code == "C":
-            start_point = polylabel([self._valid_poly.exterior.coords])
+            start_point = polylabel(self._valid_poly)
         else:
             start_point_maker = PolyCompass(self._valid_poly)
             start_point = start_point_maker(point_code)
@@ -461,6 +467,7 @@ class PolyCompass:
         return box(*self._polygon.bounds).centroid.coords[:][0]
 
     def _add_ns_intersections(self):
+        assert isinstance(self._cx, float)
         ns_line_ends = [(self._cx, -9e8), (self._cx, 9e8)]
         ns_line = LineString(ns_line_ends)
         self._ns_intersections = [
@@ -470,6 +477,7 @@ class PolyCompass:
         return
 
     def _add_we_intersections(self):
+        assert isinstance(self._cy, float)
         we_line_ends = [(-9e8, self._cy), (9e8, self._cy)]
         we_line = LineString(we_line_ends)
         self._we_intersections = [
@@ -479,7 +487,8 @@ class PolyCompass:
         return
 
     def _add_swne_intersections(self):
-        f = lambda x: x + self._cy - self._cx
+        def f(x):
+            return x + self._cy - self._cx
 
         swne_line_ends = [(-9e8, f(-9e8)), (9e8, f(9e8))]
         swne_line = LineString(swne_line_ends)
@@ -490,7 +499,8 @@ class PolyCompass:
         return
 
     def _add_nwse_intersections(self):
-        f = lambda x: -x + self._cy + self._cx
+        def f(x):
+            return -x + self._cy + self._cx
 
         nwse_line_ends = [(-9e8, f(-9e8)), (9e8, f(9e8))]
         nwse_line = LineString(nwse_line_ends)
@@ -504,32 +514,38 @@ class PolyCompass:
         if self._ns_intersections is None:
             self._add_ns_intersections()
 
+        assert isinstance(self._ns_intersections, list)
         return (self._cx, max(self._ns_intersections))
 
     def _get_east(self):
         if self._we_intersections is None:
             self._add_we_intersections()
 
+        assert isinstance(self._we_intersections, list)
         return (max(self._we_intersections), self._cy)
 
     def _get_south(self):
         if self._ns_intersections is None:
             self._add_ns_intersections()
 
+        assert isinstance(self._ns_intersections, list)
         return (self._cx, min(self._ns_intersections))
 
     def _get_west(self):
         if self._we_intersections is None:
             self._add_we_intersections()
 
+        assert isinstance(self._we_intersections, list)
         return (min(self._we_intersections), self._cy)
 
     def _get_northeast(self):
         if self._swne_intersections is None:
             self._add_swne_intersections()
 
-        get_y = lambda p: p.y
-        sorted_intersections = sorted(self._swne_intersections, key=get_y)
+        assert isinstance(self._swne_intersections, list)
+        sorted_intersections = sorted(
+            self._swne_intersections, key=lambda p: p.y
+        )
 
         return sorted_intersections[-1].coords[0]
 
@@ -537,8 +553,10 @@ class PolyCompass:
         if self._nwse_intersections is None:
             self._add_nwse_intersections()
 
-        get_y = lambda p: p.y
-        sorted_intersections = sorted(self._nwse_intersections, key=get_y)
+        assert isinstance(self._nwse_intersections, list)
+        sorted_intersections = sorted(
+            self._nwse_intersections, key=lambda p: p.y
+        )
 
         return sorted_intersections[0].coords[0]
 
@@ -546,8 +564,10 @@ class PolyCompass:
         if self._swne_intersections is None:
             self._add_swne_intersections()
 
-        get_y = lambda p: p.y
-        sorted_intersections = sorted(self._swne_intersections, key=get_y)
+        assert isinstance(self._swne_intersections, list)
+        sorted_intersections = sorted(
+            self._swne_intersections, key=lambda p: p.y
+        )
 
         return sorted_intersections[0].coords[0]
 
@@ -555,8 +575,10 @@ class PolyCompass:
         if self._nwse_intersections is None:
             self._add_nwse_intersections()
 
-        get_y = lambda p: p.y
-        sorted_intersections = sorted(self._nwse_intersections, key=get_y)
+        assert isinstance(self._nwse_intersections, list)
+        sorted_intersections = sorted(
+            self._nwse_intersections, key=lambda p: p.y
+        )
 
         return sorted_intersections[-1].coords[0]
 
