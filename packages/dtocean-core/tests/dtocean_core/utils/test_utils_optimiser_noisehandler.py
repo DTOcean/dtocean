@@ -4,6 +4,7 @@
 
 import contextlib
 import logging
+import sys
 from collections import namedtuple
 from typing import Optional
 
@@ -111,7 +112,7 @@ class MockEvaluator(Evaluator):
             args = [self.scaler.inverse(x) for x in args]
         self._args = args
         self._n_evals = n_evals
-        return ["python", "-V"]
+        return [sys.executable, "-V"]
 
     def _get_worker_results(self, iteration):  # pylint: disable=arguments-differ,unused-argument
         """Return the results for the given iteration as a dictionary that
