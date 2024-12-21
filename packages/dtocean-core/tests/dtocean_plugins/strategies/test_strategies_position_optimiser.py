@@ -20,24 +20,26 @@ import dtocean_core.utils.optimiser as opt
 from dtocean_core.core import Core
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import Strata
-from dtocean_plugins.strategies.position_optimiser import (
-    PositionCounter,
-    PositionEvaluator,
-    PositionOptimiser,
-    PositionParams,
-    _clean_numbered_files_above,
-    _dump_results_control,
-    _get_param_control,
-    _get_range_fixed,
-    _get_range_multiplier,
-    dump_config,
-    load_config,
-)
-from dtocean_plugins.strategies.position_optimiser.positioner import (
-    ParaPositioner,
-)
 
-pytest.importorskip("dtocean-hydro")
+dtocean_hydro = pytest.importorskip("dtocean-hydro")
+
+if dtocean_hydro:
+    from dtocean_plugins.strategies.position_optimiser import (
+        PositionCounter,
+        PositionEvaluator,
+        PositionOptimiser,
+        PositionParams,
+        _clean_numbered_files_above,
+        _dump_results_control,
+        _get_param_control,
+        _get_range_fixed,
+        _get_range_multiplier,
+        dump_config,
+        load_config,
+    )
+    from dtocean_plugins.strategies.position_optimiser.positioner import (
+        ParaPositioner,
+    )
 
 
 @contextlib.contextmanager

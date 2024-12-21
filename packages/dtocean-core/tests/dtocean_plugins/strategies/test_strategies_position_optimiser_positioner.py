@@ -11,22 +11,24 @@ from shapely.geometry import Point, Polygon, box
 
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import Strata
-from dtocean_plugins.strategies.position_optimiser.positioner import (
-    CompassPositioner,
-    DummyPositioner,
-    ParaPositioner,
-    PolyCompass,
-    _buffer_lease_polygon,
-    _check_grid_dims,
-    _get_depth_exclusion_poly,
-    _get_p0_index,
-    _get_para_points,
-    _make_grid_nodes,
-    _nearest_n_nodes,
-    _parametric_point_in_polygon,
-)
 
-pytest.importorskip("dtocean_hydro")
+dtocean_hydro = pytest.importorskip("dtocean_hydro")
+
+if dtocean_hydro:
+    from dtocean_plugins.strategies.position_optimiser.positioner import (
+        CompassPositioner,
+        DummyPositioner,
+        ParaPositioner,
+        PolyCompass,
+        _buffer_lease_polygon,
+        _check_grid_dims,
+        _get_depth_exclusion_poly,
+        _get_p0_index,
+        _get_para_points,
+        _make_grid_nodes,
+        _nearest_n_nodes,
+        _parametric_point_in_polygon,
+    )
 
 
 @pytest.fixture

@@ -18,16 +18,18 @@ except ImportError:
 
 from dtocean_core.core import Core, OrderedSim, Project
 from dtocean_core.menu import ModuleMenu
-from dtocean_plugins.strategies.position import (
-    AdvancedPosition,
-    PositionOptimiser,
-    _get_results_table,
-    _post_process,
-    _read_yaml,
-    _run_favorite,
-)
 
-pytest.importorskip("dtocean-hydro")
+dtocean_hydro = pytest.importorskip("dtocean-hydro")
+
+if dtocean_hydro:
+    from dtocean_plugins.strategies.position import (
+        AdvancedPosition,
+        PositionOptimiser,
+        _get_results_table,
+        _post_process,
+        _read_yaml,
+        _run_favorite,
+    )
 
 
 @contextlib.contextmanager
@@ -1531,4 +1533,5 @@ def test_advanced_allow_run(
 
     assert AdvancedPosition.allow_run(None, None, config) == expected
 
+    assert AdvancedPosition.allow_run(None, None, config) == expected
     assert AdvancedPosition.allow_run(None, None, config) == expected
