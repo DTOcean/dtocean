@@ -35,7 +35,7 @@ def test_unpack_archive_zip(tmpdir):
     assert len(os.listdir(dst_path)) == 1
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Windows only")
+@pytest.mark.skipif(not sys.platform.startswith("win"), reason="Windows only")
 def test_onerror(tmpdir):
     config_tmpdir = tmpdir.mkdir("config")
     test_file = config_tmpdir.join("locked.file")
