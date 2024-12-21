@@ -531,7 +531,7 @@ def installation_gantt_chart(
         )
 
     # Format the y-axis
-    ylabels = ["\n".join(wrap(l, 40)) for l in ylabels]
+    ylabels = ["\n".join(wrap(label, 40)) for label in ylabels]
     plt.yticks(pos, ylabels)
 
     # Format the x-axis

@@ -2,14 +2,12 @@
 
 # pylint: disable=redefined-outer-name,protected-access
 
-# Check for module
-import pytest
-
-pytest.importorskip("dtocean_hydro")
-
 import sys
 
 import numpy as np
+
+# Check for module
+import pytest
 import yaml
 from shapely.geometry import Polygon
 
@@ -32,6 +30,8 @@ from dtocean_plugins.strategies.position_optimiser.iterator import (  # pylint: 
 from dtocean_plugins.strategies.position_optimiser.positioner import (
     ParaPositioner,
 )
+
+pytest.importorskip("dtocean_hydro")
 
 
 @pytest.fixture
@@ -220,6 +220,7 @@ def test_get_positioner(mocker, lease_polygon, layer_depths):
     positioner = get_positioner(core, None)
 
     assert isinstance(positioner, ParaPositioner)
+    assert positioner._valid_poly is not None
     assert positioner._valid_poly.bounds == (120.0, 70.0, 780.0, 230.0)
 
 

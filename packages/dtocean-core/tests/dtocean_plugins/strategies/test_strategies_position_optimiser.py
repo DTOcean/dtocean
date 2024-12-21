@@ -2,15 +2,12 @@
 
 # pylint: disable=redefined-outer-name,protected-access,bad-whitespace,no-member
 
-import pytest
-
-pytest.importorskip("dtocean-hydro")
-
 import contextlib
 import logging
 import os
 
 import numpy as np
+import pytest
 from shapely.geometry import Polygon
 from yaml import dump
 
@@ -39,6 +36,8 @@ from dtocean_plugins.strategies.position_optimiser import (
 from dtocean_plugins.strategies.position_optimiser.positioner import (
     ParaPositioner,
 )
+
+pytest.importorskip("dtocean-hydro")
 
 
 @contextlib.contextmanager

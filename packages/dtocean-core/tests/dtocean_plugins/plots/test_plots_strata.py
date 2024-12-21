@@ -38,7 +38,7 @@ class MockModule(ModuleInterface):
         return None
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         id_map = {"dummy1": "bathymetry.layers", "dummy2": "corridor.layers"}
 
         return id_map
