@@ -47,7 +47,14 @@ def _make_test_data(data_dir: Path, name: str):
     test_dir = FILE.parent
 
     src_path_py = (data_dir / name).with_suffix(".py")
-    subprocess.run(["python", src_path_py], capture_output=True)
+    result = subprocess.run(
+        ["python", src_path_py],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode:
+        raise ChildProcessError(result.stderr)
 
     src_path_pkl = (data_dir / name).with_suffix(".pkl")
     dst_path_pkl = (test_dir / name).with_suffix(".pkl")
