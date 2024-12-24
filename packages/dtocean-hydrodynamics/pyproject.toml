@@ -3,10 +3,40 @@ name = "dtocean-hydrodynamics"
 version = "3.2.0"
 description = "Hydrodynamics module for the DTOcean tools"
 authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
+license = "GPL-3.0-or-later"
 readme = "README.md"
+packages = [
+  {include = "dtocean_hydro", from="src"},
+  {include = "dtocean_tidal", from="src"},
+  {include = "dtocean_wave", from="src"},
+  {include = "dtocean_wec", from="src"},
+  ]
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.12"
+cma = "^4.0.0"
+h5py = "^3.12.1"
+matplotlib = "^3.8.0"
+numpy = "^1.26.4"
+pandas = "^2.2.3"
+pyopengl = "^3.1.7"
+scikit-learn = "^1.6.0"
+scipy = "^1.14.1"
+shapely = "^2.0.6"
+polite-config = {path = "../polite-config", develop = true}
+
+[tool.poetry.group.test.dependencies]
+mock = "^5.1.0"
+pytest = "^8.3.4"
+pytest-catchlog = "^1.2.2"
+pytest-mock = "^3.14.0"
+pytest-qt = "^4.4.0"
+pytest-cov = "^6.0.0"
+
+[tool.poetry-monoranger-plugin]
+enabled = true
+monorepo-root = "../../"
+version-rewrite-rule = '=='
 
 [build-system]
 requires = ["poetry-core"]
