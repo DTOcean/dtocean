@@ -1,12 +1,3 @@
-# Bootstrapped files
-dtocean_core/data/yaml/*.yaml
-
-# Test data files
-*.pkl
-
-# Logs
-*.log.*
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -112,3 +103,9 @@ ENV/
 
 # ruff
 .ruff_cache/
+
+# Test data files
+*.pkl
+
+# Logs
+*.log.*
