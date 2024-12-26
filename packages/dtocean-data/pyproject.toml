@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "dtocean-data"
+version = "2022.07"
+description = "Fetches non-code files required by the DTOcean modules."
+authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
