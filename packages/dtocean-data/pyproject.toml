@@ -12,10 +12,33 @@ packages = [
 python = ">=3.12,<3.13"
 polite-config = {path = "../polite-config", develop = true}
 
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
+mock = "^5.1.0"
+pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.390"
+deptry = "^0.21.1"
+
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
 version-rewrite-rule = '=='
+
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
 
 [build-system]
 requires = ["poetry-core"]
