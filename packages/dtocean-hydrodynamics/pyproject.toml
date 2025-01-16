@@ -29,15 +29,28 @@ polite-config = {path = "../polite-config", develop = true}
 [tool.poetry.group.test.dependencies]
 mock = "^5.1.0"
 pytest = "^8.3.4"
-pytest-catchlog = "^1.2.2"
 pytest-mock = "^3.14.0"
 pytest-qt = "^4.4.0"
 pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.390"
+deptry = "^0.21.1"
 
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
 version-rewrite-rule = '=='
+
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
 
 [build-system]
 requires = ["poetry-core"]
