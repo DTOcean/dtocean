@@ -1,4 +1,5 @@
 import os
+from platform import system
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -23,7 +24,11 @@ def is_online():
         return False
 
 
-pytestmark = pytest.mark.skipif(not is_online(), reason="running offline")
+pytest.mark.skipif(not is_online(), reason="running offline")
+pytest.mark.skipif(
+    system().lower() not in ["linux", "windows"],
+    reason="system not supported",
+)
 
 
 def test_download_archive(tmp_path):
