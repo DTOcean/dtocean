@@ -29,18 +29,15 @@ constraints.
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from __future__ import division
-
-# Start logging
 import logging
-
-module_logger = logging.getLogger(__name__)
-
 import pickle
 from math import sqrt
 
 import cma
 import numpy as np
+
+# Start logging
+module_logger = logging.getLogger(__name__)
 
 
 class SearchOptimum(object):
@@ -420,18 +417,16 @@ class SearchOptimum(object):
                 # return the squared error from actual value and bound
                 # due to the computational constraints this penality term is
                 # magnified by a factor 2
-                maxdev_error = (
-                    -(
+                maxdev_error = -(
+                    (
                         (
-                            (
-                                self._array.coord[inside].shape[0]
-                                / self._max_num_dev
-                                - 1
-                            )
-                            * 200
+                            self._array.coord[inside].shape[0]
+                            / self._max_num_dev
+                            - 1
                         )
-                        ** 2
+                        * 200
                     )
+                    ** 2
                 )
 
                 return maxdev_error, -1
@@ -465,8 +460,8 @@ class SearchOptimum(object):
                 module_logger.info("Not valid: q < q_min")
 
             # return the squared error from actual value and bound
-            qfactor_error = (
-                -(((res.q_array / self._min_q_factor - 1) * 100.0) ** 2)
+            qfactor_error = -(
+                ((res.q_array / self._min_q_factor - 1) * 100.0) ** 2
             )
 
             return qfactor_error, res.q_array
@@ -478,8 +473,8 @@ class SearchOptimum(object):
                 "No calculation is performed!"
             )
 
-        mindist_error = (
-            -(((self._array._actual_mindist / self._min_dist - 1) * 100.0) ** 2)
+        mindist_error = -(
+            ((self._array._actual_mindist / self._min_dist - 1) * 100.0) ** 2
         )
 
         return mindist_error, -1
@@ -567,7 +562,8 @@ def method_cma_es(searcher, tolfun=1e1, tolx=1e-3, maxiter=200, maxfevals=2000):
     if es.best.f > 0.0:
         return -1
     else:
-        return (es.best.x).tolist()
+        assert es.best.x is not None
+        return es.best.x.tolist()
 
 
 def method_monte_carlo(searcher, maxiter=5):

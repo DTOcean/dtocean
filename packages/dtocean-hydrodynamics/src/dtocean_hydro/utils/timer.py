@@ -23,6 +23,7 @@ Created on Fri Sep 11 09:55:19 2015
 
 import time
 
+
 class Timer(object):
     def __init__(self, verbose=False):
         self.verbose = verbose
@@ -36,4 +37,4 @@ class Timer(object):
         self.secs = self.end - self.start
         self.msecs = self.secs * 1000  # millisecs
         if self.verbose:
-            print 'elapsed time: %f ms' % self.msecs
+            print("elapsed time: %f ms" % self.msecs)
