@@ -23,6 +23,7 @@ pyopengl = "^3.1.7"
 scikit-learn = "^1.6.0"
 scipy = "^1.14.1"
 shapely = "^2.0.6"
+dtocean-data = {path = "../dtocean-data", develop = true}
 polite-config = {path = "../polite-config", develop = true}
 
 [tool.poetry.group.test.dependencies]
