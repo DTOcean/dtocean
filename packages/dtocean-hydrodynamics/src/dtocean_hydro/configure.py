@@ -18,8 +18,8 @@
 import logging
 import os
 
-from polite.configuration import ReadINI
-from polite.paths import EtcDirectory, SiteDataDirectory
+from polite_config.configuration import ReadINI
+from polite_config.paths import EtcPath, SiteDataPath
 
 module_logger = logging.getLogger(__name__)
 
@@ -29,11 +29,11 @@ def get_install_paths():
     and tidal packages."""
 
     # Look in the etc directory
-    etc_data = EtcDirectory("dtocean-data")
+    etc_data = EtcPath("dtocean-data")
     etc_ini_reader = ReadINI(etc_data, "install.ini")
 
     # Get the root path from the possible site data paths
-    site_data = SiteDataDirectory("DTOcean Data", "DTOcean")
+    site_data = SiteDataPath("DTOcean Data", "DTOcean")
     site_ini_reader = ReadINI(site_data, "install.ini")
 
     if etc_ini_reader.config_exists():
