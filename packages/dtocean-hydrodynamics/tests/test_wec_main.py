@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2022 Mathew Topper
+#    Copyright (C) 2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 
 import os
 
+
 def test_main_window_paths(qtbot, main_window):
     assert main_window.bin_path == os.path.join("mock", "bin_mock")
     assert main_window.wec_share_path == os.path.join("mock",
+                                                      "dtocean_wec_mock")
                                                       "dtocean_wec_mock")
