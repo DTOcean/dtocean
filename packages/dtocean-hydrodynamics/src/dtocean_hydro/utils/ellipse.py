@@ -57,7 +57,11 @@ def inside_ellipse_percent(x, a, b):
 
 
 def get_grid_inside_ellipse_percent(
-    grid, angle, max_tran, max_long, atol=1e-08
+    grid,
+    angle,
+    max_tran,
+    max_long,
+    atol=1e-08,
 ):
     """Determine whether any points in the grid lie within an ellipse placed
     around each point with semi-major axis max_tran and semi-minor axis
@@ -65,12 +69,20 @@ def get_grid_inside_ellipse_percent(
     the transect of the closest point and the ellipse is returned."""
 
     rotator = np.array(
-        [[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]]
+        [
+            [np.cos(angle), -np.sin(angle)],
+            [np.sin(angle), np.cos(angle)],
+        ]
     )
 
-    f = lambda x: np.dot(rotator, x)
-    g = lambda x: in_ellipse(x, max_tran, max_long)
-    h = lambda x: inside_ellipse_percent(x, max_tran, max_long)
+    def f(x):
+        return np.dot(rotator, x)
+
+    def g(x):
+        return in_ellipse(x, max_tran, max_long)
+
+    def h(x):
+        return inside_ellipse_percent(x, max_tran, max_long)
 
     result = []
     max_dist = max(max_long, max_tran)

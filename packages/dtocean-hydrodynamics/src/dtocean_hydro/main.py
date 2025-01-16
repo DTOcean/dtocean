@@ -408,6 +408,8 @@ class WP2:
             nogo_list=self.iInput.S_data.NogoAreas, mindist_raise=mindist_raise
         )
 
+        assert self.iArray.coord is not None
+
         if self._debug:
             self.iArray.show(inside)
 
