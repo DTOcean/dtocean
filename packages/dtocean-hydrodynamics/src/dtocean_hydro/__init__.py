@@ -16,24 +16,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from logging import NullHandler
 
 from pkg_resources import get_distribution
-from polite.configuration import Logger
-from polite.paths import DirectoryMap, ObjDirectory, UserDataDirectory
+from polite_config.configuration import Logger
+from polite_config.paths import DirectoryMap, ModPath, UserDataPath
 
 # credentials
 __authors__ = ["DTOcean Developers"]
 __version__ = get_distribution("dtocean-hydrodynamics").version
-
-# Set default logging handler to avoid "No handler found" warnings.
-try:  # Python 2.7+
-    from logging import NullHandler
-except ImportError:
-
-    class NullHandler(logging.Handler):
-        def emit(self, record):
-            pass
-
 
 logging.getLogger(__name__).addHandler(NullHandler())
 
@@ -41,8 +32,8 @@ logging.getLogger(__name__).addHandler(NullHandler())
 def start_logging(level=None):
     """Start python logger"""
 
-    objdir = ObjDirectory(__name__, "config")
-    datadir = UserDataDirectory("dtocean_hydro", "DTOcean", "config")
+    objdir = ModPath(__name__, "config")
+    datadir = UserDataPath("dtocean_hydro", "DTOcean", "config")
     dirmap = DirectoryMap(datadir, objdir)
 
     log = Logger(dirmap)

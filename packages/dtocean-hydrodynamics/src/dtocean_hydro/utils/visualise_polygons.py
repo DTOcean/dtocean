@@ -28,8 +28,9 @@ This module contains the functions used to plot the nogo zones polygons and bath
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from descartes import PolygonPatch
+from matplotlib.patches import Polygon as PolygonPatch
 from shapely.geometry import Polygon
+from shapely.plotting import patch_from_polygon
 
 
 def plotPoints(ax, points, marker, alpha=1):
@@ -81,7 +82,7 @@ def plotCompositePolygon(poly, ax=None):
     if ax is None:
         fig, ax = plt.subplots(1, 1)
         close_flg = True
-    cmap = matplotlib.cm.get_cmap("Accent")
+    cmap = matplotlib.colormaps["Accent"]
     n = 1
     if not isinstance(poly, Polygon):
         n = len(poly)
@@ -101,6 +102,7 @@ def plotCompositePolygon(poly, ax=None):
             solid_capstyle="round",
             zorder=2,
         )
-        ax.add_patch(PolygonPatch(tp, fc=cmap(ic / n)[:-1], ec="k", alpha=0.2))
+        patch = patch_from_polygon(tp, fc=cmap(ic / n)[:-1], ec="k", alpha=0.2)
+        ax.add_patch(patch)
     if close_flg:
         plt.show()
