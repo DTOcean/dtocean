@@ -19,7 +19,7 @@ _NEMOH_URL_BASE = (
     "nemoh-{}-v2024.12.2".format(_ARCH)
 )
 _VERSION = version("dtocean-data")
-_USER_DIR = UserDataPath("dtocean_data", "DTOcean", _VERSION)
+DATA_DIR = UserDataPath("dtocean_data", "DTOcean", _VERSION)
 
 
 def install(options: Sequence[str]):
@@ -54,9 +54,9 @@ def _extract_linux(url_base: str):
         tmp_tg_path = tmp_dir_path / "tempfile.tar.gz"
         _download_archive(tg_url, tmp_tg_path)
 
-        _USER_DIR.mkdir(exist_ok=True)
+        DATA_DIR.mkdir(exist_ok=True)
         tar = tarfile.open(tmp_tg_path)
-        tar.extractall(path=_USER_DIR, filter="tar")
+        tar.extractall(path=DATA_DIR, filter="tar")
         tar.close()
 
 
@@ -68,9 +68,9 @@ def _extract_windows(url_base: str):
         tmp_zip_path = tmp_dir_path / "tempfile.zip"
         _download_archive(zip_url, tmp_zip_path)
 
-        _USER_DIR.mkdir(exist_ok=True)
+        DATA_DIR.mkdir(exist_ok=True)
         zf = ZipFile(tmp_zip_path)
-        zf.extractall(path=_USER_DIR)
+        zf.extractall(path=DATA_DIR)
         zf.close()
 
 
