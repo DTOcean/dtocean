@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Francesco Ferri
-#    Copyright (C) 2017-2018 Mathew Topper
+#    Copyright (C) 2017-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,45 +16,42 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import argparse
 import os
 import sys
-import argparse
 
-from PyQt4 import QtGui
 from main import MainWindow
+from PyQt4 import QtGui
 
 module_path = os.path.realpath(__file__)
 
-def main():
 
+def main():
     app = QtGui.QApplication(sys.argv)
     ex = MainWindow()
     ex.show()
     sys.exit(app.exec_())
-    
+
     return
 
 
 def gui_interface():
+    """Command line interface for dtocean WEC pre-processor.
 
-    '''Command line interface for dtocean WEC pre-processor.
-    
     Example:
-    
+
         To get help::
-        
+
             $ dtocean-wec -h
-            
-    '''
-    
-    epiStr = 'AAU (c) 2016.'
+
+    """
+
+    epiStr = "AAU (c) 2016."
     desStr = "Run the WEC standalone GUI."
 
-    parser = argparse.ArgumentParser(description=desStr,
-                                     epilog=epiStr)
+    parser = argparse.ArgumentParser(description=desStr, epilog=epiStr)
     parser.parse_args()
-    
+
     main()
 
     return
-

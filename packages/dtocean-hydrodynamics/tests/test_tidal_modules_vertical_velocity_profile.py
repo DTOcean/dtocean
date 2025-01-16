@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2017-2018 Mathew Topper
+#    Copyright (C) 2017-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,19 +22,24 @@ Created on Wed Sep 26 13:17:52 2018
 """
 
 import numpy as np
+
 from dtocean_tidal.modules.vertical_velocity_profile import vvpw
+
 
 def test_vvpw():
     test = vvpw(16, 0, 20, 0.2, 2)
     assert np.isclose(test, 2)
 
+
 def test_vvpw_beta_neg():
     test = vvpw(16, 0, 20, -1, 2)
     assert test == 0
 
+
 def test_vvpw_alpha_neg():
     test = vvpw(16, 0, 20, 0.2, -1)
     assert test == 0
+
 
 def test_vvpw_debug():
     test = vvpw(16, 0, 20, 0.2, 2, True)

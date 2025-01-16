@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Thomas Roc
-#    Copyright (C) 2017-2018 Mathew Topper
+#    Copyright (C) 2017-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -44,10 +44,11 @@ def interp_at_point(x, y, X, Y, Q):
 
     """
     # find first two nearest
-    xDist = x-X
+    xDist = x - X
     i = np.argmin(np.abs(xDist))
     try:
-        if np.sign(xDist[i]) < 0. and i - 1 < 0: raise IndexError
+        if np.sign(xDist[i]) < 0.0 and i - 1 < 0:
+            raise IndexError
         if np.abs(xDist[i + 1]) < np.abs(xDist[i - 1]):
             i2 = i + 1
         else:
@@ -60,10 +61,11 @@ def interp_at_point(x, y, X, Y, Q):
         i2 = 0
         ai = 1.0
         ai2 = 0.0
-    yDist = y-Y
+    yDist = y - Y
     j = np.argmin(np.abs(yDist))
     try:
-        if np.sign(yDist[j]) < 0. and j - 1 < 0: raise IndexError
+        if np.sign(yDist[j]) < 0.0 and j - 1 < 0:
+            raise IndexError
         if np.abs(yDist[j + 1]) < np.abs(yDist[j - 1]):
             j2 = j + 1
         else:
@@ -79,23 +81,26 @@ def interp_at_point(x, y, X, Y, Q):
 
     # Bilinear interpolation
     qi = []
-    
+
     for q in Q:
-        
         # Don't allow NaN values
         bi = 0
 
-        if not np.isnan(q[j, i]): bi += q[j, i] * aj * ai
-        if not np.isnan(q[j, i2]): bi += q[j, i2] * aj * ai2
-        if not np.isnan(q[j2, i]): bi += q[j2, i] * aj2 * ai
-        if not np.isnan(q[j2, i2]): bi += q[j2, i2] * ai2 * aj2
+        if not np.isnan(q[j, i]):
+            bi += q[j, i] * aj * ai
+        if not np.isnan(q[j, i2]):
+            bi += q[j, i2] * aj * ai2
+        if not np.isnan(q[j2, i]):
+            bi += q[j2, i] * aj2 * ai
+        if not np.isnan(q[j2, i2]):
+            bi += q[j2, i2] * ai2 * aj2
 
         qi.append(bi)
 
     return qi
 
 
-def volume_under_plane(x,y,z, debug=False):
+def volume_under_plane(x, y, z, debug=False):
     """
     Computes the volume under a given plane
 
@@ -110,23 +115,25 @@ def volume_under_plane(x,y,z, debug=False):
     Returns:
       volume (float): volume in m3, float
     """
-    if debug: module_logger.info("Computing volume under plane...")
+    if debug:
+        module_logger.info("Computing volume under plane...")
     X, Y = np.meshgrid(x, y)
     X = X.flatten()
     Y = Y.flatten()
     Z = z.flatten()
-    xyz = np.vstack((X,Y,Z)).T
+    xyz = np.vstack((X, Y, Z)).T
 
-    d = scipy.spatial.Delaunay(xyz[:,:2])
+    d = scipy.spatial.Delaunay(xyz[:, :2])
     tri = xyz[d.vertices]
 
-    a = tri[:,0,:2] - tri[:,1,:2]
-    b = tri[:,0,:2] - tri[:,2,:2]
+    a = tri[:, 0, :2] - tri[:, 1, :2]
+    b = tri[:, 0, :2] - tri[:, 2, :2]
     proj_area = np.cross(a, b).sum(axis=-1)
-    zavg = tri[:,:,2].sum(axis=1)
+    zavg = tri[:, :, 2].sum(axis=1)
     volume = zavg * np.abs(proj_area) / 6.0
 
     return volume
+
 
 def interpol_scatter2grid(x, y, z, xn, yn, debug=True):
     """
@@ -148,7 +155,8 @@ def interpol_scatter2grid(x, y, z, xn, yn, debug=True):
       zi (numpy.array): gridded z values, 2d array (yn, xn)
 
     """
-    if debug: module_logger.info("Interpolating onto grid...")
+    if debug:
+        module_logger.info("Interpolating onto grid...")
     xmin = x.min()
     xmax = x.max()
     ymin = y.min()
