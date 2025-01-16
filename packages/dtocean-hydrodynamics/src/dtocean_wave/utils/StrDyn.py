@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Pau Mercadez Ruiz
-#    Copyright (C) 2017-2019 Mathew Topper
+#    Copyright (C) 2017-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -30,18 +30,17 @@ This module provides several methods to solve structure dynamics problems
 import numpy as np
 from numpy.linalg import solve
 from scipy.linalg import block_diag
-
-from WatWaves import len2
 from spec_class import wave_spec
+from WatWaves import len2
 
 
 def MotionFreq(Mass, Damping, Stiffness, Force, freq):
     """
     MotionFreq: Solves the equation of motion in frequency domain for a
     particular frequency and for different forces provided as column-vectors:
-        
+
     Mass*Acceleration+Damping*Velocity+Stiffness*Displacement = Force
-    
+
     where Force=[Force_0,Force_1,...,Force_N]
 
     Args:
@@ -57,14 +56,14 @@ def MotionFreq(Mass, Damping, Stiffness, Force, freq):
     Notes:
         Considering a periodic time variation such that:
             (displacement=real(X*exp(i*freq*time)))
-            
+
         then the equation of motion in frequency domain is:
-            
+
         X= H\Force, where H=-freq**2*Mass+i*freq*Damping+Stiffness
     """
-        
-    H = -freq ** 2 * Mass + 1j * freq * Damping + Stiffness
-    
+
+    H = -(freq**2) * Mass + 1j * freq * Damping + Stiffness
+
     return solve(H, Force)
 
 
@@ -88,41 +87,45 @@ def scatterdiagram_threshold(p, threshold=0.001):
     p_shape = p.shape
 
     if not len(p_shape) == 3:
-        raise IOError('The number of dimensions of the scatter diagram needs '
-                      'to be 3.')
+        raise IOError(
+            "The number of dimensions of the scatter diagram needs " "to be 3."
+        )
 
-    if not np.allclose(p.sum(), 1.):
-        raise IOError('The sum of the probability of occurence of the '
-                      'different sea states is not 100%.')
+    if not np.allclose(p.sum(), 1.0):
+        raise IOError(
+            "The sum of the probability of occurence of the "
+            "different sea states is not 100%."
+        )
 
     p_out = p.copy()
     for i0 in range(p_shape[0]):
         for i1 in range(p_shape[1]):
             for i2 in range(p_shape[2]):
                 if p_out[i0, i1, i2] < threshold:
-                    p_out[i0, i1, i2] = 0.
+                    p_out[i0, i1, i2] = 0.0
 
     return p_out / p_out.sum()
 
 
-def EnergyProduction(NBodies,
-                     Dirs,
-                     Hs,
-                     Tp,
-                     dirs,
-                     period,
-                     ScatDiag,
-                     M,
-                     Madd,
-                     CPTO,
-                     Crad,
-                     Kmoor,
-                     Khyd,
-                     Fex,
-                     Kfit,
-                     Cfit,
-                     RatedPower=None):
-    
+def EnergyProduction(
+    NBodies,
+    Dirs,
+    Hs,
+    Tp,
+    dirs,
+    period,
+    ScatDiag,
+    M,
+    Madd,
+    CPTO,
+    Crad,
+    Kmoor,
+    Khyd,
+    Fex,
+    Kfit,
+    Cfit,
+    RatedPower=None,
+):
     """
     EnergyProduction: calculates the energy production for the given sea
     states, based on the given numerical model
@@ -175,138 +178,143 @@ def EnergyProduction(NBodies,
             probability of occurrence of the sea states
         P_dev (numpy.ndarray):
             power production per device per sea states
-    
+
     """
-    
+
     NDir = len2(Dirs)
     NHs = len2(Hs)
     NTp = len2(Tp)
     Np = len2(period)
     ndof = len(Khyd[0, :])
-    if RatedPower is None: RatedPower = np.inf
-    
+    if RatedPower is None:
+        RatedPower = np.inf
+
     # convert the tuple to numpy.ndarray to ease calculations
     dirs = np.array(dirs)
     prob_occ = scatterdiagram_threshold(ScatDiag[0])
-    
+
     # initialize spectrum
-    df = np.abs(1. / period[1:] - 1. / period[:-1])
-    fr = 1. / period
-    
+    df = np.abs(1.0 / period[1:] - 1.0 / period[:-1])
+    fr = 1.0 / period
+
     Spec_ = wave_spec(fr, 1, 1)
     Spec_.s = ScatDiag[1][2]
-    
+
     # is s=0 or s=30 there is no need for directional spreading.
     if Spec_.s <= 0 or Spec_.s > 30:
         Nd_subset = 1
     else:
         Nd_subset = 3
-        
+
     Spec_.gamma = ScatDiag[1][1]
     Spec_.spec_type = ScatDiag[1][0]
-    
+
     Spec_.add_spectrum()
-    
+
     # initialize output
     P_dev = np.zeros((NBodies, NTp, NHs, NDir), dtype=float)
     Pyr = np.zeros((NBodies, NTp, NHs, NDir), dtype=float)
-    
+
     # time saving for MotionFreq call
     block1 = block_diag(*[M] * NBodies)
-    
+
     for i_Dir in range(NDir):
-        
         # define a dirs subset to account for directional spreading
         search_region = range(len(dirs) / Nd_subset)
-        
+
         # pivoting angle index. The angles in the search_region are elements of
         # the original B vector, therefore it is possible to search for a true
         # 0 rather then a minimum difference index
         dir_subset_ind = np.where(
-                            np.abs(dirs[search_region] - Dirs[i_Dir]) == 0)[0]
-        
-        if not dir_subset_ind.size: continue
-    
-        i_dir = [dir_subset_ind[0] + el * len(search_region)
-                                                for el in range(Nd_subset)]
-        
+            np.abs(dirs[search_region] - Dirs[i_Dir]) == 0
+        )[0]
+
+        if not dir_subset_ind.size:
+            continue
+
+        i_dir = [
+            dir_subset_ind[0] + el * len(search_region)
+            for el in range(Nd_subset)
+        ]
+
         for i_Hs in range(NHs):
-            
             for i_Tp in range(NTp):
-                
                 ## Compute power function (Device dependent)
                 powfun = np.zeros((NBodies, Nd_subset, Np), dtype=float)
-                
-#                if np.isclose(prob_occ[i_Tp, i_Hs, i_Dir], 0): continue
-            
-                # time saving for MotionFreq call
-                block2 = block_diag(*[CPTO[i_Tp, i_Hs, i_Dir] +
-                                      Cfit[i_Tp, i_Hs, i_Dir]] * NBodies)
-            
-                block3 = block_diag(*[Kmoor[i_Tp, i_Hs, i_Dir] +
-                                      Khyd +
-                                      Kfit[i_Tp, i_Hs, i_Dir]] * NBodies)
-            
-                for i_fr in range(Np):
-                    
-                    velo = MotionFreq(block1 + Madd[i_fr],
-                                      block2 + Crad[i_fr],
-                                      block3,
-                                      Fex[i_fr, i_dir].T,
-                                      2. * np.pi * fr[i_fr])
 
-                    velo *= 1j * 2. * np.pi * fr[i_fr]
-                    
+                #                if np.isclose(prob_occ[i_Tp, i_Hs, i_Dir], 0): continue
+
+                # time saving for MotionFreq call
+                block2 = block_diag(
+                    *[CPTO[i_Tp, i_Hs, i_Dir] + Cfit[i_Tp, i_Hs, i_Dir]]
+                    * NBodies
+                )
+
+                block3 = block_diag(
+                    *[Kmoor[i_Tp, i_Hs, i_Dir] + Khyd + Kfit[i_Tp, i_Hs, i_Dir]]
+                    * NBodies
+                )
+
+                for i_fr in range(Np):
+                    velo = MotionFreq(
+                        block1 + Madd[i_fr],
+                        block2 + Crad[i_fr],
+                        block3,
+                        Fex[i_fr, i_dir].T,
+                        2.0 * np.pi * fr[i_fr],
+                    )
+
+                    velo *= 1j * 2.0 * np.pi * fr[i_fr]
+
                     for bdy in range(NBodies):
-                        
                         for ind in range(Nd_subset):
-                            
                             start_idx = ndof * bdy
                             end_idx = ndof * (bdy + 1)
-                            
+
                             Vr = velo[start_idx:end_idx, ind].real
                             Vi = velo[start_idx:end_idx, ind].imag
-                            
+
                             Vrdot = np.dot(CPTO[i_Tp, i_Hs, i_Dir], Vr)
                             Vidot = np.dot(CPTO[i_Tp, i_Hs, i_Dir], Vi)
-                            
+
                             Vrpowfun = 0.5 * np.dot(Vr.T, Vrdot)
                             Vipowfun = 0.5 * np.dot(Vi.T, Vidot)
-                            
+
                             powfun[bdy, ind, i_fr] = Vrpowfun + Vipowfun
-                
+
                 ## Compute power matrix
                 Spec_.rm_spectrum()
-                
+
                 Spec_.Hs = Hs[i_Hs]
-                Spec_.fp = 1. / Tp[i_Tp]
+                Spec_.fp = 1.0 / Tp[i_Tp]
                 Spec_.t_mean = Dirs[i_Dir]
                 Spec_.t = dirs[i_dir]
-                
+
                 Spec_.add_spectrum()
-                
+
                 # integrate over frequencies
-                I = 2. * Spec_.specs[0][2].T * powfun  # a**2 = 2*Spec_val*df
-                I = .5 * ((I[:, :, 1:] + I[:, :, :-1]) * df).sum(axis=-1)
-                
+                I = 2.0 * Spec_.specs[0][2].T * powfun  # a**2 = 2*Spec_val*df
+                I = 0.5 * ((I[:, :, 1:] + I[:, :, :-1]) * df).sum(axis=-1)
+
                 # integrate over directions
                 if Nd_subset > 1:
-                    I = .5 * ((I[:, 1:] + I[:, :-1]) * Spec_.dth).sum(axis=-1)
-                
+                    I = 0.5 * ((I[:, 1:] + I[:, :-1]) * Spec_.dth).sum(axis=-1)
+
                 free_power = I.reshape(-1)
-                
+
                 if (free_power > RatedPower).any():
                     free_power = np.clip(free_power, None, RatedPower)
-                    
+
                 P_dev[:, i_Tp, i_Hs, i_Dir] = free_power
-                
+
                 ## Compute yearly power production (Site dependent)
                 powprob = prob_occ[i_Tp, i_Hs, i_Dir]
                 powdev = P_dev[:, i_Tp, i_Hs, i_Dir]
-                
+
                 Pyr[:, i_Tp, i_Hs, i_Dir] = powprob * powdev
-    
+
     return Pyr, P_dev
+
 
 # if __name__ == "__main__":
 #
