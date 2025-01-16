@@ -25,16 +25,29 @@ Created on Wed May 04 16:11:29 2016
 
 import logging
 import pickle
+from typing import TypeAlias, cast
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import _cntr as cntr
+import numpy.typing as npt
+from contourpy import contour_generator
 from scipy import ndimage
+from shapely import GeometryType, from_ragged_array
 from shapely.geometry import Polygon
-from shapely.ops import cascaded_union
+from shapely.ops import unary_union
 
 # Start logging
 module_logger = logging.getLogger(__name__)
+
+# Output numpy array types, the same as in common.h
+PointArray: TypeAlias = npt.NDArray[np.float64]
+CodeArray: TypeAlias = npt.NDArray[np.uint8]
+OffsetArray: TypeAlias = npt.NDArray[np.uint32]
+
+LineReturn_ChunkCombinedOffset: TypeAlias = tuple[
+    list[PointArray | None], list[OffsetArray | None]
+]
 
 
 def get_unfeasible_regions(
@@ -66,14 +79,14 @@ def get_unfeasible_regions(
     )
 
     # restructure the data in a 2d matrix and binarise the result
-    data = unfeasible_mask.astype(np.int)
+    data = unfeasible_mask.astype(int)
     label_im, labels = clustering(
         data, dx * dy, area_thr=area_thr, g_fil=g_fil, debug=debug
     )
 
     if debug:
         plt.figure(200)
-        plt.imshow(label_im, cmap=plt.cm.spectral)
+        plt.imshow(label_im, cmap=mpl.colormaps["Spectral"])
         plt.show()
 
     result_polys = get_shapely_polygons(X, Y, label_im, labels, debug=debug)
@@ -89,13 +102,21 @@ def get_shapely_polygons(X, Y, label_im, labels, debug=False):
         data_masked = label_im * (label_im == ind_label)
         if data_masked.max() < 1:
             continue
-        c = cntr.Cntr(X, Y, data_masked)
-        # trace a contour at z == 0.5
-        res = c.trace(0.0)
-        nseg = len(res) // 2
-        segments, codes = res[:nseg], res[nseg:]
-        del codes
-        multi_polygon.append(Polygon(segments[0]))
+        c = contour_generator(
+            X,
+            Y,
+            data_masked,
+            line_type="ChunkCombinedOffset",
+        )
+        # trace a contour at z == 0.0
+        lines = cast(LineReturn_ChunkCombinedOffset, c.lines(0.0))
+        points, offsets = lines[0][0], lines[1][0]
+
+        if points is None or offsets is None:
+            continue
+
+        segments = from_ragged_array(GeometryType.POLYGON, points, (offsets,))
+        multi_polygon.extend(segments)
         if not len(segments) == 1:
             for iel in range(1, len(segments)):
                 false_unfeasible.append(Polygon(segments[iel]))
@@ -103,10 +124,15 @@ def get_shapely_polygons(X, Y, label_im, labels, debug=False):
     mp = None
 
     if multi_polygon:
-        mp = cascaded_union(multi_polygon)
+        mp = unary_union(multi_polygon)
 
     if false_unfeasible:
-        mp -= cascaded_union(false_unfeasible)
+        false_union = unary_union(false_unfeasible)
+
+        if mp is None:
+            mp = false_union
+        else:
+            mp -= false_union
 
     return mp
 
@@ -120,7 +146,10 @@ def clustering(im, pixel_area, area_thr=10, g_fil=0.5, debug=False):
     close_img = ndimage.binary_closing(open_img)
 
     # cluster the all the independent areas
-    label_im, nb_labels = ndimage.label(close_img)
+    label_im, nb_labels = cast(
+        tuple[npt.NDArray, int],
+        ndimage.label(close_img),
+    )
 
     # calculate the areas of each cluster
     areas = (
@@ -210,7 +239,8 @@ def check_bathymetry_format(xyz, bound):
 
 if __name__ == "__main__":
     from shapely.geometry import Point
-    from Visualise_polygons import *
+
+    from .visualise_polygons import plotCompositePolygon
 
     z_bounds = [0, np.inf]
 
@@ -223,10 +253,11 @@ if __name__ == "__main__":
 
     # test the bathymetry function
     mp, unf = get_unfeasible_regions(xyz, z_bounds, debug=True)
-    mask = np.array([mp.contains(Point(xx, yy)) for xx, yy in test_array])
 
-    fig, ax = plt.subplots(1, 1)
-    plotCompositePolygon(mp, ax=ax)
+    if mp is not None:
+        fig, ax = plt.subplots(1, 1)
+        plotCompositePolygon(mp, ax=ax)
 
-    ax.plot(test_array[mask == False, 0], test_array[mask == False, 1], "rx")
-    ax.plot(test_array[mask, 0], test_array[mask, 1], "ro")
+        mask = np.array([mp.contains(Point(xx, yy)) for xx, yy in test_array])
+        ax.plot(test_array[not mask, 0], test_array[not mask, 1], "rx")
+        ax.plot(test_array[mask, 0], test_array[mask, 1], "ro")

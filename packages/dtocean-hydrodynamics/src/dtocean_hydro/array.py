@@ -37,7 +37,7 @@ from shapely.geometry import MultiPoint, MultiPolygon, Polygon
 from dtocean_wave.utils.WatWaves import len2
 
 from .utils.ellipse import get_grid_inside_ellipse_percent
-from .utils.Visualise_polygons import plotCompositePolygon
+from .utils.visualise_polygons import plotCompositePolygon
 
 # Start logging
 module_logger = logging.getLogger(__name__)
@@ -220,7 +220,7 @@ class Array_pkg(object):
             return np.min(distance[distance > 0].reshape((n, n - 1)), axis=1)
 
         if self.coord is None:
-            raise IOError("No coordinates provided")
+            raise RuntimeError("No coordinates provided")
         elif len(self.coord) == 1:
             self.minDist_constraint = False
             self._mindist_percent_max = None
@@ -256,6 +256,9 @@ class Array_pkg(object):
 
         """
 
+        if self.coord is None:
+            raise RuntimeError("No coordinates provided")
+
         if self.minDist_constraint:
             msg_str = (
                 "Violation of the minimum distance constraint between "
@@ -276,7 +279,8 @@ class Array_pkg(object):
         else:
             original_el = MultiPoint(self.coord)
             lease_mask = np.array(
-                [self._lease_P.intersects(el) for el in original_el], "bool"
+                [self._lease_P.intersects(el) for el in original_el.geoms],
+                "bool",
             )
 
             # identify the points inside the lease
@@ -291,7 +295,7 @@ class Array_pkg(object):
                     reduced_mask = np.array(
                         [
                             self.Nogo_bathymetry.intersects(el)
-                            for el in reduced_el
+                            for el in reduced_el.geoms
                         ],
                         "bool",
                     )
@@ -318,8 +322,10 @@ class Array_pkg(object):
                     reduced_mask = np.zeros(reduced_el_array.shape[0], "bool")
                     reduced_el = MultiPoint(reduced_el_array)
 
-                    for ng in nogo:
-                        ng_intersect = [ng.intersects(el) for el in reduced_el]
+                    for ng in nogo.geoms:
+                        ng_intersect = [
+                            ng.intersects(el) for el in reduced_el.geoms
+                        ]
                         ng_intersect_array = np.array(ng_intersect, "bool")
                         reduced_mask = ng_intersect_array + reduced_mask
 
@@ -386,6 +392,9 @@ class Array_pkg(object):
                 anchor to the plot in which the data has been stacked.
         """
 
+        if self.coord is None:
+            raise RuntimeError("No coordinates provided")
+
         if inside is None:
             inside = np.ones(len2(self.coord), dtype=bool)
 
@@ -426,9 +435,13 @@ class Array_pkg(object):
 
         Nbody = np.shape(self.coord[inside, 0])[0]
 
-        for mac, Str in enumerate(range(Nbody)):
+        for mac, i in enumerate(range(Nbody)):
             ax.annotate(
-                Str, (self.coord[inside, 0][mac], self.coord[inside, 1][mac])
+                str(i),
+                (
+                    self.coord[inside, 0][mac],
+                    self.coord[inside, 1][mac],
+                ),
             )
 
         ax.plot(
