@@ -25,11 +25,7 @@ import os
 
 import numpy as np
 import pytest
-from polite.paths import Directory
-from PyQt4 import QtGui
 from scipy.stats import multivariate_normal, norm
-
-from dtocean_wec.main import MainWindow
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -194,7 +190,7 @@ def tidalsite_simple():
     v_arrays = []
     ssh_arrays = []
 
-    for _ in xrange(time_points):
+    for _ in range(time_points):
         u_arrays.append(u_scaled)
         v_arrays.append(v_scaled)
         ssh_arrays.append(ssh_scaled)
@@ -725,30 +721,30 @@ def install_lines():
     return "\n".join(lines)
 
 
-@pytest.fixture
-def main_window(mocker, qtbot, tmpdir, install_lines):
-    from dtocean_wec.main import QMessageBox
+# @pytest.fixture
+# def main_window(mocker, qtbot, tmp_path, install_lines):
+#     from dtocean_wec.main import QMessageBox
 
-    exe_path = tmpdir / "python.exe"
-    ini_file = tmpdir / "etc" / "dtocean-data" / "install.ini"
-    ini_file.write(install_lines, ensure=True)
+#     exe_path = tmp_path / "python.exe"
+#     ini_file = tmp_path / "etc" / "dtocean-data" / "install.ini"
+#     ini_file.write(install_lines, ensure=True)
 
-    mocker.patch("polite.paths.sys.executable", new=str(exe_path))
-    mocker.patch("polite.paths.system", new="win32")
-    mocker.patch(
-        "dtocean_hydro.configure.SiteDataDirectory",
-        return_value=Directory(str(tmpdir)),
-    )
+#     mocker.patch("polite.paths.sys.executable", new=str(exe_path))
+#     mocker.patch("polite.paths.system", new="win32")
+#     mocker.patch(
+#         "dtocean_hydro.configure.SiteDataDirectory",
+#         return_value=tmp_path,
+#     )
 
-    mocker.patch.object(
-        QMessageBox, "question", return_value=QtGui.QMessageBox.Yes
-    )
+#     mocker.patch.object(
+#         QMessageBox, "question", return_value=QtGui.QMessageBox.Yes
+#     )
 
-    window = MainWindow()
-    window.show()
-    qtbot.addWidget(window)
+#     window = MainWindow()
+#     window.show()
+#     qtbot.addWidget(window)
 
-    return window
+#     return window
 
 
 @pytest.fixture

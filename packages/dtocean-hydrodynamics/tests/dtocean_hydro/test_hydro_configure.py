@@ -22,7 +22,6 @@
 import os
 
 import pytest
-from polite.paths import Directory
 
 from dtocean_hydro import start_logging
 from dtocean_hydro.configure import get_install_paths
@@ -32,17 +31,14 @@ def test_start_logging():
     start_logging()
 
 
-def test_get_install_paths_conda(mocker, tmpdir, install_lines):
-    exe_path = tmpdir / "python.exe"
-    ini_file = tmpdir / "etc" / "dtocean-data" / "install.ini"
+def test_get_install_paths_conda(mocker, tmp_path, install_lines):
+    exe_path = tmp_path / "python.exe"
+    ini_file = tmp_path / "etc" / "dtocean-data" / "install.ini"
     ini_file.write(install_lines, ensure=True)
 
     mocker.patch("polite.paths.sys.executable", new=str(exe_path))
     mocker.patch("polite.paths.system", new="win32")
-    mocker.patch(
-        "dtocean_hydro.configure.SiteDataDirectory",
-        return_value=Directory(str(tmpdir)),
-    )
+    mocker.patch("dtocean_hydro.configure.SiteDataPath", return_value=tmp_path)
 
     paths = get_install_paths()
 
