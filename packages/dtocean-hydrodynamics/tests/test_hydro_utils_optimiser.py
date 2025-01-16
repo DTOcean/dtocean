@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2017-2021 Mathew Topper
+#    Copyright (C) 2017-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,28 +19,27 @@
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-import pytest
-
 from copy import deepcopy
 
-from dtocean_hydro.input import WP2input, WP2_MachineData, WP2_SiteData
+import pytest
+
+from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
 from dtocean_hydro.main import WP2
 
 
 @pytest.fixture
 def searchoptimum(tidalsite, tidal, tidal_kwargs):
-    
     tidal = deepcopy(tidal)
-    tidal[-3]['Option'] = 1
-    tidal[-3]['Value'] = "rectangular"
-    
+    tidal[-3]["Option"] = 1
+    tidal[-3]["Value"] = "rectangular"
+
     site = WP2_SiteData(*tidalsite)
     machine = WP2_MachineData(*tidal, **tidal_kwargs)
-    
+
     data = WP2input(machine, site)
     wp2 = WP2(data)
     hyd_obj = wp2._get_hyd_obj()
-    
+
     return wp2._get_optim_obj(hyd_obj)
 
 
