@@ -31,6 +31,7 @@ using the Nemoh software.
 import logging
 import os
 import subprocess
+from platform import system
 
 import numpy as np
 from hydrostatics import Hydrostatics_Nemohcal
@@ -424,25 +425,34 @@ class NemohExecute:
 
         return Khst
 
-    def run_nemoh(self, nemoh_folder, start=True):
+    def run_nemoh(self, nemoh_folder):
         """
         run_nemoh: run the hydrodynamic solvers
 
-        Optional args:
+        Args:
             nemoh_folder (str): location of the executable files
-            start (boolean): triggers the calculation on or off
-            generate (boolean): triggers the generation on or off
         """
 
-        if start:
-            actual_dir = os.getcwd()
-            os.chdir(self.path_prj_hdy)
-            output_pre = execute(os.path.join(nemoh_folder, "preProcessor.exe"))
-            output_solver = execute(os.path.join(nemoh_folder, "solver.exe"))
-            output_post = execute(
-                os.path.join(nemoh_folder, "postprocessor.exe")
-            )
-            os.chdir(actual_dir)
+        arch = system().lower()
+
+        match arch:
+            case "linux":
+                post_name = "postProc"
+                pre_name = "preProc"
+                solver_name = "solver"
+            case "windows":
+                post_name = "postProcessor.exe"
+                pre_name = "preProcessor.exe"
+                solver_name = "Solver.exe"
+            case _:
+                raise NotImplementedError("Unsupported architecture")
+
+        actual_dir = os.getcwd()
+        os.chdir(self.path_prj_hdy)
+        execute(os.path.join(nemoh_folder, pre_name))
+        execute(os.path.join(nemoh_folder, solver_name))
+        execute(os.path.join(nemoh_folder, post_name))
+        os.chdir(actual_dir)
 
 
 def _get_cylinder_radius(meshes):
@@ -532,37 +542,37 @@ def execute(command):
 #    else:
 #        raise Exception(command, exitCode, output)
 
-if __name__ == "__main__":
-    import sys
+# if __name__ == "__main__":
+#     import sys
 
-    sys.path.append(r"C:\Users\francesco\Desktop\test_gui\utils")
-    from data_interface import DataStructure
+#     sys.path.append(r"C:\Users\francesco\Desktop\test_gui\utils")
+#     from data_interface import DataStructure
 
-    import dtocean_wave.utils.hdf5_interface as h5i
+#     import dtocean_wave.utils.hdf5_interface as h5i
 
-    data = h5i.load_dict_from_hdf5(
-        r"C:\Users\francesco\Desktop\test_gui\test_prj\test_prj_data_collection.hdf5"
-    )
+#     data = h5i.load_dict_from_hdf5(
+#         r"C:\Users\francesco\Desktop\test_gui\test_prj\test_prj_data_collection.hdf5"
+#     )
 
-    dataobj = DataStructure(data)
-    dataobj.body_inputs["body"]["body0"]["mesh"] = os.path.join(
-        "C:\\Users\\francesco\\Desktop\\test_gui",
-        dataobj.body_inputs["body"]["body0"]["mesh"],
-    )
-    dataobj.body_inputs["body"]["body1"]["mesh"] = os.path.join(
-        "C:\\Users\\francesco\\Desktop\\test_gui",
-        dataobj.body_inputs["body"]["body1"]["mesh"],
-    )
-    bem_obj = NemohExecute(
-        dataobj.project_folder,
-        dataobj.general_inputs,
-        dataobj.body_inputs,
-        get_array_mat=False,
-        debug=False,
-    )
-    bem_obj.gen_path()
-    bem_obj.gen_mesh_files()
-    bem_obj.gen_multibody_structure()
-    bem_obj.gen_hdyn_files()
-    bem_obj.run_nemoh()
-    bem_obj.run_hst()
+#     dataobj = DataStructure(data)
+#     dataobj.body_inputs["body"]["body0"]["mesh"] = os.path.join(
+#         "C:\\Users\\francesco\\Desktop\\test_gui",
+#         dataobj.body_inputs["body"]["body0"]["mesh"],
+#     )
+#     dataobj.body_inputs["body"]["body1"]["mesh"] = os.path.join(
+#         "C:\\Users\\francesco\\Desktop\\test_gui",
+#         dataobj.body_inputs["body"]["body1"]["mesh"],
+#     )
+#     bem_obj = NemohExecute(
+#         dataobj.project_folder,
+#         dataobj.general_inputs,
+#         dataobj.body_inputs,
+#         get_array_mat=False,
+#         debug=False,
+#     )
+#     bem_obj.gen_path()
+#     bem_obj.gen_mesh_files()
+#     bem_obj.gen_multibody_structure()
+#     bem_obj.gen_hdyn_files()
+#     bem_obj.run_nemoh()
+#     bem_obj.run_hst()
