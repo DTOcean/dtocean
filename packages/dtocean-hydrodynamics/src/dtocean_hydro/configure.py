@@ -71,35 +71,38 @@ def get_install_paths():
     """Pick the necessary paths to configure the external files for the wave
     and tidal packages."""
 
-    # Look in the etc directory
-    etc_data = EtcPath("dtocean-data")
-    etc_ini_reader = ReadINI(etc_data, "install.ini")
-
-    # Get the root path from the possible site data paths
-    site_data = SiteDataPath("DTOcean Data", "DTOcean")
-    site_ini_reader = ReadINI(site_data, "install.ini")
-
-    if etc_ini_reader.config_exists():
-        config = etc_ini_reader.get_config()
-    elif site_ini_reader.config_exists():
-        config = site_ini_reader.get_config()
-    else:
-        errStr = (
-            "No suitable configuration file found at paths {} or {}"
-        ).format(
-            etc_ini_reader.get_config_path(), site_ini_reader.get_config_path()
+    tidal_share_path = _DIR_DATA / "share" / "dtocean_tidal"
+    if not tidal_share_path.is_dir():
+        raise RuntimeError(
+            "Tidal shared data directory does not exists. Has dtocean-data "
+            "been installed?"
         )
-        raise RuntimeError(errStr)
 
-    prefix = config["global"]["prefix"]
-    bin_path = os.path.join(prefix, config["global"]["bin_path"])
-    wec_share_path = os.path.join(prefix, config["dtocean_wec"]["share_path"])
-    tidal_share_path = os.path.join(
-        prefix, config["dtocean_tidal"]["share_path"]
-    )
+    wec_share_path = _DIR_DATA / "share" / "dtocean_wec"
+    if not wec_share_path.is_dir():
+        raise RuntimeError(
+            "Wave shared data directory does not exists. Has dtocean-data "
+            "been installed?"
+        )
+
+    arch = system().lower()
+
+    match arch:
+        case "linux":
+            bin_path = _DIR_NEMOH / "bin"
+        case "windows":
+            bin_path = _DIR_NEMOH / "x64" / "Release"
+        case _:
+            raise NotImplementedError("Unsupported architecture")
+
+    if not bin_path.is_dir():
+        raise RuntimeError(
+            "NEMOH executables directory does not exists. Has NEMOH been "
+            "installed?"
+        )
 
     return {
         "bin_path": bin_path,
-        "wec_share_path": wec_share_path,
         "tidal_share_path": tidal_share_path,
+        "wec_share_path": wec_share_path,
     }
