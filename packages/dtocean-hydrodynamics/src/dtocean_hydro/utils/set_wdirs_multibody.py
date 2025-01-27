@@ -25,7 +25,7 @@ possible self orientation feature of the device
    :synopsis: Defines wave direction for the array layout
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import numpy as np

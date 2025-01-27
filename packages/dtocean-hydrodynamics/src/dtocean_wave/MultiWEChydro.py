@@ -25,7 +25,7 @@ This module contains the classes used to collect and modify the WP2 inputs
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 # Start logging

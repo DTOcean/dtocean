@@ -25,7 +25,7 @@ using the Nemoh software.
    :synopsis: Numerical model of WEC builder
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging

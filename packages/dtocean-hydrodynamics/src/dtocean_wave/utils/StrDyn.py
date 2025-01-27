@@ -24,7 +24,7 @@ This module provides several methods to solve structure dynamics problems
    :synopsis: Structural Dynamic Solver
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import numpy as np
