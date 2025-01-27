@@ -25,7 +25,7 @@ files
    :synopsis: hdf5 reader and writer
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import os

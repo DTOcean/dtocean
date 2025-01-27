@@ -24,7 +24,7 @@ This module provides several methods which are recurrently used to solve the wat
    :synopsis: Wave Dynamics Solver
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging

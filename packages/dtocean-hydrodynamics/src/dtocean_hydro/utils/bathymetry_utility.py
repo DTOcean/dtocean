@@ -20,7 +20,7 @@
 Created on Wed May 04 16:11:29 2016
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging

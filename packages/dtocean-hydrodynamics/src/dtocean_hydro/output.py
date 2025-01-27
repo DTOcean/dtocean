@@ -25,7 +25,7 @@ hydrodynamic module.
    :synopsis: WP2ouput module to DTOcean
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging

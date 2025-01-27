@@ -24,7 +24,7 @@ This module contains the class used to describe the behavior of the single WEC
    :synopsis: WEC model
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging

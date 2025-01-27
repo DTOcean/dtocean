@@ -25,7 +25,7 @@ by Thomas Roc (ITPower).
    :synopsis: Tidal interface module for DTOcean WP2
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging
