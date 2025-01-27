@@ -45,8 +45,7 @@ def tidalsite():
     # Tidal time series
     time_points = 1
 
-    rv = norm()
-    time_pdf = rv.pdf(np.linspace(-2, 2, time_points))
+    time_pdf = norm.pdf(np.linspace(-2, 2, time_points))
     time_scaled = time_pdf * (1.0 / np.amax(time_pdf))
 
     xgrid, ygrid = np.meshgrid(x, y)
@@ -54,15 +53,14 @@ def tidalsite():
 
     rv = multivariate_normal(
         [x.mean(), y.mean()],
-        [[max(x) * 5.0, max(y) * 2.0], [max(y) * 2.0, max(x) * 5.0]],
+        [[max(x) * 5.0, max(y) * 2.0], [max(y) * 2.0, max(x) * 5.0]],  # type: ignore
     )
+    grid_pdf = rv.pdf(pos)
 
     # u_max = 10.
     u_max = 5.0
     v_max = 1.0
     ssh_max = 1.0
-
-    grid_pdf = rv.pdf(pos)
 
     u_scaled = grid_pdf * (u_max / np.amax(grid_pdf))
     v_scaled = np.ones((ny, nx)) * v_max
