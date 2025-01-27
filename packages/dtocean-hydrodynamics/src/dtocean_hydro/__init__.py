@@ -18,13 +18,8 @@
 import logging
 from logging import NullHandler
 
-from pkg_resources import get_distribution
 from polite_config.configuration import Logger
 from polite_config.paths import DirectoryMap, ModPath, UserDataPath
-
-# credentials
-__authors__ = ["DTOcean Developers"]
-__version__ = get_distribution("dtocean-hydrodynamics").version
 
 logging.getLogger(__name__).addHandler(NullHandler())
 
