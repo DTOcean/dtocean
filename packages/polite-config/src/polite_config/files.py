@@ -14,7 +14,7 @@ def extract_tar(src: StrOrPath, dst: StrOrPath):
     dst_path = Path(dst)
 
     with _resolve_src(src) as tg_path, tarfile.open(tg_path) as tar:
-        dst_path.mkdir(exist_ok=True)
+        dst_path.mkdir(exist_ok=True, parents=True)
         tar.extractall(path=dst_path, filter="tar")
 
 
@@ -22,7 +22,7 @@ def extract_zip(src: StrOrPath, dst: StrOrPath):
     dst_path = Path(dst)
 
     with _resolve_src(src) as zip_path, ZipFile(zip_path) as zf:
-        dst_path.mkdir(exist_ok=True)
+        dst_path.mkdir(exist_ok=True, parents=True)
         zf.extractall(path=dst_path)
 
 
