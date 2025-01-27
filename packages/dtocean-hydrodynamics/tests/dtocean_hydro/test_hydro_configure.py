@@ -1,94 +1,234 @@
-# -*- coding: utf-8 -*-
-
-#    Copyright (C) 2016-2025 Mathew Topper
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-"""
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
-"""
-
-import os
+from unittest.mock import MagicMock, call
 
 import pytest
 
-from dtocean_hydro import start_logging
-from dtocean_hydro.configure import get_install_paths
+import dtocean_hydro.configure as configure
+from dtocean_hydro.configure import (
+    _URL_BASE_DATA,
+    _URL_BASE_NEMOH,
+    get_data,
+    get_install_paths,
+)
 
 
-def test_start_logging():
-    start_logging()
+def test_get_data_linux(mocker, tmp_path):
+    mocker.patch("dtocean_hydro.configure.system", return_value="linux")
+    extract_tar: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_tar",
+        autospec=True,
+    )
+    extract_zip: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_zip",
+        autospec=True,
+    )
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
+
+    get_data()
+
+    assert extract_tar.call_count == 2
+    assert extract_zip.call_count == 0
+
+    expected = [
+        call(_URL_BASE_DATA + ".tar.gz", tmp_path),
+        call(_URL_BASE_NEMOH + ".tar.gz", tmp_path),
+    ]
+    assert extract_tar.call_args_list == expected
 
 
-def test_get_install_paths_conda(mocker, tmp_path, install_lines):
-    exe_path = tmp_path / "python.exe"
-    ini_file = tmp_path / "etc" / "dtocean-data" / "install.ini"
-    ini_file.write(install_lines, ensure=True)
+def test_get_data_windows(mocker, tmp_path):
+    mocker.patch("dtocean_hydro.configure.system", return_value="windows")
+    extract_tar: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_tar",
+        autospec=True,
+    )
+    extract_zip: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_zip",
+        autospec=True,
+    )
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
 
-    mocker.patch("polite.paths.sys.executable", new=str(exe_path))
-    mocker.patch("polite.paths.system", new="win32")
-    mocker.patch("dtocean_hydro.configure.SiteDataPath", return_value=tmp_path)
+    get_data()
+
+    assert extract_tar.call_count == 0
+    assert extract_zip.call_count == 2
+
+    expected = [
+        call(_URL_BASE_DATA + ".zip", tmp_path),
+        call(_URL_BASE_NEMOH + ".zip", tmp_path),
+    ]
+    assert extract_zip.call_args_list == expected
+
+
+def test_get_data_skip(mocker, tmp_path):
+    mocker.patch("dtocean_hydro.configure.system", return_value="linux")
+    extract_tar: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_tar",
+        autospec=True,
+    )
+    extract_zip: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_zip",
+        autospec=True,
+    )
+
+    data_dir = tmp_path / "non-empty"
+    nemoh_dir = tmp_path / "empty"
+    data_dir.mkdir()
+    p = data_dir / "mock.txt"
+    p.write_text("Mock")
+
+    mocker.patch.object(configure, "_DIR_DATA", data_dir)
+    mocker.patch.object(configure, "_DIR_NEMOH", nemoh_dir)
+
+    get_data()
+
+    assert extract_tar.call_count == 1
+    assert extract_zip.call_count == 0
+
+    expected = [
+        call(_URL_BASE_NEMOH + ".tar.gz", nemoh_dir),
+    ]
+    assert extract_tar.call_args_list == expected
+
+
+def test_get_data_force(mocker, tmp_path):
+    mocker.patch("dtocean_hydro.configure.system", return_value="linux")
+    extract_tar: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_tar",
+        autospec=True,
+    )
+    extract_zip: MagicMock = mocker.patch(
+        "dtocean_hydro.configure.extract_zip",
+        autospec=True,
+    )
+
+    data_dir = tmp_path / "non-empty"
+    nemoh_dir = tmp_path / "empty"
+    data_dir.mkdir()
+    p = data_dir / "mock.txt"
+    p.write_text("Mock")
+
+    mocker.patch.object(configure, "_DIR_DATA", data_dir)
+    mocker.patch.object(configure, "_DIR_NEMOH", nemoh_dir)
+
+    get_data(force=True)
+
+    assert extract_tar.call_count == 2
+    assert extract_zip.call_count == 0
+
+    expected = [
+        call(_URL_BASE_DATA + ".tar.gz", data_dir),
+        call(_URL_BASE_NEMOH + ".tar.gz", nemoh_dir),
+    ]
+    assert extract_tar.call_args_list == expected
+    assert not p.is_file()
+
+
+def test_get_data_bad_arch(mocker, tmp_path):
+    mocker.patch("dtocean_hydro.configure.system", return_value="bad")
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
+
+    with pytest.raises(NotImplementedError) as excinfo:
+        get_data()
+
+    assert "Unsupported architecture" in str(excinfo.value)
+
+
+@pytest.mark.parametrize(
+    "system, bin_path",
+    [
+        ("linux", ("bin",)),
+        ("windows", ("x64", "Release")),
+    ],
+)
+def test_get_install_paths(mocker, tmp_path, system, bin_path):
+    bin_path = tmp_path.joinpath(*bin_path)
+    tidal_share_path = tmp_path / "share" / "dtocean_tidal"
+    wec_share_path = tmp_path / "share" / "dtocean_wec"
+
+    bin_path.mkdir(parents=True)
+    tidal_share_path.mkdir(parents=True)
+    wec_share_path.mkdir(parents=True)
+
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
+    mocker.patch("dtocean_hydro.configure.system", return_value=system)
 
     paths = get_install_paths()
 
     assert set(["bin_path", "wec_share_path", "tidal_share_path"]) == set(
         paths.keys()
     )
-    assert paths["bin_path"] == os.path.join("mock", "bin_mock")
-    assert paths["wec_share_path"] == os.path.join("mock", "dtocean_wec_mock")
-    assert paths["tidal_share_path"] == os.path.join(
-        "mock", "dtocean_tidal_mock"
-    )
+    assert paths["bin_path"] == bin_path
+    assert paths["tidal_share_path"] == tidal_share_path
+    assert paths["wec_share_path"] == wec_share_path
 
 
-def test_get_install_paths_installer(mocker, tmpdir, install_lines):
-    ini_file = tmpdir / "install.ini"
-    ini_file.write(install_lines, ensure=True)
+def test_get_install_paths_missing_tidal(mocker, tmp_path):
+    bin_path = tmp_path / "bin"
+    wec_share_path = tmp_path / "share" / "dtocean_wec"
 
-    mocker.patch("polite.paths.site_data_dir", return_value=str(tmpdir))
-    mocker.patch(
-        "dtocean_hydro.configure.EtcDirectory",
-        return_value=Directory(str(tmpdir / "mock")),
-    )
+    bin_path.mkdir(parents=True)
+    wec_share_path.mkdir(parents=True)
 
-    paths = get_install_paths()
-
-    assert set(["bin_path", "wec_share_path", "tidal_share_path"]) == set(
-        paths.keys()
-    )
-    assert paths["bin_path"] == os.path.join("mock", "bin_mock")
-    assert paths["wec_share_path"] == os.path.join("mock", "dtocean_wec_mock")
-    assert paths["tidal_share_path"] == os.path.join(
-        "mock", "dtocean_tidal_mock"
-    )
-
-
-def test_get_install_paths_missing(mocker, tmpdir):
-    etc_path = tmpdir / "etc"
-    site_path = tmpdir / "site"
-
-    mocker.patch(
-        "dtocean_hydro.configure.EtcDirectory",
-        return_value=Directory(str(etc_path)),
-    )
-    mocker.patch(
-        "dtocean_hydro.configure.SiteDataDirectory",
-        return_value=Directory(str(site_path)),
-    )
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
+    mocker.patch("dtocean_hydro.configure.system", return_value="linux")
 
     with pytest.raises(RuntimeError) as excinfo:
         get_install_paths()
 
-    assert str(etc_path) in str(excinfo)
-    assert str(site_path) in str(excinfo)
+    assert "Tidal shared data directory does not exist." in str(excinfo.value)
+
+
+def test_get_install_paths_missing_wec(mocker, tmp_path):
+    bin_path = tmp_path / "bin"
+    tidal_share_path = tmp_path / "share" / "dtocean_tidal"
+
+    bin_path.mkdir(parents=True)
+    tidal_share_path.mkdir(parents=True)
+
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
+    mocker.patch("dtocean_hydro.configure.system", return_value="linux")
+
+    with pytest.raises(RuntimeError) as excinfo:
+        get_install_paths()
+
+    assert "WEC shared data directory does not exist." in str(excinfo.value)
+
+
+def test_get_install_paths_missing_bin(mocker, tmp_path):
+    tidal_share_path = tmp_path / "share" / "dtocean_tidal"
+    wec_share_path = tmp_path / "share" / "dtocean_wec"
+
+    tidal_share_path.mkdir(parents=True)
+    wec_share_path.mkdir(parents=True)
+
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
+    mocker.patch("dtocean_hydro.configure.system", return_value="linux")
+
+    with pytest.raises(RuntimeError) as excinfo:
+        get_install_paths()
+
+    assert "NEMOH executables directory does not exist." in str(excinfo.value)
+
+
+def test_get_install_paths_bad_arch(mocker, tmp_path):
+    tidal_share_path = tmp_path / "share" / "dtocean_tidal"
+    wec_share_path = tmp_path / "share" / "dtocean_wec"
+
+    tidal_share_path.mkdir(parents=True)
+    wec_share_path.mkdir(parents=True)
+
+    mocker.patch.object(configure, "_DIR_DATA", tmp_path)
+    mocker.patch.object(configure, "_DIR_NEMOH", tmp_path)
+    mocker.patch("dtocean_hydro.configure.system", return_value="bad")
+
+    with pytest.raises(NotImplementedError) as excinfo:
+        get_install_paths()
+
+    assert "Unsupported architecture" in str(excinfo.value)
