@@ -5,8 +5,6 @@ formatters:
   simple:
     format: '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 handlers:
-  null:
-    class: logging.NullHandler
   console:
     class: logging.StreamHandler
     level: DEBUG
@@ -25,4 +23,3 @@ loggers:
 root:
   level: DEBUG
   handlers: [console]
-
