@@ -48,10 +48,11 @@ def get_data(force: bool = False):
     ):
         if any(dst.iterdir()):
             if not force:
-                raise RuntimeError(
-                    f"Directory {dst} is not empty. Consider setting 'force' "
-                    "argument to True"
+                module_logger.info(
+                    f"Skipped creation of directory {dst}. Set 'force' "
+                    "argument to True to overwrite"
                 )
+                continue
 
             shutil.rmtree(dst)
 
