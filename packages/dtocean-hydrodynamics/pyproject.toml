@@ -41,6 +41,9 @@ ruff = "^0.8.3"
 pyright = "^1.1.390"
 deptry = "^0.21.1"
 
+[tool.poetry.scripts]
+dtocean-hydro = 'dtocean_hydro._cli:run'
+
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
