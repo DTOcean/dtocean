@@ -24,7 +24,7 @@ This module contains the main classes used to obtain the solution of the hydrody
    :synopsis: wec_external_module module to DTOcean
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 import os
 

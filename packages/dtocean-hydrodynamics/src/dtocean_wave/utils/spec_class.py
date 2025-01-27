@@ -24,7 +24,7 @@ This module contains the classes used to generate the wave spectrums associated 
    :synopsis: Class to generate wave models
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 # Start logging

@@ -18,7 +18,7 @@
 """
 Created on Wed Sep 26 13:17:52 2018
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import numpy as np

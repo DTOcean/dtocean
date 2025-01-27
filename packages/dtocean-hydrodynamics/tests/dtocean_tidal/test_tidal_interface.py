@@ -18,7 +18,7 @@
 """
 Created on Fri Jun 02 12:37:42 2017
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 
