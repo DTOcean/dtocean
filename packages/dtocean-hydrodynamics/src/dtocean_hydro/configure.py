@@ -46,7 +46,7 @@ def get_data(force: bool = False):
         [_URL_BASE_DATA, _URL_BASE_NEMOH],
         [_DIR_DATA, _DIR_NEMOH],
     ):
-        if any(dst.iterdir()):
+        if dst.is_dir() and any(dst.iterdir()):
             if not force:
                 module_logger.info(
                     f"Skipped creation of directory {dst}. Set 'force' "
