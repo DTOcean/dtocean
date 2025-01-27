@@ -74,14 +74,14 @@ def get_install_paths():
     tidal_share_path = _DIR_DATA / "share" / "dtocean_tidal"
     if not tidal_share_path.is_dir():
         raise RuntimeError(
-            "Tidal shared data directory does not exists. Has dtocean-data "
+            "Tidal shared data directory does not exist. Has dtocean-data "
             "been installed?"
         )
 
     wec_share_path = _DIR_DATA / "share" / "dtocean_wec"
     if not wec_share_path.is_dir():
         raise RuntimeError(
-            "Wave shared data directory does not exists. Has dtocean-data "
+            "WEC shared data directory does not exist. Has dtocean-data "
             "been installed?"
         )
 
@@ -97,7 +97,7 @@ def get_install_paths():
 
     if not bin_path.is_dir():
         raise RuntimeError(
-            "NEMOH executables directory does not exists. Has NEMOH been "
+            "NEMOH executables directory does not exist. Has NEMOH been "
             "installed?"
         )
 
