@@ -12,22 +12,26 @@ StrOrPath = Union[str, Path]
 
 def extract_tar(src: StrOrPath, dst: StrOrPath):
     dst_path = Path(dst)
-    dst_path.mkdir(exist_ok=True)
 
     with _resolve_src(src) as tg_path:
-        tar = tarfile.open(tg_path)
-        tar.extractall(path=dst_path, filter="tar")
-        tar.close()
+        try:
+            tar = tarfile.open(tg_path)
+            dst_path.mkdir(exist_ok=True)
+            tar.extractall(path=dst_path, filter="tar")
+        finally:
+            tar.close()
 
 
 def extract_zip(src: StrOrPath, dst: StrOrPath):
     dst_path = Path(dst)
-    dst_path.mkdir(exist_ok=True)
 
     with _resolve_src(src) as zip_path:
-        zf = ZipFile(zip_path)
-        zf.extractall(path=dst_path)
-        zf.close()
+        try:
+            zf = ZipFile(zip_path)
+            dst_path.mkdir(exist_ok=True)
+            zf.extractall(path=dst_path)
+        finally:
+            zf.close()
 
 
 @contextmanager
