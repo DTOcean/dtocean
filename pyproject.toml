@@ -4,7 +4,6 @@ package-mode = false
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
 dtocean-core = { path = "packages/dtocean-core", develop = true }
-dtocean-data = { path = "packages/dtocean-data", develop = true }
 dtocean-dummy-module = { path = "packages/dtocean-dummy-module", develop = true }
 dtocean-hydrodynamics = { path = "packages/dtocean-hydrodynamics", develop = true }
 mdo-engine = { path = "packages/mdo-engine", develop = true }
