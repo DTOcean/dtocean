@@ -59,8 +59,9 @@ def test_resolve_src_error(tmp_path):
     assert "neither a file or a URL" in str(excinfo.value)
 
 
-def test_extract_tar(tmp_path, tmp_tar):
-    dst = tmp_path / "mock"
+@pytest.mark.parametrize("dst_children", [("mock",), ("parent", "mock")])
+def test_extract_tar(tmp_path, tmp_tar, dst_children):
+    dst = tmp_path.joinpath(*dst_children)
     extract_tar(tmp_tar, dst)
 
     test = [x.name for x in (dst / "tests").iterdir() if x.is_file()]
@@ -96,8 +97,9 @@ def test_extract_tar_src_error(tmp_path):
     assert not dst.is_dir()
 
 
-def test_extract_zip(tmp_path, tmp_zip):
-    dst = tmp_path / "mock"
+@pytest.mark.parametrize("dst_children", [("mock",), ("parent", "mock")])
+def test_extract_zip(tmp_path, tmp_zip, dst_children):
+    dst = tmp_path.joinpath(*dst_children)
     extract_zip(tmp_zip, dst)
 
     test = [x.name for x in (dst / "tests").iterdir() if x.is_file()]
