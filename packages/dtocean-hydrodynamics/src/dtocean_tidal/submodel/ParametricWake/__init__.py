@@ -20,3 +20,5 @@ from .reader import read_database
 
 # Local import
 from .wakeClass import Wake, WakeShape
+
+__all__ = ["read_database", "Wake", "WakeShape"]

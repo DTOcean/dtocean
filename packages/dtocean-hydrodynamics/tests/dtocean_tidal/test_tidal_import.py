@@ -21,4 +21,6 @@
 
 
 def test_import_read_database():
-    assert True
+    from dtocean_tidal.submodel.ParametricWake import read_database
+
+    assert read_database
