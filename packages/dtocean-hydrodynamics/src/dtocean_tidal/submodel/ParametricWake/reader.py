@@ -23,7 +23,7 @@ import numpy as np
 import pandas as pd
 
 # TR: integration of Sandia's model - beta 1.0
-from read_db_mod import read_db
+from .read_db_mod import read_db
 
 
 def read_database(data_path):
