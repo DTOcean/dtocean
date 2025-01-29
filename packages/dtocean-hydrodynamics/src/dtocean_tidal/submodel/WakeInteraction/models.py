@@ -42,7 +42,7 @@ class DominantWake:
     def get_dominant(self, matrix):
         if matrix.shape != self._coefficients.shape:
             err_str = ("Supplied matrix must have shape " "{0}x{0}").format(
-                self._coefficienst.shape
+                self._coefficients.shape
             )
             raise ValueError(err_str)
 
