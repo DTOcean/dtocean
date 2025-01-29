@@ -17,8 +17,8 @@ pytest = "^8.3.4"
 pytest-mock = "^3.14.0"
 mock = "^5.1.0"
 pytest-cov = "^6.0.0"
-pytest-catchlog = "^1.2.2"
 pytest-qt = "^4.4.0"
+pyside6 = "^6.8.1.1"
 
 [tool.poetry.group.audit]
 optional = true
