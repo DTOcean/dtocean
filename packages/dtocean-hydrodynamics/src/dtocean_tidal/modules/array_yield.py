@@ -16,8 +16,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-
 import logging
 
 import matplotlib.pyplot as plt
@@ -85,14 +83,14 @@ class ArrayYield:
         # Water density
         rho = 1025.0
 
-        l = natural_sort(self._array.velHub.keys())
+        hub_keys = natural_sort(self._array.velHub.keys())
         turbNorm = np.zeros(self._turbine_count)
         turbNormIni = np.zeros(self._turbine_count)
         turbGene = np.zeros(self._turbine_count)
         turbGeneIni = np.zeros(self._turbine_count)
         turbID = []
 
-        for i, key in enumerate(l):
+        for i, key in enumerate(hub_keys):
             # Turbine features
             diam = self._array.features[key]["Diam"]
             cutIn = self._array.features[key]["cutIO"][0]
@@ -196,10 +194,10 @@ class ArrayYield:
         # Constants
         rho = 1025.0  # water density
         # Initialize some stuffs
-        l = natural_sort(self._array.velHub.keys())
+        hub_keys = natural_sort(self._array.velHub.keys())
         turbDiss = np.zeros(self._turbine_count)
 
-        for i, key in enumerate(l):
+        for i, key in enumerate(hub_keys):
             # turbine features
             diam = self._array.features[key]["Diam"]
             cutIn = self._array.features[key]["cutIO"][0]

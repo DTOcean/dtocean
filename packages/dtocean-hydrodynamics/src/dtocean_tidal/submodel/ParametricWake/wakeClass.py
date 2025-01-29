@@ -16,20 +16,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-
 import logging
 
 import matplotlib.pyplot as plt
 import numpy as np
-from descartes import PolygonPatch
 from scipy.interpolate import interp1d
+from shapely.errors import TopologicalError
 from shapely.geometry import LineString, Point, Polygon
-from shapely.geos import TopologicalError
+from shapely.plotting import patch_from_polygon
 
 from dtocean_tidal.utils.interpolation import interp_at_point
-
-# Local import
 from dtocean_tidal.utils.misc import closest_point, intersection, line
 
 # Start logging
@@ -403,32 +399,32 @@ class WakeShape:
         # Compute the outer lines of the wake
         ##Flow signs
         deltaY = Y[1] - Y[0]
-        sy = np.sign(deltaY)
         deltaX = X[1] - X[0]
         sx = np.sign(deltaX)
         ##Tilt first outer points
-        l = wake.Diam / 2.0  # wake expansion
+        expansion = wake.Diam / 2.0  # wake expansion
         gamma = np.arctan2(deltaY, deltaX)
-        self.streamtop[0][0] = X[0] - (l * np.sin(gamma))
-        self.streamtop[1][0] = Y[0] + (l * np.cos(gamma))
-        self.streambot[0][0] = X[0] + (l * np.sin(gamma))
-        self.streambot[1][0] = Y[0] - (l * np.cos(gamma))
+        self.streamtop[0][0] = X[0] - (expansion * np.sin(gamma))
+        self.streamtop[1][0] = Y[0] + (expansion * np.cos(gamma))
+        self.streambot[0][0] = X[0] + (expansion * np.sin(gamma))
+        self.streambot[1][0] = Y[0] - (expansion * np.cos(gamma))
 
         distance = 0.0
         for i in range(L - 1):
             ##Flow signs
             deltaY = Y[i + 1] - Y[i]
-            sy = np.sign(deltaY)
             deltaX = X[i + 1] - X[i]
             sx = np.sign(deltaX)
 
             distance += hypo[i]  # cumulative distance along streamline
-            l = (wake.Diam / 2.0) + (wake.l * distance)  # wake expansion
+            expansion = (wake.Diam / 2.0) + (
+                wake.l * distance
+            )  # wake expansion
             AB = np.sqrt((deltaY**2.0) + (deltaX**2.0))
-            AC = np.sqrt((AB**2.0) + (l**2.0))
+            AC = np.sqrt((AB**2.0) + (expansion**2.0))
             gamma = np.arctan((Y[i + 1] - Y[i]) / (X[i + 1] - X[i]))
-            alpha1 = np.arctan(l / AB)
-            alpha2 = np.arctan(-l / AB)
+            alpha1 = np.arctan(expansion / AB)
+            alpha2 = np.arctan(-expansion / AB)
             beta = gamma + alpha1
             delta = gamma + alpha2
             self.streamtop[0][i + 1] = X[i] + ((AC * np.cos(beta)) * sx)
@@ -472,21 +468,21 @@ class WakeShape:
             for L in Ls:
                 R = intersection(L, Lref)
                 Rbis = intersection(L, Lbis)
-                if not R == False:
+                if R:
                     Rs.append(R)
-                if not R == False:
                     Rbiss.append(Rbis)
+
             clPt, ind, dist = closest_point(ptEnd, Rs, debug=debug)
             if self._bounding_box.contains(pt1):
                 self.streambot[0].append(clPt[0])
                 self.streambot[1].append(clPt[1])
-                if not Rbiss[ind] == False:
+                if Rbiss[ind]:
                     self.streamtop[0].append(Rbiss[ind][0])
                     self.streamtop[1].append(Rbiss[ind][1])
             if self._bounding_box.contains(pt2):
                 self.streamtop[0].append(clPt[0])
                 self.streamtop[1].append(clPt[1])
-                if not Rbiss[ind] == False:
+                if Rbiss[ind]:
                     self.streambot[0].append(Rbiss[ind][0])
                     self.streambot[1].append(Rbiss[ind][1])
         else:
@@ -497,7 +493,7 @@ class WakeShape:
             c4 = [self.streambot[0][0], self.streambot[1][0]]
             test_poly = Polygon([c1, c2, c3, c4])
             test_line = LineString([c1, c2])
-            cPt = []
+
             for pt in pts:
                 if test_line.crosses(self._bounding_box):
                     trgl = Polygon([c1, c2, pt])
@@ -537,12 +533,14 @@ class WakeShape:
                 self.polygon = Polygon(extPt)
                 self.polygon = self.polygon.intersection(self._bounding_box)
 
+        assert isinstance(self.polygon, Polygon)
+
         # Control plots
         if debug_plot:
             ax = fig.add_subplot(122)
             x, y = self.polygon.exterior.xy
             ax.plot(x, y, "o", color="#999999", zorder=1)
-            patch = PolygonPatch(self.polygon, alpha=0.5, zorder=2)
-            ax.add_patch(patch)
+            patch = patch_from_polygon(self.polygon, alpha=0.5, zorder=2)
+            ax1.add_patch(patch)
             ax.set_aspect("equal")
-            # plt.show()
+            plt.show()

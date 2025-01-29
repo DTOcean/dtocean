@@ -18,3 +18,5 @@
 
 from distance_from_streamline import distance_from_streamline
 from interpolation import interp_at_point
+
+__all__ = ["distance_from_streamline", "interp_at_point"]
