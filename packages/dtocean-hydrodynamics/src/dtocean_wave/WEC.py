@@ -30,8 +30,9 @@ This module contains the class used to describe the behavior of the single WEC
 import logging
 
 import numpy as np
-import utils.read_bem_solution as reader
-from utils.StrDyn import EnergyProduction
+
+from .utils import read_bem_solution as reader
+from .utils.StrDyn import EnergyProduction
 
 module_logger = logging.getLogger(__name__)
 
@@ -156,7 +157,7 @@ class wec(object):
 
         NBo = 1  # Number of bodies
 
-        (Pyr, P, RAO) = EnergyProduction(
+        (Pyr, P) = EnergyProduction(
             NBo,
             hydro_mb.B,
             hydro_mb.Hs,
@@ -178,7 +179,6 @@ class wec(object):
 
         self.energyproduction = Pyr
         self.power = P
-        self.RAO = RAO
 
     def matrix_zoh_interp(self, hydro_mb):
         """ZOH interpolation of numpy matrixes"""
@@ -264,8 +264,9 @@ def convert_te2tp(te, specType, gamma):
     return tp
 
 
-if __name__ == "__main__":
-    FilesPath = r"C:\Users\francesco\Desktop\dtocean_wave_test"
-    wec_obj = wec(FilesPath, 51.0, np.array([0.0, 0.0, 0.0, 0.0]), debug=False)
-    wec_obj.load_hydrodynamic_model()
-    wec_obj.Transfers()
+# if __name__ == "__main__":
+#     FilesPath = r"C:\Users\francesco\Desktop\dtocean_wave_test"
+#     wec_obj = wec(FilesPath, 51.0, np.array([0.0, 0.0, 0.0, 0.0]), debug=False)
+#     wec_obj.load_hydrodynamic_model()
+#     wec_obj.Transfers()
+#     wec_obj.Transfers()
