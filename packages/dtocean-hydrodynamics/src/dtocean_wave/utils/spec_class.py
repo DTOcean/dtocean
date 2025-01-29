@@ -27,15 +27,17 @@ This module contains the classes used to generate the wave spectrums associated 
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-# Start logging
 import logging
-
-module_logger = logging.getLogger(__name__)
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import style
-from WatWaves import *
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+
+# from .WatWaves import *
+
+# Start logging
+module_logger = logging.getLogger(__name__)
 
 style.use("ggplot")
 
@@ -129,7 +131,7 @@ class wave_spec:
         if np.shape(t) == (1,):
             self.t = np.array([t_mean], "f")
         elif np.shape(t) == ():
-            errStr("The format of the direction vector is incorrect")
+            errStr = "The format of the direction vector is incorrect"
             raise IOError(errStr)
         else:
             self.t = t
@@ -144,7 +146,7 @@ class wave_spec:
         self.s = s
 
         if not st == "":
-            add_spectrum(self)
+            self.add_spectrum()
 
     def show(self, index=[]):
         """
@@ -158,7 +160,7 @@ class wave_spec:
 
         fig = plt.figure()
 
-        a = fig.gca(projection="3d")
+        a = fig.gca(projection="3d")  # type: ignore
         a.set_xlabel("frequency, [Hz]")
         a.set_zlabel("psd, [-]")
         a.set_ylabel("direction, [degree]")
@@ -272,17 +274,13 @@ class wave_spec:
             (list): frequencies and spectral distribution
         """
 
-        spec_type = self.spec_type
         f = self.f
         fp = self.fp
         Hs = self.Hs
-        gamma = self.gamma
-        d = self.d
         CutOffFactorLowBound = self.CutOffFactorLowBound
         CutOffFactorTopBound = self.CutOffFactorTopBound
         CutOffFreqLowBound = self.CutOffFreqLowBound
         CutOffFreqTopBound = self.CutOffFreqTopBound
-        g = self.g
         nfrqs = self.nfrqs
         spec_v = np.zeros((nfrqs))
 
@@ -304,17 +302,13 @@ class wave_spec:
         Returns:
             (list): frequencies and spectral distribution
         """
-        spec_type = self.spec_type
         f = self.f
         fp = self.fp
         Hs = self.Hs
-        gamma = self.gamma
-        d = self.d
         CutOffFactorLowBound = self.CutOffFactorLowBound
         CutOffFactorTopBound = self.CutOffFactorTopBound
         CutOffFreqLowBound = self.CutOffFreqLowBound
         CutOffFreqTopBound = self.CutOffFreqTopBound
-        g = self.g
         nfrqs = self.nfrqs
         spec_v = np.zeros((nfrqs))
 
@@ -336,17 +330,13 @@ class wave_spec:
         Returns:
             (list): frequencies and spectral distribution
         """
-        spec_type = self.spec_type
         f = self.f
         fp = self.fp
         Hs = self.Hs
-        gamma = self.gamma
-        d = self.d
         CutOffFactorLowBound = self.CutOffFactorLowBound
         CutOffFactorTopBound = self.CutOffFactorTopBound
         CutOffFreqLowBound = self.CutOffFreqLowBound
         CutOffFreqTopBound = self.CutOffFreqTopBound
-        g = self.g
         nfrqs = self.nfrqs
         spec_v = np.zeros((nfrqs))
 
@@ -371,17 +361,14 @@ class wave_spec:
         Returns:
             (list): frequencies and spectral distribution
         """
-        spec_type = self.spec_type
         f = self.f
         fp = self.fp
         Hs = self.Hs
         gamma = self.gamma
-        d = self.d
         CutOffFactorLowBound = self.CutOffFactorLowBound
         CutOffFactorTopBound = self.CutOffFactorTopBound
         CutOffFreqLowBound = self.CutOffFreqLowBound
         CutOffFreqTopBound = self.CutOffFreqTopBound
-        g = self.g
         nfrqs = self.nfrqs
         spec_v = np.zeros((nfrqs))
 
@@ -417,17 +404,13 @@ class wave_spec:
         Returns:
             (list): frequencies and spectral distribution
         """
-        spec_type = self.spec_type
         f = self.f
         fp = self.fp
         Hs = self.Hs
-        gamma = self.gamma
-        d = self.d
         CutOffFactorLowBound = self.CutOffFactorLowBound
         CutOffFactorTopBound = self.CutOffFactorTopBound
         CutOffFreqLowBound = self.CutOffFreqLowBound
         CutOffFreqTopBound = self.CutOffFreqTopBound
-        g = self.g
         nfrqs = self.nfrqs
         spec_v = np.zeros((nfrqs))
 
@@ -504,115 +487,116 @@ class wave_spec:
         return np.outer(S, hdir)
 
 
-if __name__ == "__main__":
-    Nf = 10
-    fstr = 0
-    fstp = 0.5
-    f = np.linspace(fstr, fstp, Nf)
-    df = f[1] - f[0]
-    fp = 1 / 9.0
-    Hs = 1.0
-    Wave_sp = wave_spec(f, fp, Hs)
+# if __name__ == "__main__":
+#     Nf = 10
+#     fstr = 0
+#     fstp = 0.5
+#     f = np.linspace(fstr, fstp, Nf)
+#     df = f[1] - f[0]
+#     fp = 1 / 9.0
+#     Hs = 1.0
+#     Wave_sp = wave_spec(f, fp, Hs)
 
-    Jirr = 500.0 * Hs**2 * (1.0 / fp)
-    Jreg = 1025 * 9.81**2 / (32 * np.pi) * Hs**2 * (1 / fp)
+#     Jirr = 500.0 * Hs**2 * (1.0 / fp)
+#     Jreg = 1025 * 9.81**2 / (32 * np.pi) * Hs**2 * (1 / fp)
 
-    # print('Energy flux for irregular waves')
-    # print(Jirr)
-    # print('*'*50)
-    # print('Energy flux for regular waves')
-    # print(Jreg)
-    # print('*'*50)
+#     # print('Energy flux for irregular waves')
+#     # print(Jirr)
+#     # print('*'*50)
+#     # print('Energy flux for regular waves')
+#     # print(Jreg)
+#     # print('*'*50)
 
-    Wave_sp.spec_type = "Regular"
-    Wave_sp.add_spectrum()
-    ind = f > 0
-    J = (
-        1025.0
-        * 9.81**2
-        / (4.0 * np.pi)
-        * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
-        * df
-    )
-    # print(Wave_sp.specs_type_list[-1])
-    # print(J)
-    # print('*'*50)
+#     Wave_sp.spec_type = "Regular"
+#     Wave_sp.add_spectrum()
+#     ind = f > 0
+#     J = (
+#         1025.0
+#         * 9.81**2
+#         / (4.0 * np.pi)
+#         * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
+#         * df
+#     )
+#     # print(Wave_sp.specs_type_list[-1])
+#     # print(J)
+#     # print('*'*50)
 
-    Wave_sp.spec_type = "Bretschneider_Mitsuyasu"
-    Wave_sp.add_spectrum()
-    J = (
-        1025.0
-        * 9.81**2
-        / (4.0 * np.pi)
-        * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
-        * df
-    )
-    # print(Wave_sp.specs_type_list[-1])
-    # print(J)
-    # print('*'*50)
+#     Wave_sp.spec_type = "Bretschneider_Mitsuyasu"
+#     Wave_sp.add_spectrum()
+#     J = (
+#         1025.0
+#         * 9.81**2
+#         / (4.0 * np.pi)
+#         * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
+#         * df
+#     )
+#     # print(Wave_sp.specs_type_list[-1])
+#     # print(J)
+#     # print('*'*50)
 
-    Wave_sp.spec_type = "Modified_Bretschneider_Mitsuyasu"
-    Wave_sp.add_spectrum()
-    J = (
-        1025.0
-        * 9.81**2
-        / (4.0 * np.pi)
-        * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
-        * df
-    )
-    # print(Wave_sp.specs_type_list[-1])
-    # print(J)
-    # print('*'*50)
+#     Wave_sp.spec_type = "Modified_Bretschneider_Mitsuyasu"
+#     Wave_sp.add_spectrum()
+#     J = (
+#         1025.0
+#         * 9.81**2
+#         / (4.0 * np.pi)
+#         * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
+#         * df
+#     )
+#     # print(Wave_sp.specs_type_list[-1])
+#     # print(J)
+#     # print('*'*50)
 
-    Wave_sp.spec_type = "Pierson_Moskowitz"
-    Wave_sp.add_spectrum()
-    J = (
-        1025.0
-        * 9.81**2
-        / (4.0 * np.pi)
-        * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
-        * df
-    )
-    # print(Wave_sp.specs_type_list[-1])
-    # print(J)
-    # print('*'*50)
+#     Wave_sp.spec_type = "Pierson_Moskowitz"
+#     Wave_sp.add_spectrum()
+#     J = (
+#         1025.0
+#         * 9.81**2
+#         / (4.0 * np.pi)
+#         * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
+#         * df
+#     )
+#     # print(Wave_sp.specs_type_list[-1])
+#     # print(J)
+#     # print('*'*50)
 
-    Wave_sp.spec_type = "Jonswap"
-    Wave_sp.add_spectrum()
-    J = (
-        1025.0
-        * 9.81**2
-        / (4.0 * np.pi)
-        * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
-        * df
-    )
-    # print(Wave_sp.specs_type_list[-1])
-    # print(J)
-    # print('*'*50)
+#     Wave_sp.spec_type = "Jonswap"
+#     Wave_sp.add_spectrum()
+#     J = (
+#         1025.0
+#         * 9.81**2
+#         / (4.0 * np.pi)
+#         * sum(Wave_sp.specs[-1][2][ind, 0] / f[ind])
+#         * df
+#     )
+#     # print(Wave_sp.specs_type_list[-1])
+#     # print(J)
+#     # print('*'*50)
 
-    Wave_sp.spec_type = "pscTMA"
-    Wave_sp.add_spectrum()
+#     Wave_sp.spec_type = "pscTMA"
+#     Wave_sp.add_spectrum()
 
-    Wave_sp.spec_type = "pscFRF"
-    Wave_sp.add_spectrum()
+#     Wave_sp.spec_type = "pscFRF"
+#     Wave_sp.add_spectrum()
 
-    Wave_sp.spec_type = "pscSwell"
-    Wave_sp.add_spectrum()
+#     Wave_sp.spec_type = "pscSwell"
+#     Wave_sp.add_spectrum()
 
-    Wave_sp.spec_type = "Regular"
-    Wave_sp.add_spectrum()
+#     Wave_sp.spec_type = "Regular"
+#     Wave_sp.add_spectrum()
 
-    Wave_sp.show()
+#     Wave_sp.show()
 
-    Wave_sp.rm_spectrum(index="all")
+#     Wave_sp.rm_spectrum(index="all")
 
-    nt = 110
-    Wave_sp.t = np.linspace(-np.pi, np.pi, nt)
-    Wave_sp.spec_type = "Jonswap"
-    Wave_sp.add_spectrum()
+#     nt = 110
+#     Wave_sp.t = np.linspace(-np.pi, np.pi, nt)
+#     Wave_sp.spec_type = "Jonswap"
+#     Wave_sp.add_spectrum()
 
-    s_vec = np.linspace(1, 16, 5)
-    for s in s_vec:
-        Wave_sp.s = s
-        Wave_sp.add_spectrum()
-        Wave_sp.show(index=[-1])
+#     s_vec = np.linspace(1, 16, 5)
+#     for s in s_vec:
+#         Wave_sp.s = s
+#         Wave_sp.add_spectrum()
+#         Wave_sp.show(index=[-1])
+#         Wave_sp.show(index=[-1])
