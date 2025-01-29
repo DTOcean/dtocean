@@ -22,9 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.patches import FancyArrowPatch
+from matplotlib.path import Path
 from shapely.geometry import Point
 
 
@@ -118,14 +119,12 @@ class Streamlines:
         n = range(NbTurb)
 
         for i, txt in enumerate(n):
-            ax.annotate(txt, (self.driftPos[i, 0], self.driftPos[i, 1]))
+            ax.annotate(str(txt), (self.driftPos[i, 0], self.driftPos[i, 1]))
 
         for streamline in self.streamlines:
             if (len(streamline[0]) > 1) or (len(streamline[1]) > 1):
-                path = mpl.path.Path(
-                    np.asarray((streamline[0], streamline[1])).T
-                )
-                patch = mpl.patches.FancyArrowPatch(
+                path = Path(np.asarray((streamline[0], streamline[1])).T)
+                patch = FancyArrowPatch(
                     path=path,
                     arrowstyle="->",
                     mutation_scale=size,

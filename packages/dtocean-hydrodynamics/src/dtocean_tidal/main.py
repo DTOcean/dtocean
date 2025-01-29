@@ -557,8 +557,8 @@ def test():
     ymax = 350.0
     lease = np.asarray([[0.0, 0.0], [0.0, ymax], [xmax, ymax], [xmax, 0.0]])
 
-    x = np.linspace(0.0, xmax, (xmax / 10) + 1)  # dx = 10 m
-    y = np.linspace(0.0, ymax, (ymax / 10) + 1)  # dy = 10 m
+    x = np.linspace(0.0, xmax, int(xmax / 10) + 1)  # dx = 10 m
+    y = np.linspace(0.0, ymax, int(ymax / 10) + 1)  # dy = 10 m
     X, Y = np.meshgrid(x, y)
     BR = 1.0  # blockage ratio
 
@@ -630,6 +630,10 @@ def test():
         )
         feat[key]["2way"] = False  # turbines work in both direction.
 
+    U_dict = cfd_data["dfU"].to_dict()
+    V_dict = cfd_data["dfV"].to_dict()
+    TKE_dict = cfd_data["dfTKE"].to_dict()
+
     (
         pow_perf_dev_no_int,
         pow_perf_dev,
@@ -637,7 +641,17 @@ def test():
         pow_perf_array,
         ratio,
         ti,
-    ) = wp2_tidal(data, coords, feat, cfd_data, debug=True, debug_plot=False)
+    ) = wp2_tidal(
+        data,
+        coords,
+        feat,
+        cfd_data,
+        U_dict,
+        V_dict,
+        TKE_dict,
+        debug=True,
+        debug_plot=False,
+    )
     module_logger.info("Array performance: " + str(pow_perf_array) + " MWatts")
     module_logger.info(
         "Ratio of dissipated-over-available energy: " + str(ratio * 100) + " %"

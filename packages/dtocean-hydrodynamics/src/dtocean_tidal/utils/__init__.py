@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from distance_from_streamline import distance_from_streamline
-from interpolation import interp_at_point
+from .distance_from_streamline import distance_from_streamline
+from .interpolation import interp_at_point
 
 __all__ = ["distance_from_streamline", "interp_at_point"]
