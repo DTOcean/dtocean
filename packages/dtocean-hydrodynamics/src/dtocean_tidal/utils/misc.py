@@ -16,11 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-
 import logging
 import math
 import re
+from typing import Sequence
 
 import numpy as np
 from numpy.linalg import LinAlgError
@@ -112,7 +111,7 @@ def intersection(L1, L2):
         return False
 
 
-def natural_sort(l):
+def natural_sort(number_strings: Sequence[str]):
     """Sort string list based on number in string
 
     Args:
@@ -121,9 +120,14 @@ def natural_sort(l):
     Returns:
       list: sorted list
     """
-    convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [convert(c) for c in re.split("([0-9]+)", key)]
-    return sorted(l, key=alphanum_key)
+
+    def convert(text):
+        return int(text) if text.isdigit() else text.lower()
+
+    def alphanum_key(key):
+        return [convert(c) for c in re.split("([0-9]+)", key)]
+
+    return sorted(number_strings, key=alphanum_key)
 
 
 def radians_to_bearing(x):
@@ -206,12 +210,12 @@ def transec_surf(hydro, array, debug=False):
     n_digits = len(str(Nturb))
 
     (xm, ym, xM, yM) = hydro.lease.bounds
-    l = []
+    turb_keys = []
     ref = np.arange(Nturb)
 
     # In case there is only one turbine
     if Nturb == 1:
-        l = array.positions.keys()[7:]  # removing 'turbine' from key
+        turb_keys = array.positions.keys()[7:]  # removing 'turbine' from key
     else:
         for k1 in array.distances.keys():
             for k2 in array.distances[k1].keys():
@@ -219,10 +223,10 @@ def transec_surf(hydro, array, debug=False):
                 diam = array.features[k1]["Diam"]
                 # check distance along streamline
                 if array.distances[k1][k2][0] > diam:
-                    l.append(k2)
+                    turb_keys.append(k2)
 
     # unique occurrence
-    L = np.asarray(l).astype(int)
+    L = np.asarray(turb_keys).astype(int)
     un = np.unique(L)
 
     # first row composed of

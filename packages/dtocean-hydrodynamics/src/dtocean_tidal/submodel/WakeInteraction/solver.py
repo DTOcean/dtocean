@@ -16,20 +16,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-
 import logging
 import time
 
 import matplotlib.pyplot as plt
 import numpy as np
-from descartes import PolygonPatch
 from numpy.linalg import norm
+from shapely.plotting import patch_from_polygon
 
 from ...modules.blockage_ratio import blockage_ratio
 from ..ParametricWake import Wake, WakeShape
-
-# Local import
 from .models import DominantWake, get_wake_coefficients
 
 # Start logging
@@ -221,8 +217,10 @@ class WakeInteraction:
             for i in range(self._turbine_count):
                 turb = "turbine{:0{width}d}".format(i, width=n_digits)
                 x, y = self._wakeShape[turb].polygon.exterior.xy
-                patch = PolygonPatch(
-                    self._wakeShape[turb].polygon, alpha=0.1, zorder=2
+                patch = patch_from_polygon(
+                    self._wakeShape[turb].polygon,
+                    alpha=0.1,
+                    zorder=2,
                 )
                 ax.plot(x, y, color="#999999", alpha=0.1, zorder=1)
                 ax.add_patch(patch)
@@ -294,8 +292,8 @@ def _solve_flow(
     return new_vel, new_speed, new_TI, new_TKE
 
 
-def _get_tke(I, U):
-    return 1.5 * (I * U) ** 2.0
+def _get_tke(TI, U):
+    return 1.5 * (TI * U) ** 2.0
 
 
 def _get_ti(k, U):
