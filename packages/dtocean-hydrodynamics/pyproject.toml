@@ -11,6 +11,13 @@ packages = [
   {include = "dtocean_wave", from="src"},
   {include = "dtocean_wec", from="src"},
   ]
+include = [
+    { path = "meson.build", format = "sdist" },
+    { path = "src/dtocean_tidal/submodel/ParametricWake/*.so", format = "wheel" },
+    { path = "src/dtocean_tidal/submodel/ParametricWake/*.pyd", format = "wheel"},
+    { path = "src/dtocean_tidal/submodel/ParametricWake/*.dll", format = "wheel"},
+    { path = "src/dtocean_tidal/submodel/ParametricWake/*.dll.a", format = "wheel"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -45,7 +52,7 @@ deptry = "^0.21.1"
 dtocean-hydro = 'dtocean_hydro._cli:run'
 
 [tool.poetry.build]
-script = "build-extension.py"
+script = "scripts/build-extension.py"
 
 [tool.poetry-monoranger-plugin]
 enabled = true
@@ -59,5 +66,5 @@ typeCheckingMode = "basic"
 line-length = 80
 
 [build-system]
-requires = ["poetry-core", "cython", "meson-python", "ninja", "numpy==1.26.4"]
+requires = ["poetry-core", "meson", "ninja", "numpy~=1.26.4"]
 build-backend = "poetry.core.masonry.api"

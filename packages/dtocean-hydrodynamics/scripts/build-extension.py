@@ -4,8 +4,9 @@ import shutil
 import subprocess
 from pathlib import Path
 
-BUILD_DIR = Path(__file__).parent.joinpath("build")
-LIB_DIR = Path(__file__).parent.joinpath(
+ROOT_DIR = Path(__file__).parents[1]
+BUILD_DIR = ROOT_DIR.joinpath("build")
+LIB_DIR = ROOT_DIR.joinpath(
     "src",
     "dtocean_tidal",
     "submodel",
@@ -65,6 +66,7 @@ def build():
     for dll_name in WINDOWS_DLLS:
         dll_path = gfortran_path / dll_name
         for file in glob.glob(str(dll_path)):
+            print(f"Installing {Path(file).name} to {LIB_DIR.as_posix()}")
             shutil.copy(file, LIB_DIR)
 
 
