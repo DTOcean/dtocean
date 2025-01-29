@@ -1,11 +1,9 @@
-project('f2py_examples', 'c',
-  version : '0.1',
-  license: 'BSD-3',
+project('dtocean-hydrodynamics', 'c',
   meson_version: '>=0.64.0',
   default_options : ['warning_level=2'],
 )
 
-add_languages('fortran')
+add_languages('fortran', native: false)
 
 py_mod = import('python')
 py = py_mod.find_installation(pure: false)
