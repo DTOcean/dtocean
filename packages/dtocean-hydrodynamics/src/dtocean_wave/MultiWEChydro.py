@@ -28,9 +28,7 @@ This module contains the classes used to collect and modify the WP2 inputs
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-# Start logging
 import logging
-from itertools import izip
 from math import pi
 
 import numpy as np
@@ -61,6 +59,7 @@ from .utils.spec_class import wave_spec
 from .utils.StrDyn import EnergyProduction
 from .utils.WatWaves import len2
 
+# Start logging
 module_logger = logging.getLogger(__name__)
 
 
@@ -194,7 +193,7 @@ class MultiBody(object):
         orients = self.dir[::2]
         theta_groups = self.dir[1::2]
 
-        for orient, thetas in izip(orients, theta_groups):
+        for orient, thetas in zip(orients, theta_groups):
             ths = array([th for th in thetas], dtype=float)
 
             d_rot = self.iwec.D * np.exp(-1j * (n - m) * orient)
@@ -288,6 +287,8 @@ class MultiBody(object):
         aep_dev = Pyradd.sum((1, 2, 3)) * 365 * 24
         translational_modes = [0, 0, 0]
         Fex_for_mooring = [[], [], []]
+
+        assert wec_Fex is not None
 
         for mode_ind, mode_val in enumerate(self.iwec.modes):
             if mode_val[1:4].tolist() == [1, 0, 0]:
@@ -435,8 +436,13 @@ class MultiBody(object):
         Notes:
             k0 should be in accordance with D and G, i.e. it should be obtained from period (see above).
         """
+        if self.coord is None:
+            raise RuntimeError(
+                "WEC positions are not set. Call the energy method first."
+            )
+
         dof = len2(G[0, 0])
-        Nm = (len2(D[0]) - 1) / 2
+        Nm = (len2(D[0]) - 1) // 2
         # Geometric properties of the array: "
         # Calculating the distances between devices as Dx and Dy "
         Nb = len2(self.coord)
@@ -485,7 +491,7 @@ class MultiBody(object):
 
         length_of_L = len2(L)
 
-        for i in xrange(
+        for i in range(
             length_of_L
         ):  # We will construct T[i,j] and T[j,i] at the same time so we just need len2(L)
             row = int(dim * ij0[i])
@@ -514,7 +520,7 @@ class MultiBody(object):
             (len2(k0), Nb * dim, Nb * dof), dtype=np.complex64
         )  # G is already transposed, numb columns= Nb*dof ok!
 
-        for i in xrange(Nb):
+        for i in range(Nb):
             start_dim = dim * i
             end_dim = dim * (i + 1)
 
@@ -532,7 +538,7 @@ class MultiBody(object):
 
         length_of_k0 = len2(k0)
 
-        for i in xrange(length_of_k0):
+        for i in range(length_of_k0):
             rowcolS = (
                 (
                     array([range(dimp[i, 0])] * Nb).transpose()
@@ -560,7 +566,7 @@ class MultiBody(object):
         # Free memory
         del T
 
-        for i in xrange(length_of_k0):
+        for i in range(length_of_k0):
             rowcolS = (
                 (
                     array([range(dimp[i, 0])] * Nb).transpose()
@@ -591,7 +597,7 @@ class MultiBody(object):
         # Free memory
         del D_array
 
-        for i in xrange(length_of_k0):
+        for i in range(length_of_k0):
             rowcolS = (
                 (
                     array([range(dimp[i, 0])] * Nb).transpose()
@@ -622,7 +628,7 @@ class MultiBody(object):
         # Free memory
         del G_array
 
-        for i in xrange(length_of_k0):
+        for i in range(length_of_k0):
             rowcolS = (
                 (
                     array([range(dimp[i, 0])] * Nb).transpose()
@@ -687,6 +693,11 @@ class MultiBody(object):
             M_interaction (numpy.ndarray): Inverted matrix of the system of equations to be
                             solved at different wave-periods and directions. Shape: (period,dim*Nb,dim*Nb).
         """
+        if self.coord is None:
+            raise RuntimeError(
+                "WEC positions are not set. Call the energy method first."
+            )
+
         Nb = len2(self.coord)
         Nm = BaseOrder
         dim = 2 * Nm + 1
@@ -728,7 +739,7 @@ class MultiBody(object):
         for i in range(len2(k0)):
             # """ Get the scatter cylindric wave for the scattering problem for
             # the entire array (i.e., solve system of equations, i.e. direct matrix method!!!) """
-            Nmi = (len2(T[i]) / Nb - 1) / 2
+            Nmi = (len2(T[i]) // Nb - 1) // 2
             dimi = 2 * Nmi + 1
             col = (
                 array([range(dimi)] * Nb).transpose()
@@ -800,10 +811,10 @@ class MultiBody(object):
             # """ Get the ambient radiated wave, AR, for the radiation problems (dof*Nb problems), i.e
             # (dof_0 induced to all Nb, ..., dof_f induced to all Nb), for the entire array """
             # " cols=[col_0,col_dim,col_2*dim,....col_(Nb-1)*dim,col_1,col_(dim+1),col_(2*dim+1),...] "
-            Nmk = (len2(T[k]) / Nb - 1) / 2
+            Nmk = (len2(T[k]) // Nb - 1) // 2
             dimk = 2 * Nmk + 1
             colT = array(
-                range(0, dimk * Nb, dimk) * dimk, dtype=int
+                list(range(0, dimk * Nb, dimk)) * dimk, dtype=int
             ) + linspace(0, dimk, dimk * Nb, endpoint=False, dtype=int)
             colAR = (array([range(dimk)]) + (Nm - Nmk)).reshape(-1)
             # " Reshape T matrix to get T_re=[T:,0,T:,1,...,T:,Nb-1] so that we append the columns from T:,j "
@@ -895,6 +906,11 @@ class MultiBody(object):
             (float): max normalised resource reduction
         """
 
+        if self.coord is None:
+            raise RuntimeError(
+                "WEC positions are not set. Call the energy method first."
+            )
+
         # Handy names
         NB = len2(self.B)
         NHs = len2(self.Hs)
@@ -943,4 +959,5 @@ class MultiBody(object):
 
         Balance = EnergyWOarray - EnergyWarray  # balance per sea state
 
+        return np.max(Balance / EnergyWOarray)
         return np.max(Balance / EnergyWOarray)

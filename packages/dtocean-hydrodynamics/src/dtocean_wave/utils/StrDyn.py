@@ -30,8 +30,9 @@ This module provides several methods to solve structure dynamics problems
 import numpy as np
 from numpy.linalg import solve
 from scipy.linalg import block_diag
-from spec_class import wave_spec
-from WatWaves import len2
+
+from .spec_class import wave_spec
+from .WatWaves import len2
 
 
 def MotionFreq(Mass, Damping, Stiffness, Force, freq):
@@ -59,7 +60,7 @@ def MotionFreq(Mass, Damping, Stiffness, Force, freq):
 
         then the equation of motion in frequency domain is:
 
-        X= H\Force, where H=-freq**2*Mass+i*freq*Damping+Stiffness
+        X= H\\Force, where H=-freq**2*Mass+i*freq*Damping+Stiffness
     """
 
     H = -(freq**2) * Mass + 1j * freq * Damping + Stiffness
@@ -88,7 +89,7 @@ def scatterdiagram_threshold(p, threshold=0.001):
 
     if not len(p_shape) == 3:
         raise IOError(
-            "The number of dimensions of the scatter diagram needs " "to be 3."
+            "The number of dimensions of the scatter diagram needs to be 3."
         )
 
     if not np.allclose(p.sum(), 1.0):
@@ -220,7 +221,7 @@ def EnergyProduction(
 
     for i_Dir in range(NDir):
         # define a dirs subset to account for directional spreading
-        search_region = range(len(dirs) / Nd_subset)
+        search_region = list(range(len(dirs) // Nd_subset))
 
         # pivoting angle index. The angles in the search_region are elements of
         # the original B vector, therefore it is possible to search for a true
@@ -293,14 +294,16 @@ def EnergyProduction(
                 Spec_.add_spectrum()
 
                 # integrate over frequencies
-                I = 2.0 * Spec_.specs[0][2].T * powfun  # a**2 = 2*Spec_val*df
-                I = 0.5 * ((I[:, :, 1:] + I[:, :, :-1]) * df).sum(axis=-1)
+                Ip = 2.0 * Spec_.specs[0][2].T * powfun  # a**2 = 2*Spec_val*df
+                Ip = 0.5 * ((Ip[:, :, 1:] + Ip[:, :, :-1]) * df).sum(axis=-1)
 
                 # integrate over directions
                 if Nd_subset > 1:
-                    I = 0.5 * ((I[:, 1:] + I[:, :-1]) * Spec_.dth).sum(axis=-1)
+                    Ip = 0.5 * ((Ip[:, 1:] + Ip[:, :-1]) * Spec_.dth).sum(
+                        axis=-1
+                    )
 
-                free_power = I.reshape(-1)
+                free_power = Ip.reshape(-1)
 
                 if (free_power > RatedPower).any():
                     free_power = np.clip(free_power, None, RatedPower)
