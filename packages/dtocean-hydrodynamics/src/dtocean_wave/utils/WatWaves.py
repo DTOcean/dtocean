@@ -153,12 +153,7 @@ def len2(x):
     len2 is used to get the len even if the object does not have the method
     """
     try:
-        if (
-            type(x) == int
-            or type(x) == float
-            or type(x) == int32
-            or type(x) == float64
-        ):
+        if isinstance(x, (int, float)) or type(x) in [float64, int32]:
             return 1
         else:
             return len(x)
@@ -213,7 +208,7 @@ def CylWaveField(
     unused TBD
     """
     NumBodies = len2(Bodiescoord)
-    Nm = (len2(amplitudes) / NumBodies - 1) / 2
+    Nm = (len2(amplitudes) // NumBodies - 1) // 2
     mode = range(-Nm, Nm + 1)
     XX, YY = meshgrid(X, Y, indexing="ij", sparse=True)
     Phii = zeros((NumBodies, XX.shape[0], YY.shape[1]), dtype=np.complex64)
@@ -265,9 +260,9 @@ def NearNeighb(A, MatBool, itemax=20):
 
     " Identify the type of data you will be playing with "
     datatype = type(A[[[0] for i in range(dims)]][0])
-    if datatype == int32 or datatype == int:
+    if datatype == int32 or datatype is int:
         choice = zeros((2, dims, Nbins), dtype=int)
-    elif datatype == float64 or datatype == float:
+    elif datatype == float64 or datatype is float:
         choice = zeros((2, dims, Nbins), dtype=int)
     else:
         choice = zeros((2, dims, Nbins), dtype=np.complex64)
