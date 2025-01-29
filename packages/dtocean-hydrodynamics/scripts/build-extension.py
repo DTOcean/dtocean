@@ -1,4 +1,5 @@
 import glob
+import os
 import platform
 import shutil
 import subprocess
@@ -6,6 +7,11 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).parents[1]
 BUILD_DIR = ROOT_DIR.joinpath("build")
+BUILD_ENV = {
+    **os.environ.copy(),
+    "FC": "gfortran",
+    "CC": "gcc",
+}
 LIB_DIR = ROOT_DIR.joinpath(
     "src",
     "dtocean_tidal",
@@ -27,7 +33,7 @@ def _is_windows():
 
 def _meson(*args):
     """Invoke meson with the given arguments."""
-    subprocess.check_call(["meson", *list(args)])
+    subprocess.run(["meson", *list(args)], check=True, env=BUILD_ENV)
 
 
 def _cleanup():
