@@ -36,6 +36,7 @@ py.extension_module('read_db_mod',
   [read_db_path, read_db_source],
   incdir_f2py / 'fortranobject.c',
   include_directories: inc_np,
-  dependencies : py_dep,
-  install : true
+  dependencies : [py_dep],
+  install : true,
+  install_dir : meson.project_source_root() / 'src' / 'dtocean_tidal' / 'submodel' / 'ParametricWake',
 )
