@@ -46,8 +46,8 @@ def data():
     ymax = YMAX
     lease = np.asarray([[0.0, 0.0], [0.0, ymax], [xmax, ymax], [xmax, 0.0]])
 
-    x = np.linspace(0.0, xmax, (xmax / 10) + 1)  # dx = 10 m
-    y = np.linspace(0.0, ymax, (ymax / 10) + 1)  # dy = 10 m
+    x = np.linspace(0.0, xmax, int(xmax / 10) + 1)  # dx = 10 m
+    y = np.linspace(0.0, ymax, int(ymax / 10) + 1)  # dy = 10 m
     X, Y = np.meshgrid(x, y)
     BR = 1.0  # blockage ratio
 
