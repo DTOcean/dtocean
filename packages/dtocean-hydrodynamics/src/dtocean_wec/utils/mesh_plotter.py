@@ -7,7 +7,38 @@ Created on Mon May 30 15:08:09 2016
 
 import sys
 
-from OpenGL.GL import *
+from OpenGL.GL import (
+    GL_CCW,
+    GL_COLOR_BUFFER_BIT,
+    GL_CULL_FACE,
+    GL_DEPTH_BUFFER_BIT,
+    GL_DEPTH_TEST,
+    GL_FLAT,
+    GL_LEQUAL,
+    GL_LIGHTING,
+    GL_LINES,
+    GL_MODELVIEW,
+    GL_PROJECTION,
+    GL_QUADS,
+    glBegin,
+    glClear,
+    glClearDepth,
+    glColor,
+    glColor3f,
+    glDepthFunc,
+    glDisable,
+    glEnable,
+    glEnd,
+    glFrontFace,
+    glLineWidth,
+    glLoadIdentity,
+    glMatrixMode,
+    glShadeModel,
+    glVertex,
+    glVertex3f,
+    glViewport,
+)
+from PySide6 import QtCore, QtGui
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
 from .Camera import Camera
@@ -422,4 +453,5 @@ if __name__ == "__main__":
     window = PythonQtOpenGLMeshViewer(path, file_name)
     window.show()
     window.viewer3D.bounding_box()
+    sys.exit(app.exec_())
     sys.exit(app.exec_())
