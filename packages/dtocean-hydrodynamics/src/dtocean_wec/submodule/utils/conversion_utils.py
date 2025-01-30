@@ -92,7 +92,7 @@ def convert_angle(angle):
     return angle_wrap(-(angle + np.pi / 2), "r2r")
 
 
-def convert_te2tp(te, spec_type, gamma):
+def convert_te2tp(te, spec_type=None, gamma=None):
     coeff = np.array(
         [
             [1.22139232e00],
@@ -104,7 +104,10 @@ def convert_te2tp(te, spec_type, gamma):
     )
     # convert Te to Tp for the Metocean condition relative to the deployment site
     conversion_factor = 1.16450471
-    if spec_type == "Jonswap":
+    if spec_type is not None and spec_type == "Jonswap":
+        if gamma is None:
+            raise ValueError("gamma must be set for Jonswap spectrum")
+
         if gamma > 7 or gamma < 1:
             print("warning: gamma value outside the range of confidence")
             # module_logger.warning('The gamma value of the JONSWAP spectrum in the metocean data specification is out of the confident range [1-7].')
