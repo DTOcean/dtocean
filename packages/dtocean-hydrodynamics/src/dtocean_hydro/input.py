@@ -31,6 +31,7 @@ import copy
 import logging
 import os
 from pprint import pformat
+from typing import Optional
 
 import numpy as np
 from scipy import interpolate
@@ -115,7 +116,7 @@ class WP2_SiteData:
         Bathymetry,
         BR,
         electrical_connection_point,
-        boundary_padding=None,
+        boundary_padding: Optional[float] = None,
     ):
         self.LeaseArea = LeaseArea
         self.NogoAreas = NogoAreas
@@ -126,7 +127,10 @@ class WP2_SiteData:
         self.Bathymetry = Bathymetry
         self.BR = BR
         self.electrical_connection_point = electrical_connection_point
-        self.boundary_padding = boundary_padding
+        self.boundary_padding = (
+            boundary_padding if boundary_padding is not None else 0.0
+        )
+        self.mainAngle: Optional[float] = None
 
     def printInput(self, indent=4):
         """print the Site class input arguments
@@ -444,7 +448,8 @@ class WP2input:
             and self.M_data.wave_data_folder is not None
         ):
             fname = os.path.join(
-                self.M_data.wave_data_folder, "wec_solution.h5"
+                self.M_data.wave_data_folder,
+                "wec_solution.h5",
             )
 
             if not os.path.isfile(fname):
@@ -618,8 +623,8 @@ class WP2input:
         u = np.nan_to_num(u)
         v = np.nan_to_num(v)
 
-        x_var = interpolate.LinearNDInterpolator(x, y, u.T)
-        y_var = interpolate.LinearNDInterpolator(x, y, v.T)
+        x_var = interpolate.RectBivariateSpline(x, y, u)
+        y_var = interpolate.RectBivariateSpline(x, y, v)
 
         dvdx = (y_var(x + dx, y) - y_var(x - dx, y)) / (2 * dx)
         dudy = (x_var(x, y + dy) - x_var(x, y - dy)) / (2 * dy)

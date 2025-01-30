@@ -115,7 +115,11 @@ def get_shapely_polygons(X, Y, label_im, labels, debug=False):
         if points is None or offsets is None:
             continue
 
-        segments = from_ragged_array(GeometryType.POLYGON, points, (offsets,))
+        segments = from_ragged_array(
+            GeometryType.LINESTRING,
+            points,
+            (offsets,),
+        )
         multi_polygon.extend(segments)
         if not len(segments) == 1:
             for iel in range(1, len(segments)):

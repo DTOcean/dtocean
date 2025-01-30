@@ -68,9 +68,9 @@ def create_database(reader, data_path):
     for ii in tis:
         for cc in cts:
             reader.read_u_v_tke(cc, ii)
-            dfU["ti" + str(ii)]["ct" + str(cc)] = np.copy(reader.u)
-            dfV["ti" + str(ii)]["ct" + str(cc)] = np.copy(reader.v)
-            dfTKE["ti" + str(ii)]["ct" + str(cc)] = np.copy(reader.tke)
+            dfU.loc["ct" + str(cc), "ti" + str(ii)] = np.copy(reader.u)
+            dfV.loc["ct" + str(cc), "ti" + str(ii)] = np.copy(reader.v)
+            dfTKE.loc["ct" + str(cc), "ti" + str(ii)] = np.copy(reader.tke)
             dfX = np.copy(reader.x)
             dfY = np.copy(reader.y)
 

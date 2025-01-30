@@ -70,6 +70,7 @@ def test_WP2input_tidal_mainAngle(tidalsite_simple, tidal, tidal_kwargs):
     machine = WP2_MachineData(*tidal, **tidal_kwargs)
     test = WP2input(machine, site)
 
+    assert test.S_data.mainAngle is not None
     assert np.isclose(test.S_data.mainAngle, np.pi / 2)
 
 
@@ -80,4 +81,5 @@ def test_WP2input_tidal_MainDirection(tidalsite_simple, tidal, tidal_kwargs):
     machine = WP2_MachineData(*tidal, **tidal_kwargs)
     test = WP2input(machine, site)
 
+    assert test.S_data.mainAngle is not None
     assert np.isclose(test.S_data.mainAngle, np.pi)

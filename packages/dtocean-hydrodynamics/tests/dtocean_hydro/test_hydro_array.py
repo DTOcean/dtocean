@@ -85,8 +85,10 @@ def test_checkMinDist_error():
         True,
     )
 
-    with pytest.raises(IOError):
+    with pytest.raises(RuntimeError) as excinfo:
         arr.checkMinDist()
+
+    assert "No coordinates provided" in str(excinfo)
 
 
 def test_generator():
@@ -96,6 +98,7 @@ def test_generator():
 
     arr.generator(2, 2, 100, 100, np.pi / 2, 0)
 
+    assert arr.coord is not None
     p1 = arr.coord[0, :]
     p2 = arr.coord[1, :]
     dist = np.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
