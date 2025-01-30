@@ -30,7 +30,7 @@ using the Nemoh software.
 
 import os
 
-import hdf5_interface as h5i
+from . import hdf5_interface as h5i
 
 
 def read_hydrodynamic_solution(data_folder):
