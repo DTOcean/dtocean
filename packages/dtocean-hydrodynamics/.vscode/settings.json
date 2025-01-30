@@ -8,6 +8,4 @@
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "ruff.configuration": "pyproject.toml",
-  "mesonbuild.buildFolder": "build",
-  "mesonbuild.modifySettings": false, 
 }
