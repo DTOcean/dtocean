@@ -25,10 +25,15 @@ Created on Mon Jun 13 17:55:42 2016
 
 import os
 import shutil
+from pathlib import Path
+from typing import Union
 
 import numpy as np
-from submodule.main import BemSolution
-from utils.data_interface import DataStructure
+
+from .submodule.main import BemSolution
+from .utils.data_interface import DataStructure
+
+StrOrPath = Union[str, Path]
 
 
 def send_data_to_bem_interface(
@@ -41,6 +46,7 @@ def send_data_to_bem_interface(
         print("Sending data to the BEM class")
         wec_obj = BemSolution(dataobj, db_folder, bin_folder, debug=False)
         wec_obj.call_module()
+        assert wec_obj.reader is not None
 
         print("Saving the data")
         hyd = {
@@ -66,6 +72,7 @@ def send_data_to_bem_interface(
 
         return (True, hyd)
     else:
+        assert len(in_stat) == 2
         print("The data submitted did not pass the input check")
         return (False, in_stat[1])
 
@@ -100,58 +107,6 @@ def check_wec_db_data(wec_db_data):
         return (False, missing_fields)
 
     return (True, wec_db_data)
-
-
-def convert_dtoceandata_to_gui_format(data_gui, data_dtocean):
-    stat = _dtocean_data_check(data_dtocean)
-    if stat[0]:
-        hyd_in = data_dtocean["hydrodynamic_input"]
-        p_fit_in = data_dtocean["performance_fit_input"]
-
-        hyd = {
-            "periods": data_dtocean["periods"],
-            "directions": data_dtocean["directions"],
-            "m_m": data_dtocean["m_m"],
-            "m_add": data_dtocean["m_add"],
-            "c_rad": data_dtocean["c_rad"],
-            "k_hst": data_dtocean["k_hst"],
-            "pto_dof": data_dtocean["pto_dof"],
-            "mooring_dof": data_dtocean["mooring_dof"],
-            "order": data_dtocean["order"],
-            "f_ex": data_dtocean["f_ex"],
-            "diffraction_tr_mat": data_dtocean["diffraction_tr_mat"],
-            "force_tr_mat": data_dtocean["force_tr_mat"],
-            "amplitude_coefficient_radiation": data_dtocean[
-                "amplitude_coefficient_radiation"
-            ],
-            "water_depth": data_dtocean["water_depth"],
-            "cyl_radius": data_dtocean["cyl_radius"],
-            "modes": data_dtocean["modes"],
-            "max_order": data_dtocean["order"],
-            "truncation_order": data_dtocean["truncation_order"],
-        }
-
-        p_fit = {
-            "c_ext": data_dtocean["c_ext"],
-            "k_ext": data_dtocean["k_ext"],
-            "c_fit": data_dtocean["c_fit"],
-            "k_fit": data_dtocean["k_fit"],
-            "c_pto": data_dtocean["c_pto"],
-            "k_mooring": data_dtocean["k_mooring"],
-            "hm0": data_dtocean["hm0"],
-            "wave_dir": data_dtocean["wave_dir"],
-            "scatter_diagram": data_dtocean["scatter_diagram"],
-            "power_matrix": data_dtocean["power_matrix"],
-        }
-
-        data_gui["hyd"] = hyd
-        data_gui["p_fit"] = p_fit
-        data_gui["inputs_pm_fit"] = p_fit_in
-        data_gui["inputs_hydrodynamic"] = hyd_in
-
-        return (True, data_gui)
-    else:
-        return stat
 
 
 def final_data_check(dic):

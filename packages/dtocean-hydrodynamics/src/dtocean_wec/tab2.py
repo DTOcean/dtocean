@@ -26,22 +26,32 @@ Created on Wed Jun 15 09:15:30 2016
 import os
 import shutil
 
-import utils.data_check as dck
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import numpy as np
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QCheckBox,
+    QFileDialog,
+    QMessageBox,
+    QPushButton,
+    QTableWidgetItem,
+    QToolTip,
+    QWidget,
+)
 
-from .form_utils import *
-from .run_nemoh_form import Ui_Form as Ui_T2
+from .form_utils import clean_prj_folder, send_data_to_bem_interface
+from .generated.ui_run_nemoh_form import Ui_Form as Ui_T2
+from .utils import data_check as dck
 from .utils.file_utilities import split_string, split_string_multilist
 
 
 class RunNemoh(QWidget, Ui_T2):
-    trigger_results = pyqtSignal([dict])
-    trigger_save = pyqtSignal([dict])
-    trigger_reset_forms = pyqtSignal()
-    trigger_mesh_view = pyqtSignal([dict])
+    trigger_results = Signal(dict)
+    trigger_save = Signal(dict)
+    trigger_reset_forms = Signal()
+    trigger_mesh_view = Signal(dict)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QWidget.__init__(self, parent)
         self.setupUi(self)
 
@@ -67,6 +77,7 @@ class RunNemoh(QWidget, Ui_T2):
         for ish, chl in enumerate(self.groupBox_2.children()):
             if ish == 0:
                 continue
+            assert isinstance(chl, QCheckBox)
             chl.stateChanged.connect(self.shared_dof_handles)
 
         self.btn_calculate_t2.setEnabled(False)
@@ -121,9 +132,13 @@ class RunNemoh(QWidget, Ui_T2):
             msgBox.setText(
                 "The project folder already contains a BEM result folder. Do you want to overwrite it, load another project or start a new project?"
             )
-            msgBox.addButton(QPushButton("Overwrite"), QMessageBox.YesRole)
-            msgBox.addButton(QPushButton("Load"), QMessageBox.NoRole)
-            msgBox.addButton(QPushButton("New"), QMessageBox.RejectRole)
+            msgBox.addButton(
+                QPushButton("Overwrite"), QMessageBox.ButtonRole.YesRole
+            )
+            msgBox.addButton(QPushButton("Load"), QMessageBox.ButtonRole.NoRole)
+            msgBox.addButton(
+                QPushButton("New"), QMessageBox.ButtonRole.RejectRole
+            )
             ret = msgBox.exec_()
 
             if ret == 0:
@@ -132,8 +147,8 @@ class RunNemoh(QWidget, Ui_T2):
                     clean_prj_folder(
                         self._data["prj_folder"], exept=[prj_fn, "raw_data"]
                     )
-                except:
-                    print(Exception)
+                except Exception as e:
+                    print(e)
 
             elif ret == 1:
                 # Force the read_nemoh option in thge BemSolution class by changing the run flag
@@ -162,11 +177,8 @@ class RunNemoh(QWidget, Ui_T2):
             self.btn_submit_t2.setEnabled(True)
             self.trigger_results.emit(stat[1])
 
-    def load_nemoh_solution():
-        """ """
-
     def browse_folder(self):
-        folder = QFileDialog.getOpenFileName(
+        folder, _ = QFileDialog.getOpenFileName(
             self,
             "Select the mesh file of the body",
             "",
@@ -195,33 +207,47 @@ class RunNemoh(QWidget, Ui_T2):
             return True
 
     def pull_data_from_form(self):
-        bodies = {}
-        for el in range(self.tab_body.rowCount()):
-            id_body = split_string(self.tab_body.item(el, 0).text(), int)
-            mass_body = split_string(self.tab_body.item(el, 1).text())
-            inertia_body = split_string_multilist(
-                self.tab_body.item(el, 2).text(), float, sep=",", sep_multi=";"
-            )
-            mesh_body = str(self.tab_body.item(el, 3).text())
+        def get_item(x, y):
+            item = self.tab_body.item(x, y)
+            if item is None:
+                raise RuntimeError("Item address not value")
+            return item
 
-            cog_body = split_string(
-                self.tab_body.item(el, 4).text(), float, sep=","
+        bodies = {}
+
+        for el in range(self.tab_body.rowCount()):
+            id_body = split_string(get_item(el, 0).text(), int)
+            mass_body = split_string(get_item.text())
+            inertia_body = split_string_multilist(
+                get_item.text(),
+                float,
+                sep=",",
+                sep_multi=";",
             )
-            cs_body = split_string(
-                self.tab_body.item(el, 5).text(), float, sep=","
-            )
+            mesh_body = str(get_item.text())
+            cog_body = split_string(get_item.text(), float, sep=",")
+            cs_body = split_string(get_item.text(), float, sep=",")
             dof_body = split_string_multilist(
-                self.tab_body.item(el, 6).text(), float, sep=",", sep_multi=";"
+                get_item.text(),
+                float,
+                sep=",",
+                sep_multi=";",
             )
+
             if not dof_body[0]:
                 dof_body = -1
+
             chil_body = split_string_multilist(
-                self.tab_body.item(el, 7).text(), float, sep=",", sep_multi=";"
+                get_item.text(),
+                float,
+                sep=",",
+                sep_multi=";",
             )
+
             if not chil_body[0]:
                 chil_body = -1
-            parent_body = split_string(self.tab_body.item(el, 8).text(), int)
 
+            parent_body = split_string(get_item.text(), int)
             str_bi = "body{}".format(id_body[0])
             bodies[str_bi] = {
                 "mass": mass_body,
@@ -528,6 +554,7 @@ class RunNemoh(QWidget, Ui_T2):
         self.local_cs.setText(",".join([str(el) for el in in_b["local_cs"]]))
         shared_dof = in_b["shared_dof"]
         sh_ch = self.groupBox_2.children()
+        assert sh_ch is list[QCheckBox]
         for iel, el in enumerate(shared_dof):
             if el == 1:
                 sh_ch[iel + 1].setChecked(True)

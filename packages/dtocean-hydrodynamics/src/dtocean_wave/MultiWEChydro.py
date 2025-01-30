@@ -960,4 +960,3 @@ class MultiBody(object):
         Balance = EnergyWOarray - EnergyWarray  # balance per sea state
 
         return np.max(Balance / EnergyWOarray)
-        return np.max(Balance / EnergyWOarray)

@@ -31,13 +31,15 @@ using the Nemoh software.
 import logging
 import os
 import subprocess
+import sys
 from platform import system
 
 import numpy as np
-from hydrostatics import Hydrostatics_Nemohcal
 from numpy import linalg as LA
-from utils.mesh import MeshBem
-from utils.multibody_analysis import MultiBodyAnalysis
+
+from .hydrostatics import Hydrostatics_Nemohcal
+from .utils.mesh import MeshBem
+from .utils.multibody_analysis import MultiBodyAnalysis
 
 # Start logging
 module_logger = logging.getLogger(__name__)
@@ -247,7 +249,9 @@ class NemohExecute:
 
     def gen_multibody_structure(self):
         mb_obj = MultiBodyAnalysis(
-            self.bodies, self.shared_dof_binary, self.point_application
+            self.bodies,
+            self.shared_dof_binary,
+            self.point_application,
         )
         mb_obj.set_multibody_data()
         mb_obj.get_multibody_topology()
@@ -266,6 +270,9 @@ class NemohExecute:
         Optional args:
             generate (boolean): triggers the generation on or off
         """
+        if self.bodies_dofs is None:
+            raise RuntimeError("Call gen_multibody_structure method first")
+
         self.water_depth
         n_sh = len(self.bodies_dofs[0])
 
@@ -332,7 +339,7 @@ class NemohExecute:
                 )
             )
             f.write(
-                ".\mesh\{}dat			! Name of mesh file\n".format(
+                ".\\mesh\\{}dat			! Name of mesh file\n".format(
                     mesh_fn[:-3]
                 )
             )
@@ -489,90 +496,39 @@ def _get_cylinder_radius(meshes):
 
 
 def rot_matrix(ang):
-    Rz = lambda angle: np.array(
-        [
-            [np.cos(angle), -np.sin(angle), 0],
-            [np.sin(angle), np.cos(angle), 0],
-            [0, 0, 1],
-        ]
-    )
-    Ry = lambda angle: np.array(
-        [
-            [np.cos(angle), 0, np.sin(angle)],
-            [0, 1, 0],
-            [-np.sin(angle), 0, np.cos(angle)],
-        ]
-    )
-    Rx = lambda angle: np.array(
-        [
-            [1, 0, 0],
-            [0, np.cos(angle), -np.sin(angle)],
-            [0, np.sin(angle), np.cos(angle)],
-        ]
-    )
+    def Rz(angle):
+        return np.array(
+            [
+                [np.cos(angle), -np.sin(angle), 0],
+                [np.sin(angle), np.cos(angle), 0],
+                [0, 0, 1],
+            ]
+        )
+
+    def Ry(angle):
+        return np.array(
+            [
+                [np.cos(angle), 0, np.sin(angle)],
+                [0, 1, 0],
+                [-np.sin(angle), 0, np.cos(angle)],
+            ]
+        )
+
+    def Rx(angle):
+        return np.array(
+            [
+                [1, 0, 0],
+                [0, np.cos(angle), -np.sin(angle)],
+                [0, np.sin(angle), np.cos(angle)],
+            ]
+        )
 
     return Rz(ang[2]) * Ry(ang[1]) * Rx(ang[0])
 
 
 def execute(command):
-    """
-    unused TBD
-    """
-    import sys
-
     process = subprocess.Popen(command, stdout=subprocess.PIPE)
-    for c in iter(lambda: process.stdout.read(1), ""):
-        sys.stdout.write(c)
+    assert process.stdout is not None
 
-
-#    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-#    output = ''
-#
-#    # Poll process for new output until finished
-#    for line in iter(process.stdout.readline, ""):
-#        module_logger.info(line),
-#        output += line
-#
-#
-#    process.wait()
-#    exitCode = process.returncode
-#
-#    if (exitCode == 0):
-#        return output
-#    else:
-#        raise Exception(command, exitCode, output)
-
-# if __name__ == "__main__":
-#     import sys
-
-#     sys.path.append(r"C:\Users\francesco\Desktop\test_gui\utils")
-#     from data_interface import DataStructure
-
-#     import dtocean_wave.utils.hdf5_interface as h5i
-
-#     data = h5i.load_dict_from_hdf5(
-#         r"C:\Users\francesco\Desktop\test_gui\test_prj\test_prj_data_collection.hdf5"
-#     )
-
-#     dataobj = DataStructure(data)
-#     dataobj.body_inputs["body"]["body0"]["mesh"] = os.path.join(
-#         "C:\\Users\\francesco\\Desktop\\test_gui",
-#         dataobj.body_inputs["body"]["body0"]["mesh"],
-#     )
-#     dataobj.body_inputs["body"]["body1"]["mesh"] = os.path.join(
-#         "C:\\Users\\francesco\\Desktop\\test_gui",
-#         dataobj.body_inputs["body"]["body1"]["mesh"],
-#     )
-#     bem_obj = NemohExecute(
-#         dataobj.project_folder,
-#         dataobj.general_inputs,
-#         dataobj.body_inputs,
-#         get_array_mat=False,
-#         debug=False,
-#     )
-#     bem_obj.gen_path()
-#     bem_obj.gen_mesh_files()
-#     bem_obj.gen_multibody_structure()
-#     bem_obj.gen_hdyn_files()
-#     bem_obj.run_nemoh()
-#     bem_obj.run_hst()
+    for line in process.stdout:
+        sys.stdout.write(line.decode("utf8"))
