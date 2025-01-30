@@ -24,7 +24,7 @@ Created on Tue May 31 09:08:16 2016
 """
 
 import numpy as np
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 from dtocean_wave.utils.StrDyn import MotionFreq
@@ -206,7 +206,7 @@ class Visualiser:
             "b-o",
             label="added mass",
         )
-        (p2,) = par1.plot(
+        (p2,) = par1.plot(  # type: ignore
             1 / self._data_h["periods"],
             self._data_h["c_rad"][:, int(d_i), int(d_j)],
             "g-o",
@@ -227,7 +227,7 @@ class Visualiser:
 
         lines = [p1, p2]
 
-        host.legend(lines, [l.get_label() for l in lines])
+        host.legend(lines, [line.get_label() for line in lines])
 
         return fig
 
@@ -247,7 +247,7 @@ class Visualiser:
             label="manitude",
         )
 
-        (p2,) = par1.plot(
+        (p2,) = par1.plot(  # type: ignore
             1 / self._data_h["periods"],
             np.angle(self._data_h["f_ex"][:, int(dir_i), int(d_i)]),
             "r-o",
@@ -268,7 +268,7 @@ class Visualiser:
 
         lines = [p1, p2]
 
-        host.legend(lines, [l.get_label() for l in lines])
+        host.legend(lines, [line.get_label() for line in lines])
 
         return fig
 
@@ -288,7 +288,7 @@ class Visualiser:
             "k-o",
             label="manitude",
         )
-        (p2,) = par1.plot(
+        (p2,) = par1.plot(  # type: ignore
             1 / self._data_h["periods"],
             np.angle(rao[:, int(dir_i), int(d_i)]),
             "r-o",
@@ -309,7 +309,7 @@ class Visualiser:
 
         lines = [p1, p2]
 
-        host.legend(lines, [l.get_label() for l in lines])
+        host.legend(lines, [line.get_label() for line in lines])
 
         return fig
 
@@ -434,6 +434,9 @@ class Visualiser:
         pass
 
     def __eval_rao(self, te, hs, ang):
+        assert self._data_h is not None
+        assert self._data_p is not None
+
         print("Evaluating the rao")
         omeg = 2.0 * np.pi / self._data_h["periods"]
         nte, nhs, nang, ndof, ndofj = self._data_p["c_pto"].shape

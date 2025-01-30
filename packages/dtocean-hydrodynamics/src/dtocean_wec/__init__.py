@@ -17,22 +17,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
-import os
 import sys
 
-from main import MainWindow
-from PyQt4 import QtGui
+from PySide6.QtWidgets import QApplication
 
-module_path = os.path.realpath(__file__)
+from .main import MainWindow
 
 
-def main():
-    app = QtGui.QApplication(sys.argv)
+def run():
+    app = QApplication(sys.argv)
     ex = MainWindow()
     ex.show()
     sys.exit(app.exec_())
-
-    return
 
 
 def gui_interface():
@@ -46,12 +42,8 @@ def gui_interface():
 
     """
 
-    epiStr = "AAU (c) 2016."
     desStr = "Run the WEC standalone GUI."
-
-    parser = argparse.ArgumentParser(description=desStr, epilog=epiStr)
+    parser = argparse.ArgumentParser(description=desStr)
     parser.parse_args()
 
-    main()
-
-    return
+    run()

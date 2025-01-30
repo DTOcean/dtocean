@@ -27,17 +27,10 @@ This module contains the main classes used to obtain the solution of the hydrody
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-import os
-
-import numpy as np
-
-import dtocean_wave.utils.hdf5_interface as h5i
-
 from .db_reader import DbReader
 from .nemoh_reader import NemohReader
 from .nemoh_run import NemohExecute
 from .power_matrix_fitting import PowerMatrixFit
-from .utils.write_results import write_to_raw_results
 from .wamit_reader import WamitReader
 
 
@@ -100,7 +93,6 @@ class BemSolution(object):
             bem_obj.run_nemoh(self.bin_folder)
             bem_obj.run_hst()
 
-            self._bem_obj = bem_obj
             self.reader = NemohReader(
                 self.data_folder,
                 self.dataobj.general_inputs,
@@ -154,6 +146,11 @@ class BemSolution(object):
         ext_d (numpy.ndarray): external/additional damping matrix to be applied in the numerical model of the WEC.
         :return:
         """
+        if self.reader is None:
+            raise RuntimeError(
+                "No reader defined. Call call_module method first"
+            )
+
         per_fit = PowerMatrixFit(
             self.reader.periods,
             self.reader.directions,
@@ -163,6 +160,7 @@ class BemSolution(object):
             ext_d,
             self.reader.k_hst,
             ext_k,
+            self.reader.f_ex,
             self.reader.force_tr_mat,
             self.reader.pto_dof - 1,
             self.reader.moor_dof - 1,
@@ -174,9 +172,10 @@ class BemSolution(object):
         if self.input_type == 1:
             per_fit.load_fitting_data(self.precompiled_case)
         else:
-            if machine_spec == None or site_spec == None:
+            if machine_spec is None or site_spec is None:
                 raise IOError(
-                    "The performance fitting cannot be run without the machine and site specification",
+                    "The performance fitting cannot be run without the "
+                    "machine and site specification. ",
                     "The execution is aborted.",
                 )
 
@@ -185,98 +184,3 @@ class BemSolution(object):
         self.per_fit = per_fit
 
         return
-
-    def generate_outputs(self):
-        # writing to a ASCII files is not really usefull.
-        # TODO: talk with Mat and Vincenzo for the matter
-        # for now just save it to a pickle
-        # if not self.reader.n_dof == self.reader.loose_dof:
-        # move the row data from Nemoh run into a raw_result folder
-        # move the hydrodynamic data to the raw_results folder.
-        # This applies only for the case 2 with nemoh run
-        write_to_raw_results(self.project_folder)
-        modes = self.reader.modes
-
-        temp_dic = {
-            "m_m": self.reader.m_m,
-            "m_add": self.reader.m_add,
-            "c_rad": self.reader.c_rad,
-            "f_ex": self.reader.f_ex,
-            "periods": self.reader.periods,
-            "directions": self.reader.directions,
-            "k_hst": self.reader.k_hst,
-            "diffraction_tr_mat": self.reader.diffraction_tr_mat,
-            "force_tr_mat": self.reader.force_tr_mat,
-            "amplitude_coefficient_radiation": self.reader.amplitude_coefficient_radiation,
-            "water_depth": self.reader.water_depth,
-            "cyl_radius": self.reader.cyl_radius,
-            "modes": modes,
-            "c_ext": self.per_fit.c_ext,
-            "k_ext": self.per_fit.k_ext,
-            "c_fit": self.per_fit.c_fit,
-            "k_fit": self.per_fit.k_fit,
-            "c_pto": self.per_fit.c_pto,
-            "k_mooring": self.per_fit.k_mooring,
-            "te": self.per_fit.te,
-            "hm0": self.per_fit.hm0,
-            "wave_dir": self.per_fit.wave_dir,
-            "scatter_diagram": self.per_fit.scatter_diagram,
-            "max_order": self.reader.order,
-            "truncation_order": self.reader.truncation_order,
-            "mooring_dof": self.reader.moor_dof,
-            "pto_dof": self.reader.pto_dof,
-        }
-
-        h5i.save_dict_to_hdf5(
-            temp_dic, os.path.join(self.project_folder, "wec_solution.h5")
-        )
-        # h5pi.save_dict_to_pandas_and_hdf5(temp_dic, os.path.join(self.project_folder, 'test2.h5'))
-        # pkli.save_dict_to_pickle(temp_dic, os.path.join(self.project_folder, 'test3.pkl'))
-
-
-if __name__ == "__main__":
-    # usage of the external wave module
-    import sys
-
-    sys.path.append(r"C:\Users\francesco\Desktop\test_gui\utils")
-
-    from data_interface import DataStructure
-
-    data = h5i.load_dict_from_hdf5(
-        r"C:\Users\francesco\Desktop\test_gui\test_prj\test_prj_data_collection.hdf5"
-    )
-    data["inputs_hydrodynamic"]["general_input"]["data_folder"] = (
-        r"C:\Users\francesco\Desktop\test_gui\mtatest\hydrodynamic"
-    )
-    dataobj = DataStructure(data)
-    if dataobj.check_inputs():
-        wec_obj = BemSolution(dataobj, debug=False)
-        wec_obj.call_module()
-
-    additional_stiffness = None
-    additional_damping = None
-
-    site_spec = {"spec_shape": "Jonswap"}
-    site_spec["spec_gamma"] = 1.0
-    site_spec["spec_spreading"] = -1
-    site_spec["te"] = np.linspace(3, 10, 1)
-    site_spec["hm0"] = np.linspace(0.5, 3.5, 1)
-    site_spec["wave_angles"] = np.linspace(0, 0, 1)
-    site_spec["probability_of_occurence"] = np.ones((1, 1, 1))
-
-    machine_spec = {"c_pto": np.zeros((1, 1, 1, 1, 1))}
-    machine_spec["yaw"] = 0.0
-    machine_spec["k_mooring"] = np.zeros((1, 1, 1, 1, 1))
-    machine_spec["power_matrix"] = np.zeros((1, 1, 1))
-    wec_obj.pm_fitting(
-        machine_spec,
-        site_spec,
-        ext_k=additional_stiffness,
-        ext_d=additional_damping,
-    )
-#    wec_obj.generate_outputs()
-#
-#    # TODO: check the shape of the cpto and c_ext in input
-#    # the visualiser will be hooked at the BEM object, which unifies the 4 possible cases
-#    plotter = Visualiser(wec_obj)
-#    plotter.show_rao(0,0,0,0,0)
