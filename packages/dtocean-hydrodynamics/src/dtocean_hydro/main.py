@@ -28,12 +28,8 @@ calls the tidal and wave submodule.
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-from __future__ import division
-
-# Standard Library
 import logging
 
-# External Package
 import numpy as np
 
 import dtocean_wave.utils.read_bem_solution as read_wec_sol
@@ -41,14 +37,10 @@ from dtocean_hydro.utils.set_wdirs_multibody import set_wdirs_multibody
 from dtocean_tidal.interface import CallTidal
 from dtocean_tidal.submodel.ParametricWake import read_database
 from dtocean_wave.MultiWEChydro import MultiBody
-
-# Local package
 from dtocean_wave.WEC import wec
 
 from .array import Array_pkg
 from .configure import get_install_paths
-
-# Relative imports
 from .hydro import Hydro_pkg
 from .output import WP2output
 from .utils import optimiser
