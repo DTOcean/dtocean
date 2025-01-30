@@ -8,6 +8,6 @@
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "ruff.configuration": "pyproject.toml",
-  "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
-  "C_Cpp.default.compileCommands": "e:\\Programming\\Python\\git\\dtocean\\packages\\dtocean-hydrodynamics\\builddir/compile_commands.json",
+  "mesonbuild.buildFolder": "build",
+  "mesonbuild.modifySettings": false, 
 }
