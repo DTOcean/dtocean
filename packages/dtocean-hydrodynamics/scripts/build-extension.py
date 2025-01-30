@@ -12,11 +12,21 @@ BUILD_ENV = {
     "FC": "gfortran",
     "CC": "gcc",
 }
+GENERATED_DIR = ROOT_DIR.joinpath(
+    "src",
+    "dtocean_wec",
+    "generated",
+)
 LIB_DIR = ROOT_DIR.joinpath(
     "src",
     "dtocean_tidal",
     "submodel",
     "ParametricWake",
+)
+UI_DIR = ROOT_DIR.joinpath(
+    "src",
+    "dtocean_wec",
+    "designer",
 )
 WINDOWS_DLLS = [
     "libquadmath-*.dll",
@@ -36,19 +46,28 @@ def _meson(*args):
     subprocess.run(["meson", *list(args)], check=True, env=BUILD_ENV)
 
 
+def _pyside6_uic(*args):
+    """Invoke pyside6-uic with the given arguments."""
+    subprocess.run(["pyside6-uic", *list(args)], check=True)
+
+
 def _cleanup():
     """Remove build artifacts."""
     if BUILD_DIR.exists():
         shutil.rmtree(BUILD_DIR)
 
+    # qt widgets
+    files = list(GENERATED_DIR.glob("ui_*.py"))
+
+    # fortran module
     if _is_windows():
-        files = (
+        files += (
             list(LIB_DIR.glob("*.pyd"))
             + list(LIB_DIR.glob("*.dll"))
             + list(LIB_DIR.glob("*.a"))
         )
     else:
-        files = list(LIB_DIR.glob("*.so"))
+        files += list(LIB_DIR.glob("*.so"))
 
     for file in files:
         file.unlink()
@@ -58,6 +77,12 @@ def build():
     """Build the project."""
     _cleanup()
 
+    # qt widgets
+    for ui_path in UI_DIR.glob("*.ui"):
+        dst = GENERATED_DIR / f"ui_{ui_path.stem}.py"
+        _pyside6_uic(str(ui_path), "-o", str(dst))
+
+    # fortran module
     _meson("setup", BUILD_DIR.as_posix())
     _meson("compile", "-C", BUILD_DIR.as_posix())
     _meson("install", "-C", BUILD_DIR.as_posix())
