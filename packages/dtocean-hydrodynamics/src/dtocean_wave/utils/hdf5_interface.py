@@ -112,7 +112,7 @@ def recursively_load_dict_contents_from_group(h5file, path):
 
     for key, item in h5file[path].items():
         if isinstance(item, h5py.Dataset):
-            ans[key] = item
+            ans[key] = item[()]
         elif isinstance(item, h5py.Group):
             ans[key] = recursively_load_dict_contents_from_group(
                 h5file, path + key + "/"
