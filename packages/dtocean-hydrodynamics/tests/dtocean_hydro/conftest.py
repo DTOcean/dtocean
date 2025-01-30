@@ -676,4 +676,4 @@ def wave():
 
 @pytest.fixture
 def wave_data_folder():
-    return os.path.join(this_dir, "..", "examples", "inputs_wave")
+    return os.path.join(this_dir, "..", "..", "examples", "inputs_wave")
