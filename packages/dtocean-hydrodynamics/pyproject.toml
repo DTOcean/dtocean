@@ -52,6 +52,7 @@ deptry = "^0.21.1"
 
 [tool.poetry.scripts]
 dtocean-hydro = 'dtocean_hydro._cli:run'
+dtocean-wec = 'dtocean_wec:gui_interface'
 
 [tool.poetry.build]
 script = "scripts/build-extension.py"
