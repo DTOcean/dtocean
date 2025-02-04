@@ -5,8 +5,6 @@ Created on Mon May 30 15:08:09 2016
 
 """
 
-import sys
-
 from OpenGL.GL import (
     GL_CCW,
     GL_COLOR_BUFFER_BIT,
@@ -22,6 +20,7 @@ from OpenGL.GL import (
     GL_QUADS,
     glBegin,
     glClear,
+    glClearColor,
     glClearDepth,
     glColor,
     glColor3f,
@@ -38,7 +37,7 @@ from OpenGL.GL import (
     glVertex3f,
     glViewport,
 )
-from PySide6 import QtCore, QtGui
+from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
 from .Camera import Camera
@@ -83,7 +82,7 @@ class Viewer3DWidget(QOpenGLWidget):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # type: ignore
 
         glDepthFunc(GL_LEQUAL)
         glEnable(GL_DEPTH_TEST)
@@ -112,28 +111,28 @@ class Viewer3DWidget(QOpenGLWidget):
         glEnd()
 
         glColor(1.0, 1.0, 1.0)
-        self.renderText(0, 0, 0, "(0,0,0)")
-        self.renderText(
-            self.scaling_factor,
-            self.scaling_factor,
-            self.scaling_factor,
-            "(%s,%s,%s)"
-            % (self.scaling_factor, self.scaling_factor, self.scaling_factor),
-        )
-        self.renderText(
-            -self.scaling_factor,
-            self.scaling_factor,
-            self.scaling_factor,
-            "(%s,%s,%s)"
-            % (-self.scaling_factor, self.scaling_factor, self.scaling_factor),
-        )
-        self.renderText(
-            self.scaling_factor,
-            -self.scaling_factor,
-            self.scaling_factor,
-            "(%s,%s,%s)"
-            % (self.scaling_factor, -self.scaling_factor, self.scaling_factor),
-        )
+        # self.renderText(0, 0, 0, "(0,0,0)")
+        # self.renderText(
+        #     self.scaling_factor,
+        #     self.scaling_factor,
+        #     self.scaling_factor,
+        #     "(%s,%s,%s)"
+        #     % (self.scaling_factor, self.scaling_factor, self.scaling_factor),
+        # )
+        # self.renderText(
+        #     -self.scaling_factor,
+        #     self.scaling_factor,
+        #     self.scaling_factor,
+        #     "(%s,%s,%s)"
+        #     % (-self.scaling_factor, self.scaling_factor, self.scaling_factor),
+        # )
+        # self.renderText(
+        #     self.scaling_factor,
+        #     -self.scaling_factor,
+        #     self.scaling_factor,
+        #     "(%s,%s,%s)"
+        #     % (self.scaling_factor, -self.scaling_factor, self.scaling_factor),
+        # )
         glColor(0.0, 1.0, 0.0)
         self.bounding_box()
 
@@ -285,13 +284,21 @@ class Viewer3DWidget(QOpenGLWidget):
         self.qglClearColor(QtGui.QColor(0, 0, 0))
         glClearDepth(1.0)
 
+    def qglClearColor(self, clearColor: QtGui.QColor):
+        glClearColor(
+            clearColor.redF(),
+            clearColor.greenF(),
+            clearColor.blueF(),
+            clearColor.alphaF(),
+        )
+
     def mouseMoveEvent(self, mouseEvent):
-        if int(mouseEvent.buttons()) != QtCore.Qt.NoButton:
+        if int(mouseEvent.buttons()) != QtCore.Qt.MouseButton.NoButton:
             # user is dragging
             delta_x = mouseEvent.x() - self.oldx
             delta_y = self.oldy - mouseEvent.y()
-            if int(mouseEvent.buttons()) & QtCore.Qt.RightButton:
-                if int(mouseEvent.buttons()) & QtCore.Qt.MidButton:
+            if int(mouseEvent.buttons()) & QtCore.Qt.MouseButton.RightButton:  # type: ignore
+                if int(mouseEvent.buttons()) & QtCore.Qt.MouseButton.MidButton:  # type: ignore
                     self.camera.dollyCameraForward(
                         3 * (delta_x + delta_y), False
                     )
@@ -299,7 +306,7 @@ class Viewer3DWidget(QOpenGLWidget):
                     self.camera.orbit(
                         self.oldx, self.oldy, mouseEvent.x(), mouseEvent.y()
                     )
-            elif int(mouseEvent.buttons()) & QtCore.Qt.LeftButton:
+            elif int(mouseEvent.buttons()) & QtCore.Qt.MouseButton.LeftButton:  # type: ignore
                 self.camera.translateSceneRightAndUp(delta_x, delta_y)
             self.update()
         self.oldx = mouseEvent.x()
@@ -323,9 +330,9 @@ class Viewer3DWidget(QOpenGLWidget):
         self.update()
 
 
-class PythonQtOpenGLMeshViewer(QtGui.QMainWindow):
+class PythonQtOpenGLMeshViewer(QtWidgets.QMainWindow):
     def __init__(self, path, file_name):
-        QtGui.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         self.setWindowTitle(
             "Visualisation of the mesh: %s" % ("/" + path + "/" + file_name)
         )
@@ -334,61 +341,38 @@ class PythonQtOpenGLMeshViewer(QtGui.QMainWindow):
         exit = QtGui.QAction("Exit", self)
         exit.setShortcut("Ctrl+Q")
         exit.setStatusTip("Exit application")
-        self.connect(exit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
-
-        help = QtGui.QAction("Help", self)
-        help.setShortcut("F1")
-        help.setStatusTip("Help")
-        self.connect(help, QtCore.SIGNAL("triggered()"), QtCore.SLOT(""))
-
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu("&File")
-        fileMenu.addAction(help)
-        fileMenu.addAction(exit)
-
-        fileMenu1 = menubar.addMenu("&About")
-
-        about = QtGui.QAction("About", self)
-        about.setShortcut("Ctrl+A")
-        about.setStatusTip("About")
-        self.connect(about, QtCore.SIGNAL("triggered()"), QtCore.SLOT(""))
-        fileMenu1.addAction(about)
+        exit.triggered.connect(self.close)
 
         self.setToolTip("Mesh plotter")
 
         self.viewer3D = Viewer3DWidget(self, path, file_name)
         createButtons = True
         if createButtons:
-            parentWidget = QtGui.QWidget()
+            parentWidget = QtWidgets.QWidget()
 
-            self.button1 = QtGui.QPushButton("Structure", self)
+            self.button1 = QtWidgets.QPushButton("Structure", self)
             self.button1.setStatusTip("Visualise the structure")
             self.viewer3D.makeCurrent()
-            self.connect(
-                self.button1, QtCore.SIGNAL("clicked()"), self.button1Action
-            )
+            self.button1.clicked.connect(self.button1Action)
 
-            self.button2 = QtGui.QPushButton("Norms", self)
+            self.button2 = QtWidgets.QPushButton("Norms", self)
             self.button2.setStatusTip("Visualise the norms")
-            self.connect(
-                self.button2, QtCore.SIGNAL("clicked()"), self.button2Action
-            )
+            self.button2.clicked.connect(self.button2Action)
 
-            self.button3 = QtGui.QPushButton("Wireframe", self)
+            self.button3 = QtWidgets.QPushButton("Wireframe", self)
             self.button3.setStatusTip("Visualise the the structure wireframe")
-            self.connect(
-                self.button3, QtCore.SIGNAL("clicked()"), self.button3Action
-            )
+            self.button3.clicked.connect(self.button3Action)
 
-            vbox = QtGui.QVBoxLayout()
+            vbox = QtWidgets.QVBoxLayout()
             vbox.addWidget(self.button1)
             vbox.addWidget(self.button3)
             vbox.addWidget(self.button2)
             vbox.addStretch(1)
             self.viewer3D.setSizePolicy(
-                QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+                QtWidgets.QSizePolicy.Policy.Expanding,
+                QtWidgets.QSizePolicy.Policy.Expanding,
             )
-            hbox = QtGui.QHBoxLayout()
+            hbox = QtWidgets.QHBoxLayout()
             hbox.addLayout(vbox)
             hbox.addWidget(self.viewer3D)
 
@@ -401,14 +385,15 @@ class PythonQtOpenGLMeshViewer(QtGui.QMainWindow):
     #        self.resize(800,800)
 
     def closeEvent(self, event):
-        reply = QtGui.QMessageBox.question(
+        reply = QtWidgets.QMessageBox.question(
             self,
             "Confirmation",
             "Are you sure you want to quit?",
-            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-            QtGui.QMessageBox.No,
+            QtWidgets.QMessageBox.StandardButton.Yes
+            | QtWidgets.QMessageBox.StandardButton.No,
+            QtWidgets.QMessageBox.StandardButton.No,
         )
-        if reply == QtGui.QMessageBox.Yes:
+        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
             event.accept()
         else:
             event.ignore()
@@ -421,8 +406,7 @@ class PythonQtOpenGLMeshViewer(QtGui.QMainWindow):
             self.viewer3D.makeCurrent()
             self.viewer3D.drawMesh_cond = True
             self.viewer3D.drawWire_cond = False
-        self.viewer3D.paintGL()
-        self.viewer3D.updateGL()
+        self.viewer3D.update()
 
     def button2Action(self):
         if self.viewer3D.drawNorms_cond:
@@ -431,8 +415,7 @@ class PythonQtOpenGLMeshViewer(QtGui.QMainWindow):
         else:
             self.viewer3D.makeCurrent()
             self.viewer3D.drawNorms_cond = True
-        self.viewer3D.paintGL()
-        self.viewer3D.updateGL()
+        self.viewer3D.update()
 
     def button3Action(self):
         if self.viewer3D.drawWire_cond:
@@ -442,16 +425,4 @@ class PythonQtOpenGLMeshViewer(QtGui.QMainWindow):
             self.viewer3D.makeCurrent()
             self.viewer3D.drawWire_cond = True
             self.viewer3D.drawMesh_cond = False
-        self.viewer3D.paintGL()
-        self.viewer3D.updateGL()
-
-
-if __name__ == "__main__":
-    file_name = "mesh_test.GDF"
-    path = ""
-    app = QtGui.QApplication(sys.argv)
-    window = PythonQtOpenGLMeshViewer(path, file_name)
-    window.show()
-    window.viewer3D.bounding_box()
-    sys.exit(app.exec_())
-    sys.exit(app.exec_())
+        self.viewer3D.update()

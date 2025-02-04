@@ -54,9 +54,7 @@ class Mesh:
         v41 = ver[pan[:, 0] - 1] - ver[pan[:, 3] - 1]
 
         n1 = np.cross(v12, -v41)
-        n2 = np.cross(v23, -v12)
         n3 = np.cross(v34, -v23)
-        n4 = np.cross(v41, -v34)
 
         # only point 1 and 4 are repeated for the case of triangle
         mask_12 = np.linalg.norm(v12, axis=1) < 1e-6
@@ -194,10 +192,3 @@ class Mesh:
 
         print("vtk xml file (__Mesh.vtp) generated.")
         return 1
-
-
-if __name__ == "__main__":
-    fn = "mesh_test.gdf"
-    path = ""
-    ms = Mesh(fn, path)
-    ms.generate_visualiser()
