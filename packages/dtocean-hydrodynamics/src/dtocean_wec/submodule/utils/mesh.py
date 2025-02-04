@@ -62,7 +62,7 @@ class MeshBem(object):
 
         self.xsim = xsim
         self.vertices = vertices
-        self.connectivity = np.int_(connectivity)
+        self.connectivity = np.array(connectivity, dtype=np.int_)
         self.nP = len(connectivity)
         self.nV = len(vertices)
 

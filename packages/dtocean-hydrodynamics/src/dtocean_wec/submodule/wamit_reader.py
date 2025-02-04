@@ -27,6 +27,7 @@ using a given WAMIT solution.
 """
 
 import os
+from io import TextIOWrapper
 
 import numpy as np
 
@@ -189,7 +190,7 @@ class WamitReader:
         del x, y
 
     @classmethod
-    def __search_file_extension(WamitReader, path, estension):
+    def __search_file_extension(cls, path, estension):
         file_ls = os.listdir(path)
         filter_files = [el for el in file_ls if el.endswith(estension)]
         if not filter_files:
@@ -197,8 +198,10 @@ class WamitReader:
         return filter_files
 
     @classmethod
-    def __load_ASCII(WamitReader, path, estension, POINTER=False):
-        file_list = WamitReader.__search_file_extension(path, estension)
+    def __load_ASCII(cls, path, estension, POINTER=False):
+        file_list = cls.__search_file_extension(path, estension)
+        if not file_list:
+            raise ValueError("No file found")
         if len(file_list) > 1:
             raise ValueError(
                 "The given data folder contains multiple entries of the {} file. Please remove the unused ones".format(
@@ -256,6 +259,8 @@ class WamitReader:
             print("Read pot file")
         # " Open, read pathname.pot and get number of wave directions (Ndir) and wave periods (Nper) "
         fpot = self.__load_ASCII(self.data_folder, ".pot")
+        assert isinstance(fpot, list)
+
         i_s = 1  # water depth index
         wdepth = float(fpot[i_s])
         i_s += 2  # number of periods index
@@ -293,9 +298,14 @@ class WamitReader:
         return (wdepth, periods, directions, l_cs, rigid_body_dof)
 
     def __read_1(self):
+        assert self.periods is not None
+
         if self.debug:
             print("Read .1 file")
-        f1 = self.__load_ASCII(self.data_folder, ".1")[1:]
+        f1_full = self.__load_ASCII(self.data_folder, ".1")
+        assert isinstance(f1_full, list)
+
+        f1 = f1_full[1:]
         n_per = len(self.periods)
         m_add = []
         c_rad = []
@@ -327,9 +337,15 @@ class WamitReader:
         return (m_add, c_rad)
 
     def __read_2(self):
+        assert self.periods is not None
+        assert self.directions is not None
+
         if self.debug:
             print("Read .2 file")
-        f2 = self.__load_ASCII(self.data_folder, ".2")[1:]
+        f2_full = self.__load_ASCII(self.data_folder, ".2")
+        assert isinstance(f2_full, list)
+
+        f2 = f2_full[1:]
         n_per = len(self.periods)
         n_dir = len(self.directions)
         fex = np.zeros(n_per * n_dir * self.n_dof, dtype=complex)
@@ -347,7 +363,10 @@ class WamitReader:
     def __read_mmx(self):
         if self.debug:
             print("Read .mmx file")
-        fmmx = self.__load_ASCII(self.data_folder, ".mmx")[13:]
+        fmmx_full = self.__load_ASCII(self.data_folder, ".mmx")
+        assert isinstance(fmmx_full, list)
+
+        fmmx = fmmx_full[13:]
         mm = np.zeros((self.n_dof, self.n_dof), "f")
         dof_gener = self.__n_dof_gener
         for line in fmmx[: (6 + dof_gener) ** 2]:
@@ -363,7 +382,10 @@ class WamitReader:
     def __read_hst(self):
         if self.debug:
             print("Read .hst file")
-        fhst = self.__load_ASCII(self.data_folder, ".hst")[1:]
+        fhst_full = self.__load_ASCII(self.data_folder, ".hst")
+        assert isinstance(fhst_full, list)
+
+        fhst = fhst_full[1:]
         khst = np.zeros((self.n_dof, self.n_dof), "f")
         for line in fhst:
             linep = line.split()
@@ -380,9 +402,10 @@ class WamitReader:
 
         if self.debug:
             print("Read .fpt file")
-        ffpt = self.__load_ASCII(self.data_folder, ".fpt")[
-            1:
-        ]  # skip first line, i.e. header
+        ffpt_full = self.__load_ASCII(self.data_folder, ".fpt")
+        assert isinstance(ffpt_full, list)
+
+        ffpt = ffpt_full[1:]
         fpt = []
         for line in ffpt:
             linep = (
@@ -401,6 +424,9 @@ class WamitReader:
         return (x, y, z, r, t)
 
     def __read_6p(self, x, y):
+        assert self.periods is not None
+        assert self.directions is not None
+
         if not self.__get_array_mat:
             nper = len(self.periods)
             ndir = len(self.directions)
@@ -415,6 +441,8 @@ class WamitReader:
             )
         z = self.cyl_z
         t = self.cyl_t
+        assert isinstance(z, np.ndarray)
+
         period = self.periods
         direction = self.directions.copy()
         n_per = len(period)
@@ -426,6 +454,8 @@ class WamitReader:
         # Due to the size of the 6p file the realines method cannot be used,
         # a lazy method is used instead
         f6p = self.__load_ASCII(self.data_folder, ".6p", POINTER=True)
+        assert isinstance(f6p, TextIOWrapper)
+
         burnheader = f6p.readline()
         del burnheader
         lineR = len2(
@@ -441,6 +471,8 @@ class WamitReader:
         f6p.close()
 
         f6p = self.__load_ASCII(self.data_folder, ".6p", POINTER=True)
+        assert isinstance(f6p, TextIOWrapper)
+
         burnheader = f6p.readline()
         del burnheader
         PhiD = np.zeros(n_per * n_dir * len2(z) * len2(t), dtype=complex)
@@ -502,27 +534,3 @@ class WamitReader:
         f6p.close()
 
         return (PhiD - PhiP, PhiR)
-
-
-if __name__ == "__main__":
-    # reader = WamitReader(r"C:\Users\francesco\Desktop\Pelamis_input", debug=True)
-    # reader.load_data()
-
-    import sys
-
-    sys.path.append(r"C:\Users\francesco\Desktop\test_gui\utils")
-    from data_interface import DataStructure
-
-    import dtocean_wave.utils.hdf5_interface as h5i
-
-    data = h5i.load_dict_from_hdf5(
-        r"C:\Users\francesco\Desktop\test_gui\prj\prj_data_collection.hdf5"
-    )
-    data_path = r"C:\Users\francesco\Desktop\Pelamis_input"
-    dataobj = DataStructure(data)
-
-    reader = WamitReader(
-        data_path, dataobj.general_inputs, get_array_mat=False, debug=False
-    )
-    # reader.check_inputs()
-    reader.load_data()
