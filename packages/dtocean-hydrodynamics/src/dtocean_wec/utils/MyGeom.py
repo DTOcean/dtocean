@@ -61,6 +61,12 @@ class Point3D:
             self.x() + other.x(), self.y() + other.y(), self.z() + other.z()
         )
 
+    @overload
+    def __sub__(self, other: Self) -> "Vector3D": ...
+
+    @overload
+    def __sub__(self, other: "Vector3D") -> Self: ...
+
     def __sub__(self, other):
         if isinstance(other, Vector3D):
             return Point3D(
