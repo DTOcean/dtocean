@@ -78,7 +78,6 @@ class ReadNemoh(QWidget, Ui_T3):
         self.btn_remove_body_t3.clicked.connect(self.remove_data_tab_body)
         self.trigger_results.connect(parent.set_hydrodynamic_results)
         self.trigger_save.connect(parent.task_save_hydrodynamic)
-        self.trigger_reset_forms.connect(parent.task_reset_forms)
 
         self.db_folder = os.path.join(parent.wec_share_path, "wec_db")
         self.bin_folder = parent.bin_path

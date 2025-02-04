@@ -50,8 +50,6 @@ class ReadWamit(QWidget, Ui_T4):
         self.btn_load_data_t4.setEnabled(False)
         self.trigger_results.connect(parent.set_hydrodynamic_results)
         self.trigger_save.connect(parent.task_save_hydrodynamic)
-        self.trigger_reset_forms.connect(parent.task_reset_forms)
-
         self.trigger_mesh_view.connect(parent.task_show_mesh)
 
         self.db_folder = os.path.join(parent.wec_share_path, "wec_db")
