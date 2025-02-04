@@ -6,15 +6,36 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>488</width>
+    <width>489</width>
     <height>635</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Hydrodynamic - Module</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QPushButton" name="btn_load_data_t1">
+     <property name="text">
+      <string>load</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cb_wec_t1">
+     <item>
+      <property name="text">
+       <string>heaving cylinder</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>surging barge</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="label">
      <property name="minimumSize">
       <size>
@@ -38,50 +59,24 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="btn_load_data_t1">
-     <property name="text">
-      <string>load</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QComboBox" name="cb_wec_t1">
-     <item>
-      <property name="text">
-       <string>heaving cylinder</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>surging barge</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="3">
-    <widget class="QWebView" name="ww_wec">
-     <property name="url">
-      <url>
-       <string>about:blank</string>
-      </url>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="3">
+   <item>
     <widget class="Line" name="line">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QWebEngineView" name="ww_wec" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>QWebEngineView</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
