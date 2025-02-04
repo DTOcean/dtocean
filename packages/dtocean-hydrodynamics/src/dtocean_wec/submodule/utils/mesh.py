@@ -323,11 +323,16 @@ class Panel(object):
         scale = (LA.norm(v24) + LA.norm(v31)) / 8
         d = self.n * scale + self.centroid
 
-        ax.plot_wireframe(x, y, z, color="#000000")
         ax.plot_wireframe(
-            [self.centroid[0], d[0]],
-            [self.centroid[1], d[1]],
-            [self.centroid[2], d[2]],
+            np.array([self.x[[0, 1]], self.x[[2, 3]]]),
+            np.array([self.y[[0, 1]], self.y[[2, 3]]]),
+            np.array([self.z[[0, 1]], self.z[[2, 3]]]),
+            color="#000000",
+        )
+        ax.plot_wireframe(
+            np.array([[self.centroid[0], d[0]]]),
+            np.array([[self.centroid[1], d[1]]]),
+            np.array([[self.centroid[2], d[2]]]),
             color="red",
         )
         ax.scatter(
@@ -353,12 +358,12 @@ class Panel(object):
             V = [self.x, self.y, self.z]
             Vred = [el for ind, el in enumerate(V) if ind != dimension - 1]
             ax.plot(Vred[0], Vred[1], "k")
-
         else:
+            print(np.array([self.z[[0, 1]], self.z[[2, 3]]]))
             ax.plot_wireframe(
-                self.x[[0, 1, 2, 3, 0]],
-                self.y[[0, 1, 2, 3, 0]],
-                self.z[[0, 1, 2, 3, 0]],
+                np.array([self.x[[0, 1]], self.x[[2, 3]]]),
+                np.array([self.y[[0, 1]], self.y[[2, 3]]]),
+                np.array([self.z[[0, 1]], self.z[[2, 3]]]),
             )
 
 
