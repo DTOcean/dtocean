@@ -114,16 +114,3 @@ def recursively_load_dict_contents_from_group(h5file, path):
             )
 
     return ans
-
-
-if __name__ == "__main__":
-    data = {
-        "x": "astring",
-        "y": np.arange(10),
-        "d": {"z": np.ones((2, 3)), "b": b"bytestring"},
-    }
-    print(data)
-    filename = "test.h5"
-    save_dict_to_hdf5(data, filename)
-    dd = load_dict_from_hdf5(filename)
-    print(dd)
