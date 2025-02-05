@@ -33,7 +33,6 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QMainWindow,
     QMessageBox,
-    QPushButton,
     QWidget,
 )
 
@@ -122,7 +121,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.menubar.triggered.connect(self.windowaction)
         self.lw_area.hide()
         self.run_entrance()
-        self._data = {}
+        self._data = None
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
 
         XStream.stdout().messageWritten.connect(self.console.insertPlainText)
@@ -139,6 +138,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.form_hyd = None
         self.form_power = None
         self.form_plot = None
+
+        self._test_dialog = None
 
         return
 
@@ -547,19 +548,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 msgBox.setText(
                     "The project folder is not empty \n Select another folder or clear the actual folder?"
                 )
-                msgBox.addButton(
-                    QPushButton("Select"), QMessageBox.ButtonRole.YesRole
+                select_button = msgBox.addButton(
+                    "Select",
+                    QMessageBox.ButtonRole.YesRole,
                 )
-                msgBox.addButton(
-                    QPushButton("Clear"), QMessageBox.ButtonRole.NoRole
+                clear_button = msgBox.addButton(
+                    "Clear",
+                    QMessageBox.ButtonRole.NoRole,
                 )
-                msgBox.addButton(
-                    QPushButton("Cancel"), QMessageBox.ButtonRole.RejectRole
-                )
-                ret = msgBox.exec_()
-                if ret == 0:
+                msgBox.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+
+                self._test_dialog = msgBox
+                msgBox.exec()
+                self._test_dialog = None
+
+                if msgBox.clickedButton() == select_button:
                     self.browse_prj()
-                elif ret == 1:
+                elif msgBox.clickedButton() == clear_button:
                     try:
                         clean_prj_folder(folder)
                     except:
