@@ -83,17 +83,12 @@ def save_dict_to_hdf5(dic, filename):
 
 def recursively_save_dict_contents_to_group(h5file, path, dic):
     for key, item in dic.items():
-        if isinstance(
-            item,
-            (np.ndarray, float, int, list, str, bytes),
-        ) or type(item) in (np.int64, np.float64):
-            h5file[path + key] = item
-        elif isinstance(item, dict):
+        if isinstance(item, dict):
             recursively_save_dict_contents_to_group(
                 h5file, path + key + "/", item
             )
         else:
-            raise ValueError("Cannot save {} type".format(item))
+            h5file[path + key] = item
 
 
 def load_key_from_hdf5(filename, key_str):
