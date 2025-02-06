@@ -70,9 +70,7 @@ class Plotter(QWidget, Ui_Plot):
         self.addmpl(fig)
         self.enable_plot_area()
 
-    def rmmpl(
-        self,
-    ):
+    def rmmpl(self):
         self.mpl_vl.removeWidget(self.canvas)
         self.canvas.close()
         self.mpl_vl.removeWidget(self.toolbar)
@@ -245,8 +243,10 @@ class Plotter(QWidget, Ui_Plot):
     def plot_data(self):
         # check which tab is active first
         active_rb = []
+
         for ix, x in enumerate(self.groupBox_9.children()):
-            assert isinstance(x, QRadioButton)
+            if not isinstance(x, QRadioButton):
+                continue
             if ix > 0 and x.isChecked():
                 active_rb.append(ix)
 
