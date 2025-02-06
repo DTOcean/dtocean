@@ -58,7 +58,9 @@ class Point3D:
 
     def __add__(self, other):
         return Point3D(
-            self.x() + other.x(), self.y() + other.y(), self.z() + other.z()
+            self.x() + other.x(),
+            self.y() + other.y(),
+            self.z() + other.z(),
         )
 
     @overload
@@ -70,10 +72,14 @@ class Point3D:
     def __sub__(self, other):
         if isinstance(other, Vector3D):
             return Point3D(
-                self.x() - other.x(), self.y() - other.y(), self.z() - other.z()
+                self.x() - other.x(),
+                self.y() - other.y(),
+                self.z() - other.z(),
             )
         return Vector3D(
-            self.x() - other.x(), self.y() - other.y(), self.z() - other.z()
+            self.x() - other.x(),
+            self.y() - other.y(),
+            self.z() - other.z(),
         )
 
     def __eq__(self, other):
@@ -153,15 +159,21 @@ class Vector3D:
     def __add__(self, other):
         if isinstance(other, Point3D):
             return Point3D(
-                self.x() + other.x(), self.y() + other.y(), self.z() + other.z()
+                self.x() + other.x(),
+                self.y() + other.y(),
+                self.z() + other.z(),
             )
         return Vector3D(
-            self.x() + other.x(), self.y() + other.y(), self.z() + other.z()
+            self.x() + other.x(),
+            self.y() + other.y(),
+            self.z() + other.z(),
         )
 
     def __sub__(self, other):
         return Vector3D(
-            self.x() - other.x(), self.y() - other.y(), self.z() - other.z()
+            self.x() - other.x(),
+            self.y() - other.y(),
+            self.z() - other.z(),
         )
 
     def __mul__(self, other):

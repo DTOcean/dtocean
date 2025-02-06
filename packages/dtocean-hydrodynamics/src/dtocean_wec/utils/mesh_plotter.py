@@ -293,22 +293,23 @@ class Viewer3DWidget(QOpenGLWidget):
         )
 
     def mouseMoveEvent(self, mouseEvent):
-        if int(mouseEvent.buttons()) != QtCore.Qt.MouseButton.NoButton:
+        if mouseEvent.buttons() != QtCore.Qt.MouseButton.NoButton:
             # user is dragging
             delta_x = mouseEvent.x() - self.oldx
             delta_y = self.oldy - mouseEvent.y()
-            if int(mouseEvent.buttons()) & QtCore.Qt.MouseButton.RightButton:  # type: ignore
-                if int(mouseEvent.buttons()) & QtCore.Qt.MouseButton.MidButton:  # type: ignore
-                    self.camera.dollyCameraForward(
-                        3 * (delta_x + delta_y), False
-                    )
-                else:
-                    self.camera.orbit(
-                        self.oldx, self.oldy, mouseEvent.x(), mouseEvent.y()
-                    )
-            elif int(mouseEvent.buttons()) & QtCore.Qt.MouseButton.LeftButton:  # type: ignore
+            if mouseEvent.buttons() & QtCore.Qt.MouseButton.RightButton:
+                self.camera.orbit(
+                    self.oldx,
+                    self.oldy,
+                    mouseEvent.x(),
+                    mouseEvent.y(),
+                )
+            elif mouseEvent.buttons() & QtCore.Qt.MouseButton.MiddleButton:
+                self.camera.dollyCameraForward(3 * (delta_x + delta_y), False)
+            elif mouseEvent.buttons() & QtCore.Qt.MouseButton.LeftButton:
                 self.camera.translateSceneRightAndUp(delta_x, delta_y)
             self.update()
+
         self.oldx = mouseEvent.x()
         self.oldy = mouseEvent.y()
 
@@ -325,7 +326,7 @@ class Viewer3DWidget(QOpenGLWidget):
         self.isPressed = False
 
     def wheelEvent(self, e):
-        z = e.delta()
+        z = e.angleDelta().toTuple()[1]
         self.camera.mouse_zoom(z * 0.001)
         self.update()
 
