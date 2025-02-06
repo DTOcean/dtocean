@@ -1,8 +1,10 @@
 from unittest.mock import MagicMock
 
 import pytest
+from PySide6.QtWidgets import QMessageBox
 
 import dtocean_wave.utils.hdf5_interface as h5i
+from dtocean_wec.main import MainWindow
 
 
 @pytest.fixture
@@ -36,6 +38,18 @@ def test_save_project_loaded(mocker, loaded_window):
     assert "inputs_hydrodynamic" in loaded_window._data
     assert "hyd" in loaded_window._data
     save_dict_to_hdf5.assert_called_once()
+
+
+def test_load_project(mocker, monkeypatch, loaded_window):
+    populate_project: MagicMock = mocker.spy(MainWindow, "populate_project")
+    monkeypatch.setattr(
+        MainWindow,
+        "save_choice",
+        lambda *args: QMessageBox.StandardButton.Save,
+    )
+
+    loaded_window.actionLoad_Project.trigger()
+    populate_project.assert_called_once()
 
 
 def test_save_dtocean_format(loaded_window):
