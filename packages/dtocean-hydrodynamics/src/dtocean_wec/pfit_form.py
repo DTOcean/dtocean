@@ -135,7 +135,8 @@ class PowerPerformance(QWidget, Ui_Fit):
         # check which tab is active first
         active_rb = []
         for ix, x in enumerate(self.groupBox.children()):
-            assert isinstance(x, QRadioButton)
+            if not isinstance(x, QRadioButton):
+                continue
             if ix > 0 and x.isChecked():
                 active_rb.append(ix)
 
