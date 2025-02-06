@@ -94,10 +94,6 @@ class PowerPerformance(QWidget, Ui_Fit):
     def __setYaw(self):
         self.__yaw = self.wwAngle.value()
 
-    def closeEvent(self, event):
-        print("Closing")
-        event.accept()
-
     def start_figure(self):
         fig = Figure()
         self.addmpl(fig)

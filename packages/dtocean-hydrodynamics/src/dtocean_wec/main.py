@@ -26,12 +26,13 @@ import logging
 import os
 import sys
 
-from PySide6.QtCore import QModelIndex, QObject, Qt, Signal, Slot
+from PySide6.QtCore import QItemSelection, QObject, Qt, Signal, Slot
 from PySide6.QtGui import QBrush, QColor, QStandardItem, QStandardItemModel
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QMainWindow,
+    QMdiSubWindow,
     QMessageBox,
     QWidget,
 )
@@ -122,12 +123,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lw_area.hide()
         self.run_entrance()
         self._data = None
-        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
 
         XStream.stdout().messageWritten.connect(self.console.insertPlainText)
         XStream.stderr().messageWritten.connect(self.console.insertPlainText)
-
-        self.lw_area.clicked.connect(self.on_treeView_clicked)
 
         # Get path to data dirs through configuration
         path_dict = get_install_paths()
@@ -139,116 +137,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.form_power = None
         self.form_plot = None
 
+        self.sub_hyd = None
+        self.sub_power = None
+        self.sub_plot = None
+
         self._test_dialog = None
 
         return
 
-    @Slot(QModelIndex)  # type: ignore
-    def on_treeView_clicked(self, index: QModelIndex):
-        print(
-            "selected item index found at %s with data: %s"
-            % (index.row(), index.data())
-        )
-        if index.data() == "Hydrodynamic":
-            if self.form_hyd is None:
-                self.reopen_form_hyd()
-                return
-
-            try:
-                self.form_hyd.isVisible()
-            except:
-                self.reopen_form_hyd()
-
-        elif index.data() == "Performance Fit":
-            if self.form_power is None:
-                self.reopen_form_hyd()
-                return
-
-            try:
-                self.form_power.isVisible()
-            except:
-                self.reopen_form_power()
-
-        elif index.data() == "Data Visualisation":
-            if self.form_plot is None:
-                self.reopen_form_hyd()
-                return
-
-            try:
-                self.form_plot.isVisible()
-            except:
-                self.reopen_form_plot()
-        else:
-            pass
-
     def task_show_mesh(self, path):
         self.mesh_view = PythonQtOpenGLMeshViewer(path["path"], path["f_n"])
         self.mesh_view.show()
-
-    def reopen_form_hyd(self):
-        if self._data is None:
-            raise RuntimeError("No data has been loaded")
-
-        prj_id = self._data["inputs_hydrodynamic"]["general_input"][
-            "input_type"
-        ]
-
-        if self.form_hyd is not None:
-            self.form_hyd.deleteLater()
-
-        if prj_id == 1:
-            self.form_hyd = ReadDb(self)
-        elif prj_id == 2:
-            self.form_hyd = RunNemoh(self)
-        elif prj_id == 3:
-            self.form_hyd = ReadNemoh(self)
-        elif prj_id == 4:
-            self.form_hyd = ReadWamit(self)
-        else:
-            raise RuntimeError("Project ID not recognised")
-
-        self.mdi_area.addSubWindow(self.form_hyd)
-        self.form_hyd.show()
-        self.form_hyd.populate_prj()
-
-    def reopen_form_power(self):
-        if self.form_power is not None:
-            self.form_power.deleteLater()
-
-        self.form_power = PowerPerformance(self)
-        self.mdi_area.addSubWindow(self.form_power)
-        self.form_power.show()
-        ret = self.form_power.set_data(self._data)
-        if ret == 0:
-            self.list_model.item(1).setForeground(QBrush(QColor(0, 0, 150)))
-            self.list_model.item(2).setForeground(QBrush(QColor(0, 0, 150)))
-            self.actionGenerate_array_hydrodynamic.setEnabled(False)
-        elif ret == 1:
-            if self.form_hyd is None:
-                raise RuntimeError("Hydrodynamics form is not filled")
-
-            self.list_model.item(1).setForeground(QBrush(QColor(0, 150, 0)))
-            self.list_model.item(2).setForeground(QBrush(QColor(0, 150, 0)))
-            if (
-                self.form_hyd._data["inputs_hydrodynamic"]["general_input"][
-                    "get_array_mat"
-                ]
-                == 1
-            ):
-                self.actionGenerate_array_hydrodynamic.setEnabled(True)
-        else:
-            self.list_model.item(1).setForeground(QBrush(QColor(0, 0, 0)))
-            self.list_model.item(2).setForeground(QBrush(QColor(0, 0, 0)))
-            self.actionGenerate_array_hydrodynamic.setEnabled(False)
-
-    def reopen_form_plot(self):
-        if self.form_plot is not None:
-            self.form_plot.deleteLater()
-
-        self.form_plot = Plotter(self)
-        self.mdi_area.addSubWindow(self.form_plot)
-        self.form_plot.show()
-        self.form_plot.set_data(self._data)
 
     def pull_data_from_child(self):
         if self._data is None:
@@ -384,19 +283,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         h5i.save_dict_to_hdf5(self._data, project)
 
     def task_end_pfit(self, data):
+        assert self.form_plot is not None
+        assert self.form_hyd is not None
+
         if self._data is None:
             self._data = {}
 
         self._data["p_fit"] = data
         self.save_project()
-
-        if self.form_plot is None:
-            self.reopen_form_plot()
-        else:
-            self.form_plot.set_data(self._data)
-
-        if self.form_hyd is None:
-            raise RuntimeError("Hydrodynamics form is not filled")
+        self.form_plot.set_data(self._data)
 
         self.list_model.item(1).setForeground(QBrush(QColor(0, 150, 0)))
         self.list_model.item(2).setForeground(QBrush(QColor(0, 150, 0)))
@@ -429,18 +324,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._data["hyd"] = data
         self.save_project()
 
-        if self.form_plot is None:
-            self.reopen_form_plot()
-        else:
-            self.form_plot.setEnabled(True)
-
-        if self.form_power is None:
-            self.reopen_form_power()
-        else:
-            self.form_power.setEnabled(True)
-
         assert self.form_plot is not None
         assert self.form_power is not None
+
+        self.form_plot.setEnabled(True)
+        self.form_power.setEnabled(True)
 
         self.list_model.item(0).setForeground(QBrush(QColor(0, 150, 0)))
         self.list_model.item(1).setForeground(QBrush(QColor(0, 0, 150)))
@@ -599,14 +487,61 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         model.item(0).setForeground(QBrush(QColor(0, 0, 150)))
         self.lw_area.setModel(model)
         self.list_model = model
+        self.lw_area_selection_model = self.lw_area.selectionModel()
+        self.lw_area_selection_model.selectionChanged.connect(
+            self.handle_list_selection
+        )
+
+    @Slot(QItemSelection, QItemSelection)  # type: ignore
+    def handle_list_selection(
+        self,
+        selected: QItemSelection,
+        deselected: QItemSelection,
+    ):
+        index = selected.indexes()[0]
+        print(
+            "selected item index found at %s with data: %s"
+            % (index.row(), index.data())
+        )
+        if index.data() == "Hydrodynamic":
+            if self.form_hyd is None:
+                return
+
+            if not self.form_hyd.isVisible():
+                self.form_hyd.show()
+
+        elif index.data() == "Performance Fit":
+            if self.form_power is None:
+                return
+
+            if not self.form_power.isVisible():
+                self.form_power.show()
+
+        elif index.data() == "Data Visualisation":
+            if self.form_plot is None:
+                return
+
+            if not self.form_plot.isVisible():
+                self.form_plot.show()
+
+        else:
+            pass
 
     def set_full_project(self):
         self.form_plot = Plotter(self)
         self.form_power = PowerPerformance(self)
-        self.mdi_area.addSubWindow(self.form_power)
-        self.mdi_area.addSubWindow(self.form_plot)
-        self.form_plot.show()
-        self.form_power.show()
+
+        sub_window = QMdiSubWindow(self.mdi_area)
+        sub_window.setWidget(self.form_power)
+        sub_window.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
+        sub_window.show()
+        self.sub_power = sub_window
+
+        sub_window = QMdiSubWindow(self.mdi_area)
+        sub_window.setWidget(self.form_plot)
+        sub_window.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
+        sub_window.show()
+        self.sub_plot = sub_window
 
         self.form_plot.setEnabled(False)
         self.form_power.setEnabled(False)
@@ -620,7 +555,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.mdi_area.closeActiveSubWindow()
             self.populate_listview()
             self.set_full_project()
-            MainWindow.count = MainWindow.count + 1
+
             if prj_id == 1:
                 self.form_hyd = ReadDb(self)
             elif prj_id == 2:
@@ -632,8 +567,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 raise RuntimeError("Input type not understood")
 
-            self.mdi_area.addSubWindow(self.form_hyd)
-            self.form_hyd.show()
+            sub_window = QMdiSubWindow(self.mdi_area)
+            sub_window.setWidget(self.form_hyd)
+            sub_window.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
+            sub_window.show()
+            self.sub_hyd = sub_window
 
             self.mdi_area.tileSubWindows()
             self.actionSave_Project.setEnabled(True)
