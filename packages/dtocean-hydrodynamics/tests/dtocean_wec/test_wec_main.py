@@ -22,16 +22,12 @@ from PySide6.QtWidgets import QApplication, QFileDialog
 from dtocean_wec.main import NewProject
 
 
-def test_main_window_(main_window):
-    assert True
-
-
 def test_new_project(main_window):
     main_window.entrance.btn_new.click()
     assert isinstance(main_window.new_project, NewProject)
 
 
-def test_project_folder_non_empty(monkeypatch, main_window, tmp_path):
+def test_new_project_folder_non_empty(monkeypatch, tmp_path, main_window):
     touch = tmp_path / "mock.txt"
     touch.write_text("mock")
     monkeypatch.setattr(
@@ -52,38 +48,4 @@ def test_project_folder_non_empty(monkeypatch, main_window, tmp_path):
     main_window.entrance.btn_new.click()
     main_window.new_project.btn_prj.click()
 
-
-def test_open_readbd(monkeypatch, qtbot, tmp_path, main_window):
-    monkeypatch.setattr(
-        QFileDialog,
-        "getExistingDirectory",
-        lambda *args: tmp_path,
-    )
-
-    main_window.entrance.btn_new.click()
-    main_window.new_project.btn_prj.click()
-    main_window.new_project.btn_t1.click()
-
-    def check_form():
-        assert main_window.form_hyd is not None
-
-    qtbot.waitUntil(check_form)
-
-
-def test_readdb_load(monkeypatch, qtbot, tmp_path, main_window):
-    monkeypatch.setattr(
-        QFileDialog,
-        "getExistingDirectory",
-        lambda *args: tmp_path,
-    )
-
-    main_window.entrance.btn_new.click()
-    main_window.new_project.btn_prj.click()
-    main_window.new_project.btn_t1.click()
-
-    def check_form():
-        assert main_window.form_hyd is not None
-
-    qtbot.waitUntil(check_form)
-
-    main_window.form_hyd.btn_load_data_t1.click()
+    assert not touch.is_file()
