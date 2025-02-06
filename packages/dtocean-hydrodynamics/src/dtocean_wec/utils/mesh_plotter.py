@@ -314,15 +314,12 @@ class Viewer3DWidget(QOpenGLWidget):
         self.oldy = mouseEvent.y()
 
     def mouseDoubleClickEvent(self, mouseEvent):
-        print("double click")
         self.showFullScreen()
 
     def mousePressEvent(self, e):
-        print("mouse press")
         self.isPressed = True
 
     def mouseReleaseEvent(self, e):
-        print("mouse release")
         self.isPressed = False
 
     def wheelEvent(self, e):
