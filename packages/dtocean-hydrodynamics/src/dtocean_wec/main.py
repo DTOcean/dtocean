@@ -128,7 +128,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Get path to data dirs through configuration
         path_dict = get_install_paths()
-
         self.bin_path = path_dict["bin_path"]
         self.wec_share_path = path_dict["wec_share_path"]
 
@@ -142,12 +141,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self._test_dialog = None
 
+        # File menu
         self.actionNew_Project.triggered.connect(self.handle_new_project)
         self.actionLoad_Project.triggered.connect(self.handle_new_project)
         self.actionSave_Project.triggered.connect(self.handle_save_project)
+
+        # DTOcean menu
         self.actionGenerate_array_hydrodynamic.triggered.connect(
             self.save_dtocean_format
         )
+
+        # Windows menu
         self.actionHydrodynamic.triggered.connect(self.handle_open_hyd)
         self.actionPerformance_Fit.triggered.connect(self.handle_open_power)
         self.actionData_Visualisation.triggered.connect(self.handle_open_plot)
@@ -157,24 +161,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def task_show_mesh(self, path):
         self.mesh_view = PythonQtOpenGLMeshViewer(path["path"], path["f_n"])
         self.mesh_view.show()
-
-    def pull_data_from_child(self):
-        if self._data is None:
-            self._data = {}
-
-        if self.form_hyd is not None and self.form_hyd._data is not None:
-            self._data["inputs_hydrodynamic"] = self.form_hyd._data[
-                "inputs_hydrodynamic"
-            ]
-
-        if self.form_power is not None and self.form_power._data is not None:
-            self._data["inputs_pm_fit"] = self.form_power._data["inputs_pm_fit"]
-
-        if self.form_hyd is not None and self.form_hyd._data is not None:
-            self._data["hyd"] = self.form_hyd._data["hyd"]
-
-        if self.form_power is not None and self.form_power._data is not None:
-            self._data["p_fit"] = self.form_power._data["p_fit"]
 
     @Slot()
     def handle_new_project(self):
@@ -221,6 +207,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         if not self.form_plot.isVisible():
             self.form_plot.show()
+
+    def pull_data_from_child(self):
+        if self._data is None:
+            self._data = {}
+
+        if self.form_hyd is not None and self.form_hyd._data is not None:
+            if "inputs_hydrodynamic" in self.form_hyd._data:
+                self._data["inputs_hydrodynamic"] = self.form_hyd._data[
+                    "inputs_hydrodynamic"
+                ]
+
+            if "hyd" in self.form_hyd._data:
+                self._data["hyd"] = self.form_hyd._data["hyd"]
+
+        if self.form_power is not None and self.form_power._data is not None:
+            if "inputs_pm_fit" in self.form_power._data:
+                self._data["inputs_pm_fit"] = self.form_power._data[
+                    "inputs_pm_fit"
+                ]
+
+            if "p_fit" in self.form_power._data:
+                self._data["p_fit"] = self.form_power._data["p_fit"]
 
     def save_choice(self):
         msgBox = QMessageBox()
@@ -448,6 +456,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.new_project.btn_t3.clicked.connect(lambda: self.create_project(3))
         self.new_project.btn_t4.clicked.connect(lambda: self.create_project(4))
         self.new_project.btn_prj.clicked.connect(self.browse_prj)
+        self.actionGenerate_array_hydrodynamic.setDisabled(True)
 
     def browse_prj(self):
         folder = QFileDialog.getExistingDirectory(
@@ -611,8 +620,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             y = self._data["p_fit"]
 
             data2dtocean = dict(
-                x.items()
-                + y.items()
+                list(x.items())
+                + list(y.items())
                 + [(k, x[k] + y[k]) for k in set(x) & set(y)]
             )
             # update_wec_power_matrix(data2dtocean)
