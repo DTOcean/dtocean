@@ -143,7 +143,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # File menu
         self.actionNew_Project.triggered.connect(self.handle_new_project)
-        self.actionLoad_Project.triggered.connect(self.handle_new_project)
+        self.actionLoad_Project.triggered.connect(self.handle_load_project)
         self.actionSave_Project.triggered.connect(self.handle_save_project)
 
         # DTOcean menu
@@ -249,7 +249,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ret = self.save_choice()
 
         if ret == QMessageBox.StandardButton.Save:
-            # should never be reached
             self.save_project()
             self.clear_project_data()
             self.load_project()
@@ -318,6 +317,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def task_end_pfit(self, data):
         assert self.form_plot is not None
         assert self.form_hyd is not None
+        assert self.form_hyd._data is not None
 
         if self._data is None:
             self._data = {}
