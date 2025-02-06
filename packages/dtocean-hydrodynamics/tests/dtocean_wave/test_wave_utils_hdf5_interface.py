@@ -17,7 +17,7 @@ def test_save_load(tmp_path):
     }
     filename = tmp_path / "test.h5"
     save_dict_to_hdf5(data, filename)
-    dd = load_dict_from_hdf5(filename)
+    dd = load_dict_from_hdf5(filename, decode_bytes=False)
 
     assert dd["x"].decode() == data["x"]
     assert np.all(dd["y"] == data["y"])

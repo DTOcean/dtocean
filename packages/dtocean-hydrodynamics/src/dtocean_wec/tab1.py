@@ -86,7 +86,7 @@ class ReadDb(QWidget, Ui_T1):
         self.save_project()
         if stat[0]:
             self._data = data_db
-            self.ww_wec.load(QUrl("file:///" + description_file))
+            self.ww_wec.setUrl(QUrl("file:///" + description_file))
             print("Data loaded. It is possible to plot the data.")
             self.trigger_save.emit(self._data["inputs_hydrodynamic"])
             self.trigger_results.emit(self._data)
