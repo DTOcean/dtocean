@@ -74,7 +74,6 @@
     <widget class="QLabel" name="label">
      <property name="text">
       <string>WEC - Analysis UI
-Developed by Francesco Ferri under the DTOcean project 
 
 Select to load an existing project or create a new project </string>
      </property>
