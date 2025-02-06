@@ -65,13 +65,21 @@ class RunNemoh(QWidget, Ui_T2):
 
         QToolTip.setFont(QFont("SansSerif", 11))
         self.label_2.setToolTip(
-            "The number of independent dofs is the problem dimension with only generalised dofs.\nThe generalised dofs are obtained from the free body dofs after the\napplication of the mechanical constraints \n(only for multibody wec, e.g. RM3, Pelamis)"
+            "The number of independent dofs is the problem dimension "
+            "with only generalised dofs.\n"
+            "The generalised dofs are obtained "
+            "from the free body dofs after the\napplication of the mechanical "
+            "constraints \n(only for multibody wec, e.g. RM3, Pelamis)"
         )
         self.label_3.setToolTip(
-            "dofs associated with the energy extraction (damping only).\nFor the description of the index rule refer to the User Manual, section Degrees of Freedom"
+            "dofs associated with the energy extraction (damping only).\nFor "
+            "the description of the index rule refer to the User Manual, "
+            "section Degrees of Freedom"
         )
         self.label_4.setToolTip(
-            "dofs associated with the mooring load (stiffness only).\nFor the description of the index rule refer to the User Manual, section Degrees of Freedom"
+            "dofs associated with the mooring load (stiffness only).\nFor the "
+            "description of the index rule refer to the User Manual, section "
+            "Degrees of Freedom"
         )
 
         for ish, chl in enumerate(self.groupBox_2.children()):
@@ -86,13 +94,13 @@ class RunNemoh(QWidget, Ui_T2):
         self.cb_gen_array_mat.stateChanged.connect(self.gen_array_handles)
         self.gr_cyl_spec.setEnabled(False)
 
-        # self._data = parent._data
         self.trigger_results.connect(parent.set_hydrodynamic_results)
         self.trigger_save.connect(parent.task_save_hydrodynamic)
         self.trigger_mesh_view.connect(parent.task_show_mesh)
         self.db_folder = os.path.join(parent.wec_share_path, "wec_db")
         self.bin_folder = parent.bin_path
 
+        self._data = None
         self._raw = "raw_data"
         self._prj = parent._data["prj_folder"]
         if not os.path.isdir(os.path.join(self._prj, self._raw)):
@@ -125,11 +133,16 @@ class RunNemoh(QWidget, Ui_T2):
             self.gr_cyl_spec.setEnabled(False)
 
     def link_to_bem_interface(self):
+        if self._data is None:
+            raise ValueError("Call set_data first")
+
         read_nemoh_flag = False
         if "hydrodynamic" in os.listdir(self._data["prj_folder"]):
             msgBox = QMessageBox()
             msgBox.setText(
-                "The project folder already contains a BEM result folder. Do you want to overwrite it, load another project or start a new project?"
+                "The project folder already contains a BEM result folder. Do "
+                "you want to overwrite it, load another project or start a "
+                "new project?"
             )
             msgBox.addButton(
                 QPushButton("Overwrite"), QMessageBox.ButtonRole.YesRole
@@ -155,12 +168,14 @@ class RunNemoh(QWidget, Ui_T2):
                 QMessageBox.information(
                     self,
                     "Information",
-                    "It is important that the data contained in the hydrodynamic folder is in agreement with the gui input.",
+                    "It is important that the data contained in the "
+                    "hydrodynamic folder is in agreement with the gui input.",
                 )
                 read_nemoh_flag = True
             else:
                 print(
-                    "Not implemented yet, use the create new project under the File menu!"
+                    "Not implemented yet, use the create new project under "
+                    "the File menu!"
                 )
 
         self.btn_calculate_t2.setEnabled(False)
@@ -196,6 +211,9 @@ class RunNemoh(QWidget, Ui_T2):
             self.btn_stop_calculation_t2.setEnabled(False)
 
     def check_input_data(self):
+        if self._data is None:
+            raise ValueError("Call set_data first")
+
         status = dck.check_inputs_hydrodynamic(
             self._data["inputs_hydrodynamic"], self._prj
         )
@@ -206,6 +224,9 @@ class RunNemoh(QWidget, Ui_T2):
             return True
 
     def pull_data_from_form(self):
+        if self._data is None:
+            raise ValueError("Call set_data first")
+
         def get_item(x, y):
             item = self.tab_body.item(x, y)
             if item is None:
@@ -304,6 +325,9 @@ class RunNemoh(QWidget, Ui_T2):
         return inputs_hydrodynamic
 
     def save_project(self):
+        if self._data is None:
+            raise ValueError("Call set_data first")
+
         inputs_hydrodynamic = self.pull_data_from_form()
 
         dic_cmp = compare_dictionaries(
@@ -314,7 +338,9 @@ class RunNemoh(QWidget, Ui_T2):
             self._data["inputs_hydrodynamic"] = inputs_hydrodynamic
             if "hyd" in self._data.keys():
                 print(
-                    "the hydrodynamic inputs have been modified, the hydrodynamic results and the power fit results will be deleted!"
+                    "the hydrodynamic inputs have been modified, the "
+                    "hydrodynamic results and the power fit results will be "
+                    "deleted!"
                 )
                 del self._data["hyd"]
             self.trigger_save.emit(inputs_hydrodynamic)
@@ -326,6 +352,9 @@ class RunNemoh(QWidget, Ui_T2):
                 self.trigger_results.emit(self._data["hyd"])
 
     def shared_dof_handles(self, checked):
+        if self._data is None:
+            raise ValueError("Call set_data first")
+
         checkBox_ind = int(self.sender().objectName()[-1])
         if checked:
             self._data["inputs_hydrodynamic"]["body_inputs"]["shared_dof"][
@@ -526,6 +555,9 @@ class RunNemoh(QWidget, Ui_T2):
         return 0
 
     def populate_prj(self):
+        if self._data is None:
+            raise ValueError("Call set_data first")
+
         in_hy = self._data["inputs_hydrodynamic"]
         in_g = in_hy["general_input"]
         self.ndof.setText(",".join([str(el) for el in in_g["ndof"]]))
@@ -553,12 +585,14 @@ class RunNemoh(QWidget, Ui_T2):
         self.local_cs.setText(",".join([str(el) for el in in_b["local_cs"]]))
         shared_dof = in_b["shared_dof"]
         sh_ch = self.groupBox_2.children()
-        assert sh_ch is list[QCheckBox]
+
         for iel, el in enumerate(shared_dof):
+            y = sh_ch[iel + 1]
+            assert isinstance(y, QCheckBox)
             if el == 1:
-                sh_ch[iel + 1].setChecked(True)
+                y.setChecked(True)
             else:
-                sh_ch[iel + 1].setChecked(False)
+                y.setChecked(False)
 
         bodies = []
         if "body" in in_b.keys():
