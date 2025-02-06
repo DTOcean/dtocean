@@ -58,7 +58,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -69,8 +69,7 @@
     <addaction name="actionLoad_Project"/>
     <addaction name="actionSave_Project"/>
     <addaction name="separator"/>
-    <addaction name="actionAbout_2"/>
-    <addaction name="actionQuit_2"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuDTOcean">
     <property name="title">
@@ -110,22 +109,7 @@
     <string>Load Project</string>
    </property>
   </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
   <action name="actionQuit">
-   <property name="text">
-    <string>Quit</string>
-   </property>
-  </action>
-  <action name="actionAbout_2">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
-  <action name="actionQuit_2">
    <property name="text">
     <string>Quit</string>
    </property>
@@ -146,11 +130,6 @@
   <action name="actionTiled">
    <property name="text">
     <string>Tiled</string>
-   </property>
-  </action>
-  <action name="actionMinimise_All">
-   <property name="text">
-    <string>Minimise All</string>
    </property>
   </action>
   <action name="actionSave_Project">
@@ -180,7 +159,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>actionQuit_2</sender>
+   <sender>actionQuit</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
@@ -195,8 +174,37 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionCascade</sender>
+   <signal>triggered()</signal>
+   <receiver>mdi_area</receiver>
+   <slot>cascadeSubWindows()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>301</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionTiled</sender>
+   <signal>triggered()</signal>
+   <receiver>mdi_area</receiver>
+   <slot>tileSubWindows()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>301</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
- <slots>
-  <slot>displayAbout()</slot>
- </slots>
 </ui>

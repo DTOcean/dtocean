@@ -119,7 +119,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.menubar.triggered.connect(self.windowaction)
         self.lw_area.hide()
         self.run_entrance()
         self._data = None
@@ -142,6 +141,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sub_plot = None
 
         self._test_dialog = None
+
+        self.actionNew_Project.triggered.connect(self.handle_new_project)
+        self.actionLoad_Project.triggered.connect(self.handle_new_project)
+        self.actionSave_Project.triggered.connect(self.handle_save_project)
+        self.actionGenerate_array_hydrodynamic.triggered.connect(
+            self.save_dtocean_format
+        )
+        self.actionHydrodynamic.triggered.connect(self.handle_open_hyd)
+        self.actionPerformance_Fit.triggered.connect(self.handle_open_power)
+        self.actionData_Visualisation.triggered.connect(self.handle_open_plot)
 
         return
 
@@ -167,35 +176,51 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.form_power is not None and self.form_power._data is not None:
             self._data["p_fit"] = self.form_power._data["p_fit"]
 
-    def windowaction(self, action):
-        if action.text() == "Quit":
-            self.close()
+    @Slot()
+    def handle_new_project(self):
+        if self._data is None:
+            self.gen_new_project()
+        else:
+            self.new_project_choice()
 
-        if action.text() == "New Project":
-            if self._data is None:
-                self.gen_new_project()
-            else:
-                self.new_project_choice()
+    @Slot()
+    def handle_load_project(self):
+        if self._data is None:
+            self.load_project()
+        else:
+            self.load_project_choice()
 
-        if action.text() == "Cascade":
-            self.mdi_area.cascadeSubWindows()
+    @Slot()
+    def handle_save_project(self):
+        if self._data is None:
+            return
 
-        if action.text() == "Tiled":
-            self.mdi_area.tileSubWindows()
+        self.pull_data_from_child()
+        self.save_project()
 
-        if action.text() == "Generate array hydrodynamic":
-            self.save_dtocean_format()
+    @Slot()
+    def handle_open_hyd(self):
+        if self.form_hyd is None:
+            return
 
-        if action.text() == "Save Project":
-            if self._data is not None:
-                self.pull_data_from_child()
-                self.save_project()
+        if not self.form_hyd.isVisible():
+            self.form_hyd.show()
 
-        if action.text() == "Load Project":
-            if self._data is None:
-                self.load_project()
-            else:
-                self.load_project_choice()
+    @Slot()
+    def handle_open_power(self):
+        if self.form_power is None:
+            return
+
+        if not self.form_power.isVisible():
+            self.form_power.show()
+
+    @Slot()
+    def handle_open_plot(self):
+        if self.form_plot is None:
+            return
+
+        if not self.form_plot.isVisible():
+            self.form_plot.show()
 
     def save_choice(self):
         msgBox = QMessageBox()
@@ -577,6 +602,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.actionSave_Project.setEnabled(True)
             self.set_forms_data()
 
+    @Slot()
     def save_dtocean_format(self):
         status = final_data_check(self._data)
         if status[0]:
