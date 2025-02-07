@@ -72,32 +72,16 @@ class Camera:
         )
         distanceFromTarget = self.sceneRadius / tangent
         self.position = Point3D(0, 0, distanceFromTarget)
-        #        print(self.position)
         self.target = Point3D(0, 0, 0)
-        #        print(self.target)
         self.up = self.ground.returnCopy()
         t2p = self.position - self.target
         M1 = Matrix4x4.rotationAroundOrigin(np.pi / 3, Vector3D(1, 0, 0))
-        #        print('M1',M1)
-        #        M2 = Matrix4x4.rotationAroundOrigin( np.pi/2, Vector3D(1,0,0) )
-        #        print(M2)
         M3 = Matrix4x4.rotationAroundOrigin(-np.pi / 6, Vector3D(0, 1, 0))
-        #        print('M3',M3)
-        #        t2p = M2 * t2p
-        #        t2p = M1 * t2p
-
-        #        M_temp =  Matrix4x4()
-        #        M_temp.m = [ 0.0, 0.0, -1.0, 0.0,
-        #                   -1.0, 0.0, 0.0, 0.0,
-        #                   0.0, 1.0, 0.0, 0.0,
-        #                   0.0, 0.0, 0.0, 1.0 ]
 
         t2p = M1 * t2p
         t2p = M3 * t2p
         self.position = self.target + t2p
         self.ground = Vector3D(0, 0, 1)
-
-    #        print(self.position)
 
     def setViewportDimensions(self, widthInPixels, heightInPixels):
         self.viewportWidthInPixels = widthInPixels
@@ -146,8 +130,6 @@ class Camera:
             self.farPlane,
         )
         M = Matrix4x4.lookAt(self.position, self.target, self.up, False)
-        #        print(self.position, self.target, self.up)
-        #        print('M', M)
         glMultMatrixf(M.get())
 
     # Causes the camera to "orbit" around the target point.
@@ -227,9 +209,6 @@ class Camera:
         This is achieved by moving ``Camera.position`` in the
         direction of the ``Camera.c`` vector.
         """
-        #        print(self.target)
-        #        print(self.position)
-        #        print(self.target.x())
 
         # Square Distance from pivot
         dsq_prime = np.sqrt(self.position.distance(self.target))
@@ -248,108 +227,3 @@ class Camera:
         else:
             # We're golden
             self.position += self.position.asVector3D() * inc * scalefac
-
-
-#    def autozoom(self, points):
-
-#        '''Fit the current view to the correct zoom level to display
-
-#        all *points*.
-
-#
-
-#        The camera viewing direction and rotation pivot match the
-
-#        geometric center of the points and the distance from that
-
-#        point is calculated in order for all points to be in the field
-
-#        of view. This is currently used to provide optimal
-
-#        visualization for molecules and systems
-
-#
-
-#        **Parameters**
-
-#
-
-#        points: np.ndarray((N, 3))
-
-#             Array of points.
-
-#
-
-#        '''
-
-#        extraoff = 0.01
-
-#
-
-#        # Project points on the plane defined by camera up and right
-
-#        # vector. This is achieved by using dot product on camera a
-
-#        # and b vectors
-
-#        abc = np.array([self.a, self.b, self.c])
-
-#
-
-#        old_geom_center = points.sum(axis=0)/len(points)
-
-#        # Translate points
-
-#        points = points.copy() + self.position
-
-#
-
-#        # Translate position to geometric_center along directions
-
-#        # a and b
-
-#        geom_center = points.sum(axis=0)/len(points)
-
-#        self.position += self.a * np.dot(geom_center, self.a)
-
-#        self.position += self.b * np.dot(geom_center, self.b)
-
-#
-
-#        # Translate pivot to the geometric center
-
-#        self.pivot = old_geom_center
-
-#
-
-#        # Get the bounding sphere radius by searching for the most
-
-#        # distant point
-
-#        bound_radius = np.sqrt(((points-geom_center) * (points-geom_center)).sum(axis=1).max())
-
-#
-
-#        # Calculate the distance in order to have the most distant
-
-#        # point in our field of view (top/bottom)
-
-#        fov_topbottom = self.FIELD_OF_VIEW_IN_DEGREES*np.pi/180.0
-
-#
-
-#        dist = (bound_radius + self.z_near)/np.tan(fov_topbottom * 0.5)
-
-#
-
-#        # Set the c-component of the position at the calculated distance
-
-#        # 1) translate the position on the pivot
-
-#        self.position = self.pivot.copy()
-
-#        # 2) add the distance plus a little extra room
-
-#        self.position -= self.c * (dist*(1 + extraoff))
-
-#
