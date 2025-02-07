@@ -61,19 +61,10 @@ class Viewer3DWidget(QOpenGLWidget):
         self.drawNorms_cond = False
         self.drawWire_cond = False
 
-    #        self.init_view()
-
     def get_scale(self):
         return max(
             abs(self.mesh_obj.v.max(0)).max(), abs(self.mesh_obj.v.min(0)).max()
         )
-
-    #    def init_view(self):
-    #        new = 0
-    #        self.camera.orbit(self.oldx,self.oldy,1,-1)
-    #        self.update()
-    #        self.oldx = -new
-    #        self.oldy = 0
 
     def paintGL(self):
         glMatrixMode(GL_PROJECTION)
