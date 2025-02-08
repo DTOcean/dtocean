@@ -173,7 +173,7 @@ class NemohExecute:
 
         self.shared_dof_binary = self.b_d["shared_dof"]
 
-        bodies = self.b_d["body"].values()  # list of bodies
+        bodies = list(self.b_d["body"].values())  # list of bodies
         self.bodies = bodies
         self.n_bodies = len(bodies)
 

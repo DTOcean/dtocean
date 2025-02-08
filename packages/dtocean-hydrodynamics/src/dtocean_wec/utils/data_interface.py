@@ -105,7 +105,10 @@ class DataStructure:
             self.body_inputs = data_dic["inputs_hydrodynamic"]["body_inputs"]
 
             ang_v = np.linspace(
-                0, 360.0, self.general_inputs["angle_def"][0], endpoint=False
+                0,
+                360.0,
+                int(self.general_inputs["angle_def"][0]),
+                endpoint=False,
             )
             self.general_inputs["angle_def"] = [
                 int(self.general_inputs["angle_def"][0]),
