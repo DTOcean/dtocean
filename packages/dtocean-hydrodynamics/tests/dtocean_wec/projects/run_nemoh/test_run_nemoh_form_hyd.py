@@ -65,3 +65,6 @@ def test_calculate(qtbot, form_hyd_filled):
     qtbot.waitUntil(lambda: form_hyd_filled.btn_calculate_t2.isEnabled())
 
     form_hyd_filled.btn_calculate_t2.click()
+
+    assert "hyd" in form_hyd_filled._data
+    assert form_hyd_filled._data["hyd"]
