@@ -36,7 +36,13 @@ from dtocean_wave.utils.WatWaves import WNumber
 
 
 def transfers(
-    water_depth, directions, periods, discrete_cyl, vpot_scat, vpot_rad, fex
+    water_depth,
+    directions,
+    periods,
+    discrete_cyl,
+    vpot_scat,
+    vpot_rad,
+    fex,
 ):
     """Computes cylindrical amplitude coefficients from the velocity
     potential values on a cylinder.
@@ -103,8 +109,8 @@ def transfers(
             wave_cond, discrete_cyl, vpot_rad[ind], targ_order
         )
         a_i_plane = np.exp(-1j * modes * (np.pi / 2.0 + dirs))
-        diffmat[ind] = np.linalg.lstsq(a_i_plane, a_s_scat)[0]
-        frcmat[ind] = np.linalg.lstsq(a_i_plane, fex[ind])[0]
+        diffmat[ind] = np.linalg.lstsq(a_i_plane, a_s_scat, rcond=None)[0]
+        frcmat[ind] = np.linalg.lstsq(a_i_plane, fex[ind], rcond=None)[0]
         # find maximum truncation order
         act_order[ind, 0], decimals[ind, 0] = max_trunc_order(
             a_s_scat, targ_order, 1e-6
