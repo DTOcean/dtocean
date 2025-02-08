@@ -82,10 +82,9 @@ class RunNemoh(QWidget, Ui_T2):
             "Degrees of Freedom"
         )
 
-        for ish, chl in enumerate(self.groupBox_2.children()):
-            if ish == 0:
+        for chl in self.groupBox_2.children():
+            if not isinstance(chl, QCheckBox):
                 continue
-            assert isinstance(chl, QCheckBox)
             chl.stateChanged.connect(self.shared_dof_handles)
 
         self.btn_calculate_t2.setEnabled(False)
@@ -237,18 +236,18 @@ class RunNemoh(QWidget, Ui_T2):
 
         for el in range(self.tab_body.rowCount()):
             id_body = split_string(get_item(el, 0).text(), int)
-            mass_body = split_string(get_item.text())
+            mass_body = split_string(get_item(el, 1).text())
             inertia_body = split_string_multilist(
-                get_item.text(),
+                get_item(el, 2).text(),
                 float,
                 sep=",",
                 sep_multi=";",
             )
-            mesh_body = str(get_item.text())
-            cog_body = split_string(get_item.text(), float, sep=",")
-            cs_body = split_string(get_item.text(), float, sep=",")
+            mesh_body = str(get_item(el, 3).text())
+            cog_body = split_string(get_item(el, 4).text(), float, sep=",")
+            cs_body = split_string(get_item(el, 5).text(), float, sep=",")
             dof_body = split_string_multilist(
-                get_item.text(),
+                get_item(el, 6).text(),
                 float,
                 sep=",",
                 sep_multi=";",
@@ -258,7 +257,7 @@ class RunNemoh(QWidget, Ui_T2):
                 dof_body = -1
 
             chil_body = split_string_multilist(
-                get_item.text(),
+                get_item(el, 7).text(),
                 float,
                 sep=",",
                 sep_multi=";",
@@ -267,7 +266,7 @@ class RunNemoh(QWidget, Ui_T2):
             if not chil_body[0]:
                 chil_body = -1
 
-            parent_body = split_string(get_item.text(), int)
+            parent_body = split_string(get_item(el, 8).text(), int)
             str_bi = "body{}".format(id_body[0])
             bodies[str_bi] = {
                 "mass": mass_body,
@@ -588,7 +587,9 @@ class RunNemoh(QWidget, Ui_T2):
 
         for iel, el in enumerate(shared_dof):
             y = sh_ch[iel + 1]
-            assert isinstance(y, QCheckBox)
+            if not isinstance(y, QCheckBox):
+                continue
+
             if el == 1:
                 y.setChecked(True)
             else:
@@ -644,7 +645,13 @@ class RunNemoh(QWidget, Ui_T2):
                 self.add_data_tab_body()
 
 
-def compare_dictionaries(dict_1, dict_2, dict_1_name, dict_2_name, path=""):
+def compare_dictionaries(
+    dict_1: dict,
+    dict_2: dict,
+    dict_1_name: str,
+    dict_2_name: str,
+    path: str = "",
+):
     """Compare two dictionaries recursively to find non mathcing elements
 
     Args:
@@ -666,9 +673,10 @@ def compare_dictionaries(dict_1, dict_2, dict_1_name, dict_2_name, path=""):
     key_err = ""
     value_err = ""
     old_path = path
+
     for k in dict_1.keys():
         path = old_path + "[%s]" % k
-        if not dict_2.has_key(k):
+        if k not in dict_2:
             key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_2_name)
         else:
             if isinstance(dict_1[k], dict) and isinstance(dict_2[k], dict):
@@ -676,7 +684,7 @@ def compare_dictionaries(dict_1, dict_2, dict_1_name, dict_2_name, path=""):
                     dict_1[k], dict_2[k], "d1", "d2", path
                 )
             elif isinstance(dict_1[k], np.ndarray):
-                if not np.all(dict_1[k] == dict_2[k]):
+                if not np.array_equal(dict_1[k], dict_2[k]):
                     value_err += (
                         "Value of %s%s (%s) not same as %s%s (%s)\n"
                         % (
@@ -704,7 +712,7 @@ def compare_dictionaries(dict_1, dict_2, dict_1_name, dict_2_name, path=""):
 
     for k in dict_2.keys():
         path = old_path + "[%s]" % k
-        if not dict_1.has_key(k):
+        if k not in dict_1:
             key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_1_name)
 
     return key_err + value_err + err

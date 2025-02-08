@@ -84,7 +84,7 @@ class NemohReader:
 
         self.shared_dof_binary = self.b_d["shared_dof"]
 
-        bodies = self.b_d["body"].values()  # list of bodies
+        bodies = list(self.b_d["body"].values())  # list of bodies
         self.bodies = bodies
         self.n_bodies = len(bodies)
 
@@ -98,7 +98,7 @@ class NemohReader:
                 np.linspace(
                     self.frequency_def[1],
                     self.frequency_def[2],
-                    self.frequency_def[0],
+                    int(self.frequency_def[0]),
                 )
             )
         )
@@ -106,12 +106,14 @@ class NemohReader:
             self.directions = np.linspace(
                 self.angle_def[1],
                 self.angle_def[2],
-                self.angle_def[0],
+                int(self.angle_def[0]),
                 endpoint=False,
             )
         else:
             self.directions = np.linspace(
-                self.angle_def[1], self.angle_def[2], self.angle_def[0]
+                self.angle_def[1],
+                self.angle_def[2],
+                int(self.angle_def[0]),
             )
 
         self.cyl_t = None
