@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-Created on Mon May 30 15:11:56 2016
-@author: at
-
-"""
-
 import math
 
 import numpy as np

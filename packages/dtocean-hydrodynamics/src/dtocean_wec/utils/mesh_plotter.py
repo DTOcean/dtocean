@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 30 15:08:09 2016
-@author: at
-
-"""
-
 from OpenGL.GL import (
     GL_CCW,
     GL_COLOR_BUFFER_BIT,
@@ -63,7 +56,8 @@ class Viewer3DWidget(QOpenGLWidget):
 
     def get_scale(self):
         return max(
-            abs(self.mesh_obj.v.max(0)).max(), abs(self.mesh_obj.v.min(0)).max()
+            abs(self.mesh_obj.v.max(0)).max(),
+            abs(self.mesh_obj.v.min(0)).max(),
         )
 
     def paintGL(self):
@@ -283,17 +277,17 @@ class Viewer3DWidget(QOpenGLWidget):
             clearColor.alphaF(),
         )
 
-    def mouseMoveEvent(self, mouseEvent):
+    def mouseMoveEvent(self, mouseEvent: QtGui.QMouseEvent):
         if mouseEvent.buttons() != QtCore.Qt.MouseButton.NoButton:
             # user is dragging
-            delta_x = mouseEvent.x() - self.oldx
-            delta_y = self.oldy - mouseEvent.y()
+            delta_x = mouseEvent.position().x() - self.oldx
+            delta_y = self.oldy - mouseEvent.position().y()
             if mouseEvent.buttons() & QtCore.Qt.MouseButton.RightButton:
                 self.camera.orbit(
                     self.oldx,
                     self.oldy,
-                    mouseEvent.x(),
-                    mouseEvent.y(),
+                    mouseEvent.position().x(),
+                    mouseEvent.position().y(),
                 )
             elif mouseEvent.buttons() & QtCore.Qt.MouseButton.MiddleButton:
                 self.camera.dollyCameraForward(3 * (delta_x + delta_y), False)
@@ -301,10 +295,10 @@ class Viewer3DWidget(QOpenGLWidget):
                 self.camera.translateSceneRightAndUp(delta_x, delta_y)
             self.update()
 
-        self.oldx = mouseEvent.x()
-        self.oldy = mouseEvent.y()
+        self.oldx = mouseEvent.position().x()
+        self.oldy = mouseEvent.position().y()
 
-    def mouseDoubleClickEvent(self, mouseEvent):
+    def mouseDoubleClickEvent(self, e):
         self.showFullScreen()
 
     def mousePressEvent(self, e):
@@ -313,8 +307,10 @@ class Viewer3DWidget(QOpenGLWidget):
     def mouseReleaseEvent(self, e):
         self.isPressed = False
 
-    def wheelEvent(self, e):
-        z = e.angleDelta().toTuple()[1]
+    def wheelEvent(self, e: QtGui.QWheelEvent):
+        delta = e.angleDelta().toTuple()
+        assert isinstance(delta, tuple)
+        z = delta[1]
         self.camera.mouse_zoom(z * 0.001)
         self.update()
 

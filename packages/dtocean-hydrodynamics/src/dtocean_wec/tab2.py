@@ -577,7 +577,7 @@ class RunNemoh(QWidget, Ui_T2):
         )
         self.sb_water_depth.setValue(in_g["water_depth"])
 
-        self.cb_gen_array_mat.setChecked(in_g["get_array_mat"] == 1)
+        self.cb_gen_array_mat.setChecked(int(in_g["get_array_mat"]) == 1)
         if self.cb_gen_array_mat.isChecked():
             self.sb_ntheta.setValue(in_g["cyl_ntheta"])
             self.sb_nzeta.setValue(in_g["cyl_nzeta"])
