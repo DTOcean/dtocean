@@ -226,9 +226,9 @@ class NemohExecute:
             generate (boolean): trigger the generation on or off
         """
         self.load_folder_tree()
-        os.makedirs(self.path_prj_hdy)
-        os.makedirs(self.path_prj_dyn_res)
-        os.makedirs(self.path_prj_dyn_mesh)
+        os.makedirs(self.path_prj_hdy, exist_ok=True)
+        os.makedirs(self.path_prj_dyn_res, exist_ok=True)
+        os.makedirs(self.path_prj_dyn_mesh, exist_ok=True)
 
     def gen_mesh_files(self, show_norm=False):
         """

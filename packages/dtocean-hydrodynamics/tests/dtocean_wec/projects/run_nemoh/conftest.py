@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from PySide6.QtWidgets import QCheckBox, QFileDialog
+from PySide6.QtWidgets import QFileDialog
 
 from dtocean_wec.tab2 import RunNemoh
 
@@ -30,20 +30,15 @@ def form_hyd(monkeypatch, qtbot, tmp_path, main_window):
 
 @pytest.fixture
 def form_hyd_filled(qtbot, monkeypatch, form_hyd: RunNemoh):
-    form_hyd.ndof.setText("6")
-    form_hyd.pto_dof.setText("6")
-    form_hyd.moor_dof.setText("1, 2, 6")
+    form_hyd.ndof.setText("1")
+    form_hyd.pto_dof.setText("1")
+    form_hyd.moor_dof.setText("1")
     form_hyd.fre_def.setText("10, 0.1, 1.0")
     form_hyd.angles_def.setText("1")
     form_hyd.sb_water_depth.setValue(50.0)
     form_hyd.cb_gen_array_mat.setChecked(True)
     form_hyd.local_cs.setText("0, 0, 0")
-
-    sh_ch = form_hyd.groupBox_2.children()
-    for sh in sh_ch:
-        if not isinstance(sh, QCheckBox):
-            continue
-        sh.setChecked(True)
+    form_hyd.sh2.setChecked(True)
 
     mesh_path = THIS_DIR.parents[4] / "test_data" / "cube.GDF"
     monkeypatch.setattr(

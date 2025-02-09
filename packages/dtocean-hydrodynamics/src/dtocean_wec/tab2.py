@@ -33,7 +33,6 @@ from PySide6.QtWidgets import (
     QCheckBox,
     QFileDialog,
     QMessageBox,
-    QPushButton,
     QTableWidgetItem,
     QToolTip,
     QWidget,
@@ -136,21 +135,9 @@ class RunNemoh(QWidget, Ui_T2):
             raise ValueError("Call set_data first")
 
         read_nemoh_flag = False
+
         if "hydrodynamic" in os.listdir(self._data["prj_folder"]):
-            msgBox = QMessageBox()
-            msgBox.setText(
-                "The project folder already contains a BEM result folder. Do "
-                "you want to overwrite it, load another project or start a "
-                "new project?"
-            )
-            msgBox.addButton(
-                QPushButton("Overwrite"), QMessageBox.ButtonRole.YesRole
-            )
-            msgBox.addButton(QPushButton("Load"), QMessageBox.ButtonRole.NoRole)
-            msgBox.addButton(
-                QPushButton("New"), QMessageBox.ButtonRole.RejectRole
-            )
-            ret = msgBox.exec_()
+            ret = RunNemoh._ask_existing()
 
             if ret == 0:
                 try:
@@ -189,6 +176,20 @@ class RunNemoh(QWidget, Ui_T2):
             self._data["hyd"] = stat[1]
             self.btn_submit_t2.setEnabled(True)
             self.trigger_results.emit(stat[1])
+
+    @classmethod
+    def _ask_existing(cls):
+        msgBox = QMessageBox()
+        msgBox.setText(
+            "The project folder already contains a BEM result folder. Do "
+            "you want to overwrite it, load another project or start a "
+            "new project?"
+        )
+        msgBox.addButton("Overwrite", QMessageBox.ButtonRole.YesRole)
+        msgBox.addButton("Load", QMessageBox.ButtonRole.NoRole)
+        msgBox.addButton("New", QMessageBox.ButtonRole.RejectRole)
+
+        return msgBox.exec()
 
     def browse_folder(self):
         folder, _ = QFileDialog.getOpenFileName(
