@@ -74,15 +74,15 @@ def get_install_paths():
     tidal_share_path = _DIR_DATA / "share" / "dtocean_tidal"
     if not tidal_share_path.is_dir():
         raise RuntimeError(
-            "Tidal shared data directory does not exist. Has dtocean-data "
-            "been installed?"
+            "Tidal shared data directory does not exist. Call dtocean-hydro "
+            "init command."
         )
 
     wec_share_path = _DIR_DATA / "share" / "dtocean_wec"
     if not wec_share_path.is_dir():
         raise RuntimeError(
-            "WEC shared data directory does not exist. Has dtocean-data "
-            "been installed?"
+            "WEC shared data directory does not exist. Call dtocean-hydro "
+            "init command."
         )
 
     arch = system().lower()
