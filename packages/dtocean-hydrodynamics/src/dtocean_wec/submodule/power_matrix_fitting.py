@@ -324,22 +324,30 @@ class PowerMatrixFit:
         assert not isinstance(self.k_ext, (float, int))
         assert not isinstance(self.c_ext, (float, int))
 
-        Nx = len(x) / 2
+        Nx = len(x) // 2
 
         ScatDiag_mod = [np.ones((1, 1, 1)), self.scatter_diagram_spec]
         Cpto_mod = self.c_pto[
-            seastate_id[0], seastate_id[1], seastate_id[2]
-        ].reshape((1, 1, 1, Nx, Nx))  # type: ignore
+            seastate_id[0],
+            seastate_id[1],
+            seastate_id[2],
+        ].reshape((1, 1, 1, Nx, Nx))
         Kmoor_mod = self.k_mooring[
-            seastate_id[0], seastate_id[1], seastate_id[2]
-        ].reshape((1, 1, 1, Nx, Nx))  # type: ignore
+            seastate_id[0],
+            seastate_id[1],
+            seastate_id[2],
+        ].reshape((1, 1, 1, Nx, Nx))
 
         Kext_mod = self.k_ext[
-            seastate_id[0], seastate_id[1], seastate_id[2]
-        ].reshape((1, 1, 1, Nx, Nx))  # type: ignore
+            seastate_id[0],
+            seastate_id[1],
+            seastate_id[2],
+        ].reshape((1, 1, 1, Nx, Nx))
         Cext_mod = self.c_ext[
-            seastate_id[0], seastate_id[1], seastate_id[2]
-        ].reshape((1, 1, 1, Nx, Nx))  # type: ignore
+            seastate_id[0],
+            seastate_id[1],
+            seastate_id[2],
+        ].reshape((1, 1, 1, Nx, Nx))
 
         # normalised by Khst
         k_fit = x[Nx:]

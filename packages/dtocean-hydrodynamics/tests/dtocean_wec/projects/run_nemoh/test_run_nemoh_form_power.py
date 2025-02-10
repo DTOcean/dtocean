@@ -17,7 +17,7 @@ def form_power(
 
 
 @pytest.fixture
-def form_power_loaded(
+def form_power_cylinder(
     monkeypatch,
     qtbot,
     form_power: PowerPerformance,
@@ -38,11 +38,26 @@ def form_power_loaded(
     return form_power
 
 
-def test_power_fit_load(
-    form_power_loaded: PowerPerformance,
+def test_power_fit_browse(
+    form_power_cylinder: PowerPerformance,
     main_window: MainWindow,
 ):
     heaving_cylinder_path = (
         main_window.wec_share_path / "wec_db" / "heaving_cylinder"
     )
-    assert Path(form_power_loaded.le_pfit_data.text()) == heaving_cylinder_path
+    assert (
+        Path(form_power_cylinder.le_pfit_data.text()) == heaving_cylinder_path
+    )
+
+
+def test_power_fit_load(qtbot, form_power_cylinder: PowerPerformance):
+    assert not form_power_cylinder.btn_fitting.isEnabled()
+    form_power_cylinder.btn_load_pfit.click()
+    qtbot.waitUntil(lambda: form_power_cylinder.btn_fitting.isEnabled())
+    assert form_power_cylinder.btn_fitting.isEnabled()
+
+
+def test_power_fit_fitting(qtbot, form_power_cylinder: PowerPerformance):
+    form_power_cylinder.btn_load_pfit.click()
+    qtbot.waitUntil(lambda: form_power_cylinder.btn_fitting.isEnabled())
+    form_power_cylinder.btn_fitting.click()
