@@ -69,9 +69,8 @@ class ReadNemoh(QWidget, Ui_T3):
         )
 
         for ish, chl in enumerate(self.groupBox_5.children()):
-            if ish == 0:
+            if ish == 0 or not isinstance(chl, QCheckBox):
                 continue
-            assert isinstance(chl, QCheckBox)
             chl.stateChanged.connect(self.shared_dof_handles)
 
         self.btn_add_body_t3.clicked.connect(self.add_data_tab_body)
@@ -479,12 +478,16 @@ class ReadNemoh(QWidget, Ui_T3):
         self.local_cs_t3.setText(",".join([str(el) for el in in_b["local_cs"]]))
         shared_dof = in_b["shared_dof"]
         sh_ch = self.groupBox_5.children()
-        assert sh_ch is list[QCheckBox]
+
         for iel, el in enumerate(shared_dof):
+            child = sh_ch[iel + 1]
+            if not isinstance(child, QCheckBox):
+                continue
+
             if el == 1:
-                sh_ch[iel + 1].setChecked(True)
+                child.setChecked(True)
             else:
-                sh_ch[iel + 1].setChecked(False)
+                child.setChecked(False)
 
         bodies = []
         if "body" in in_b.keys():
@@ -566,7 +569,7 @@ def compare_dictionaries(dict_1, dict_2, dict_1_name, dict_2_name, path=""):
     old_path = path
     for k in dict_1.keys():
         path = old_path + "[%s]" % k
-        if not dict_2.has_key(k):
+        if k not in dict_2:
             key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_2_name)
         else:
             if isinstance(dict_1[k], dict) and isinstance(dict_2[k], dict):
@@ -602,7 +605,7 @@ def compare_dictionaries(dict_1, dict_2, dict_1_name, dict_2_name, path=""):
 
     for k in dict_2.keys():
         path = old_path + "[%s]" % k
-        if not dict_1.has_key(k):
+        if k not in dict_1:
             key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_1_name)
 
     return key_err + value_err + err
