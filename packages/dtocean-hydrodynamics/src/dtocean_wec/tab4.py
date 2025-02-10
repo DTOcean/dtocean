@@ -23,13 +23,13 @@ Created on Wed Jun 15 09:15:29 2016
 
 import os
 
-import numpy as np
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QFileDialog, QWidget
 
 from .form_utils import send_data_to_bem_interface
 from .generated.ui_read_wamit_form import Ui_Form as Ui_T4
 from .submodule.utils import input_control as in_ck
+from .utils import data_check as dck
 from .utils.file_utilities import split_string
 
 
@@ -68,8 +68,11 @@ class ReadWamit(QWidget, Ui_T4):
     def save_project(self):
         inputs_hydrodynamic = self.pull_data_from_form()
 
-        dic_cmp = compare_dictionaries(
-            self._data["inputs_hydrodynamic"], inputs_hydrodynamic, "d1", "d2"
+        dic_cmp = dck.compare_dictionaries(
+            self._data["inputs_hydrodynamic"],
+            inputs_hydrodynamic,
+            "d1",
+            "d2",
         )
 
         if dic_cmp != "":
@@ -222,69 +225,3 @@ class ReadWamit(QWidget, Ui_T4):
                     in_hy["body_inputs"]["body"]["body0"]["mesh"]
                 )
         self.cb_gen_array_mat_t4.setChecked(bool(in_g["get_array_mat"]))
-
-
-def compare_dictionaries(dict_1, dict_2, dict_1_name, dict_2_name, path=""):
-    """Compare two dictionaries recursively to find non mathcing elements
-
-    Args:
-        dict_1: dictionary 1
-        dict_2: dictionary 2
-
-    Returns:
-    for key in keys:
-    val1, val2 = ax1[key], ax2[key]
-    are_different = val1 != val2
-    if isinstance(val1, np.ndarray):
-        are_different = are_different.any()
-
-    if are_different:
-        print(key,ax1[key])
-
-    """
-    err = ""
-    key_err = ""
-    value_err = ""
-    old_path = path
-    for k in dict_1.keys():
-        path = old_path + "[%s]" % k
-        if k not in dict_2:
-            key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_2_name)
-        else:
-            if isinstance(dict_1[k], dict) and isinstance(dict_2[k], dict):
-                err += compare_dictionaries(
-                    dict_1[k], dict_2[k], "d1", "d2", path
-                )
-            elif isinstance(dict_1[k], np.ndarray):
-                if not np.all(dict_1[k] == dict_2[k]):
-                    value_err += (
-                        "Value of %s%s (%s) not same as %s%s (%s)\n"
-                        % (
-                            dict_1_name,
-                            path,
-                            dict_1[k],
-                            dict_2_name,
-                            path,
-                            dict_2[k],
-                        )
-                    )
-            else:
-                if dict_1[k] != dict_2[k]:
-                    value_err += (
-                        "Value of %s%s (%s) not same as %s%s (%s)\n"
-                        % (
-                            dict_1_name,
-                            path,
-                            dict_1[k],
-                            dict_2_name,
-                            path,
-                            dict_2[k],
-                        )
-                    )
-
-    for k in dict_2.keys():
-        path = old_path + "[%s]" % k
-        if k not in dict_1:
-            key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_1_name)
-
-    return key_err + value_err + err
