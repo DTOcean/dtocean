@@ -197,3 +197,78 @@ def check_cs(el):
         return ["cs: length error"]
 
     return []
+
+
+def compare_dictionaries(
+    dict_1: dict,
+    dict_2: dict,
+    dict_1_name: str,
+    dict_2_name: str,
+    path: str = "",
+):
+    """Compare two dictionaries recursively to find non mathcing elements
+
+    Args:
+        dict_1: dictionary 1
+        dict_2: dictionary 2
+
+    Returns:
+    for key in keys:
+    val1, val2 = ax1[key], ax2[key]
+    are_different = val1 != val2
+    if isinstance(val1, np.ndarray):
+        are_different = are_different.any()
+
+    if are_different:
+        print(key,ax1[key])
+
+    """
+    err = ""
+    key_err = ""
+    value_err = ""
+    old_path = path
+
+    for k in dict_1.keys():
+        path = old_path + "[%s]" % k
+        if k not in dict_2:
+            key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_2_name)
+        else:
+            if isinstance(dict_1[k], dict) and isinstance(dict_2[k], dict):
+                err += compare_dictionaries(
+                    dict_1[k], dict_2[k], "d1", "d2", path
+                )
+            elif isinstance(dict_1[k], (np.ndarray, np.integer)):
+                if not np.array_equal(dict_1[k], dict_2[k]):
+                    value_err += (
+                        "Value of %s%s (%s) not same as %s%s (%s)\n"
+                        % (
+                            dict_1_name,
+                            path,
+                            dict_1[k],
+                            dict_2_name,
+                            path,
+                            dict_2[k],
+                        )
+                    )
+            else:
+                print(type(dict_1[k]), type(dict_2[k]))
+                print(dict_1[k], dict_2[k])
+                if dict_1[k] != dict_2[k]:
+                    value_err += (
+                        "Value of %s%s (%s) not same as %s%s (%s)\n"
+                        % (
+                            dict_1_name,
+                            path,
+                            dict_1[k],
+                            dict_2_name,
+                            path,
+                            dict_2[k],
+                        )
+                    )
+
+    for k in dict_2.keys():
+        path = old_path + "[%s]" % k
+        if k not in dict_1:
+            key_err += "Key %s%s not in %s\n" % (dict_2_name, path, dict_1_name)
+
+    return key_err + value_err + err
