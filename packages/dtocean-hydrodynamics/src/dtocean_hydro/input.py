@@ -285,7 +285,6 @@ class WP2input:
         debug (bool): copy of the input debug flag
         debug_plot (bool): copy of the input debug flag
         internalOptim (bool): flag identifying whether the user provided a result table or not
-        stopWP2run (bool): flag to trigger the interruption of the WP2 run
 
     Note:
         The M_data class attribute(s) are modified as follow:
@@ -298,7 +297,6 @@ class WP2input:
 
     def __init__(self, MachineData, SiteData, debug=False, debug_plot=False):
         # The input class is composed by the Machinedata and Sitedata classes
-        self.stopWP2run = False
         self.M_data = copy.deepcopy(MachineData)
         self.debug = debug
         self.debug_plot = debug_plot
