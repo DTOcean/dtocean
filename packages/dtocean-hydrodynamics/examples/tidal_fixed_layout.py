@@ -3,31 +3,32 @@
 Example 1 tidal case
 """
 
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
-from convert import make_tide_statistics
 from scipy.stats import multivariate_normal, norm
 
 from dtocean_hydro import start_logging
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
 from dtocean_hydro.main import WP2
-from dtocean_hydro.utils.coordinates import *
+
+if matplotlib.is_interactive():
+    plt.ioff()
 
 # Start the logging system
 start_logging()
 
-
-FixedArrayLayout = np.c_[np.linspace(940, 60, 9), np.asarray([150] * 9)]
-
+FixedArrayLayout = np.array([[100, 150], [120, 150]])
 
 # #x,y coordinate of the statistical analysis
 # # Statistical analysis generation
 # # --------------------------------
-x = np.linspace(0.0, 1000.0, 100)
+x = np.linspace(0.0, 300.0, 100)
 y = np.linspace(0.0, 300.0, 30)
 
 # Lease Area
 leaseAreaVertexUTM = np.array(
-    [[50.0, 50.0], [950.0, 50.0], [950.0, 250.0], [50.0, 250.0]], dtype=float
+    [[50.0, 50.0], [250.0, 50.0], [250.0, 250.0], [50.0, 250.0]], dtype=float
 )
 
 # Nogo areas
@@ -37,32 +38,29 @@ nx = len(x)
 ny = len(y)
 
 # Tidal time series
-n_bins = 6
-time_points = 48
+time_points = 1
 t = np.linspace(0, 1, time_points)
 
-rv = norm()
-time_sin = np.sin(np.linspace(0, 4 * np.pi, time_points))
-time_scaled = time_sin * (1.0 / np.amax(time_sin))
+time_pdf = norm.pdf(np.linspace(-2, 2, time_points))
+time_scaled = time_pdf * (1.0 / np.amax(time_pdf))
 
 xgrid, ygrid = np.meshgrid(x, y)
 pos = np.dstack((xgrid, ygrid))
-pos = np.swapaxes(pos, 0, 1)
 
 rv = multivariate_normal(
     [x.mean(), y.mean()],
-    [[max(x) * 5.0, max(y) * 2.0], [max(y) * 2.0, max(x) * 5.0]],
+    [[max(x) * 5.0, max(y) * 2.0], [max(y) * 2.0, max(x) * 5.0]],  # type: ignore
 )
 
-u_max = 0.0
-v_max = 6.0
+# u_max = 10.
+u_max = 5.0
+v_max = 1.0
 ssh_max = 1.0
-TI = 0.1
 
 grid_pdf = rv.pdf(pos)
 
-u_scaled = np.ones((nx, ny)) * u_max
-v_scaled = np.ones((nx, ny)) * v_max
+u_scaled = grid_pdf * (u_max / np.amax(grid_pdf))
+v_scaled = np.ones((ny, nx)) * v_max
 ssh_scaled = grid_pdf * (ssh_max / np.amax(grid_pdf))
 
 u_arrays = []
@@ -77,28 +75,14 @@ for multiplier in time_scaled:
 U = np.dstack(u_arrays)
 V = np.dstack(v_arrays)
 SSH = np.dstack(ssh_arrays)
-TI = np.ones(SSH.shape) * TI
-
-xc = x[int(nx / 2)]
-yc = y[int(ny / 2)]
-
-tide_dict = {
-    "U": U,
-    "V": V,
-    "SSH": SSH,
-    "TI": TI,
-    "x": x,
-    "y": y,
-    "t": t,
-    "xc": xc,
-    "yc": yc,
-    "ns": n_bins,
-}
+U = U * 0 + 2
+V = V * 0 + 0
+TI = np.array([0.1])
+p = np.ones(U.shape[-1])
 
 # END of Statistical analysis generation
 # ---------------------------------------
-Meteocean = make_tide_statistics(tide_dict)
-VelocityShear = np.array([7.0])
+Meteocean = {"V": V, "U": U, "p": p, "TI": TI, "x": x, "y": y, "SSH": SSH}
 MainDirection = None  # np.array([1.,1.])
 # ang = np.pi*0.25
 # MainDirection = np.array([np.cos(ang),np.sin(ang)])
@@ -125,9 +109,9 @@ Site = WP2_SiteData(
     None,
     MainDirection,
     Bathymetry,
-    Geophysics,
     BR,
     electrical_connection_point,
+    boundary_padding=0,
 )
 
 
@@ -355,21 +339,15 @@ C_IO = np.array([1.0, 4.0])
 
 Type = "Tidal"
 lCS = np.array([0, 0, 30])
-Clen = (8,)
-YawAngle = 0.0
+Clen = (10,)
+YawAngle = 0.0 / 180 * np.pi  # Need to be clarified
 Float_flag = False
 InstalDepth = [-np.inf, 0]
 MinDist = (10,)
 OpThreshold = 0
-# UserArray = {'Option':1,'Value':'rectangular'}
 UserArray = {"Option": 2, "Value": FixedArrayLayout}
-# UserArray = {'Option':1,'Value':'full'}
-# UserArray = {'Option':3,'Value':np.random.rand(20,2)*200}
-RatedPowerArray = 20
-RatedPowerDevice = 1
-
-
-UserOutputTable = None
+RatedPowerDevice = 10 * 1e6
+RatedPowerArray = 2 * RatedPowerDevice
 
 Machine = WP2_MachineData(
     Type,
@@ -390,12 +368,10 @@ Machine = WP2_MachineData(
     tidal_velocity_curve=X,
 )
 
-" Input assembly "
 iWP2input = WP2input(Machine, Site)
 
 if not iWP2input.stopWP2run:
-    WPobj = WP2(iWP2input, debug=True)
-    # Out = WPobj.optimisationLoop(FixedLayOut=FixedArrayLayout)
+    WPobj = WP2(iWP2input, debug=False)
     Out = WPobj.optimisationLoop()
 
     if not Out == -1:
