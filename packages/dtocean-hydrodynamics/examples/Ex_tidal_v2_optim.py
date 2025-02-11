@@ -8,7 +8,6 @@ import numpy as np
 from dtocean_hydro import start_logging
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
 from dtocean_hydro.main import WP2
-from dtocean_hydro.utils.coordinates import *
 
 # Start the logging system
 start_logging()
@@ -18,24 +17,6 @@ leaseAreaVertexUTM = np.array(
     [[0, 0], [1500.0, 0], [1500.0, 230.0], [0, 230.0]], dtype=float
 )
 
-MinDist = 150
-dx = MinDist * 4
-dy = dx / 4
-pos = []
-for i in range(5):
-    for j in range(5):
-        if not (i) % 2:
-            temp = [i * dx, j * dy - dy / 2]
-        else:
-            temp = [i * dx, j * dy]
-
-        pos.append(temp)
-
-pos = [item for item in pos if item[1] >= 0]
-
-
-FixedArrayLayout = np.array(pos, dtype=float) + 0.1
-
 
 Nogoareas_wave = [
     np.array([[0, 0], [250.0, 0], [250.0, 50.0], [0, 50.0]], dtype=float),
@@ -44,7 +25,6 @@ Nogoareas_wave = [
         dtype=float,
     ),
 ]
-
 
 # #x,y coordinate of the statistical analysis
 # # Statistical analysis generation

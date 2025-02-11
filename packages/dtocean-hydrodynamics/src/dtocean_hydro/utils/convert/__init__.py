@@ -81,7 +81,7 @@ def make_wave_statistics(
     thCut = pd.cut(direcs, Dbin, precision=6, include_lowest=True)
 
     wave_df = pd.DataFrame(wave_array, columns=["Hm0", "Te", "Dir"])
-    wave_df["cuts"] = thCut[:]  # thCut.labels
+    wave_df["cuts"] = thCut[:]
     dataGr = wave_df.groupby("cuts", observed=False)
 
     scatter = np.zeros((nH + 1, nT + 1, nDir))
