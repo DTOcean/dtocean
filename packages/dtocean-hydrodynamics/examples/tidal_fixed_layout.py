@@ -256,14 +256,13 @@ def get_inputs():
 
 
 def main(iWP2input, debug=False):
-    if not iWP2input.stopWP2run:
-        WPobj = WP2(iWP2input, debug=debug)
-        Out = WPobj.optimisationLoop()
+    WPobj = WP2(iWP2input, debug=debug)
+    Out = WPobj.optimisationLoop()
 
-        if not Out == -1:
-            Out.printRes()
-        else:
-            raise RuntimeError("Error code -1")
+    if not Out == -1:
+        Out.printRes()
+    else:
+        raise RuntimeError("Error code -1")
 
 
 if __name__ == "__main__":
