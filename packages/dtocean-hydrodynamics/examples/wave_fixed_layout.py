@@ -35,11 +35,6 @@ def get_inputs():
     T = np.linspace(1, 14, 14, endpoint=True)
     p = 1 / len(B) / len(H) / len(T) * np.ones((len(T), len(H), len(B)))
 
-    # If the frequency are not in increasing order
-    # Nemoh will have a problem in setting up the case to solve
-    # if nemoh is used and the the frequency are not uniformaly distributed
-    # there will be a mismatch between the input and the calculated values.
-
     SSH = 0.0
     specType = ("Jonswap", 3.3, 0)
 
