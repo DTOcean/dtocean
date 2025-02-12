@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Example wave case with interacting 3 device layout
+Example wave case with optimised device layout
 """
 
 from pathlib import Path
