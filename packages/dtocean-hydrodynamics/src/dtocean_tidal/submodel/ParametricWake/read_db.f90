@@ -101,10 +101,10 @@ subroutine read_u_v_tke(CT,TI)
   character*200 :: cwd
 
   real*4 :: CT, TI
-  real :: tmpCT, tmpTI
+  real :: tmpTI
   character*80 :: tagCT,tagTI
 
-  integer :: i,j,k, n, nn
+  integer :: i,j
 
   integer*4 :: idum1, idum2
 
@@ -117,10 +117,21 @@ subroutine read_u_v_tke(CT,TI)
     write(*,*) 'TI out of bounds', ti, TIlist(1), TIlist(nti)
     stop
   endif
+  
+  ! Round TI to nearest database value
+  if (TI < 0.05) then
+    tmpTI = 0.01
+  else if (TI < 0.2) then
+    tmpTI = FLOOR(TI * 40.) / 40.
+  else if (tmpTI < 0.3) then
+    tmpTI = FLOOR(TI * 20.) / 20.
+  else
+    tmpTI = 0.3
+  endif
 
   ! Read requested dataset
   write(tagCT,'(f3.1)') CT
-  write(tagTI,'(f5.3)') TI
+  write(tagTI,'(f5.3)') tmpTI
   ! write(*,*) 'Using: Ct_'//trim(tagCT)//'_TI_'//trim(tagTI)
 
   ! read in the data file corresponding to this point
