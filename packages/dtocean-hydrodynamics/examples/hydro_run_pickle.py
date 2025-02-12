@@ -2,6 +2,7 @@
 """
 Created on Mon Mar 21 15:56:17 2016
 """
+
 import os
 import pickle
 
@@ -20,10 +21,7 @@ input_dict_file = os.path.join(mod_dir, "hydrodynamics_inputs.pkl")
 with open(input_dict_file, "rb") as fstream:
     iWP2input = pickle.load(fstream)
 
-main = WP2(iWP2input,
-           pickup=True,
-           debug=True)
+main = WP2(iWP2input, debug=True)
 
 result = main.optimisationLoop()
-
-raw_input("Press Enter to continue...")
+input("Press Enter to continue...")

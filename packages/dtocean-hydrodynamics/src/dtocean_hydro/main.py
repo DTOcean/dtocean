@@ -59,20 +59,6 @@ class WP2:
 
     Args:
         WP2input (WP2input class): WP2 input class.
-
-    Optional args:
-        Cfit (numpy.ndarray): Only for the wave case. User defined value of the
-                              damping. Used in the PM fitting method. The input
-                              can be used to enter an additional damping in the
-                              numerical model
-        Kfit (numpy.ndarray): Only for the wave case. User defined value of the
-                              stiffness. Used in the PM fitting method. The
-                              input can be used to enter an additional
-                              stiffness in the numerical model
-
-        NOTE: the Cfit and Kfit are obsolete, they are now specified in the
-        wec_solution.h5 file
-
         debug (boolean): if set to True, plots and additional command line
                          outputs are issued.
 
@@ -102,8 +88,6 @@ class WP2:
     def __init__(
         self,
         WP2input,
-        Cfit=None,
-        Kfit=None,
         debug=False,
         search_class=None,
         optim_method=1,

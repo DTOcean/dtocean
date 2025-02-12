@@ -6,7 +6,7 @@ Example tidal case with interacting 2 device layout
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import multivariate_normal, norm
 
 from dtocean_hydro import start_logging
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
@@ -22,43 +22,56 @@ start_logging()
 def get_inputs():
     # Lease Area
     leaseAreaVertexUTM = np.array(
-        [[50.0, 50.0], [250.0, 50.0], [250.0, 250.0], [50.0, 250.0]],
-        dtype=float,
+        [[0, 0], [900.0, 0], [900.0, 230.0], [0, 230.0]], dtype=float
     )
 
-    # Nogo areas
-    Nogoareas_wave = []
-
-    # Array layout
-    FixedArrayLayout = np.array([[100, 150], [120, 150]])
+    Nogoareas_wave = [
+        np.array([[0, 0], [250.0, 0], [250.0, 50.0], [0, 50.0]], dtype=float),
+        np.array(
+            [[0, 0], [250.0, 20], [550.0, 450.0], [100, 600], [0, 50.0]],
+            dtype=float,
+        ),
+    ]
 
     # Tidal time series
     time_points = 1
     time_pdf = norm.pdf(np.linspace(-2, 2, time_points))
     time_scaled = time_pdf * (1.0 / np.amax(time_pdf))
 
-    # Statistics generation
-    x = np.linspace(0.0, 300.0, 100)
-    y = np.linspace(0.0, 300.0, 30)
+    # Statistical analysis generation
+    x = np.linspace(-50.0, 1000.0, 75)
+    y = np.linspace(-50, 300.0, 11)
+
     nx = len(x)
     ny = len(y)
 
+    xgrid, ygrid = np.meshgrid(x, y)
+    pos = np.dstack((xgrid, ygrid))
+
+    rv = multivariate_normal(
+        [x.mean(), y.mean()],
+        [[max(x) * 5.0, max(y) * 2.0], [max(y) * 2.0, max(x) * 5.0]],  # type: ignore
+    )
+
+    # u_max = 10.
     u_max = 5.0
     v_max = 1.0
     ssh_max = 1.0
 
-    u_step = np.ones((ny, nx)) * u_max
-    v_step = np.ones((ny, nx)) * v_max
-    ssh_step = np.ones((ny, nx)) * ssh_max
+    grid_pdf = rv.pdf(pos)
+
+    u_scaled = grid_pdf * (u_max / np.amax(grid_pdf))
+    v_scaled = np.ones((ny, nx)) * v_max
+    ssh_scaled = grid_pdf * (ssh_max / np.amax(grid_pdf))
 
     u_arrays = []
     v_arrays = []
     ssh_arrays = []
 
     for multiplier in time_scaled:
-        u_arrays.append(u_step * multiplier)
-        v_arrays.append(v_step * multiplier)
-        ssh_arrays.append(ssh_step * multiplier)
+        u_arrays.append(u_scaled * multiplier)
+        v_arrays.append(v_scaled * multiplier)
+        ssh_arrays.append(ssh_scaled * multiplier)
 
     U = np.dstack(u_arrays)
     V = np.dstack(v_arrays)
@@ -212,9 +225,9 @@ def get_inputs():
     InstalDepth = [-np.inf, 0]
     MinDist = (10,)
     OpThreshold = 0
-    UserArray = {"Option": 2, "Value": FixedArrayLayout}
+    UserArray = {"Option": 1, "Value": "staggered"}
     RatedPowerDevice = 1 * 1e6
-    RatedPowerArray = 2 * RatedPowerDevice
+    RatedPowerArray = 20 * RatedPowerDevice
 
     Machine = WP2_MachineData(
         Type,
