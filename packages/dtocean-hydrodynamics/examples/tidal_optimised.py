@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Example tidal case with interacting 2 device layout
+Example tidal case with optimised device layout
 """
 
 import numpy as np
