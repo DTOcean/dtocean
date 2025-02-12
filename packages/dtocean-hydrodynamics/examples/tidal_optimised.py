@@ -3,17 +3,12 @@
 Example tidal case with interacting 2 device layout
 """
 
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import multivariate_normal, norm
 
 from dtocean_hydro import start_logging
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
 from dtocean_hydro.main import WP2
-
-if matplotlib.is_interactive():
-    plt.ioff()
 
 # Start the logging system
 start_logging()
