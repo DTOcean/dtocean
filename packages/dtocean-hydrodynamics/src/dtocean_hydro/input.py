@@ -373,8 +373,7 @@ class WP2input:
         if self.M_data.MaxNumDevices < 1:
             status -= 1
             errStr.append(
-                "The ratio between array and machine rated powers "
-                "is below 1.\n"
+                "The ratio between array and machine rated powers is below 1.\n"
                 "Verify the rated power inputs."
             )
 
@@ -382,8 +381,7 @@ class WP2input:
             if not isinstance(self.S_data.NogoAreas, (list, tuple)):
                 status -= 1
                 errStr.append(
-                    "The input format of the nogo area is "
-                    "incorrect.\n"
+                    "The input format of the nogo area is incorrect.\n"
                     "Accepted format are: None or list."
                 )
             else:
@@ -393,9 +391,8 @@ class WP2input:
                     if not isinstance(self.S_data.NogoAreas[-1], (np.ndarray)):
                         status -= 1
                         errStr.append(
-                            "The input format of the nogo area is "
-                            "correct, but the list element format "
-                            "is incorrect.\n"
+                            "The input format of the nogo area is correct, "
+                            "but the list element format is incorrect.\n"
                             "Accepted format is: numpy.ndarray."
                         )
 
@@ -403,15 +400,13 @@ class WP2input:
             if not isinstance(self.S_data.Main_Direction, (np.ndarray)):
                 status -= 1
                 errStr.append(
-                    "The input format of the main direction is "
-                    "incorrect.\n"
+                    "The input format of the main direction is incorrect.\n"
                     "Accepted format are: None or numpy.ndarray"
                 )
             elif not len(self.S_data.Main_Direction) == 2:
                 status -= 1
                 errStr.append(
-                    "The input format of the main direction is "
-                    "incorrect.\n"
+                    "The input format of the main direction is incorrect.\n"
                     "Too many input values. Accepted dimension: 2."
                 )
 
@@ -431,14 +426,12 @@ class WP2input:
                 self.S_data.MeteoceanConditions["SSH"] = sshfloat
             except (ValueError, TypeError):
                 status -= 1
-                errStr.append(
-                    "The SSH value should be float for wave " "devices."
-                )
+                errStr.append("The SSH value should be float for wave devices.")
 
         if not self.M_data.tidalFlag and self.M_data.wave_data_folder is None:
             status -= 1
             errStr.append(
-                "The wave data folder must be given for a wave " "simulation."
+                "The wave data folder must be given for a wave simulation."
             )
 
         if (
@@ -467,10 +460,8 @@ class WP2input:
             ):
                 status -= 1
                 errStr.append(
-                    "The installation depth constraints format is "
-                    "incorrect.\n"
-                    "Accepted format are: None, list, tuple, "
-                    "numpy.ndarray."
+                    "The installation depth constraints format is incorrect.\n"
+                    "Accepted format are: None, list, tuple, numpy.ndarray."
                 )
             else:
                 if len(self.M_data.InstalDepth) == 1:
@@ -489,7 +480,7 @@ class WP2input:
                 else:
                     status -= 1
                     errStr.append(
-                        "Too many values in the installation depth " "input."
+                        "Too many values in the installation depth input."
                     )
         if self.M_data.tidalFlag:
             # the compress lease area has been moved above to allow the polygon buffering required by the mooring footprint
@@ -564,7 +555,7 @@ class WP2input:
             if offset > 0:
                 err_str = (
                     "The velocity field does not cover entirely the lease area, ",
-                    "Including the turbine interdistance",
+                    "including the turbine inter-distance.",
                     "The execution is terminated",
                 )
             else:
@@ -643,16 +634,16 @@ class WP2input:
                 .Bathymetry: flatten the bathymetry for the wave case to the average value
         """
         Bathymetry = self.S_data.Bathymetry
-        # Bathymetry = np.array([-10])
-        # print(Bathymetry)
+
         if len(Bathymetry) == 1 and (
             not Bathymetry >= self.M_data.InstalDepth[0]
             or not Bathymetry <= self.M_data.InstalDepth[1]
         ):
             errStr = (
-                "Error[InstalDepth]:\nThe device installation "
-                "constraints do not fit the bathymetry of the area."
-                "\nNo possible installation area has been found!"
+                "Error[InstalDepth]:\n"
+                "The device installation constraints do not fit the "
+                "bathymetry of the area.\n"
+                "No possible installation area has been found!"
             )
             raise ValueError(
                 errStr
@@ -687,10 +678,9 @@ class WP2input:
 
         if not self.M_data.tidalFlag:
             module_logger.warning(
-                "[Warning] The wave module cannot run with "
-                "variable bathymetry\n"
-                "The bathymetry is reduced to its average "
-                "value."
+                "[Warning] The wave module cannot run with variable "
+                "bathymetry\n"
+                "The bathymetry is reduced to its average value."
             )
             module_logger.info(
                 "The averge bathymetry value is " "{} m".format(
@@ -922,28 +912,23 @@ class WP2input:
             s_hm0 = site["Hs"]
             s_dirs = site["B"]
 
+            warning_template = (
+                "The range of wave {} specified in the machine power "
+                "matrix does not cover the given site.\n"
+                "Due to the model linearity, this situation can bring "
+                "unexpected/unrealistic results"
+            )
+
             if max(w_tp) < max(s_tp):
-                strTpWarning = (
-                    "The range of Wave Periods specified in the machine power matrix",
-                    "does not cover the given site",
-                    "Due to the model linearity, this situation can bring unexpected/unrealistic results",
-                )
+                strTpWarning = warning_template.format("periods")
                 module_logger.warning(strTpWarning)
 
             if max(w_hm0) < max(s_hm0):
-                strHm0Warning = (
-                    "The range of Wave Heighs specified in the machine power matrix",
-                    "does not cover the given site",
-                    "Due to the model linearity, this situation can bring unexpected/unrealistic results",
-                )
+                strHm0Warning = warning_template.format("heights")
                 module_logger.warning(strHm0Warning)
 
             if max(w_dirs) < max(s_dirs):
-                strDirsWarning = (
-                    "The range of Wave Directions specified in the machine power matrix",
-                    "does not cover the given site",
-                    "Due to the model linearity, this situation can bring unexpected/unrealistic results",
-                )
+                strDirsWarning = warning_template.format("directions")
                 module_logger.warning(strDirsWarning)
 
 

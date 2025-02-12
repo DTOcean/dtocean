@@ -365,10 +365,8 @@ class MultiBody(object):
         requires = [all(requires[ind]) for ind in range(len(requires))]
 
         if not all(requires):
-            #            print 'period {} , depth {} '.format(requires[0],requires[1])
             raise IOError(
-                "Mismatch between iHydro and retreieved sea state "
-                "data. iWECpickler may be stale."
+                "Mismatch between iHydro and retreieved sea state data"
             )
 
         k0 = self.wnumber
