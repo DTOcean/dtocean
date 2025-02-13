@@ -462,6 +462,6 @@ def read_WAMIT(f_n):
 
 
 def strip_comments(code):
-    msg = re.sub("\s*!.*", "", code, re.MULTILINE)
+    msg = re.sub(r"\s*!.*", "", code, re.MULTILINE)
     msg = re.sub(r"^\n", "", msg)
     return re.sub(r"\n\s*\n", "\n", msg, re.MULTILINE)

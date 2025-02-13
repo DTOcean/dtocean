@@ -251,8 +251,6 @@ def compare_dictionaries(
                         )
                     )
             else:
-                print(type(dict_1[k]), type(dict_2[k]))
-                print(dict_1[k], dict_2[k])
                 if dict_1[k] != dict_2[k]:
                     value_err += (
                         "Value of %s%s (%s) not same as %s%s (%s)\n"

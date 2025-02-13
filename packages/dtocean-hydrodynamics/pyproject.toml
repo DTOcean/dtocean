@@ -67,6 +67,7 @@ version-rewrite-rule = '=='
 
 [tool.pyright]
 typeCheckingMode = "basic"
+exclude = ["src/dtocean_wec/generated/**"]
 
 [tool.ruff]
 line-length = 80
