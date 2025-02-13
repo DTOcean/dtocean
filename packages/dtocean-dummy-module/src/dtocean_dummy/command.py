@@ -40,7 +40,7 @@ def start_logging(level=None):
     log = Logger(dirmap)
     log(
         "dtocean_dummy",
-        level=level,
+        log_level=level,
         info_message="Begin logging for dtocean dummy module",
     )
 
