@@ -42,7 +42,7 @@ jobs:
       - name: Install package
         run: |
           poetry install --with test
-          dtocean-hydro init
+          poetry run dtocean-hydro init
       - name: Run tests
         run: |
           poetry run pytest --cov src --cov-report=xml tests
