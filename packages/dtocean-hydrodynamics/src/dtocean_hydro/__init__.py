@@ -34,6 +34,6 @@ def start_logging(level=None):
     log = Logger(dirmap)
     log(
         "dtocean_hydro",
-        level=level,
+        log_level=level,
         info_message="Begin logging for dtocean_hydro.",
     )
