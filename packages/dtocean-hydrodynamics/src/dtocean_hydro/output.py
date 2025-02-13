@@ -21,8 +21,7 @@ This module contains the main class that generates the output format of the
 hydrodynamic module.
 
 .. module:: output
-   :platform: Windows
-   :synopsis: WP2ouput module to DTOcean
+     :synopsis: WP2ouput module to DTOcean
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

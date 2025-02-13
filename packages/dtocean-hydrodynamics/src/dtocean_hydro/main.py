@@ -21,8 +21,7 @@ This module contains the main class that performs the prepocess and
 calls the tidal and wave submodule.
 
 .. module:: input
-   :platform: Windows
-   :synopsis: WP2 main module to DTOcean
+     :synopsis: WP2 main module to DTOcean
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

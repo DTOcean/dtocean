@@ -22,8 +22,7 @@ maximise the annual energy production of the array, under the specified
 constraints.
 
 .. module:: optimiser
-   :platform: Windows
-   :synopsis: Optimisation algorithms
+     :synopsis: Optimisation algorithms
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

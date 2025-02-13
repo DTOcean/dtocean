@@ -3,10 +3,9 @@
 """Utility module with functions to provide paths to application files.
 
 .. module:: paths
-   :platform: Windows
-   :synopsis: Provides application paths
+     :synopsis: Provides application paths
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 
 """
 

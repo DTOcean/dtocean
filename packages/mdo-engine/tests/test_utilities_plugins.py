@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """py.test tests on utilities.plugins module
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import os

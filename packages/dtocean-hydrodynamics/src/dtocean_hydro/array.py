@@ -20,8 +20,7 @@
 This module contains the class used to define the array layouts.
 
 .. module:: array
-   :platform: Windows
-   :synopsis: Array module for DTOcean WP2
+     :synopsis: Array module for DTOcean WP2
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

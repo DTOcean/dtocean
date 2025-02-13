@@ -20,8 +20,7 @@
 This module contains the class used to describe the behavior of the single WEC
 
 .. module:: WEC
-   :platform: Windows
-   :synopsis: WEC model
+     :synopsis: WEC model
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

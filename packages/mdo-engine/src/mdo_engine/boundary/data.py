@@ -4,10 +4,9 @@ to provide information on where the data description files are located on the
 file system.
 
 .. module:: data
-   :platform: Windows
-   :synopsis: Data description location specification
+     :synopsis: Data description location specification
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import abc

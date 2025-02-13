@@ -21,8 +21,7 @@ This module contains the methods used to load the hydrodynamic module of the iso
 using the Nemoh software.
 
 .. module:: read_bem_solution
-   :platform: Windows
-   :synopsis: WEC Numerical model loader
+     :synopsis: WEC Numerical model loader
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
