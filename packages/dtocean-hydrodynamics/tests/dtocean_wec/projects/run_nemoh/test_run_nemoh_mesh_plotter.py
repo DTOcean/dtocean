@@ -15,7 +15,10 @@ THIS_DIR = Path(__file__)
 
 
 @pytest.fixture
-def mesh_plotter(monkeypatch, form_hyd, main_window):
+def mesh_plotter(monkeypatch, request, form_hyd, main_window):
+    if request.config.getoption("--no-gpu"):
+        pytest.skip("Tests require GPU support")
+
     mesh_path = THIS_DIR.parents[4] / "test_data" / "cube.GDF"
     monkeypatch.setattr(
         QFileDialog,
