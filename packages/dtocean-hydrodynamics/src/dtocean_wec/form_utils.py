@@ -225,7 +225,7 @@ def clean_prj_folder(path, exept=None, only=None):
                 os.unlink(el_path)
             elif os.path.isdir(el_path):
                 shutil.rmtree(el_path)
-        except Exception as e:
+        except OSError as e:
             return (False, e)
 
     return (True, "")

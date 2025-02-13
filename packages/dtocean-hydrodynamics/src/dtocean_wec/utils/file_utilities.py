@@ -2,7 +2,7 @@
 import os
 import shutil
 import sys
-from typing import Optional, Type
+from typing import Any, Callable, Optional
 
 
 def strtobool(val):
@@ -66,24 +66,32 @@ def clean_prj_folder(path, exept=None):
 
 def split_string_multilist(string, num_type=float, sep=",", sep_multi=";"):
     list_el = string.split(sep_multi)
-    list_out = []
-    for el in list_el:
+    return [split_string(el, num_type=num_type, sep=sep) for el in list_el]
+
+
+def split_string[T](
+    string: str,
+    num_type: Callable[[Any], T] = float,
+    sep: Optional[str] = " ",
+) -> list[T]:
+    def convert(x: str):
         try:
-            list_out.append(split_string(el, num_type=num_type, sep=sep))
-        except:
-            break
-    return list_out
+            result = num_type(x)
+        except Exception:
+            result = None
 
+        return result
 
-def split_string(string: str, num_type: Type = float, sep: Optional[str] = " "):
     list_el = string.split(sep)
-    list_out = []
+    result: list[T] = []
+
     for el in list_el:
-        try:
-            list_out.append(num_type(el))
-        except:
-            break
-    return list_out
+        converted = convert(el)
+        if converted is None:
+            continue
+        result.append(converted)
+
+    return result
 
 
 def load_file(path, file_name):
@@ -96,17 +104,15 @@ def load_file(path, file_name):
     check_file_name = [el for el in os.listdir(path) if el == file_name]
     if not check_file_name:
         raise NameError(
-            "The specified filename ({}) does not exist in the folder {}".format(
-                file_name, path
-            )
+            "The specified filename ({}) does not exist in the "
+            "folder {}".format(file_name, path)
         )
     elif (
         len(check_file_name) > 1
     ):  # this cndition cannot exist, just keep it here in case the comparison is bugged
         raise ValueError(
-            "The specified filename ({}) exists in multiple copies in the folder {}. ".format(
-                file_name, path
-            ),
+            "The specified filename ({}) exists in multiple copies in the "
+            "folder {}. ".format(file_name, path),
             "Remove the unused files",
         )
 

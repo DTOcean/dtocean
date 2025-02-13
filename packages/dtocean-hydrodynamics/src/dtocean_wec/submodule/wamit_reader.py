@@ -44,7 +44,7 @@ class WamitReader:
         WamitReader: reads output files from WAMIT and buld a frequency domain model of the WEC
 
         Args:
-            pathname (str): pathname for WAMIT output files. E.g. C:\Desktop\WAMIT\case1(.6p, .pot, etc.)
+            pathname (str): pathname for folder containing WAMIT output files
 
         Returns:
             output (tuple): contains all the output of the module:

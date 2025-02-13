@@ -248,10 +248,9 @@ def set_wdirs_multibody(B, s, mA, yA, debug=False):
             B_new += [elA, tuple_angles]
 
     if debug:
-        import matplotlib
-        import matplotlib as mpl
         import matplotlib.colors as colors
         import matplotlib.pyplot as plt
+        import matplotlib.transforms as transforms
         from matplotlib.collections import PatchCollection
         from matplotlib.patches import Wedge
 
@@ -270,15 +269,12 @@ def set_wdirs_multibody(B, s, mA, yA, debug=False):
 
         # add a wedge for the angle span
         patches = []
-        t = (
-            mpl.transforms.Affine2D().rotate_deg(mA * 180 / np.pi)
-            + ax.transData
-        )
+        t = transforms.Affine2D().rotate_deg(mA * 180 / np.pi) + ax.transData
 
         # add a wedge for the upper angle range
         patches += [
             Wedge(
-                [0, 0],
+                (0, 0),
                 0.5,
                 -yA * 180 / np.pi,
                 yA * 180 / np.pi,
@@ -317,7 +313,7 @@ def set_wdirs_multibody(B, s, mA, yA, debug=False):
                 ]
 
         colors = 100 * np.random.rand(len(patches))
-        p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
+        p = PatchCollection(patches, cmap="jet", alpha=0.4)
         p.set_array(np.array(colors))
         p.set_transform(t)
         ax.add_collection(p)
@@ -340,7 +336,7 @@ def set_wdirs_multibody(B, s, mA, yA, debug=False):
                 ax.plot(
                     [0.8 * np.cos(e), 1.1 * np.cos(e)],
                     [0.8 * np.sin(e), 1.1 * np.sin(e)],
-                    color=col[col.keys()[i]],
+                    color=col[list(col.keys())[i]],
                     lw=3,
                 )
             else:
@@ -348,7 +344,7 @@ def set_wdirs_multibody(B, s, mA, yA, debug=False):
                     ax.plot(
                         [0.6 * np.cos(eA), 0.7 * np.cos(eA)],
                         [0.6 * np.sin(eA), 0.7 * np.sin(eA)],
-                        color=col[col.keys()[i - 1]],
+                        color=col[list(col.keys())[i - 1]],
                         lw=2,
                     )
 
