@@ -181,13 +181,13 @@ def _get_range_at_interval(v, interval):
     return range_min, range_max
 
 
-def _get_n_samples(range_min, range_max, interval):
+def _get_n_samples(range_min, range_max, interval, tol=1e-08):
     numerator = Decimal(str(range_max - range_min))
     denominator = Decimal(str(interval))
 
     quotient, remainder = divmod(numerator, denominator)
 
-    if remainder != 0:
+    if remainder > tol:
         err_msg = (
             "Given interval does not divide range exactly. Remainder "
             "of {} detected."
