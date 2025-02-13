@@ -45,9 +45,11 @@ class DataStructure:
                 water_depth = f_u.split_string(lines[3], sep=None)[0]
                 line_ind = 7
                 for bb in range(nbody):
-                    ndof = int(
-                        f_u.split_string(lines[line_ind + 3], sep=None)[0]
-                    )
+                    ndof = f_u.split_string(
+                        lines[line_ind + 3],
+                        int,
+                        sep=None,
+                    )[0]
                     line_ind += 3 + ndof * 2 + 3
                 freq_def = f_u.split_string(lines[line_ind + 1], sep=None)
                 ang_def = f_u.split_string(lines[line_ind + 2], sep=None)

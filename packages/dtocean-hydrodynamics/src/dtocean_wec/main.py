@@ -487,9 +487,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if msgBox.clickedButton() == select_button:
                     self.browse_prj()
                 elif msgBox.clickedButton() == clear_button:
-                    try:
-                        clean_prj_folder(folder)
-                    except:
+                    success, _ = clean_prj_folder(folder)
+                    if not success:
                         return -1
                 else:
                     return -1
