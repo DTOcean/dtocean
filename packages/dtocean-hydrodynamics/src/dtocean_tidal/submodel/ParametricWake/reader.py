@@ -17,7 +17,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import platform
+from pathlib import Path
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -25,9 +26,13 @@ import pandas as pd
 # TR: integration of Sandia's model - beta 1.0
 from .read_db_mod import read_db
 
+StrOrPath = Union[str, Path]
 
-def read_database(data_path):
+
+def read_database(data_path: StrOrPath):
     """Converts the CDF database into many pandas table"""
+
+    data_path = Path(data_path)
 
     # Read and load CFD database into a dataframe at import level
     # Read Ct and TI info file
@@ -47,20 +52,16 @@ def read_database(data_path):
     return database
 
 
-def create_database(reader, data_path):
+def create_database(reader, data_path: Path):
     """Create pandas tables from database reader"""
 
     # Read and load CFD database into a dataframe at import level
     # Read Ct and TI info file
-    cts = list(
-        set([float(i) for i in open(os.path.join(data_path, "Ct_set.txt"))])
-    )
+    cts = list(set([float(i) for i in open(data_path / "Ct_set.txt")]))
     cts.sort()
     ctsnames = ["ct" + str(i) for i in cts]
 
-    tis = list(
-        set([float(i) for i in open(os.path.join(data_path, "TI_set.txt"))])
-    )
+    tis = list(set([float(i) for i in open(data_path / "TI_set.txt")]))
     tis.sort()
     tisnames = ["ti" + str(i) for i in tis]
 
@@ -92,7 +93,7 @@ def create_database(reader, data_path):
     return database
 
 
-def initiate_reader(data_path):
+def initiate_reader(data_path: Path):
     """Bring up the reader module
 
     Returns:
@@ -100,12 +101,8 @@ def initiate_reader(data_path):
     """
 
     # Set path to data folder
-    # data_path = os.path.join(os.path.normpath(data_path), "")
-
-    if not platform.system() == "Windows":
-        read_db.datapath = "{:<512}".format(data_path + "/")
-    else:
-        read_db.datapath = "{:<512}".format(os.path.normpath(data_path) + "\\")
+    data_path_str = str(data_path.resolve()) + os.sep
+    read_db.datapath = "{:<512}".format(data_path_str)
 
     # Allocate memory
     read_db.nx = 800
