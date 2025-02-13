@@ -22,9 +22,8 @@
 
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import cast
 
-from polite_config.configuration import Logger, ReadINI
+from polite_config.configuration import Logger
 from polite_config.paths import ModPath, UserDataPath
 
 
