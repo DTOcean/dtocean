@@ -115,6 +115,6 @@ def delete_reader():
     """Break down the reader module"""
 
     # Deallocate memory
-    # read_db.dealloc_arrays()
+    read_db.dealloc_arrays()
 
     return
