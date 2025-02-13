@@ -56,7 +56,7 @@ Use the copied configuration file to set up logging:
 >>> log = Logger(datadir)
 >>> log_config_dict = log.read()
 >>> log.configure_logger(log_config_dict)
->>> logger = log.add_named_logger("polite")
+>>> logger = log.get_named_logger("polite")
 >>> logger.info("Hello World")
 INFO - polite - Hello World
 ```
