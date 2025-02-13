@@ -11,21 +11,14 @@ files.
 
 """
 
-# # Set up logging
-# import logging
-
-# module_logger = logging.getLogger(__name__)
-
-# Built in modules
 import logging
 from logging.config import dictConfig
 from pathlib import Path
-from typing import Union
+from typing import Any, Optional, TypeAlias, Union
 
-# External modules
 import yaml
 from configobj import ConfigObj
-from validate import ValidateError, Validator
+from configobj.validate import ValidateError, Validator
 
 try:
     from yaml import CDumper as Dumper
@@ -33,24 +26,24 @@ try:
 except ImportError:
     from yaml import Dumper, Loader
 
-# Local modules
 from .paths import DirectoryMap
+
+NestedDict: TypeAlias = dict[str, "str | NestedDict"]
+StrOrPath = Union[str, Path]
 
 
 class Config:
     """Base class for handling configuration files.
 
-    Attributes:
+    Args:
         directory (polite.paths.Directory, polite.paths.DirectoryMap)
         file_name (str): File name of the config file.
-
     """
 
-    def __init__(self, directory: Union[Path, DirectoryMap], file_name):
+    def __init__(self, directory: Union[Path, DirectoryMap], file_name: str):
         if isinstance(directory, DirectoryMap):
             self.target_dir = directory.target_dir
             self.directory_map = directory
-
         else:
             self.target_dir = directory
             self.directory_map = None
@@ -113,9 +106,10 @@ class ReadINI(Config):
     the configobj package.
 
     Args:
+        directory (polite.paths.Directory, polite.paths.DirectoryMap)
+        config_file_name (str): File name of the config file.
         validation_file_name (str, optional): Name of the file to be used to
-          validate the inputs to the configuration file. Defaults to
-          "validation.ini".
+          validate the inputs to the configuration file.
 
     Attributes:
         validation_file_name (str): File name of the configobj validation file.
@@ -124,8 +118,8 @@ class ReadINI(Config):
 
     def __init__(
         self,
-        directory,
-        config_file_name="configuration.ini",
+        directory: Union[Path, DirectoryMap],
+        config_file_name: str,
         validation_file_name=None,
     ):
         super(ReadINI, self).__init__(directory, config_file_name)
@@ -274,12 +268,17 @@ class ReadYAML(Config):
     """Class to read and write YAML configuration files. This class uses
     the pyyaml package.
 
+    Args:
+        directory (polite.paths.Directory, polite.paths.DirectoryMap)
+        yaml_file_name (str): File name of the yaml file.
     """
 
-    def __init__(self, directory, yaml_file_name):
+    def __init__(
+        self,
+        directory: Union[Path, DirectoryMap],
+        yaml_file_name: str,
+    ):
         super(ReadYAML, self).__init__(directory, yaml_file_name)
-
-        return
 
     def read(self):
         """Load the YAML configuration file."""
@@ -292,7 +291,7 @@ class ReadYAML(Config):
 
         return config_dict
 
-    def write(self, obj_to_serialise, default_flow_style=False):
+    def write(self, obj_to_serialise: Any, default_flow_style: bool = False):
         """Write the YAML configuration file."""
 
         # Write the file
@@ -314,6 +313,7 @@ class Logger(ReadYAML):
     """Class to configure and control the python logging system.
 
     Args:
+        directory (polite.paths.Directory, polite.paths.DirectoryMap)
         config_file_name (str, optional): Name of the logging config file.
           Defaults to "logging.yaml".
 
@@ -325,16 +325,71 @@ class Logger(ReadYAML):
     def __init__(self, directory, config_file_name="logging.yaml"):
         super(Logger, self).__init__(directory, config_file_name)
 
-    @classmethod
-    def configure_logger(cls, log_config_dict):
-        """Load the logging configuration file."""
+    def configure_logger(
+        self,
+        log_config_dict: Optional[NestedDict] = None,
+        file_prefix: Optional[StrOrPath] = None,
+    ):
+        """Load the logging configuration file.
 
-        # Configure the logger
+        Args:
+            log_config_dict (dict, optional): A Python logging dictionary
+              config. Calls self.read() by default.
+            file_prefix (str | pathlib.Path, optional): Apply a prefix path to
+              file handlers.
+        """
+
+        if log_config_dict is None:
+            log_config_dict = self.read()
+            assert isinstance(log_config_dict, dict)
+
+        if file_prefix is None:
+            dictConfig(log_config_dict)
+            return
+
+        handlers = log_config_dict["handlers"]
+        assert isinstance(handlers, dict)
+
+        file_prefix_path = Path(file_prefix)
+        updated_handlers: NestedDict = {}
+
+        for key, handler in handlers.items():
+            assert isinstance(handler, dict)
+            handler_class = handler["class"]
+
+            assert isinstance(handler_class, str)
+            handler_class_name = handler_class.split(".")[-1]
+
+            if handler_class_name not in (
+                "FileHandler",
+                "RotatingFileHandler",
+                "TimedRotatingFileHandler",
+                "WatchedFileHandler",
+            ):
+                continue
+
+            updated_handler = handler.copy()
+            log_filename = updated_handler["filename"]
+            assert isinstance(log_filename, str)
+
+            log_path = file_prefix_path / Path(log_filename)
+            updated_handler["filename"] = log_path.as_posix()
+            updated_handlers[key] = updated_handler
+
+        if updated_handlers:
+            file_prefix_path.mkdir(exist_ok=True)
+            handlers.update(updated_handlers)
+
         dictConfig(log_config_dict)
 
     @classmethod
-    def add_named_logger(cls, log_name, log_level=None, info_message=None):
-        """Start a named logger.
+    def get_named_logger(
+        cls,
+        log_name: str,
+        log_level: Optional[str] = None,
+        info_message: Optional[str] = None,
+    ):
+        """Return a named logger.
 
         Args:
             log_name (str): Name of the logger.
@@ -353,10 +408,24 @@ class Logger(ReadYAML):
 
         return named_logger
 
-    def __call__(self, package, level=None, info_message=None):
-        # Bring up the logger
+    def __call__(
+        self,
+        log_name: str,
+        log_level: Optional[str] = None,
+        info_message: Optional[str] = None,
+        file_prefix: Optional[StrOrPath] = None,
+    ):
+        """Load the logging configuration and start a named logger in one step.
+
+        Args:
+            log_name (str): Name of the logger.
+            log_level (str, optional): Valid logging level.
+            info_message (str, optional): Message to broadcast on the logger
+              info channel.
+            file_prefix (str | pathlib.Path, optional): Apply a prefix path to
+              file handlers.
+        """
         if self.directory_map is not None:
             self.copy_config()
-        log_config_dict = self.read()
-        self.configure_logger(log_config_dict)
-        self.add_named_logger(package, level, info_message)
+        self.configure_logger(file_prefix=file_prefix)
+        return self.get_named_logger(log_name, log_level, info_message)
