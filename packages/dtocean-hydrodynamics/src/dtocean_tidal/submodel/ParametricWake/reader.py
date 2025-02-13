@@ -31,14 +31,18 @@ def read_database(data_path):
 
     # Read and load CFD database into a dataframe at import level
     # Read Ct and TI info file
-    try:
-        # Allocate memory and build database
-        reader = initiate_reader(data_path)
-        database = create_database(reader, data_path)
+    # try:
+    #     # Allocate memory and build database
+    #     reader = initiate_reader(data_path)
+    #     database = create_database(reader, data_path)
 
-    finally:
-        # Deallocate memory
-        delete_reader()
+    # finally:
+    #     # Deallocate memory
+    #     delete_reader()
+
+    reader = initiate_reader(data_path)
+    database = create_database(reader, data_path)
+    delete_reader()
 
     return database
 
