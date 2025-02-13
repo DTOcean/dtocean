@@ -123,4 +123,4 @@ def main(iWP2input, debug=False):
 
 if __name__ == "__main__":
     iWP2input = get_inputs()
-    main(iWP2input)
+    main(iWP2input, True)
