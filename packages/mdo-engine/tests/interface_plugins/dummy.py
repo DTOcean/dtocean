@@ -23,10 +23,9 @@ Note:
   The function decorators (such as "@classmethod", etc) must not be removed.
 
 .. module:: demo
-   :platform: Windows
-   :synopsis: mdo_engine interface for dtocean_demo package
+     :synopsis: mdo_engine interface for dtocean_demo package
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 from mdo_engine.boundary.interface import MapInterface

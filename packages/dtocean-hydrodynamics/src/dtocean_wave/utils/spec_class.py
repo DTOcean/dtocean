@@ -20,8 +20,7 @@
 This module contains the classes used to generate the wave spectrums associated with the different sea states
 
 .. module:: spec_class
-   :platform: Windows
-   :synopsis: Class to generate wave models
+     :synopsis: Class to generate wave models
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

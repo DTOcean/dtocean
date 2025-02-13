@@ -27,7 +27,7 @@ def make_tide_statistics(dictinput, ds=0.01):
      Function that selects the subset of current fields to be run, based on the
      statistical analysis described in Deliverable 2.4
      Written by JF Filipot and M Peray, October 1st, 2015
-     Fixed by Mathew Topper (mathew.topper@dataonlygreater.com)
+     Fixed by Mathew Topper (damm_horse@yahoo.co.uk)
      contact: jean.francois.filipot@france-energies-marines.org
 
      function input:

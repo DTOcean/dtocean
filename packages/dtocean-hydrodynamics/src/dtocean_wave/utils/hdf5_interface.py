@@ -21,8 +21,7 @@ This module contains the methods used to write and read dictionaries to hdf5
 files
 
 .. module:: hdf5_interface
-   :platform: Windows
-   :synopsis: hdf5 reader and writer
+     :synopsis: hdf5 reader and writer
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

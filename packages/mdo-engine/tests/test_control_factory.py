@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """py.test tests on control.interface module
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 from mdo_engine.boundary.interface import (

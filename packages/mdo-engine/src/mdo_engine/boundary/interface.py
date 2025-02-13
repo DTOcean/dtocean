@@ -20,13 +20,12 @@ using the method "get_local" using the local variable name as the argument.
 The outputs should be stored using the method "set_local", where the local
 variable name and the data must be given.
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 
 .. module:: interface
-   :platform: Windows
-   :synopsis: Interfaces classes
+     :synopsis: Interfaces classes
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import abc

@@ -3,10 +3,9 @@
 Spreadsheet.
 
 .. module:: main
-   :platform: Windows
-   :synopsis: Main computational code for dtocean-dummy
+     :synopsis: Main computational code for dtocean-dummy
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 # Built in modules

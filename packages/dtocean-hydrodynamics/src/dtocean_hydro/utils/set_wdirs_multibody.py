@@ -21,8 +21,7 @@ This module contains the function used to set the wave direction by taking into 
 possible self orientation feature of the device
 
 .. module:: set_wdirs_multibody
-   :platform: Windows
-   :synopsis: Defines wave direction for the array layout
+     :synopsis: Defines wave direction for the array layout
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

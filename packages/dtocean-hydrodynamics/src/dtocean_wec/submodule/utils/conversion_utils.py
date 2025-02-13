@@ -20,8 +20,7 @@
 This module contains the main classes used to obtain the solution of the hydrodynamic problem for a given wave energy converter
 
 .. module:: output
-   :platform: Windows
-   :synopsis: wec_external_module module to DTOcean
+     :synopsis: wec_external_module module to DTOcean
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

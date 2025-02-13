@@ -20,8 +20,7 @@
 This module provides several methods which are recurrently used to solve the water-wave problems
 
 .. module:: WatWaves
-   :platform: Windows
-   :synopsis: Wave Dynamics Solver
+     :synopsis: Wave Dynamics Solver
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

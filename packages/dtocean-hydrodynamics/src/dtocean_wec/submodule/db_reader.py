@@ -20,8 +20,7 @@ This module contains the class used to generate the numerical model of the WEC
 using a given WAMIT solution.
 
 .. module:: hyd_WAMIT
-   :platform: Windows
-   :synopsis: Numerical model of WEC builder
+     :synopsis: Numerical model of WEC builder
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
 """

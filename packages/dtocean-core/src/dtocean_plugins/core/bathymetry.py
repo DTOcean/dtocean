@@ -18,7 +18,7 @@
 """
 Created on Fri Jul 29 17:44:49 2016
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 from mdo_engine.boundary.interface import QueryInterface

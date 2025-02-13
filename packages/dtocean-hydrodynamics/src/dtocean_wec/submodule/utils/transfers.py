@@ -21,8 +21,7 @@ transfer matrices, which are required input of the direct matrix
 method (Kagemoto and Yue, 1986).
 
 .. module:: transfers
-   :platform: Windows
-   :synopsis: Numerical model of WEC builder
+     :synopsis: Numerical model of WEC builder
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
 """

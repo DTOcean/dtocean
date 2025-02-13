@@ -21,8 +21,7 @@ This module contains the class used to generate the numerical model of the WEC
 using the Nemoh software.
 
 .. module:: hyd_Nemoh
-   :platform: Windows
-   :synopsis: Numerical model of WEC builder
+     :synopsis: Numerical model of WEC builder
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

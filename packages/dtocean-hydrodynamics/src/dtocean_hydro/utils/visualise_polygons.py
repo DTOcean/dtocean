@@ -19,8 +19,7 @@
 This module contains the functions used to plot the nogo zones polygons and bathymetry points
 
 .. module:: Visualise_polygons
-   :platform: Windows
-   :synopsis: Polygons and points visualisation
+     :synopsis: Polygons and points visualisation
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 """

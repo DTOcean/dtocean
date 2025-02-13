@@ -21,8 +21,7 @@ This module contains the class used to interface the tidal module developed
 by Thomas Roc (ITPower).
 
 .. module:: array
-   :platform: Windows
-   :synopsis: Tidal interface module for DTOcean WP2
+     :synopsis: Tidal interface module for DTOcean WP2
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

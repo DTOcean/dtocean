@@ -20,8 +20,7 @@
 This module provides several methods to solve structure dynamics problems
 
 .. module:: StrDyn
-   :platform: Windows
-   :synopsis: Structural Dynamic Solver
+     :synopsis: Structural Dynamic Solver
 
 .. moduleauthor:: Pau Mercadez Ruiz <pmr@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

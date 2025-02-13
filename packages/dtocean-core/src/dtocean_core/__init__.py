@@ -17,7 +17,7 @@
 
 """The core component of the dtocean project.
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging

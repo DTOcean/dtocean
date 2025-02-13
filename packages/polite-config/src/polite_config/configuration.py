@@ -5,10 +5,9 @@ includes settings for logging and helpers for user modified configuration
 files.
 
 .. module:: configuration
-   :platform: Windows
-   :synopsis: Provides configuration helpers
+     :synopsis: Provides configuration helpers
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 
 """
 

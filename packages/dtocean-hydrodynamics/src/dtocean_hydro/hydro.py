@@ -20,8 +20,7 @@ This module contains the class used to collect the parameters used in the
 creation of the tidal or wave numerical models, and characterisaiton of the sea conditions
 
 .. module:: hydro
-   :platform: Windows
-   :synopsis: Hydro module for the DTOcean WP2
+     :synopsis: Hydro module for the DTOcean WP2
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 """
