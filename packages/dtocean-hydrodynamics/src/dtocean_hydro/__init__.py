@@ -17,6 +17,7 @@
 
 import logging
 from logging import NullHandler
+from pathlib import Path
 
 from polite_config.configuration import Logger
 from polite_config.paths import DirectoryMap, ModPath, UserDataPath
@@ -28,12 +29,17 @@ def start_logging(level=None):
     """Start python logger"""
 
     objdir = ModPath(__name__, "config")
-    datadir = UserDataPath("dtocean_hydro", "DTOcean", "config")
-    dirmap = DirectoryMap(datadir, objdir)
+    userdir = UserDataPath("dtocean_hydro", "DTOcean", "config")
+    dirmap = DirectoryMap(userdir, objdir)
+    
+    appdir_path = userdir.parent
+    logdir = Path(appdir_path, "logs")
+    logdir.mkdir(exist_ok=True)
 
     log = Logger(dirmap)
     log(
         "dtocean_hydro",
         log_level=level,
         info_message="Begin logging for dtocean_hydro.",
+        file_prefix=logdir,
     )
