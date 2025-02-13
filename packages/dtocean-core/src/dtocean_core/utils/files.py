@@ -18,7 +18,7 @@
 """
 Created on Tue Feb 23 15:38:18 2016
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import logging

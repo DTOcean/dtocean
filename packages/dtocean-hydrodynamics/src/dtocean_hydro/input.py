@@ -20,8 +20,7 @@
 This module contains the classes used to collect and modify the WP2 inputs
 
 .. module:: input
-   :platform: Windows
-   :synopsis: Input module to DTOcean WP2
+     :synopsis: Input module to DTOcean WP2
 
 .. moduleauthor:: Francesco Ferri <ff@civil.aau.dk>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>

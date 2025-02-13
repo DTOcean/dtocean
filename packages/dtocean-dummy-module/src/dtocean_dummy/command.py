@@ -7,10 +7,9 @@ only became part of the standard library as of python 2.7. For versions older
 than 2.7, argparse must be installed separately.
 
 .. module:: command
-   :platform: Windows
-   :synopsis: Provides command line interface
+     :synopsis: Provides command line interface
 
-.. moduleauthor:: Mathew Topper <mathew.topper@tecnalia.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 
 """
 

@@ -20,7 +20,7 @@
 Created on Wed Apr 06 15:59:04 2016
 
 .. moduleauthor:: Adam Collin <adam.collin@ieee.org>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 from datetime import timedelta
