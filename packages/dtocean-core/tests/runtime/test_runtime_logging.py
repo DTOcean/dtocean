@@ -32,7 +32,7 @@ def test_start_logging_user(mocker, tmp_path):
         autospec=True,
     )
 
-    init_config(logging=True, files=True)
+    init_config(logging=True)
 
     mocker.patch(
         "dtocean_core.UserDataPath",

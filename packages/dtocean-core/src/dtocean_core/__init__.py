@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2024 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,16 +20,12 @@
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-import logging
-from logging import NullHandler
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import cast
 
 from polite_config.configuration import Logger, ReadINI
 from polite_config.paths import ModPath, UserDataPath
-
-logging.getLogger(__name__).addHandler(NullHandler())
 
 
 def start_logging():
@@ -38,18 +34,8 @@ def start_logging():
     # Pick up the configuration from the user directory if it exists
     userdir = UserDataPath("dtocean_core", "DTOcean", "config")
 
-    # Look for files.ini
-    if (userdir / "files.ini").is_file():
-        configdir = userdir
-    else:
-        configdir = ModPath("dtocean_core", "config")
-
-    files_ini = ReadINI(configdir, "files.ini")
-    files_config = cast(dict, files_ini.get_config())
-
     appdir_path = userdir.parent
-    log_folder = files_config["logs"]["path"]
-    logdir = Path(appdir_path, log_folder)
+    logdir = Path(appdir_path, "logs")
 
     # Look for logging.yaml
     if (userdir / "logging.yaml").is_file():
@@ -58,17 +44,7 @@ def start_logging():
         configdir = ModPath("dtocean_core", "config")
 
     log = Logger(configdir)
-    log_config_dict = log.read()
-
-    # Update the file logger if present
-    if "file" in log_config_dict["handlers"]:
-        log_filename = log_config_dict["handlers"]["file"]["filename"]
-        log_path = logdir / log_filename
-        log_config_dict["handlers"]["file"]["filename"] = str(log_path)
-        logdir.mkdir(exist_ok=True)
-
-    log.configure_logger(log_config_dict)
-    logger = log.get_named_logger("dtocean_core")
+    logger = log("dtocean_core", file_prefix=logdir)
 
     # Rotate any rotating file handlers
     for handler in logger.handlers:

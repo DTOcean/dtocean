@@ -18,12 +18,12 @@ def test_init_config(mocker, tmp_path):
         autospec=True,
     )
 
-    init_config(logging=True, database=True, files=True)
+    init_config(logging=True, database=True)
 
-    assert len(list(config_tmpdir.iterdir())) == 3
+    assert len(list(config_tmpdir.iterdir())) == 2
 
 
-@pytest.mark.parametrize("test_input", ["logging", "database", "files"])
+@pytest.mark.parametrize("test_input", ["logging", "database"])
 def test_init_config_parser(test_input):
     action, overwrite = init_config_parser([test_input])
 
@@ -31,7 +31,7 @@ def test_init_config_parser(test_input):
     assert not overwrite
 
 
-@pytest.mark.parametrize("test_input", ["logging", "database", "files"])
+@pytest.mark.parametrize("test_input", ["logging", "database"])
 def test_init_config_parser_overwrite(test_input):
     action, overwrite = init_config_parser([test_input, "--overwrite"])
 
