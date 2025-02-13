@@ -18,6 +18,7 @@ import argparse
 import importlib.metadata
 import logging
 from logging import NullHandler
+from pathlib import Path
 from typing import cast
 
 # Import DTOcean modules
@@ -34,14 +35,19 @@ def start_logging(level=None):
     """Start python logger"""
 
     objdir = ModPath(__name__, "config")
-    datadir = UserDataPath("dtocean_dummy", "DTOcean", "config")
-    dirmap = DirectoryMap(datadir, objdir)
+    userdir = UserDataPath("dtocean_dummy", "DTOcean", "config")
+    dirmap = DirectoryMap(userdir, objdir)
+    
+    appdir_path = userdir.parent
+    logdir = Path(appdir_path, "logs")
+    logdir.mkdir(exist_ok=True)
 
     log = Logger(dirmap)
     log(
         "dtocean_dummy",
         log_level=level,
         info_message="Begin logging for dtocean dummy module",
+        file_prefix=logdir,
     )
 
     return log
