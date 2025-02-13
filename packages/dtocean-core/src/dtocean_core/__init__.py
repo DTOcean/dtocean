@@ -35,6 +35,7 @@ def start_logging():
 
     appdir_path = userdir.parent
     logdir = Path(appdir_path, "logs")
+    logdir.mkdir(exist_ok=True)
 
     # Look for logging.yaml
     if (userdir / "logging.yaml").is_file():
