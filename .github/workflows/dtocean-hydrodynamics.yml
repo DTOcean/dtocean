@@ -25,6 +25,8 @@ jobs:
     defaults:
       run:
         working-directory: packages/dtocean-hydrodynamics
+    env:
+      DISPLAY: ':99.0'
     steps:
       - uses: actions/checkout@v4
         with:
