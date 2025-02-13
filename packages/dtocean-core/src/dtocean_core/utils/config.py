@@ -32,10 +32,10 @@ from . import SmartFormatter
 module_logger = logging.getLogger(__name__)
 
 
-def init_config(logging=False, database=False, files=False, overwrite=False):
+def init_config(logging=False, database=False, overwrite=False):
     """Copy config files to user data directory"""
 
-    if not any([logging, database, files]):
+    if not any([logging, database]):
         return
 
     objdir = ModPath(__name__, "..", "config")
@@ -46,8 +46,6 @@ def init_config(logging=False, database=False, files=False, overwrite=False):
         dirmap.copy_file("logging.yaml", overwrite=overwrite)
     if database:
         dirmap.copy_file("database.yaml", overwrite=overwrite)
-    if files:
-        dirmap.copy_file("files.ini", overwrite=overwrite)
 
     return datadir
 
@@ -72,16 +70,17 @@ def init_config_parser(args):
     )
 
     parser = argparse.ArgumentParser(
-        description=desStr, epilog=epiStr, formatter_class=SmartFormatter
+        description=desStr,
+        epilog=epiStr,
+        formatter_class=SmartFormatter,
     )
 
     parser.add_argument(
         "action",
-        choices=["logging", "database", "files"],
+        choices=["logging", "database"],
         help="R|Select an action, where\n"
         " logging = copy logging configuration\n"
-        " database = copy database configuration\n"
-        " files = copy file location configuration",
+        " database = copy database configuration",
     )
 
     parser.add_argument(
@@ -106,12 +105,10 @@ def init_config_interface():
     kwargs = {
         "logging": False,
         "database": False,
-        "files": False,
         "overwrite": overwrite,
     }
 
     kwargs[action] = True
-
     dir_path = init_config(**kwargs)
 
     if dir_path is not None:
