@@ -4,7 +4,6 @@ Example tidal case with interacting 2 device layout
 """
 
 import numpy as np
-from scipy.stats import norm
 
 from dtocean_hydro import start_logging
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
@@ -27,37 +26,19 @@ def get_inputs():
     # Array layout
     FixedArrayLayout = np.array([[100, 150], [120, 150]])
 
-    # Tidal time series
-    time_points = 1
-    time_pdf = norm.pdf(np.linspace(-2, 2, time_points))
-    time_scaled = time_pdf * (1.0 / np.amax(time_pdf))
-
     # Statistics generation
     x = np.linspace(0.0, 300.0, 100)
     y = np.linspace(0.0, 300.0, 30)
     nx = len(x)
     ny = len(y)
 
-    u_max = 5.0
-    v_max = 1.0
+    u_max = 3.0
+    v_max = 0.0
     ssh_max = 1.0
 
-    u_step = np.ones((ny, nx)) * u_max
-    v_step = np.ones((ny, nx)) * v_max
-    ssh_step = np.ones((ny, nx)) * ssh_max
-
-    u_arrays = []
-    v_arrays = []
-    ssh_arrays = []
-
-    for multiplier in time_scaled:
-        u_arrays.append(u_step * multiplier)
-        v_arrays.append(v_step * multiplier)
-        ssh_arrays.append(ssh_step * multiplier)
-
-    U = np.dstack(u_arrays)
-    V = np.dstack(v_arrays)
-    SSH = np.dstack(ssh_arrays)
+    U = np.ones((ny, nx, 1)) * u_max
+    V = np.ones((ny, nx, 1)) * v_max
+    SSH = np.ones((ny, nx, 1)) * ssh_max
     TI = np.array([0.1])
     p = np.ones(U.shape[-1])
 
