@@ -128,7 +128,11 @@ def test_make_tide_statistics_zero_U():
 
 @pytest.mark.parametrize(
     "xc, yc, xexp, yexp",
-    [(0.5001, 0.4999, 0.5, 0.5), (1.1, 1.1, 1, 1), (-0.1, -0.1, 0.0, 0.0)],
+    [
+        (0.5001, 0.4999, 0.5, 0.5),
+        (1.1, 1.1, 1, 1),
+        (-0.1, -0.1, 0.0, 0.0),
+    ],
 )
 def test_get_nearest_xy_idx(xc, yc, xexp, yexp):
     nx = 51
@@ -159,8 +163,8 @@ def test_get_range(interval, minexp, maxexp):
 
     range_min, range_max = _get_range_at_interval(V, interval)
 
-    assert np.isclose(float(range_min), minexp)
-    assert np.isclose(float(range_max), maxexp)
+    assert np.isclose(range_min, minexp)
+    assert np.isclose(range_max, maxexp)
 
 
 def test_get_n_samples():
