@@ -37,7 +37,10 @@ StrOrPath = Union[str, Path]
 
 
 def send_data_to_bem_interface(
-    data, db_folder, bin_folder, force_read_flag=False
+    data,
+    db_folder,
+    bin_folder,
+    force_read_flag=False,
 ):
     print("Creating the data structure")
     dataobj = DataStructure(data, force_read_flag=force_read_flag)
