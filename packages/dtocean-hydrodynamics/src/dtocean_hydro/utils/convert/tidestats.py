@@ -17,9 +17,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import operator
-from decimal import Decimal
 
 import numpy as np
+import numpy.typing as npt
 
 
 def make_tide_statistics(dictinput, ds=0.01):
@@ -163,17 +163,15 @@ def _get_nearest_xy_idx(x, y, xc, yc):
     return nearest_x_idx, nearest_y_idx
 
 
-def _get_range_at_interval(v, interval):
+def _get_range_at_interval(v: npt.NDArray[np.float64], interval: float):
     """Adjust the range of the data to fit a given interval"""
 
-    range_max = np.max(v)
-    range_min = np.min(v)
+    range_max = float(np.max(v))
+    range_min = float(np.min(v))
 
-    numerator = Decimal(str(range_max - range_min))
-    denominator = Decimal(str(interval))
-
-    remainder = numerator % denominator
-    adjust = float(denominator - remainder)
+    numerator = range_max - range_min
+    remainder = numerator % interval
+    adjust = interval - remainder
 
     range_max = range_max + 0.5 * adjust
     range_min = range_min - 0.5 * adjust
@@ -181,11 +179,18 @@ def _get_range_at_interval(v, interval):
     return range_min, range_max
 
 
-def _get_n_samples(range_min, range_max, interval, tol=1e-08):
-    numerator = Decimal(str(range_max - range_min))
-    denominator = Decimal(str(interval))
+def _get_n_samples(
+    range_min: float,
+    range_max: float,
+    interval: float,
+    tol=1e-08,
+):
+    numerator = range_max - range_min
+    quotient, remainder = divmod(numerator, interval)
 
-    quotient, remainder = divmod(numerator, denominator)
+    if remainder > interval / 2:
+        remainder = interval - remainder
+        quotient += 1
 
     if remainder > tol:
         err_msg = (

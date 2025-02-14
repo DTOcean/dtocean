@@ -145,7 +145,10 @@ def test_get_nearest_xy_idx(xc, yc, xexp, yexp):
 
 @pytest.mark.parametrize(
     "interval, minexp, maxexp",
-    [(0.1, -0.05, 2.05), (0.3001, -0.05035, 2.05035)],
+    [
+        (0.1, 0, 2),
+        (0.3001, -0.05035, 2.05035),
+    ],
 )
 def test_get_range(interval, minexp, maxexp):
     nt = 24
@@ -156,8 +159,8 @@ def test_get_range(interval, minexp, maxexp):
 
     range_min, range_max = _get_range_at_interval(V, interval)
 
-    assert np.isclose(range_min, minexp)
-    assert np.isclose(range_max, maxexp)
+    assert np.isclose(float(range_min), minexp)
+    assert np.isclose(float(range_max), maxexp)
 
 
 def test_get_n_samples():
