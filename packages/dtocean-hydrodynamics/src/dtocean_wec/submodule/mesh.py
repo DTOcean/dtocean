@@ -20,6 +20,7 @@ from math import pi
 
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.typing as npt
 
 
 class SurF(object):
@@ -392,15 +393,13 @@ def mesher(
         y = radius * np.sin(th)
     ## Non circular sectional area
     else:
-        x = np.zeros(Nth, dtype=float)
-        y = np.zeros(Nth, dtype=float)
-        Nn = geometry.shape[0]
-        x = np.zeros(Nth, dtype=float)
-        y = np.zeros(Nth, dtype=float)
+        x: npt.NDArray[np.float64] = np.zeros(Nth, dtype=float)
+        y: npt.NDArray[np.float64] = np.zeros(Nth, dtype=float)
         Nn = geometry.shape[0]
         x[:Nn] = geometry[:, 0].copy()
         y[:Nn] = geometry[:, 1].copy()
         inds = np.array(range(Nth - 1), dtype=int)  # number of intervals
+
         for i in range(Nth - Nn):
             L = (x[1 : Nn + i] - x[: Nn + i - 1]) ** 2 + (
                 y[1 : Nn + i] - y[: Nn + i - 1]
