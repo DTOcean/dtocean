@@ -51,13 +51,13 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          flags: dtocean-core
+          flags: dtocean-hydrodynamics
   audit:
     name: Code audit
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/dtocean-core
+        working-directory: packages/dtocean-hydrodynamics
     steps:
       - uses: actions/checkout@v4
         with:
