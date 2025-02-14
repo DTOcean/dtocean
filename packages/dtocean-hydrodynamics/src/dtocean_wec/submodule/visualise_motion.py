@@ -250,12 +250,13 @@ class Visualiser:
             label="manitude",
         )
 
-        (p2,) = par1.plot(  # type: ignore
+        (p2,) = par1.plot(  # type: ignore (https://github.com/matplotlib/matplotlib/issues/28624/)
             1 / self._data_h["periods"],
             np.angle(self._data_h["f_ex"][:, int(dir_i), int(d_i)]),
             "r-o",
             label="phase",
         )
+        p2 = cast(Line2D, p2)
 
         host.set_xlabel("frequency, [Hz]")
         host.set_ylabel("magnitude, [(N/m)/(Nm/m)]")
@@ -270,8 +271,7 @@ class Visualiser:
         host.tick_params(axis="x", **tkw)
 
         lines = [p1, p2]
-
-        host.legend(lines, [line.get_label() for line in lines])
+        host.legend(lines, [str(line.get_label()) for line in lines])
 
         return fig
 
@@ -291,12 +291,13 @@ class Visualiser:
             "k-o",
             label="manitude",
         )
-        (p2,) = par1.plot(  # type: ignore
+        (p2,) = par1.plot(  # type: ignore (https://github.com/matplotlib/matplotlib/issues/28624/)
             1 / self._data_h["periods"],
             np.angle(rao[:, int(dir_i), int(d_i)]),
             "r-o",
             label="phase",
         )
+        p2 = cast(Line2D, p2)
 
         host.set_xlabel("frequency, [Hz]")
         host.set_ylabel("rao manitude, [(m/m),(rad/m)]")
@@ -311,8 +312,7 @@ class Visualiser:
         host.tick_params(axis="x", **tkw)
 
         lines = [p1, p2]
-
-        host.legend(lines, [line.get_label() for line in lines])
+        host.legend(lines, [str(line.get_label()) for line in lines])
 
         return fig
 
