@@ -23,9 +23,12 @@ Created on Tue May 31 09:08:16 2016
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
+from typing import cast
+
 import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from matplotlib.lines import Line2D
 
 from dtocean_wave.utils.StrDyn import MotionFreq
 
@@ -206,12 +209,13 @@ class Visualiser:
             "b-o",
             label="added mass",
         )
-        (p2,) = par1.plot(  # type: ignore
+        (p2,) = par1.plot(  # type: ignore (https://github.com/matplotlib/matplotlib/issues/28624/)
             1 / self._data_h["periods"],
             self._data_h["c_rad"][:, int(d_i), int(d_j)],
             "g-o",
             label="radiation damping",
         )
+        p2 = cast(Line2D, p2)
 
         host.set_xlabel("frequency, [Hz]")
         host.set_ylabel("added mass, [(N/(m/s^2))/(Nm/(rad/s^2))]")
@@ -226,8 +230,7 @@ class Visualiser:
         host.tick_params(axis="x", **tkw)
 
         lines = [p1, p2]
-
-        host.legend(lines, [line.get_label() for line in lines])
+        host.legend(lines, [str(line.get_label()) for line in lines])
 
         return fig
 

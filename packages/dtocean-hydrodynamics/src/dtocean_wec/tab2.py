@@ -148,13 +148,14 @@ class RunNemoh(QWidget, Ui_T2):
                     print(e)
 
             elif ret == 1:
-                # Force the read_nemoh option in thge BemSolution class by changing the run flag
-                # in the _data dictionary.
+                # Force the read_nemoh option in the BemSolution class by
+                # changing the run flag in the _data dictionary.
                 QMessageBox.information(
                     self,
                     "Information",
                     "It is important that the data contained in the "
                     "hydrodynamic folder is in agreement with the gui input.",
+                    QMessageBox.StandardButton.Ok,
                 )
                 read_nemoh_flag = True
             else:
