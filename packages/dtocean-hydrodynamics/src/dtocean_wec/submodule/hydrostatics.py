@@ -66,19 +66,15 @@ def ReadNemohcal_mshs_mds(directory):
     with open(os.path.join(directory, "Nemoh.cal"), "r") as f_N:
         lines = f_N.readlines()
         content = lines[6:]
-        print(content)
         Nb = int(content[0].split("!")[0])  # Number of bodies
         strt = 1
         for body in range(Nb):
             strt += 1
             mesh_file = content[strt].split("!")[0].split()[0]
-            print(mesh_file)
             mesh_file = mesh_file.replace('"', "")
             mesh_file = mesh_file.replace("'", "")
             if mesh_file[0] == ".":
                 mesh_files.append(directory + mesh_file[1:])
-            elif mesh_files[0][0] == os.path.join("a", "a")[1]:
-                mesh_files.append(directory + mesh_file)
             else:
                 mesh_files.append(os.path.join(directory, mesh_file))
             Ndof = int(content[strt + 2].split("!")[0])
