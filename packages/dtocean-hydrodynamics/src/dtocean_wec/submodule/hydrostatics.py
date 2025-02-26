@@ -59,12 +59,13 @@ def ReadNemohcal_mshs_mds(directory):
     """
     Read setting file Nemoh.cal and return mesh files and generalized modes.
 
-    directory (str): path where Nemoh.cal or nemoh.cal
+    directory (str): path where Nemoh.cal
     """
     mesh_files: list[str] = list()
     modes = list()
     with open(os.path.join(directory, "Nemoh.cal"), "r") as f_N:
-        content = f_N.readlines()[6:]
+        lines = f_N.readlines()
+        content = lines[6:]
         Nb = int(content[0].split("!")[0])  # Number of bodies
         strt = 1
         for body in range(Nb):

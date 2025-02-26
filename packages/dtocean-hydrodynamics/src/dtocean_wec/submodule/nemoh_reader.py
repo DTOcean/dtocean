@@ -165,7 +165,7 @@ class NemohReader:
         bodies_dofs = mb_obj.get_dofs_floating_bodies()
         self.vel_map = mb_obj.b_mat
 
-        with open(os.path.join(self._path_prj_hdy, "nemoh.cal"), "r") as fhand:
+        with open(os.path.join(self._path_prj_hdy, "Nemoh.cal"), "r") as fhand:
             self.water_depth = float(fhand.readlines()[3].split("!")[0])
 
         self.cyl_radius = self.get_cylinder_dimension()
@@ -257,7 +257,7 @@ class NemohReader:
         return phi_r_m
 
     def get_cylinder_dimension(self):
-        with open(os.path.join(self._path_prj_hdy, "nemoh.cal"), "r") as fid:
+        with open(os.path.join(self._path_prj_hdy, "Nemoh.cal"), "r") as fid:
             lines = fid.readlines()
 
         # TODO: this is a weak point, increase the realiability of this search
