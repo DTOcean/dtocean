@@ -36,9 +36,9 @@ class DataStructure:
             nbody = 0
             freq_def = []
             ang_def = []
-            if os.path.isfile(os.path.join(self.data_folder, "nemoh.cal")):
+            if os.path.isfile(os.path.join(self.data_folder, "Nemoh.cal")):
                 with open(
-                    os.path.join(self.data_folder, "nemoh.cal"), "r"
+                    os.path.join(self.data_folder, "Nemoh.cal"), "r"
                 ) as fid:
                     lines = fid.readlines()
                 nbody = f_u.split_string(lines[6], int, sep=None)[0]
