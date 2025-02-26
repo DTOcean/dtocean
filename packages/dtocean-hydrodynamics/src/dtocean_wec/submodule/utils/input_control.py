@@ -23,7 +23,7 @@ from . import file_utilities as f_util
 def check_hydrodynamic_files(folder, get_array_mat=True):
     # using a sequential apporach this check comes after the check_folder.
     # therefore there is no need to re-check the directory existence
-    base_file_list = ("nemoh.cal",)
+    base_file_list = ("Nemoh.cal",)
     for el in base_file_list:
         if not os.path.isfile(os.path.join(folder, el)):
             return (

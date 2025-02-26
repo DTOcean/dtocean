@@ -83,7 +83,7 @@ class NemohExecute:
         n_bodies (int): number of body composing the WEC
         LocalAxes (list): local coordinate system position for each body composing the WEC.
                             The local coordiante system position is given with respect to the mesh 0,0,0 point.
-        header (list): header string for each body composing the WEC, used in the generation of the nemoh.cal
+        header (list): header string for each body composing the WEC, used in the generation of the Nemoh.cal
         mesh_file (list): mesh name for each body composing the WEC
         nDOF_b (list): number of dofs for each body composing the WEC
         connectivity (list): definition of the connectivity between bodies for a multibody WEC
@@ -302,8 +302,8 @@ class NemohExecute:
         )
         f.close()
 
-        # nemoh.cal
-        f = open(os.path.join(self.path_prj_hdy, "nemoh.cal"), "w")
+        # Nemoh.cal
+        f = open(os.path.join(self.path_prj_hdy, "Nemoh.cal"), "w")
         f.write(
             "--- Environment ------------------------------------------------------------------------------------------------------------------\n"
         )
