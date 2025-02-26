@@ -31,6 +31,7 @@ import logging
 import os
 import subprocess
 import sys
+from pathlib import Path
 from platform import system
 
 import numpy as np
@@ -331,15 +332,15 @@ class NemohExecute:
         f.write("{}				! Number of bodies\n".format(self.n_bodies))
 
         for nb in range(self.n_bodies):
-            mesh_fn = os.path.split(self.bodies[nb]["mesh"])[-1]
+            mesh_fn = Path(self.bodies[nb]["mesh"]).stem
             f.write(
                 "----- Body {} ----------------------------------------------\n".format(
                     self.bodies[nb]["ID"]
                 )
             )
             f.write(
-                ".\\mesh\\{}dat			! Name of mesh file\n".format(
-                    mesh_fn[:-3]
+                "{}			! Name of mesh file\n".format(
+                    Path(".") / "mesh" / (mesh_fn + ".dat")
                 )
             )
             f.write(
