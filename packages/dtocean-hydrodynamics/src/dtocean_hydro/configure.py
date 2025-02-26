@@ -26,7 +26,7 @@ module_logger = logging.getLogger(__name__)
 
 _ARCH = system().lower() if system().lower() != "windows" else "win64"
 _VERSION_DATA = "v2025.01.0"
-_VERSION_NEMOH = "v2024.12.2"
+_VERSION_NEMOH = "v2025.02.0"
 _DIR_DATA = UserDataPath("dtocean_data", "DTOcean", _VERSION_DATA)
 _DIR_NEMOH = UserDataPath("nemoh", "DTOcean", _VERSION_NEMOH)
 _URL_BASE_DATA = (
