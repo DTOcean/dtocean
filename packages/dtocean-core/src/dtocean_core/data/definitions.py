@@ -238,6 +238,7 @@ class TimeSeriesColumn(TimeSeries):
         }
 
         df = df.rename(columns=name_map)
+        assert df is not None
 
         # Don't allow Date to have any null
         if pd.isnull(df["Date"]).any():
@@ -250,7 +251,11 @@ class TimeSeriesColumn(TimeSeries):
 
         df["DateTime"] = dtstrs
         df = df.drop("Date", axis=1)
+        assert df is not None
+
         df = df.drop("Time", axis=1)
+        assert df is not None
+
         df = df.set_index("DateTime")
         result = df.iloc[:, 0]
 
@@ -430,7 +435,10 @@ class TableDataColumn(TableData):
             df = df.rename(columns=name_map)
 
             # Don't allow all null values
-            if pd.isnull(df).all().all():
+            is_null = pd.isnull(df)
+            assert isinstance(is_null, pd.DataFrame)
+
+            if is_null.all().all():
                 df = None
 
         auto.data.result = df
@@ -504,6 +512,7 @@ class IndexTableColumn(IndexTable):
                 )
             }
             df = df.rename(columns=name_map)
+            assert df is not None
 
             # Don't allow null values in the keys
             if pd.isnull(df[auto.meta.result.labels[0]]).any():
@@ -624,6 +633,7 @@ class LineTableColumn(LineTable):
             }
 
             df = df.rename(columns=name_map)
+            assert df is not None
 
             # Don't allow null values in the keys
             if pd.isnull(df[auto.meta.result.labels[0]]).any():
@@ -723,6 +733,7 @@ class TimeTableColumn(TimeTable):
             }
 
             df = df.rename(columns=name_map)
+            assert df is not None
 
             # Don't allow Date to have any null
             if pd.isnull(df["Date"]).any():
@@ -735,6 +746,7 @@ class TimeTableColumn(TimeTable):
 
             df["DateTime"] = dtstrs
             df = df.drop("Date", axis=1)
+            assert df is not None
             df = df.drop("Time", axis=1)
 
         auto.data.result = df
