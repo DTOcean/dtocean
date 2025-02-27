@@ -46,7 +46,7 @@ pyright = "^1.1.390"
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
-version-rewrite-rule = '=='
+version-pinning-rule = '=='
 
 [tool.pyright]
 typeCheckingMode = "basic"
