@@ -2,7 +2,8 @@
 
 :loudspeaker: A major overhaul is underway on the [next](https://github.com/DTOcean/dtocean/tree/next)
 branch. Please see my [sponsorship page](https://github.com/sponsors/H0R5E) for
-further details.
+further details and follow the associated [project](https://github.com/orgs/DTOcean/projects/4)
+for updates.
 
 ***
 
