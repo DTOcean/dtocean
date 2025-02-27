@@ -190,6 +190,7 @@ def make_JONSWAP(
 
     if w is None:
         w = np.linspace(0, wc, 257)
+        assert isinstance(w, np.ndarray)
     else:
         w = np.array(w)
 
