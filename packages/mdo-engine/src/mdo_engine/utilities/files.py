@@ -55,6 +55,7 @@ def xl_to_dds(
     # Drop a column if ignore_column is given
     if ignore_column is not None and ignore_column in root_sheet.columns:
         root_sheet = root_sheet.drop(ignore_column, axis=1)
+        assert root_sheet is not None
 
     # Fix the columns if necessary
     if sanitise_keys:
@@ -80,6 +81,7 @@ def xl_to_dds(
     for identifier, row in root_sheet.iterrows():
         if ignore_missing:
             row = row.dropna()
+            assert row is not None
 
         member_dict: dict[str, Any] = {"identifier": identifier}
         member_dict.update(row.to_dict())
@@ -88,6 +90,7 @@ def xl_to_dds(
             # Drop a column if ignore_column is given
             if ignore_column is not None and ignore_column in df.columns:
                 df = df.drop(ignore_column, axis=1)
+                assert df is not None
 
             # Fix the key if you need to
             if sanitise_keys:
@@ -120,6 +123,7 @@ def xl_to_dds(
                 keyseries = df.loc[str(identifier)].dropna()
                 assert isinstance(keyseries, pd.Series)
                 keyseries = keyseries.replace("-", np.nan)
+                assert keyseries is not None
                 keyseries = keyseries.where(pd.notnull(keyseries), None)
 
                 if keyseries.empty:
@@ -314,6 +318,7 @@ def dds_to_xl(dds_list, xl_path, root_cols=None):
 
         df = df.set_index(["Identifier"])
         df = df.sort_index()
+        assert df is not None
 
         df.to_excel(writer, sheet_name=sheet)
 
