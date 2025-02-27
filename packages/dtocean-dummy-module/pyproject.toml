@@ -37,7 +37,7 @@ ruff = "^0.8.3"
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
-version-rewrite-rule = '=='
+version-pinning-rule = '=='
 
 [tool.pyright]
 typeCheckingMode = "basic"
