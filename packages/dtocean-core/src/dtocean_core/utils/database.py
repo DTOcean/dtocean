@@ -148,7 +148,9 @@ def tidal_series_records_to_xset(tidal_records):
     ]
 
     tidal_table = tidal_table.drop("measure_date", axis=1)
+    assert tidal_table is not None
     tidal_table = tidal_table.drop("measure_time", axis=1)
+    assert tidal_table is not None
 
     msg = "Building time steps..."
     module_logger.debug(msg)
@@ -250,7 +252,9 @@ def point_to_xy(
     df["y"] = y
 
     if drop_point_column:
-        df = df.drop(point_column, axis=1)
+        df_dropped = df.drop(point_column, axis=1)
+        assert df_dropped is not None
+        df = df_dropped
 
     return df
 
@@ -481,6 +485,7 @@ def database_to_files(
                 print_function(msg_str)
 
                 table_df = table_df.drop(full_dict["fkey"], axis=1)
+                assert table_df is not None
 
             if full_dict["array"] is not None:
                 array_str = ", ".join(full_dict["array"])
@@ -694,6 +699,7 @@ def database_from_files(
                     print_function(msg_str)
 
                     df = df.drop(list(missing_set), axis=1)
+                    assert df is not None
 
             msg_str = "Writing to table: {}".format(dbname)
             print_function(msg_str)
