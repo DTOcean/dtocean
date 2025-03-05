@@ -493,8 +493,6 @@ class CallTidal:
         else:
             self.coord = coord
 
-        return
-
 
 def _map_mct_results(
     pow_perf_dev_state: npt.NDArray,

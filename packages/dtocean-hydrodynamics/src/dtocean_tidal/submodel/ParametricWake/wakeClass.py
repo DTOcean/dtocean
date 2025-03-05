@@ -100,8 +100,6 @@ class Wake:
         self._dfx = dataframe["dfX"] * ratio * self.Diam
         self._dfy = dataframe["dfY"] * abs(np.cos(ry)) * self.Diam
 
-        return
-
     def read_at_point(self, x, y, ct, ti, debug=False):
         """
         Interpolates CFD datasets based on Ct and TI values

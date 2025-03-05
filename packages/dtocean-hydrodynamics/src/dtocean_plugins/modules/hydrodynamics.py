@@ -928,5 +928,3 @@ class HydroInterface(ModuleInterface):
             }
 
             self.data.power_matrix = matrix_xgrid
-
-        return

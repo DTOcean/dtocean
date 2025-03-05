@@ -31,8 +31,6 @@ class DominantWake:
         self._coefficients = get_wake_coefficients(turb_speed, wake_matrix)
         self.indexes = np.argmin(self._coefficients, axis=0)
 
-        return
-
     @property
     def coefficients(self):
         coefficients = self.get_dominant(self._coefficients)

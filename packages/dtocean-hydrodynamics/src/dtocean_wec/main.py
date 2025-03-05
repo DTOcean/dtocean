@@ -156,8 +156,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionPerformance_Fit.triggered.connect(self.handle_open_power)
         self.actionData_Visualisation.triggered.connect(self.handle_open_plot)
 
-        return
-
     def task_show_mesh(self, path):
         self.mesh_view = PythonQtOpenGLMeshViewer(path["path"], path["f_n"])
         self.mesh_view.show()

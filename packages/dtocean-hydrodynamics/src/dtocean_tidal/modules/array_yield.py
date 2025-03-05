@@ -63,8 +63,6 @@ class ArrayYield:
         self.array_capacity_no_interaction = 0.0
         self._turbine_count = len(array.positions.keys())
 
-        return
-
     def performance(self, debug=False, debug_plot=False):
         """
         Method computes both array and device performance power capacity,
@@ -174,8 +172,6 @@ class ArrayYield:
             ax1.set_ylabel("Normal Velocity (m/s)", fontsize=12)
             ax1.grid(True)
             plt.show()
-
-        return
 
     def dissipated_mass_flow_rate(self, debug=False):
         """

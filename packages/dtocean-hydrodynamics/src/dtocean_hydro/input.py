@@ -141,8 +141,6 @@ class WP2_SiteData:
         logMsg = "--> SITE INPUT SUMMARY:\n\n{}".format(vars_string)
         module_logger.info(logMsg)
 
-        return
-
 
 class WP2_MachineData:
     """
@@ -256,8 +254,6 @@ class WP2_MachineData:
         vars_string = pformat(vars(self), indent=indent)
         logMsg = "--> MACHINE INPUT SUMMARY:\n\n{}".format(vars_string)
         module_logger.info(logMsg)
-
-        return
 
 
 class WP2input:

@@ -109,7 +109,6 @@ class Hydro:
                 linewidth=0.5,
             )
             plt.show()
-        return
 
 
 class Array:
@@ -321,8 +320,6 @@ class Array:
                     i, self.features[turb_name]["RY"]
                 )
                 module_logger.info(logMsg)
-
-        return
 
 
 ###Functions definitions###
