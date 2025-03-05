@@ -319,7 +319,7 @@ class AdvancedPosition(Strategy):
             err_msg = "Favorite results not available"
             raise RuntimeError(err_msg)
 
-        read_params = config["parameters"].keys()
+        read_params = list(config["parameters"].keys())
         read_params.append("n_evals")
 
         extract_vars = set(config["results_params"])
@@ -691,7 +691,7 @@ def _run_favorite(
     positioner = optimiser._cma_main.evaluator._positioner  # pylint: disable=protected-access
 
     # Try and run the simulation
-    e = None
+    error_message = None
 
     if disable_iterate_logging:
         logging.disable(logging.WARNING)
@@ -703,6 +703,7 @@ def _run_favorite(
 
     except Exception as e:  # pylint: disable=broad-except
         flag = "Exception"
+        error_message = e
 
         if raise_exc:
             raise e
@@ -721,7 +722,14 @@ def _run_favorite(
 
     params_dict = {k: v for k, v in zip(keys, params) if v is not None}
 
-    write_result_file(core, project, prj_base_path, params_dict, flag, e)
+    write_result_file(
+        core,
+        project,
+        prj_base_path,
+        params_dict,
+        flag,
+        error_message,
+    )
 
     if not save_prj:
         return
@@ -750,7 +758,7 @@ def _post_process(config, log_interval=100):
         module_logger.info(msg_str)
         return
 
-    read_params = config["parameters"].keys()
+    read_params = list(config["parameters"].keys())
     read_params.append("n_evals")
 
     for param in read_params:
@@ -921,5 +929,4 @@ def _get_sim_path_template(root_project_base_name, sim_dir):
     sim_name_template = root_project_base_name + "_{}.{}"
     sim_path_template = os.path.join(sim_dir, sim_name_template)
 
-    return sim_path_template
     return sim_path_template

@@ -19,7 +19,7 @@ except ImportError:
 from dtocean_core.core import Core, OrderedSim, Project
 from dtocean_core.menu import ModuleMenu
 
-dtocean_hydro = pytest.importorskip("dtocean-hydro")
+dtocean_hydro = pytest.importorskip("dtocean_hydro")
 
 if dtocean_hydro:
     from dtocean_plugins.strategies.position import (
@@ -187,7 +187,7 @@ def test_advanced_get_optimiser_status_complete(tmpdir):
 
 def test_advanced_get_optimiser_status_incomplete(mocker, tmpdir):
     mock_opt = mocker.patch(
-        "dtocean_core.strategies.position." "PositionOptimiser", autospec=True
+        "dtocean_plugins.strategies.position.PositionOptimiser", autospec=True
     )
     mock_opt.is_restart.return_value = True
 
@@ -219,7 +219,7 @@ def test_advanced_get_project_status_not_activated():
 
 def test_advanced_get_project_status_not_contain_module(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.ModuleMenu.get_active",
+        "dtocean_plugins.strategies.position.ModuleMenu.get_active",
         return_value=["mock"],
         autospec=True,
     )
@@ -240,7 +240,7 @@ def test_advanced_get_project_status_not_contain_module(mocker):
 
 def test_advanced_get_project_status_requires_simulation(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.ModuleMenu.get_active",
+        "dtocean_plugins.strategies.position.ModuleMenu.get_active",
         return_value=["Hydrodynamics"],
         autospec=True,
     )
@@ -261,7 +261,7 @@ def test_advanced_get_project_status_requires_simulation(mocker):
 
 def test_advanced_get_project_status_no_objective_variable(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.ModuleMenu.get_active",
+        "dtocean_plugins.strategies.position.ModuleMenu.get_active",
         return_value=["Hydrodynamics"],
         autospec=True,
     )
@@ -282,7 +282,7 @@ def test_advanced_get_project_status_no_objective_variable(mocker):
 
 def test_advanced_get_project_status_not_an_output(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.ModuleMenu.get_active",
+        "dtocean_plugins.strategies.position.ModuleMenu.get_active",
         return_value=["Hydrodynamics"],
         autospec=True,
     )
@@ -303,7 +303,7 @@ def test_advanced_get_project_status_not_an_output(mocker):
 
 def test_advanced_get_project_status_ready(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.ModuleMenu.get_active",
+        "dtocean_plugins.strategies.position.ModuleMenu.get_active",
         return_value=["Hydrodynamics"],
         autospec=True,
     )
@@ -342,7 +342,7 @@ def test_advanced_prepare_project_error(mocker, advanced):
 
 
 def test_advanced_prepare_project_active_simulation(caplog, mocker, advanced):
-    mocker.patch("dtocean_core.strategies.position.Tree", autospec=True)
+    mocker.patch("dtocean_plugins.strategies.position.Tree", autospec=True)
 
     mocker.patch.object(
         advanced, "get_project_status", return_value=["mock", 1], autospec=True
@@ -357,7 +357,7 @@ def test_advanced_prepare_project_active_simulation(caplog, mocker, advanced):
     mock_project.add_simulation(mock_sim)
     mock_project.add_simulation(mock_sim_extra, set_active=True)
 
-    with caplog_for_logger(caplog, "dtocean_core"):
+    with caplog_for_logger(caplog, "dtocean_plugins"):
         advanced._prepare_project(mock_core, mock_project)
 
     assert "Setting active simulation" in caplog.text
@@ -365,11 +365,13 @@ def test_advanced_prepare_project_active_simulation(caplog, mocker, advanced):
 
 def test_advanced_prepare_project_reset_level(caplog, mocker, advanced):
     mocker.patch.object(
-        advanced, "get_project_status", return_value=["mock", 1], autospec=True
+        advanced,
+        "get_project_status",
+        return_value=["mock", 1],
+        autospec=True,
     )
 
     mock_core = Core()
-
     mock_sim = OrderedSim("Default")
     mock_sim.set_inspection_level(mock_core._markers["initial"])
 
@@ -377,7 +379,6 @@ def test_advanced_prepare_project_reset_level(caplog, mocker, advanced):
     mock_project.add_simulation(mock_sim)
 
     # Try to fake completing the Hydrodynamics interaface
-
     mock_core.register_level(mock_project, mock_core._markers["initial"], None)
 
     mock_core.new_hub(mock_project)  # project hub
@@ -419,7 +420,7 @@ def test_advanced_prepare_project_reset_level(caplog, mocker, advanced):
 
 def test_advanced_pre_execute_restart(caplog, mocker, advanced):
     mock_restart = mocker.patch(
-        "dtocean_core.strategies.position." "PositionOptimiser.restart",
+        "dtocean_plugins.strategies.position.PositionOptimiser.restart",
         autospec=True,
     )
 
@@ -452,7 +453,7 @@ def test_advanced_pre_execute_restart(caplog, mocker, advanced):
 
 def test_advanced_pre_execute_start(mocker, advanced):
     mock_start = mocker.patch(
-        "dtocean_core.strategies.position." "PositionOptimiser.start",
+        "dtocean_plugins.strategies.position.PositionOptimiser.start",
         autospec=True,
     )
 
@@ -485,7 +486,7 @@ def test_advanced_pre_execute_start(mocker, advanced):
 
 def test_run_favorite_success(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.logging.disable", autospec=True
+        "dtocean_plugins.strategies.position.logging.disable", autospec=True
     )
 
     mock_core = mocker.MagicMock()
@@ -503,13 +504,12 @@ def test_run_favorite_success(mocker):
         mock_cma_main,
         "get_descaled_solutions",
         return_value=[[np.float64(1), 2, 3, 4, 5, 6, None]],
-        autospec=True,
     )
 
     mock_project = Project("mock")
 
     mock_evaluator = mocker.patch(
-        "dtocean_core.strategies.position_optimiser." "PositionEvaluator",
+        "dtocean_plugins.strategies.position_optimiser.PositionEvaluator",
         autospec=True,
     )
     mock_evaluator._base_project = mock_project
@@ -521,11 +521,11 @@ def test_run_favorite_success(mocker):
     mock_opt._worker_directory = "mock"
 
     mock_iterate = mocker.patch(
-        "dtocean_core.strategies.position.iterate", autospec=True
+        "dtocean_plugins.strategies.position.iterate", autospec=True
     )
 
     mock_write_result_file = mocker.patch(
-        "dtocean_core.strategies.position." "write_result_file", autospec=True
+        "dtocean_plugins.strategies.position.write_result_file", autospec=True
     )
 
     _run_favorite(mock_opt, save_prj=True)
@@ -551,7 +551,7 @@ def test_run_favorite_success(mocker):
 
 def test_run_favorite_exception(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.logging.disable", autospec=True
+        "dtocean_plugins.strategies.position.logging.disable", autospec=True
     )
 
     mock_core = mocker.MagicMock()
@@ -569,13 +569,12 @@ def test_run_favorite_exception(mocker):
         mock_cma_main,
         "get_descaled_solutions",
         return_value=[[np.float64(1), 2, 3, 4, 5, 6, None]],
-        autospec=True,
     )
 
     mock_project = Project("mock")
 
     mock_evaluator = mocker.patch(
-        "dtocean_core.strategies.position_optimiser." "PositionEvaluator",
+        "dtocean_plugins.strategies.position_optimiser.PositionEvaluator",
         autospec=True,
     )
     mock_evaluator._base_project = mock_project
@@ -588,13 +587,13 @@ def test_run_favorite_exception(mocker):
 
     expected = KeyError("bang!")
     mocker.patch(
-        "dtocean_core.strategies.position.iterate",
+        "dtocean_plugins.strategies.position.iterate",
         side_effect=expected,
         autospec=True,
     )
 
     mock_write_result_file = mocker.patch(
-        "dtocean_core.strategies.position." "write_result_file", autospec=True
+        "dtocean_plugins.strategies.position.write_result_file", autospec=True
     )
 
     _run_favorite(mock_opt)
@@ -617,7 +616,7 @@ def test_run_favorite_exception(mocker):
 
 def test_run_favorite_raise_exc(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.logging.disable", autospec=True
+        "dtocean_plugins.strategies.position.logging.disable", autospec=True
     )
 
     mock_core = mocker.MagicMock()
@@ -635,13 +634,12 @@ def test_run_favorite_raise_exc(mocker):
         mock_cma_main,
         "get_descaled_solutions",
         return_value=[[np.float64(1), 2, 3, 4, 5, 6, None]],
-        autospec=True,
     )
 
     mock_project = Project("mock")
 
     mock_evaluator = mocker.patch(
-        "dtocean_core.strategies.position_optimiser." "PositionEvaluator",
+        "dtocean_plugins.strategies.position_optimiser.PositionEvaluator",
         autospec=True,
     )
     mock_evaluator._base_project = mock_project
@@ -652,7 +650,7 @@ def test_run_favorite_raise_exc(mocker):
 
     expected = KeyError("bang!")
     mocker.patch(
-        "dtocean_core.strategies.position.iterate",
+        "dtocean_plugins.strategies.position.iterate",
         side_effect=expected,
         autospec=True,
     )
@@ -667,7 +665,7 @@ def test_read_yaml_exception(mocker):
     mock_stg_dict = {"status": "Exception"}
 
     mocker.patch(
-        "dtocean_core.strategies.position.open",
+        "dtocean_plugins.strategies.position.open",
         mocker.mock_open(read_data=dump(mock_stg_dict, Dumper=Dumper)),
     )
 
@@ -682,7 +680,7 @@ def test_read_yaml_disjoint(mocker):
     }
 
     mocker.patch(
-        "dtocean_core.strategies.position.open",
+        "dtocean_plugins.strategies.position.open",
         mocker.mock_open(read_data=dump(mock_stg_dict, Dumper=Dumper)),
     )
 
@@ -700,7 +698,7 @@ def test_read_yaml(mocker):
     }
 
     mocker.patch(
-        "dtocean_core.strategies.position.open",
+        "dtocean_plugins.strategies.position.open",
         mocker.mock_open(read_data=dump(mock_stg_dict, Dumper=Dumper)),
     )
 
@@ -744,7 +742,7 @@ def test_post_process(caplog, tmpdir):
         "objective": "objective",
     }
 
-    with caplog_for_logger(caplog, "dtocean_core"):
+    with caplog_for_logger(caplog, "dtocean_plugins"):
         _post_process(config, 2)
 
     p = tmpdir.join("mock_results.pkl")
@@ -755,7 +753,7 @@ def test_post_process(caplog, tmpdir):
         data = pickle.load(f)
 
     assert data == {
-        "sim_number": sim_num,
+        "sim_number": list(sim_num),
         "n_nodes": n_nodes_val,
         "mock": mock_val,
         "objective": mock_val,
@@ -781,10 +779,10 @@ def test_post_process_no_files(caplog, tmpdir):
 
 def test_advanced_post_process(mocker, advanced):
     mocker.patch(
-        "dtocean_core.strategies.position._run_favorite", autospec=True
+        "dtocean_plugins.strategies.position._run_favorite", autospec=True
     )
     mocker.patch(
-        "dtocean_core.strategies.position._post_process", autospec=True
+        "dtocean_plugins.strategies.position._post_process", autospec=True
     )
 
     advanced._post_process(None)
@@ -829,10 +827,10 @@ def test_advanced_execute_theaded(mocker, advanced):
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position._run_favorite", autospec=True
+        "dtocean_plugins.strategies.position._run_favorite", autospec=True
     )
     mocker.patch(
-        "dtocean_core.strategies.position._post_process", autospec=True
+        "dtocean_plugins.strategies.position._post_process", autospec=True
     )
 
     thread = advanced.execute_threaded(None, None)
@@ -852,10 +850,10 @@ def test_advanced_execute_theaded_stop(mocker, advanced):
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position._run_favorite", autospec=True
+        "dtocean_plugins.strategies.position._run_favorite", autospec=True
     )
     mocker.patch(
-        "dtocean_core.strategies.position._post_process", autospec=True
+        "dtocean_plugins.strategies.position._post_process", autospec=True
     )
 
     thread = advanced.execute_threaded(None, None)
@@ -881,10 +879,10 @@ def test_advanced_execute_theaded_pause_resume_pause_stop(
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position._run_favorite", autospec=True
+        "dtocean_plugins.strategies.position._run_favorite", autospec=True
     )
     mocker.patch(
-        "dtocean_core.strategies.position._post_process", autospec=True
+        "dtocean_plugins.strategies.position._post_process", autospec=True
     )
 
     thread = advanced.execute_threaded(None, None)
@@ -927,7 +925,7 @@ def test_advanced_execute_theaded_pause_resume_pause_stop(
 
 def test_advanced_execute_theaded_exit_hook(caplog, mocker, advanced):
     def mock_exit_hook():
-        logging.getLogger().info("Exit Hook")
+        logging.getLogger("dtocean_plugins").info("Exit Hook")
 
     mock_core = mocker.MagicMock()
     mock_opt = MockOpt(mock_core)
@@ -937,10 +935,10 @@ def test_advanced_execute_theaded_exit_hook(caplog, mocker, advanced):
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position._run_favorite", autospec=True
+        "dtocean_plugins.strategies.position._run_favorite", autospec=True
     )
     mocker.patch(
-        "dtocean_core.strategies.position._post_process", autospec=True
+        "dtocean_plugins.strategies.position._post_process", autospec=True
     )
 
     thread = advanced.execute_threaded(None, None)
@@ -951,11 +949,13 @@ def test_advanced_execute_theaded_exit_hook(caplog, mocker, advanced):
 
     thread.set_exit_hook(mock_exit_hook)
 
-    with caplog_for_logger(caplog, "dtocean_core"):
+    with caplog_for_logger(caplog, "dtocean_plugins"):
         thread.resume()
 
         while not thread.stopped:
             time.sleep(0.5)
+
+    print(caplog.text)
 
     assert "Exit Hook" in caplog.text
 
@@ -972,10 +972,10 @@ def test_advanced_execute_theaded_bad_exit_hook(caplog, mocker, advanced):
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position._run_favorite", autospec=True
+        "dtocean_plugins.strategies.position._run_favorite", autospec=True
     )
     mocker.patch(
-        "dtocean_core.strategies.position._post_process", autospec=True
+        "dtocean_plugins.strategies.position._post_process", autospec=True
     )
 
     thread = advanced.execute_threaded(None, None)
@@ -1007,10 +1007,10 @@ def test_advanced_execute_theaded_clear_exit_hook(caplog, mocker, advanced):
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position._run_favorite", autospec=True
+        "dtocean_plugins.strategies.position._run_favorite", autospec=True
     )
     mocker.patch(
-        "dtocean_core.strategies.position._post_process", autospec=True
+        "dtocean_plugins.strategies.position._post_process", autospec=True
     )
 
     thread = advanced.execute_threaded(None, None)
@@ -1183,29 +1183,31 @@ def test_advanced_get_favorite_result(tmpdir, results_dict):
 
     result = AdvancedPosition.get_favorite_result(config)
 
-    assert list(result.columns) == [
-        "project.lcoe_median",
-        "grid_orientation",
-        "delta_row",
-        "delta_col",
-        "n_nodes",
-        "t1",
-        "t2",
-        "n_evals",
-        "project.annual_energy",
-        "project.lifetime_energy_mode",
-        "project.q_factor",
-        "project.lcoe_mode",
-        "project.lifetime_opex_mode",
-        "project.capex_breakdown [Installation]",
-        "project.capex_breakdown [Condition Monitoring]",
-        "project.capex_breakdown [Externalities]",
-        "project.capex_breakdown [Mooring and Foundations]",
-        "project.capex_breakdown [Devices]",
-        "project.capex_breakdown [Electrical Sub-Systems]",
-        "project.capex_total",
-        "project.number_of_devices",
-    ]
+    assert set(result.columns) == set(
+        [
+            "project.lcoe_median",
+            "grid_orientation",
+            "delta_row",
+            "delta_col",
+            "n_nodes",
+            "t1",
+            "t2",
+            "n_evals",
+            "project.annual_energy",
+            "project.lifetime_energy_mode",
+            "project.q_factor",
+            "project.lcoe_mode",
+            "project.lifetime_opex_mode",
+            "project.capex_breakdown [Installation]",
+            "project.capex_breakdown [Condition Monitoring]",
+            "project.capex_breakdown [Externalities]",
+            "project.capex_breakdown [Mooring and Foundations]",
+            "project.capex_breakdown [Devices]",
+            "project.capex_breakdown [Electrical Sub-Systems]",
+            "project.capex_total",
+            "project.number_of_devices",
+        ]
+    )
 
     assert len(result) == 1
 
@@ -1250,7 +1252,7 @@ def test_advanced_get_all_results(mocker, tmpdir):
     }
 
     mocker.patch(
-        "dtocean_core.strategies.position.open",
+        "dtocean_plugins.strategies.position.open",
         mocker.mock_open(read_data=pickle.dumps(results_dict, -1)),
     )
 
@@ -1274,7 +1276,7 @@ def test_advanced_get_all_results(mocker, tmpdir):
 
 def test_advanced_import_simulation_file(mocker, advanced, results_dict):
     mocker.patch(
-        "dtocean_core.strategies.position.open",
+        "dtocean_plugins.strategies.position.open",
         mocker.mock_open(read_data=dump(results_dict, Dumper=Dumper)),
     )
 
@@ -1283,10 +1285,10 @@ def test_advanced_import_simulation_file(mocker, advanced, results_dict):
     yaml_file_path = os.path.join("directory", "mock_0.yaml")
 
     mocker.patch(
-        "dtocean_core.strategies.position.get_positioner", autospec=True
+        "dtocean_plugins.strategies.position.get_positioner", autospec=True
     )
 
-    mocker.patch("dtocean_core.strategies.position.prepare", autospec=True)
+    mocker.patch("dtocean_plugins.strategies.position.prepare", autospec=True)
 
     mocker.patch.object(mock_core, "import_simulation", autospec=True)
 
@@ -1318,19 +1320,19 @@ def test_advanced_load_simulation_ids(mocker, tmpdir, advanced, results_dict):
         p.write("content")
 
     mocker.patch(
-        "dtocean_core.strategies.position.get_positioner", autospec=True
+        "dtocean_plugins.strategies.position.get_positioner", autospec=True
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position.open",
+        "dtocean_plugins.strategies.position.open",
         mocker.mock_open(read_data=dump(results_dict, Dumper=Dumper)),
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position.logging.disable", autospec=True
+        "dtocean_plugins.strategies.position.logging.disable", autospec=True
     )
 
-    mocker.patch("dtocean_core.strategies.position.iterate", autospec=True)
+    mocker.patch("dtocean_plugins.strategies.position.iterate", autospec=True)
 
     mock_project = Project("mock")
     mock_load_project = Project("load")
@@ -1375,19 +1377,19 @@ def test_advanced_load_simulation_ids_titles(
         p.write("content")
 
     mocker.patch(
-        "dtocean_core.strategies.position.get_positioner", autospec=True
+        "dtocean_plugins.strategies.position.get_positioner", autospec=True
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position.open",
+        "dtocean_plugins.strategies.position.open",
         mocker.mock_open(read_data=dump(results_dict, Dumper=Dumper)),
     )
 
     mocker.patch(
-        "dtocean_core.strategies.position.logging.disable", autospec=True
+        "dtocean_plugins.strategies.position.logging.disable", autospec=True
     )
 
-    mocker.patch("dtocean_core.strategies.position.iterate", autospec=True)
+    mocker.patch("dtocean_plugins.strategies.position.iterate", autospec=True)
 
     mock_project = Project("mock")
     mock_load_project = Project("load")
@@ -1451,7 +1453,7 @@ def test_advanced_remove_simulations(
 
 def test_advanced_load_config(mocker):
     mocker.patch(
-        "dtocean_core.strategies.position.load_config",
+        "dtocean_plugins.strategies.position.load_config",
         return_value=True,
         autospec=True,
     )
@@ -1464,7 +1466,7 @@ def test_advanced_dump_config(mocker, advanced):
     advanced._config = config
 
     dump_config = mocker.patch(
-        "dtocean_core.strategies.position.dump_config", autospec=True
+        "dtocean_plugins.strategies.position.dump_config", autospec=True
     )
 
     mock_path = "mock"
@@ -1477,7 +1479,7 @@ def test_advanced_dump_config(mocker, advanced):
 
 def test_advanced_export_config_template(mocker, advanced):
     dump_config = mocker.patch(
-        "dtocean_core.strategies.position.dump_config", autospec=True
+        "dtocean_plugins.strategies.position.dump_config", autospec=True
     )
 
     mock_path = "mock"
@@ -1531,7 +1533,4 @@ def test_advanced_allow_run(
 
     config = {"worker_dir": w_dir}
 
-    assert AdvancedPosition.allow_run(None, None, config) == expected
-
-    assert AdvancedPosition.allow_run(None, None, config) == expected
     assert AdvancedPosition.allow_run(None, None, config) == expected

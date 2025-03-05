@@ -81,14 +81,12 @@ def main(
         n_evals = int(float(n_evals))
         params_dict["n_evals"] = n_evals
 
-    e = None
+    error_message = None
     project = None
 
     try:
         project = core.load_project(prj_file_path)
-
         positioner = get_positioner(core, project)
-
         iterate(
             core,
             project,
@@ -107,6 +105,7 @@ def main(
 
     except Exception as e:  # pylint: disable=broad-except
         flag = "Exception"
+        error_message = e
 
         if raise_exc:
             raise e
@@ -119,7 +118,14 @@ def main(
 
     prj_base_path, _ = os.path.splitext(prj_file_path)
 
-    write_result_file(core, project, prj_base_path, params_dict, flag, e)
+    write_result_file(
+        core,
+        project,
+        prj_base_path,
+        params_dict,
+        flag,
+        error_message,
+    )
 
 
 def iterate(

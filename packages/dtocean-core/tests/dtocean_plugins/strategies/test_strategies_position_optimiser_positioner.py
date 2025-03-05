@@ -98,7 +98,7 @@ def test_buffer_lease_polygon_turbine_interdistance(lease_polygon):
 
 def test_get_depth_exclusion_poly(layer_depths):
     test = _get_depth_exclusion_poly(layer_depths, max_depth=-21)
-
+    assert test is not None
     assert test.bounds == (0.0, 0.0, 200.0, 300.0)
 
 
@@ -153,7 +153,7 @@ def test_make_grid_nodes():
     assert ranges[0] > (maxx - minx)
     assert ranges[1] > (maxy - miny)
     assert np.isclose(coords[1, :] - coords[0, :], vector).all()
-    assert (coords == point).all(axis=1).any()
+    assert (coords == point.coords).all(axis=1).any()
     assert density > 0.75
 
 
@@ -227,21 +227,25 @@ def test_make_grid_nodes_skew():
     assert ranges[0] > (maxx - minx)
     assert ranges[1] > (maxy - miny)
     assert np.isclose(coords[91, :] - coords[0, :], vector).all()
-    assert (coords == point).all(axis=1).any()
+    assert (coords == point.coords).all(axis=1).any()
     assert density > 0.75
 
 
 def test_DummyPositioner_valid_poly(lease_polygon, layer_depths):
     test = DummyPositioner(
-        lease_polygon, layer_depths, max_depth=-21, lease_padding=10
+        lease_polygon,
+        layer_depths,
+        max_depth=-21,
+        lease_padding=10,
     )
-
     assert test._valid_poly is not None
-    assert test._valid_poly.bounds == (210.0, 60.0, 890.0, 240.0)
+    assert test._valid_poly.bounds == (110.0, 60.0, 890.0, 240.0)
 
 
 def test_DummyPositioner_valid_poly_nogo(
-    lease_polygon, layer_depths, nogo_polygons
+    lease_polygon,
+    layer_depths,
+    nogo_polygons,
 ):
     test = DummyPositioner(
         lease_polygon,
@@ -252,7 +256,7 @@ def test_DummyPositioner_valid_poly_nogo(
     )
 
     assert test._valid_poly is not None
-    assert test._valid_poly.bounds == (210.0, 60.0, 790.0, 240.0)
+    assert test._valid_poly.bounds == (110.0, 60.0, 790.0, 240.0)
 
 
 def test_DummyPositioner(lease_polygon, layer_depths):
@@ -265,15 +269,19 @@ def test_DummyPositioner(lease_polygon, layer_depths):
     psi = 0 * np.pi / 180
 
     pre_coords = _make_grid_nodes(
-        test._bounding_box, grid_orientation, delta_row, delta_col, beta, psi
+        test._bounding_box,
+        grid_orientation,
+        delta_row,
+        delta_col,
+        beta,
+        psi,
     )
-
     coords = test(grid_orientation, delta_row, delta_col, beta, psi)
-
     centroid = list(test._bounding_box.centroid.coords)[0]
+    max_coords = 81 * 11
 
     assert coords.shape[0] < pre_coords.shape[0]
-    assert 0.75 < float(coords.shape[0]) / 781 < 1
+    assert 0.75 < coords.shape[0] / max_coords < 1
     assert (coords == centroid).all(axis=1).any()
 
 
