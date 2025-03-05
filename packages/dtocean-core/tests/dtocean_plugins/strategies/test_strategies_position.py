@@ -4,6 +4,7 @@
 import contextlib
 import logging
 import os
+import os.path as path
 import pickle
 import time
 
@@ -534,7 +535,10 @@ def test_run_favorite_success(mocker):
     assert mock_iterate.call_args.args[1] != mock_project
     assert mock_iterate.call_args.args[3:] == (1.0, 2, 3, 4, 5, 6, None, 7)
 
-    assert mock_write_result_file.call_args.args[2] == "mock\\mock_xfavorite"
+    assert (
+        mock_write_result_file.call_args.args[2]
+        == "mock" + path.sep + "mock_xfavorite"
+    )
     assert mock_write_result_file.call_args.args[3] == {
         "theta": 1.0,
         "dr": 2,
@@ -596,7 +600,10 @@ def test_run_favorite_exception(mocker):
 
     _run_favorite(mock_opt)
 
-    assert mock_write_result_file.call_args.args[2] == "mock\\mock_xfavorite"
+    assert (
+        mock_write_result_file.call_args.args[2]
+        == "mock" + path.sep + "mock_xfavorite"
+    )
     assert mock_write_result_file.call_args.args[3] == {
         "theta": 1.0,
         "dr": 2,
