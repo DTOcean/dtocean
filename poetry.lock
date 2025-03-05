@@ -1317,6 +1317,7 @@ develop = true
 
 [package.dependencies]
 configobj = "^5.0.9"
+packaging = ">=16.0,<24.0"
 pyyaml = "^6.0.2"
 
 [package.source]

@@ -20,6 +20,7 @@ packages = [{include = "polite_config", from="src"}]
 python = "^3.12"
 configobj = "^5.0.9"
 pyyaml = "^6.0.2"
+packaging = ">=16.0,<24.0"
 
 [tool.poetry.group.test]
 optional = true
