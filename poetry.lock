@@ -490,7 +490,7 @@ name = "dtocean-hydrodynamics"
 version = "3.2.0"
 description = "Hydrodynamics module for the DTOcean tools"
 optional = false
-python-versions = ">=3.12,<3.14"
+python-versions = ">=3.12,<3.13"
 groups = ["main"]
 files = []
 develop = true
@@ -500,6 +500,7 @@ cma = "^4.0.0"
 contourpy = "^1.3.1"
 h5py = "^3.12.1"
 matplotlib = "^3.8.0"
+natsort = "^8.4.0"
 numpy = "^1.26.4"
 pandas = "^2.2.3"
 polite-config = {path = "../polite-config", develop = true}

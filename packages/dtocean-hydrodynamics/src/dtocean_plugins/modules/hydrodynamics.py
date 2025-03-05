@@ -33,7 +33,6 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from mdo_engine.boundary.interface import MaskVariable
 from natsort import natsorted
 from polite_config.paths import UserDataPath
 from polite_config.version import Version
@@ -49,7 +48,6 @@ from dtocean_hydro.utils.convert import (
     radians_to_bearing,
     vector_to_bearing,
 )
-from dtocean_plugins.modules.modules import ModuleInterface
 
 # Check module version
 pkg_title = "dtocean-core"
@@ -62,6 +60,10 @@ if not Version(version).major == major_version:
         "required, but version {} is installed"
     ).format(pkg_title, major_version, version)
     raise ImportError(ERR_MSG)
+else:
+    from mdo_engine.boundary.interface import MaskVariable
+
+    from dtocean_plugins.modules.modules import ModuleInterface
 
 
 class HydroInterface(ModuleInterface):
