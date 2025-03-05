@@ -1,9 +1,8 @@
-
 # pylint: disable=redefined-outer-name
 
 import pytest
 
-from dtocean_core.utils.version import Version
+from polite_config.version import Version
 
 
 @pytest.fixture(scope="module")
@@ -13,7 +12,7 @@ def version():
 
 @pytest.fixture(scope="module")
 def version_partial():
-    return Version('1a5')
+    return Version("1a5")
 
 
 def test_version_major(version):
