@@ -124,8 +124,6 @@ class WP2output(object):
         self.power_matrix_machine = power_matrix_machine
         self.power_matrix_dims = power_matrix_dims
 
-        return
-
     def remap_res(self, connection_point):
         array_layout = np.zeros((self.Nbodies, 2))
 
@@ -167,8 +165,6 @@ class WP2output(object):
         self.Array_layout = Array_layout_dic
         self.q_factor_Per_Device = q_perD_n
 
-        return
-
     def logRes(self):
         """
         logRes: log the class attributes in the main logger
@@ -179,8 +175,6 @@ class WP2output(object):
         for line in results:
             module_logger.info(line)
 
-        return
-
     def printRes(self):
         """
         printRes: print the class attributes in the current stdout
@@ -190,8 +184,6 @@ class WP2output(object):
 
         for line in results:
             print(line)
-
-        return
 
     def _make_results(self):
         """

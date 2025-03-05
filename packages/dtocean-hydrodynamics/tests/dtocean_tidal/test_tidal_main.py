@@ -142,8 +142,6 @@ def test_Array_init(data, turbines, features):
     hydro = Hydro(data)
     Array(hydro, turbines, features)
 
-    return
-
 
 @pytest.mark.parametrize(
     "psi_turb, psi_yaw, psi_current, two_way, expected",

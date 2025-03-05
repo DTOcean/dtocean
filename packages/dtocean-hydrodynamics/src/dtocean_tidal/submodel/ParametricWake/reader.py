@@ -112,5 +112,3 @@ def delete_reader():
 
     # Deallocate memory
     read_db.dealloc_arrays()
-
-    return

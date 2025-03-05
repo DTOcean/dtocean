@@ -181,5 +181,3 @@ class BemSolution(object):
             per_fit.perf_fitting(machine_spec, site_spec)
 
         self.per_fit = per_fit
-
-        return

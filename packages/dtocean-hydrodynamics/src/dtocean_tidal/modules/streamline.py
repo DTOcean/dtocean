@@ -140,8 +140,6 @@ class Streamlines:
         ax.set_aspect("equal")
         plt.show()
 
-        return
-
     def _makeStreamline(self, x0, y0, sign=1):
         """
         Compute a streamline extending in one direction from the given point.

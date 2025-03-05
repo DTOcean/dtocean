@@ -78,8 +78,6 @@ class WakeInteraction:
         self._criterior = criterior
         self._max_loop = max_loop
 
-        return
-
     def solve_flow(self, debug=False):
         """
         Find velocities and TIs at each turbine by iterating the velocity and
@@ -179,8 +177,6 @@ class WakeInteraction:
         self.coefficient = newSpeed / iniSpeed
         self.inducedTKE = newTKE
 
-        return
-
     # Simple formula for wake expansion while waiting for further development...
     # see dtocean_tidal/submodel/ParametricWake/wakeClass.py
     # This feature is not needed for DTOcean as is.
@@ -229,8 +225,6 @@ class WakeInteraction:
                 ax.set_xlabel("Distance (m)", fontsize=12)
 
             plt.show()
-
-        return
 
 
 def _solve_flow(

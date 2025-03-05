@@ -395,8 +395,6 @@ class MultiBody(object):
             iWEC.order.max(),
         )
 
-        return
-
     def Interaction(self, k0, D, G, TruncOrder):
         """
         Interaction: The interaction theory yields a system of equations to be solved for amplitude scattered

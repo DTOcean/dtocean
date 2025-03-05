@@ -106,8 +106,6 @@ class Array_pkg(object):
         self._mindist_percent_max = None
         self._debug = debug
 
-        return
-
     def generator(self, NR, NC, IR, IC, beta, psi):
         """
         generator: Generates coordinates of the grid nodes, in function of the
@@ -166,8 +164,6 @@ class Array_pkg(object):
 
         else:
             self.coord = np.zeros((1, 2))
-
-        return
 
     def check_grid_distance(self, x1, x2, a1, a2):
         """
@@ -239,8 +235,6 @@ class Array_pkg(object):
         else:
             self.minDist_constraint = False
             self._mindist_percent_max = None
-
-        return
 
     def checkout(self, nogo_list=None, mindist_raise=False):
         """

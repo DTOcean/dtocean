@@ -312,8 +312,6 @@ def check_bin_widths(rated_power, bin_width):
         ).format(bin_width)
         raise ValueError(errStr)
 
-    return
-
 
 def make_power_histograms(
     device_power_pmfs: dict[str, npt.NDArray],
@@ -475,5 +473,3 @@ def add_Te_interface():
 
     elif ".xls" in ext:
         wave_df.to_excel(file_path, index=False)
-
-    return
