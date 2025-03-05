@@ -21,7 +21,7 @@ from dtocean_core.core import Core
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import Strata
 
-dtocean_hydro = pytest.importorskip("dtocean-hydro")
+dtocean_hydro = pytest.importorskip("dtocean_hydro")
 
 if dtocean_hydro:
     from dtocean_plugins.strategies.position_optimiser import (
@@ -119,7 +119,7 @@ def test_PositionEvaluator_init_bad_objective(
     positioner = ParaPositioner(lease_polygon, layer_depths)
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.get_positioner",
+        "dtocean_plugins.strategies.position_optimiser.get_positioner",
         return_value=positioner,
         autospec=True,
     )
@@ -145,7 +145,7 @@ def evaluator(mocker, lease_polygon, layer_depths):
     positioner = ParaPositioner(lease_polygon, layer_depths)
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.get_positioner",
+        "dtocean_plugins.strategies.position_optimiser.get_positioner",
         return_value=positioner,
         autospec=True,
     )
@@ -194,7 +194,7 @@ def test_PositionEvaluator_get_worker_results_success(mocker, evaluator):
     mock_stg_dict = {"status": "Success", "results": {"mock": 1}}
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.open",
+        "dtocean_plugins.strategies.position_optimiser.open",
         mocker.mock_open(read_data=dump(mock_stg_dict, Dumper=Dumper)),
     )
 
@@ -212,7 +212,7 @@ def test_PositionEvaluator_get_worker_results_exception(mocker, evaluator):
     mock_stg_dict = {"status": "Exception", "error": "mock"}
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.open",
+        "dtocean_plugins.strategies.position_optimiser.open",
         mocker.mock_open(read_data=dump(mock_stg_dict, Dumper=Dumper)),
     )
 
@@ -230,7 +230,7 @@ def test_PositionEvaluator_get_worker_results_bad_flag(mocker, evaluator):
     mock_stg_dict = {"status": "mock"}
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.open",
+        "dtocean_plugins.strategies.position_optimiser.open",
         mocker.mock_open(read_data=dump(mock_stg_dict, Dumper=Dumper)),
     )
 
@@ -246,7 +246,7 @@ def test_PositionEvaluator_get_worker_results_not_number(
     mock_stg_dict = {"status": "Success", "results": {"mock": "mock"}}
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.open",
+        "dtocean_plugins.strategies.position_optimiser.open",
         mocker.mock_open(read_data=dump(mock_stg_dict, Dumper=Dumper)),
     )
 
@@ -621,7 +621,7 @@ def test_PositionOptimiser_start(
     mocker, tmpdir, lease_polygon, layer_depths, mock_var, minevals
 ):
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.ModuleMenu." "get_active",
+        "dtocean_plugins.strategies.position_optimiser.ModuleMenu.get_active",
         return_value=["Operations and Maintenance"],
         autospec=True,
     )
@@ -631,7 +631,7 @@ def test_PositionOptimiser_start(
     positioner = ParaPositioner(lease_polygon, layer_depths)
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.get_positioner",
+        "dtocean_plugins.strategies.position_optimiser.get_positioner",
         return_value=positioner,
         autospec=True,
     )
@@ -728,7 +728,7 @@ def test_PositionOptimiser_start_more(
     mocker, tmpdir, lease_polygon, layer_depths
 ):
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.ModuleMenu." "get_active",
+        "dtocean_plugins.strategies.position_optimiser.ModuleMenu.get_active",
         return_value=[],
         autospec=True,
     )
@@ -738,7 +738,7 @@ def test_PositionOptimiser_start_more(
     positioner = ParaPositioner(lease_polygon, layer_depths)
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.get_positioner",
+        "dtocean_plugins.strategies.position_optimiser.get_positioner",
         return_value=positioner,
         autospec=True,
     )
@@ -759,7 +759,9 @@ def test_PositionOptimiser_start_more(
 
     mocker.patch.object(mock_core, "dump_project", autospec=True)
 
-    mocker.patch("dtocean_core.strategies.position_optimiser.Core", mock_core)
+    mocker.patch(
+        "dtocean_plugins.strategies.position_optimiser.Core", mock_core
+    )
 
     worker_dir = str(tmpdir)
     base_penalty = 1
@@ -878,7 +880,7 @@ def test_dump_load_dump_load_config(tmpdir):
 
 def test_PositionOptimiser_is_restart(mocker, tmpdir):
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.opt.load_outputs",
+        "dtocean_plugins.strategies.position_optimiser.opt.load_outputs",
         autospec=True,
     )
 
@@ -909,7 +911,7 @@ def test_dump_config_extra_keys(tmpdir):
 def test_PositionOptimiser_is_restart_no_state(caplog, mocker, tmpdir):
     err_msg = "bang!"
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.opt.load_outputs",
+        "dtocean_plugins.strategies.position_optimiser.opt.load_outputs",
         side_effect=IOError(err_msg),
         autospec=True,
     )
@@ -931,7 +933,7 @@ def test_PositionOptimiser_is_restart_no_state(caplog, mocker, tmpdir):
 
 def test_PositionOptimiser_is_restart_missing_keys(caplog, mocker, tmpdir):
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.opt.load_outputs",
+        "dtocean_plugins.strategies.position_optimiser.opt.load_outputs",
         autospec=True,
     )
 
@@ -986,7 +988,7 @@ def test_PositionOptimiser_restart(mocker, tmpdir, lease_polygon, layer_depths):
     positioner = ParaPositioner(lease_polygon, layer_depths)
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.get_positioner",
+        "dtocean_plugins.strategies.position_optimiser.get_positioner",
         return_value=positioner,
         autospec=True,
     )
@@ -996,7 +998,7 @@ def test_PositionOptimiser_restart(mocker, tmpdir, lease_polygon, layer_depths):
     mock_es = mocker.MagicMock()
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.opt.load_outputs",
+        "dtocean_plugins.strategies.position_optimiser.opt.load_outputs",
         return_value=[mock_es, counter_dict, None],
         autospec=True,
     )
@@ -1060,7 +1062,7 @@ def test_PositionOptimiser_restart(mocker, tmpdir, lease_polygon, layer_depths):
     config["parameters"] = parameters
 
     load_config = mocker.patch(
-        "dtocean_core.strategies.position_optimiser." "load_config",
+        "dtocean_plugins.strategies.position_optimiser.load_config",
         return_value=config,
         autospec=True,
     )
@@ -1106,7 +1108,7 @@ def test_PositionOptimiser_restart_more(
     positioner = ParaPositioner(lease_polygon, layer_depths)
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.get_positioner",
+        "dtocean_plugins.strategies.position_optimiser.get_positioner",
         return_value=positioner,
         autospec=True,
     )
@@ -1116,7 +1118,7 @@ def test_PositionOptimiser_restart_more(
     mock_es.popsize = popsize
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.opt.load_outputs",
+        "dtocean_plugins.strategies.position_optimiser.opt.load_outputs",
         return_value=[mock_es, {}, None],
         autospec=True,
     )
@@ -1181,7 +1183,7 @@ def test_PositionOptimiser_restart_more(
     config["parameters"] = parameters
 
     load_config = mocker.patch(
-        "dtocean_core.strategies.position_optimiser." "load_config",
+        "dtocean_plugins.strategies.position_optimiser.load_config",
         return_value=config,
         autospec=True,
     )
@@ -1213,7 +1215,7 @@ def test_PositionOptimiser_restart_more(
 def test_PositionOptimiser_restart_not_possible(caplog, mocker):
     err_msg = "bang!"
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.opt.load_outputs",
+        "dtocean_plugins.strategies.position_optimiser.opt.load_outputs",
         side_effect=IOError(err_msg),
         autospec=True,
     )
@@ -1257,7 +1259,7 @@ def test_PositionOptimiser_next_dump(
     mocker, tmpdir, lease_polygon, layer_depths
 ):
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.ModuleMenu." "get_active",
+        "dtocean_plugins.strategies.position_optimiser.ModuleMenu.get_active",
         return_value=["Operations and Maintenance"],
         autospec=True,
     )
@@ -1267,7 +1269,7 @@ def test_PositionOptimiser_next_dump(
     positioner = ParaPositioner(lease_polygon, layer_depths)
 
     mocker.patch(
-        "dtocean_core.strategies.position_optimiser.get_positioner",
+        "dtocean_plugins.strategies.position_optimiser.get_positioner",
         return_value=positioner,
         autospec=True,
     )
@@ -1376,7 +1378,7 @@ def test_PositionOptimiser_next_no_dump(mocker):
     test._cma_main = mock_cma_main
 
     mock_dump_outputs = mocker.patch(
-        "dtocean_core.strategies." "position_optimiser.opt.dump_outputs",
+        "dtocean_plugins.strategies.position_optimiser.opt.dump_outputs",
         autospec=True,
     )
 

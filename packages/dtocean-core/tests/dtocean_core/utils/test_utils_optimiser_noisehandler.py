@@ -2,8 +2,6 @@
 
 # pylint: disable=protected-access
 
-import contextlib
-import logging
 import sys
 from collections import namedtuple
 from typing import Optional
@@ -21,16 +19,6 @@ from dtocean_core.utils.optimiser import (
     init_evolution_strategy,
     load_outputs,
 )
-
-
-@contextlib.contextmanager
-def caplog_for_logger(caplog, logger_name, level=logging.DEBUG):
-    caplog.handler.records = []
-    logger = logging.getLogger(logger_name)
-    logger.addHandler(caplog.handler)
-    logger.setLevel(level)
-    yield
-    logger.removeHandler(caplog.handler)
 
 
 class MockParams(namedtuple("MockParams", ["cost", "x"])):

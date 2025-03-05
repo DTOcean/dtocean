@@ -20,7 +20,7 @@ include = [
 dtocean-core = 'dtocean_core.utils.execute:main_interface'
 dtocean-core-config = 'dtocean_core.utils.config:init_config_interface'
 dtocean-database = 'dtocean_core.utils.database:database_convert_interface'
-_dtocean-optim-pos = 'dtocean_core.strategies.position_optimiser.iterator:interface'
+_dtocean-optim-pos = 'dtocean_plugins.strategies.position_optimiser.iterator:interface'
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"

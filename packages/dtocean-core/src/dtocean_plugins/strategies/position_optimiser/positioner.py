@@ -21,9 +21,10 @@
 """
 
 import abc
+from typing import Optional, Union
 
 import numpy as np
-from shapely.geometry import LineString, Point, Polygon, box
+from shapely.geometry import LineString, MultiPoint, Point, Polygon, box
 from shapely.ops import nearest_points, polylabel
 
 try:
@@ -62,11 +63,16 @@ class DevicePositioner:
         self._valid_poly = None
 
         self._set_valid_polygon(
-            nogo_polygons, lease_padding, turbine_interdistance
+            nogo_polygons,
+            lease_padding,
+            turbine_interdistance,
         )
 
     def _set_valid_polygon(
-        self, nogo_polygons, lease_padding, turbine_interdistance
+        self,
+        nogo_polygons,
+        lease_padding,
+        turbine_interdistance,
     ):
         depth_exclude_poly = _get_depth_exclusion_poly(
             self._layer_depths,
@@ -81,7 +87,9 @@ class DevicePositioner:
 
         if nogo_polygons is None:
             self._valid_poly = _buffer_lease_polygon(
-                valid_poly, lease_padding, turbine_interdistance
+                valid_poly,
+                lease_padding,
+                turbine_interdistance,
             )
             return
 
@@ -137,7 +145,9 @@ class DevicePositioner:
 
 
 def _buffer_lease_polygon(
-    lease_polygon, lease_padding=None, turbine_interdistance=None
+    lease_polygon,
+    lease_padding=None,
+    turbine_interdistance=None,
 ):
     if lease_padding is None and turbine_interdistance is None:
         return lease_polygon
@@ -256,7 +266,7 @@ def _make_grid_nodes(
 
 class DummyPositioner(DevicePositioner):
     def _adapt_nodes(self, nodes, *args, **kwargs):
-        nodes = nodes + self._bounding_box.centroid
+        nodes = nodes + self._bounding_box.centroid.coords
         return nodes
 
 
@@ -441,7 +451,11 @@ class CompassPositioner(DevicePositioner):
 
 
 class PolyCompass:
-    def __init__(self, polygon, centre=None):
+    def __init__(
+        self,
+        polygon: Polygon,
+        centre: Optional[tuple[Union[float, int], ...]] = None,
+    ):
         self._polygon = polygon
         self._cx = None
         self._cy = None
@@ -453,7 +467,7 @@ class PolyCompass:
         if centre is None:
             self._cx, self._cy = self._get_bbox_centroid()
         else:
-            self._cx, self._cy = centre
+            self._cx, self._cy = [float(x) for x in centre[:2]]
 
     def _get_bbox_centroid(self):
         return box(*self._polygon.bounds).centroid.coords[:][0]
@@ -462,17 +476,17 @@ class PolyCompass:
         assert isinstance(self._cx, float)
         ns_line_ends = [(self._cx, -9e8), (self._cx, 9e8)]
         ns_line = LineString(ns_line_ends)
-        self._ns_intersections = [
-            point.y for point in self._polygon.exterior.intersection(ns_line)
-        ]
+        points = self._polygon.exterior.intersection(ns_line)
+        assert isinstance(points, MultiPoint)
+        self._ns_intersections = [point.y for point in points.geoms]
 
     def _add_we_intersections(self):
         assert isinstance(self._cy, float)
         we_line_ends = [(-9e8, self._cy), (9e8, self._cy)]
         we_line = LineString(we_line_ends)
-        self._we_intersections = [
-            point.x for point in self._polygon.exterior.intersection(we_line)
-        ]
+        points = self._polygon.exterior.intersection(we_line)
+        assert isinstance(points, MultiPoint)
+        self._we_intersections = [point.x for point in points.geoms]
 
     def _add_swne_intersections(self):
         def f(x):
@@ -480,9 +494,9 @@ class PolyCompass:
 
         swne_line_ends = [(-9e8, f(-9e8)), (9e8, f(9e8))]
         swne_line = LineString(swne_line_ends)
-        self._swne_intersections = self._polygon.exterior.intersection(
-            swne_line
-        )
+        points = self._polygon.exterior.intersection(swne_line)
+        assert isinstance(points, MultiPoint)
+        self._swne_intersections = list(points.geoms)
 
     def _add_nwse_intersections(self):
         def f(x):
@@ -490,9 +504,9 @@ class PolyCompass:
 
         nwse_line_ends = [(-9e8, f(-9e8)), (9e8, f(9e8))]
         nwse_line = LineString(nwse_line_ends)
-        self._nwse_intersections = self._polygon.exterior.intersection(
-            nwse_line
-        )
+        points = self._polygon.exterior.intersection(nwse_line)
+        assert isinstance(points, MultiPoint)
+        self._nwse_intersections = list(points.geoms)
 
     def _get_north(self):
         if self._ns_intersections is None:
