@@ -27,6 +27,7 @@ Note:
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
+import importlib.metadata
 import pickle
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,7 @@ import numpy as np
 from mdo_engine.boundary.interface import MaskVariable
 from natsort import natsorted
 from polite_config.paths import UserDataPath
+from polite_config.version import Version
 
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
 from dtocean_hydro.main import WP2
@@ -48,6 +50,18 @@ from dtocean_hydro.utils.convert import (
     vector_to_bearing,
 )
 from dtocean_plugins.modules.modules import ModuleInterface
+
+# Check module version
+pkg_title = "dtocean-core"
+major_version = 4
+version = importlib.metadata.version(pkg_title)
+
+if not Version(version).major == major_version:
+    ERR_MSG = (
+        "Incompatible version of {} detected! Major version {} is "
+        "required, but version {} is installed"
+    ).format(pkg_title, major_version, version)
+    raise ImportError(ERR_MSG)
 
 
 class HydroInterface(ModuleInterface):

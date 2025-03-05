@@ -1,4 +1,3 @@
-import os
 from copy import deepcopy
 from pprint import pprint
 
@@ -10,16 +9,10 @@ from dtocean_core.core import Core
 from dtocean_core.menu import ModuleMenu, ProjectMenu
 from dtocean_core.pipeline import Tree, _get_connector
 
-dir_path = os.path.dirname(__file__)
-
 
 @pytest.fixture(scope="module")
 def core():
-    """Share a Core object"""
-
-    new_core = Core()
-
-    return new_core
+    return Core()
 
 
 @pytest.fixture(scope="module")
@@ -29,8 +22,6 @@ def var_tree():
 
 @pytest.fixture(scope="module")
 def module_menu(core):
-    """Share a ModuleMenu object"""
-
     return ModuleMenu()
 
 
@@ -93,7 +84,13 @@ def test_wave_not_inputs(module_menu, core, wave_project, var_tree):
     assert "device.cut_in_velocity" not in hydro_input_status
 
 
-def test_get_wave_interface(module_menu, core, wave_project, var_tree):
+def test_get_wave_interface(
+    module_menu,
+    core,
+    wave_project,
+    var_tree,
+    inputs_wp2_wave,
+):
     mod_name = "Hydrodynamics"
     #    project_menu = ProjectMenu()
 
@@ -102,9 +99,7 @@ def test_get_wave_interface(module_menu, core, wave_project, var_tree):
     #    project = project_menu.initiate_filter(core, project)
 
     hydro_branch = var_tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_wave.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_wave)
 
     can_execute = module_menu.is_executable(core, project, mod_name)
 
@@ -120,19 +115,20 @@ def test_get_wave_interface(module_menu, core, wave_project, var_tree):
 
 
 def test_wave_interface_entry(
+    mocker,
+    tmp_path,
     module_menu,
     core,
     wave_project,
     var_tree,
-    mocker,
-    tmp_path,
+    inputs_wp2_wave,
 ):
     # Make a source directory with some files
     config_tmpdir = tmp_path / "config"
     config_tmpdir.mkdir()
 
     mocker.patch(
-        "dtocean_core.interfaces.hydrodynamics.UserDataPath",
+        "dtocean_plugins.modules.hydrodynamics.UserDataPath",
         return_value=config_tmpdir,
         autospec=True,
     )
@@ -144,9 +140,7 @@ def test_wave_interface_entry(
     #    project_menu.initiate_filter(core, project)
 
     hydro_branch = var_tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_wave.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_wave)
 
     can_execute = module_menu.is_executable(core, project, mod_name)
 
@@ -160,9 +154,9 @@ def test_wave_interface_entry(
 
     interface.connect(debug_entry=True, export_data=True)
 
-    debugdir = config_tmpdir.join("..", "debug")
+    debugdir = config_tmpdir.parent / "debug"
 
-    assert len(debugdir.listdir()) == 1
+    assert len(list(debugdir.iterdir())) == 1
 
 
 def test_tidal_inputs(module_menu, core, tidal_project, var_tree):
@@ -179,7 +173,13 @@ def test_tidal_inputs(module_menu, core, tidal_project, var_tree):
     assert "device.cut_in_velocity" in hydro_input_status
 
 
-def test_get_tidal_interface(module_menu, core, tidal_project, var_tree):
+def test_get_tidal_interface(
+    module_menu,
+    core,
+    tidal_project,
+    var_tree,
+    inputs_wp2_tidal,
+):
     mod_name = "Hydrodynamics"
     #    project_menu = ProjectMenu()
 
@@ -189,9 +189,7 @@ def test_get_tidal_interface(module_menu, core, tidal_project, var_tree):
     project_menu.initiate_dataflow(core, project)
 
     hydro_branch = var_tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     can_execute = module_menu.is_executable(core, project, mod_name)
 
@@ -207,19 +205,20 @@ def test_get_tidal_interface(module_menu, core, tidal_project, var_tree):
 
 
 def test_tidal_interface_entry(
+    mocker,
+    tmp_path,
     module_menu,
     core,
     tidal_project,
     var_tree,
-    mocker,
-    tmp_path,
+    inputs_wp2_tidal,
 ):
     # Make a source directory with some files
     config_tmpdir = tmp_path / "config"
     config_tmpdir.mkdir()
 
     mocker.patch(
-        "dtocean_core.interfaces.hydrodynamics.UserDataPath",
+        "dtocean_plugins.modules.hydrodynamics.UserDataPath",
         return_value=config_tmpdir,
         autospec=True,
     )
@@ -232,9 +231,7 @@ def test_tidal_interface_entry(
     project_menu.initiate_dataflow(core, project)
 
     hydro_branch = var_tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     can_execute = module_menu.is_executable(core, project, mod_name)
 
@@ -248,12 +245,18 @@ def test_tidal_interface_entry(
 
     interface.connect(debug_entry=True, export_data=True)
 
-    debugdir = config_tmpdir.join("..", "debug")
+    debugdir = config_tmpdir.parent / "debug"
 
-    assert len(debugdir.listdir()) == 1
+    assert len(list(debugdir.iterdir())) == 1
 
 
-def test_tidal_interface_entry_fail(module_menu, core, tidal_project, var_tree):
+def test_tidal_interface_entry_fail(
+    module_menu,
+    core,
+    tidal_project,
+    var_tree,
+    inputs_wp2_tidal,
+):
     mod_name = "Hydrodynamics"
 
     project_menu = ProjectMenu()
@@ -262,9 +265,7 @@ def test_tidal_interface_entry_fail(module_menu, core, tidal_project, var_tree):
     project_menu.initiate_dataflow(core, project)
 
     hydro_branch = var_tree.get_branch(core, project, mod_name)
-    hydro_branch.read_test_data(
-        core, project, os.path.join(dir_path, "inputs_wp2_tidal.pkl")
-    )
+    hydro_branch.read_test_data(core, project, inputs_wp2_tidal)
 
     user_layout = hydro_branch.get_input_variable(
         core, project, "options.user_array_layout"

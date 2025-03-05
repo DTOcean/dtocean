@@ -29,8 +29,8 @@ def test_make_wave_statistics_probability(wave_data):
     test = make_wave_statistics(wave_data)
 
     assert len(test["Te"]) == test["p"].shape[0]
-    assert len(test["Hm0"]) == test["p"].shape[1]
-    assert len(test["Dir"]) == test["p"].shape[2]
+    assert len(test["Hs"]) == test["p"].shape[1]
+    assert len(test["B"]) == test["p"].shape[2]
     assert np.allclose(np.sum(test["p"]), 1)
 
 
@@ -38,9 +38,9 @@ def test_dump_wave_statistics(tmp_path, wave_data):
     save_path = tmp_path / "test.csv"
     wave_stats = make_wave_statistics(wave_data)
     dump_wave_statistics(
-        wave_stats["Hm0"],
+        wave_stats["Hs"],
         wave_stats["Te"],
-        wave_stats["Dir"],
+        wave_stats["B"],
         wave_stats["p"],
         save_path,
     )

@@ -7,6 +7,7 @@ license = "GPL-3.0-or-later"
 readme = "README.md"
 packages = [
   {include = "dtocean_hydro", from="src"},
+  {include = "dtocean_plugins", from="src"},
   {include = "dtocean_tidal", from="src"},
   {include = "dtocean_wave", from="src"},
   {include = "dtocean_wec", from="src"},
@@ -45,6 +46,12 @@ pytest-mock = "^3.14.0"
 pytest-qt = "^4.4.0"
 pytest-cov = "^6.0.0"
 
+[tool.poetry.group.test-extras]
+optional = true
+
+[tool.poetry.group.test-extras.dependencies]
+dtocean-core = {path = "../dtocean-core", develop = true}
+
 [tool.poetry.group.audit]
 optional = true
 
@@ -65,6 +72,11 @@ script = "scripts/build-extension.py"
 enabled = true
 monorepo-root = "../../"
 version-pinning-rule = '=='
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    'ignore:numpy.ndarray size changed:RuntimeWarning',
+]
 
 [tool.pyright]
 typeCheckingMode = "basic"
