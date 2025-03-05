@@ -17,12 +17,8 @@ from copy import deepcopy
 from ..boundary.data import SerialBox
 from ..boundary.interface import MaskVariable
 from ..entity import Simulation
-from ..entity.data import (
-    BaseState,
-    DataCatalog,
-    DataState,  # Used by eval
-    PseudoState,
-)
+from ..entity.data import DataState  # Used by eval
+from ..entity.data import BaseState, DataCatalog, PseudoState
 from ..utilities.identity import get_unique_id
 from ..utilities.misc import OrderedSet
 from .data import DataStorage
@@ -622,7 +618,7 @@ class Controller(Loader):
         hub = simulation.get_hub(hub_id)
 
         if not self._sequencer.is_available(hub, interface_name):
-            errStr = ("Interface {} not available for hub  {}").format(
+            errStr = ("Interface {} not available for hub {}").format(
                 interface_name, hub_id
             )
             raise ValueError(errStr)
