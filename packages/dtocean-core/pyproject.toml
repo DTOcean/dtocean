@@ -61,6 +61,12 @@ pytest-mock = "^3.14.0"
 mock = "^5.1.0"
 pytest-cov = "^6.0.0"
 
+[tool.poetry.group.test-extras]
+optional = true
+
+[tool.poetry.group.test-extras.dependencies]
+dtocean-core = {path = "../dtocean-hydrodynamics", develop = true}
+
 [tool.poetry.group.audit]
 optional = true
 

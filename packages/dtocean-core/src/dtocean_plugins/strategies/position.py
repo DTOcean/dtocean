@@ -808,7 +808,9 @@ def _post_process(config, log_interval=100):
 
     pickle_name = "{}_results.pkl".format(root_project_base_name)
     pickle_path = os.path.join(sim_dir, pickle_name)
-    pickle.dump(pickle_dict, open(pickle_path, "wb"))
+
+    with open(pickle_path, "wb") as f:
+        pickle.dump(pickle_dict, f)
 
     msg_str = "Post-processing complete"
     module_logger.info(msg_str)
