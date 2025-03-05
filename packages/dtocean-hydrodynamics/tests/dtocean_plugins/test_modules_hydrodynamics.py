@@ -5,9 +5,9 @@ import pytest
 
 pytest.importorskip("dtocean_core")
 
-from dtocean_core.core import Core
-from dtocean_core.menu import ModuleMenu, ProjectMenu
-from dtocean_core.pipeline import Tree, _get_connector
+from dtocean_core.core import Core  # noqa: E402
+from dtocean_core.menu import ModuleMenu, ProjectMenu  # noqa: E402
+from dtocean_core.pipeline import Tree, _get_connector  # noqa: E402
 
 
 @pytest.fixture(scope="module")
@@ -284,4 +284,5 @@ def test_tidal_interface_entry_fail(
     interface = connector.get_interface(core, project, mod_name)
 
     with pytest.raises(ValueError):
+        interface.connect(debug_entry=True)
         interface.connect(debug_entry=True)
