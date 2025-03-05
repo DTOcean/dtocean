@@ -107,8 +107,8 @@ def make_wave_statistics(
     Dir_centred = np.array(Dbin[0:-1], dtype=float) * rad + (dD / 2.0)
 
     result = {
-        "Dir": Dir_centred,
-        "Hm0": Hm0_centred,
+        "B": Dir_centred,
+        "Hs": Hm0_centred,
         "Te": Te_centred,
         "p": scatter_norm,
     }

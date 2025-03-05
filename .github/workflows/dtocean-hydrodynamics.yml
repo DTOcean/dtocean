@@ -43,7 +43,7 @@ jobs:
         if: runner.os == 'Linux'
       - name: Install package
         run: |
-          poetry install --with test
+          poetry install --with test --with test-extras
           poetry run dtocean-hydro init
       - name: Run tests
         run: |
