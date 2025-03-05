@@ -422,7 +422,7 @@ requirements-parser = ">=0.11.0,<1"
 
 [[package]]
 name = "dtocean-core"
-version = "3.0.2"
+version = "4.0.dev1"
 description = "The main (non-graphical) interface for the DTOcean tools"
 optional = false
 python-versions = ">=3.12,<3.13"
@@ -2276,4 +2276,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "329b27e0a1c64326dbfbf3bacd8eb44d16b7ad95fb0a9c80d3a8549055154aad"
+content-hash = "4f4fa91cedb44d2cbb4c8d3382777cd00819c39435b1e055846f1d05afe25bf0"
