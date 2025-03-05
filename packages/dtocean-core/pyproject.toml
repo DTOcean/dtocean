@@ -65,7 +65,7 @@ pytest-cov = "^6.0.0"
 optional = true
 
 [tool.poetry.group.test-extras.dependencies]
-dtocean-core = {path = "../dtocean-hydrodynamics", develop = true}
+dtocean-hydrodynamics = {path = "../dtocean-hydrodynamics", develop = true}
 
 [tool.poetry.group.audit]
 optional = true
