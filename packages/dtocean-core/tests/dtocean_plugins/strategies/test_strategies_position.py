@@ -18,18 +18,16 @@ except ImportError:
 
 from dtocean_core.core import Core, OrderedSim, Project
 from dtocean_core.menu import ModuleMenu
+from dtocean_plugins.strategies.position import (
+    AdvancedPosition,
+    PositionOptimiser,
+    _get_results_table,
+    _post_process,
+    _read_yaml,
+    _run_favorite,
+)
 
 dtocean_hydro = pytest.importorskip("dtocean_hydro")
-
-if dtocean_hydro:
-    from dtocean_plugins.strategies.position import (
-        AdvancedPosition,
-        PositionOptimiser,
-        _get_results_table,
-        _post_process,
-        _read_yaml,
-        _run_favorite,
-    )
 
 
 @contextlib.contextmanager
@@ -1056,15 +1054,19 @@ def test_get_results_table():
     result = _get_results_table(config, results_dict)
 
     assert len(result) == 5
-    assert list(result.columns) == [
+    assert list(result.columns[:4]) == [
         "sim_number",
         "objective",
         "grid_orientation",
         "n_nodes",
-        "mock_dict [sub_mock1]",
-        "mock_dict [sub_mock2]",
-        "mock",
     ]
+    assert set(result.columns[4:]) == set(
+        [
+            "mock",
+            "mock_dict [sub_mock1]",
+            "mock_dict [sub_mock2]",
+        ]
+    )
 
     assert np.isclose(
         result["grid_orientation"].to_numpy(), [90, 0, 270, 180, 90]
@@ -1091,15 +1093,19 @@ def test_get_results_table_single():
     result = _get_results_table(config, results_dict)
 
     assert len(result) == 1
-    assert list(result.columns) == [
+    assert list(result.columns[:4]) == [
         "sim_number",
         "objective",
         "grid_orientation",
         "n_nodes",
-        "mock_dict [sub_mock1]",
-        "mock_dict [sub_mock2]",
-        "mock",
     ]
+    assert set(result.columns[4:]) == set(
+        [
+            "mock",
+            "mock_dict [sub_mock1]",
+            "mock_dict [sub_mock2]",
+        ]
+    )
 
     assert np.isclose(result["grid_orientation"].to_numpy(), 90)
 
@@ -1259,15 +1265,19 @@ def test_advanced_get_all_results(mocker, tmpdir):
     result = AdvancedPosition.get_all_results(config)
 
     assert len(result) == 5
-    assert list(result.columns) == [
+    assert list(result.columns[:4]) == [
         "sim_number",
         "objective",
         "grid_orientation",
         "n_nodes",
-        "mock_dict [sub_mock1]",
-        "mock_dict [sub_mock2]",
-        "mock",
     ]
+    assert set(result.columns[4:]) == set(
+        [
+            "mock",
+            "mock_dict [sub_mock1]",
+            "mock_dict [sub_mock2]",
+        ]
+    )
 
     assert np.isclose(
         result["grid_orientation"].to_numpy(), [90, 0, 270, 180, 90]

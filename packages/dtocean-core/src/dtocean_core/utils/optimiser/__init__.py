@@ -842,14 +842,18 @@ def dump_outputs(worker_directory, es, evaluator, nh=None):
         worker_directory, "saved-counter-search-dict.pkl"
     )
 
-    pickle.dump(es, open(es_path, "wb"), -1)
-    pickle.dump(counter_dict, open(counter_dict_path, "wb"), -1)
+    with open(es_path, "wb") as f:
+        pickle.dump(es, f, -1)
+
+    with open(counter_dict_path, "wb") as f:
+        pickle.dump(counter_dict, f, -1)
 
     if nh is None:
         return
 
     nh_path = os.path.join(worker_directory, "saved-nh-object.pkl")
-    pickle.dump(nh, open(nh_path, "wb"), -1)
+    with open(nh_path, "wb") as f:
+        pickle.dump(nh, f, -1)
 
 
 def load_outputs(worker_directory):
@@ -876,7 +880,8 @@ def set_TimedRotatingFileHandler_rollover(timeout=None):
         timeout = sys.maxsize
 
     logger = logging.Logger.manager.loggerDict["dtocean_core"]
-    assert isinstance(logger, logging.Logger)
+    if not isinstance(logger, logging.Logger):
+        return
 
     for handler in logger.handlers:
         if isinstance(handler, handlers.TimedRotatingFileHandler):

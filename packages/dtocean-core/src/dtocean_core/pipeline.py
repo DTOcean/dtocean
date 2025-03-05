@@ -44,7 +44,7 @@ class Tree:
 
         if branch_name not in available_branches:
             errStr = (
-                "Branch name {} not in list of available " "branches."
+                "Branch name {} not in list of available branches."
             ).format(branch_name)
             raise ValueError(errStr)
 
@@ -224,7 +224,11 @@ class Branch:
             return branch_status
 
     def get_input_variable(
-        self, core, project, variable_id, skip_missing=False
+        self,
+        core,
+        project,
+        variable_id,
+        skip_missing=False,
     ):
         core.check_valid_variable(variable_id)
 

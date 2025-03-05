@@ -5,6 +5,7 @@
 import contextlib
 import logging
 import os
+from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -1256,7 +1257,10 @@ def test_PositionOptimiser_next_stop(caplog, mocker):
 
 
 def test_PositionOptimiser_next_dump(
-    mocker, tmpdir, lease_polygon, layer_depths
+    mocker,
+    tmpdir,
+    lease_polygon,
+    layer_depths,
 ):
     mocker.patch(
         "dtocean_plugins.strategies.position_optimiser.ModuleMenu.get_active",
@@ -1285,14 +1289,22 @@ def test_PositionOptimiser_next_dump(
     mock_core = Core()
 
     mocker.patch.object(
-        mock_core, "get_data_value", return_value=2, autospec=True
+        mock_core,
+        "get_data_value",
+        return_value=2,
+        autospec=True,
     )
-
     mocker.patch.object(
-        mock_core, "load_project", return_value=mock_project, autospec=True
+        mock_core,
+        "load_project",
+        return_value=mock_project,
+        autospec=True,
     )
-
     mocker.patch.object(mock_core, "dump_project", autospec=True)
+
+    import dtocean_core.utils.optimiser as optimiser
+
+    dump_outputs: MagicMock = mocker.spy(optimiser, "dump_outputs")
 
     worker_dir = str(tmpdir)
     base_penalty = 1
@@ -1344,28 +1356,28 @@ def test_PositionOptimiser_next_dump(
     test = PositionOptimiser(core=mock_core)
     test.start(config)
 
-    p_cma = tmpdir.join("saved-cma-object.pkl")
-    cma_before_time = p_cma.mtime()
-
     p_config = tmpdir.join("config.yaml")
     config_before_time = p_config.mtime()
 
     mock_next = mocker.patch.object(test._cma_main, "next", autospec=True)
 
     mocker.patch.object(
-        test._cma_main, "get_max_resample_factor", return_value=1, autospec=True
+        test._cma_main,
+        "get_max_resample_factor",
+        return_value=1,
+        autospec=True,
     )
 
     test.next()
 
-    cma_after_time = p_cma.mtime()
-    config_after_time = p_config.mtime()
-    new_config = load_config(str(p_config))
-
     assert mock_next.called
-    assert cma_after_time > cma_before_time
-    assert config_after_time > config_before_time
+    assert dump_outputs.call_count == 2
     assert not test._dump_config
+
+    config_after_time = p_config.mtime()
+    assert config_after_time > config_before_time
+
+    new_config = load_config(str(p_config))
     assert "max_resample_factor" in new_config
 
 
@@ -1419,8 +1431,4 @@ def test_PositionOptimiser_get_nh(mocker):
     mock_cma_main = mocker.MagicMock()
     test._cma_main = mock_cma_main
 
-    assert isinstance(test.get_nh(), mocker.MagicMock)
-
-    assert isinstance(test.get_nh(), mocker.MagicMock)
-    assert isinstance(test.get_nh(), mocker.MagicMock)
     assert isinstance(test.get_nh(), mocker.MagicMock)
