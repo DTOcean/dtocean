@@ -6,6 +6,7 @@ on:
       - '.codecov.yml'
       - '.github/workflows/dtocean-core.yml'
       - 'packages/dtocean-core/**'
+      - 'packages/dtocean-hydrodynamics/**'
       - 'packages/mdo-engine/**'
       - 'packages/polite-config/**'
   pull_request:
@@ -14,6 +15,7 @@ on:
       - '.codecov.yml'
       - '.github/workflows/dtocean-core.yml'
       - 'packages/dtocean-core/**'
+      - 'packages/dtocean-hydrodynamics/**'
       - 'packages/mdo-engine/**'
       - 'packages/polite-config/**'
 jobs:
