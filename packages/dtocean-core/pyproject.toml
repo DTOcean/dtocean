@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dtocean-core"
-version = "3.0.2"
+version = "4.0.dev1"
 description = "The main (non-graphical) interface for the DTOcean tools"
 authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
 license = "GPL-3.0-or-later"
