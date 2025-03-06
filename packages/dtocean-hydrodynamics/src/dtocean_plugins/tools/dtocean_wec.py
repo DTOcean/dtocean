@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import importlib.metadata
+import platform
 import subprocess
 
 from packaging.version import Version
@@ -32,8 +33,6 @@ if not Version(version).major == major_version:
     ).format(pkg_title, major_version, version)
     raise ImportError(ERR_MSG)
 else:
-    from dtocean_core.utils.process import script
-
     from dtocean_plugins.tools.tools import Tool
 
 
@@ -132,11 +131,11 @@ class WECSimulatorTool(Tool):
         pass
 
     def connect(self, **kwargs):
-        script_path = script("dtocean-wec.exe")
+        if platform.system() == "Windows":
+            exe_name = "dtocean-wec.exe"
+            si = subprocess.STARTUPINFO()
+            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # Hide command window
+        else:
+            exe_name = "dtocean-wec"
 
-        if script_path is None:
-            return
-
-        si = subprocess.STARTUPINFO()
-        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        subprocess.call(script_path, startupinfo=si)
+        subprocess.call(exe_name, startupinfo=si)
