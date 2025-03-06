@@ -855,4 +855,3 @@ def _extract_number(f):
 def _is_option_set(config, key):
     result = key in config and config[key] is not None
     return result
-    return result

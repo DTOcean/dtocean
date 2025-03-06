@@ -268,4 +268,3 @@ def convert_te2tp(te, specType, gamma):
 #     wec_obj = wec(FilesPath, 51.0, np.array([0.0, 0.0, 0.0, 0.0]), debug=False)
 #     wec_obj.load_hydrodynamic_model()
 #     wec_obj.Transfers()
-#     wec_obj.Transfers()

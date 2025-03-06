@@ -598,4 +598,3 @@ class wave_spec:
 #         Wave_sp.s = s
 #         Wave_sp.add_spectrum()
 #         Wave_sp.show(index=[-1])
-#         Wave_sp.show(index=[-1])

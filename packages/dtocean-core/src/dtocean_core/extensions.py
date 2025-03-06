@@ -594,4 +594,3 @@ class ToolManager(ExtensionManager):
 
         interface = core.load_interface(project, tool)
         core.connect_interface(project, interface)
-        core.connect_interface(project, interface)
