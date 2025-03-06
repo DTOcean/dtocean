@@ -24,7 +24,7 @@ def test_DirectoryMap_copy_all(tmp_path):
     config2.write_text("content")
 
     # Make a target directory
-    dst_tmp_path = tmp_path / "test_dst"
+    dst_tmp_path = tmp_path / "deeper" / "test_dst"
 
     test_dirmap = DirectoryMap(dst_tmp_path, src_tmp_path)
 

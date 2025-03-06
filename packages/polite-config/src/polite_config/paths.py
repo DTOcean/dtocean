@@ -143,7 +143,7 @@ class DirectoryMap:
         src_file_path = self.source_dir / src_name
 
         # Prepare the destination directory
-        self.target_dir.mkdir(exist_ok=True)
+        self.target_dir.mkdir(exist_ok=True, parents=True)
 
         # Copy the file
         shutil.copy(src_file_path, dst_file_path)
