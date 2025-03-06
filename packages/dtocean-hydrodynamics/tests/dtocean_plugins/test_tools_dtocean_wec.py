@@ -70,4 +70,5 @@ def test_execute_tool(mocker, core, project):
     tool = tool_man.get_tool("WEC Simulator")
     tool_man.execute_tool(core, project, tool)
 
-    assert "dtocean-wec.exe" in call.call_args[0][0]
+    call.assert_called_once()
+    assert "dtocean-wec" in call.call_args[0][0]
