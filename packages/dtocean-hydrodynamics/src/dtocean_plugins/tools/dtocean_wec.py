@@ -133,9 +133,11 @@ class WECSimulatorTool(Tool):
     def connect(self, **kwargs):
         if platform.system() == "Windows":
             exe_name = "dtocean-wec.exe"
-            si = subprocess.STARTUPINFO()
-            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # Hide command window
+            si = subprocess.STARTUPINFO()  # pyright:ignore
+            # Hide command window
+            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # pyright:ignore
         else:
             exe_name = "dtocean-wec"
+            si = None
 
         subprocess.call(exe_name, startupinfo=si)
