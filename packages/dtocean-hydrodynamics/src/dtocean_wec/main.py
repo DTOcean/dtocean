@@ -123,8 +123,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.run_entrance()
         self._data = None
 
-        XStream.stdout().messageWritten.connect(self.console.insertPlainText)
-        XStream.stderr().messageWritten.connect(self.console.insertPlainText)
+        XStream.stdout().messageWritten.connect(self.handle_message)
+        XStream.stderr().messageWritten.connect(self.handle_message)
 
         # Get path to data dirs through configuration
         path_dict = get_install_paths()
@@ -159,6 +159,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def task_show_mesh(self, path):
         self.mesh_view = PythonQtOpenGLMeshViewer(path["path"], path["f_n"])
         self.mesh_view.show()
+
+    @Slot()
+    def handle_message(self, message: str):
+        self.console.insertPlainText(message)
 
     @Slot()
     def handle_new_project(self):

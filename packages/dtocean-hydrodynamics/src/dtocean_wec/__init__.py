@@ -28,7 +28,7 @@ def run():
     app = QApplication(sys.argv)
     ex = MainWindow()
     ex.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 def gui_interface():
