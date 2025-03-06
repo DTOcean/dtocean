@@ -300,7 +300,6 @@ def test_PositionEvaluator_set_counter_params_results(evaluator):
 
 def test_PositionEvaluator_pre_constraints_hook(mocker, tmpdir, evaluator):
     evaluator._violation_log_path = os.path.join(str(tmpdir), "violations.txt")
-
     mocker.patch.object(evaluator._tool_man, "execute_tool", autospec=True)
 
     grid_orientation = 0

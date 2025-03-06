@@ -1392,7 +1392,7 @@ class Core:
         self._set_outputs_status(project, simulation)
         self._set_inputs_status(project, simulation)
 
-    def can_load_interface(self, project, interface, check_id=None):
+    def can_load_interface(self, project: Project, interface, check_id=None):
         pool = project.get_pool()
         simulation = project.get_simulation()
 
