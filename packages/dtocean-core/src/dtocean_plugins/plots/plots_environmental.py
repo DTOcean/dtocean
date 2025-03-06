@@ -736,4 +736,3 @@ def eis_plot(eis, confidence_dict, plot_title):
     fig_handle = plt.gcf()
 
     return fig_handle
-    return fig_handle

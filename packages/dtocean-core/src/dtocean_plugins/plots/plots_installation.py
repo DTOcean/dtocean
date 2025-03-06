@@ -569,4 +569,3 @@ def installation_gantt_dates(dates, prep_time):
     }
 
     return gantt_dict
-    return gantt_dict
