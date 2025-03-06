@@ -40,7 +40,7 @@ def start_logging(level=None):
     
     appdir_path = userdir.parent
     logdir = Path(appdir_path, "logs")
-    logdir.mkdir(exist_ok=True)
+    logdir.mkdir(exist_ok=True, parents=True)
 
     log = Logger(dirmap)
     log(
