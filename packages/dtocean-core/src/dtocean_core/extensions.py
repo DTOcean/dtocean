@@ -17,6 +17,7 @@ import logging
 import os
 import pickle
 from collections import OrderedDict
+from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,6 +27,8 @@ from mdo_engine.utilities.plugins import Plugin
 
 import dtocean_plugins.strategies as strategies
 import dtocean_plugins.tools as tools
+from dtocean_core.core import Core, Project
+from dtocean_plugins.tools.tools import Tool
 
 from .menu import ModuleMenu
 
@@ -41,10 +44,9 @@ class ExtensionManager(Plugin):
         self._plugin_classes = self._discover_classes(module, cls_name)
         self._plugin_names = self._discover_names()
 
-    def get_available(self):
+    def get_available(self) -> list[str]:
         plugin_names = self._plugin_names.keys()
-
-        return plugin_names
+        return list(plugin_names)
 
     def _get_plugin(self, plugin_name):
         if plugin_name not in self.get_available():
@@ -565,7 +567,7 @@ class ToolManager(ExtensionManager):
     def __init__(self, module=tools, cls_name="Tool"):
         super(ToolManager, self).__init__(module, cls_name)
 
-    def get_tool(self, tool_name):
+    def get_tool(self, tool_name) -> Tool:
         if tool_name not in self.get_available():
             errStr = ("Name {} is not a recognised " "tool").format(tool_name)
             raise KeyError(errStr)
@@ -574,7 +576,12 @@ class ToolManager(ExtensionManager):
 
         return tool_obj
 
-    def can_execute_tool(self, core, project, tool):
+    def can_execute_tool(
+        self,
+        core: Core,
+        project: Optional[Project],
+        tool: Tool,
+    ) -> bool:
         if project is None:
             return False
 
@@ -585,7 +592,7 @@ class ToolManager(ExtensionManager):
 
         return result
 
-    def execute_tool(self, core, project, tool):
+    def execute_tool(self, core: Core, project: Project, tool: Tool):
         if not core.can_load_interface(project, tool):
             errStr = ("The inputs to tool {} are not " "satisfied.").format(
                 tool.get_name()

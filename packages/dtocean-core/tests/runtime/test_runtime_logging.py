@@ -6,8 +6,7 @@ from dtocean_core.utils.config import init_config
 
 def test_start_logging(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmp_path / "config"
-    config_tmpdir.mkdir()
+    config_tmpdir = tmp_path / "dtocean_core" / "config"
 
     mocker.patch(
         "dtocean_core.UserDataPath",
@@ -23,8 +22,7 @@ def test_start_logging(mocker, tmp_path):
 
 def test_start_logging_user(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmp_path / "config"
-    config_tmpdir.mkdir()
+    config_tmpdir = tmp_path / "dtocean_core" / "config"
 
     mocker.patch(
         "dtocean_core.utils.config.UserDataPath",
@@ -51,8 +49,7 @@ def test_start_logging_user(mocker, tmp_path):
 
 def test_start_logging_rollover(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmp_path / "config"
-    config_tmpdir.mkdir()
+    config_tmpdir = tmp_path / "dtocean_core" / "config"
 
     mocker.patch(
         "dtocean_core.UserDataPath",

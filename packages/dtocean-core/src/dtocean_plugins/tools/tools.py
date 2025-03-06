@@ -29,7 +29,7 @@ class Tool(MapInterface):
         self._config = {}
 
     @abc.abstractmethod
-    def configure(self):
+    def configure(self, *args, **kwargs):
         """The configure method is collect information required for executing
         the tool.
         """
