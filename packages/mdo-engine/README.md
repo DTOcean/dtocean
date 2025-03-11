@@ -1,3 +1,6 @@
+[![mdo-engine actions](https://github.com/DTOcean/dtocean/actions/workflows/mdo-engine.yml/badge.svg?branch=next)](https://github.com/DTOcean/dtocean/actions/workflows/mdo-engine.yml)
+[![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=mdo-engine)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=mdo-engine)
+
 # mdo-engine
 
 mdo-engine provides data management, coupling between arbitrary sources (such as

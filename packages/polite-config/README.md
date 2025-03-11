@@ -1,3 +1,6 @@
+[![polite-config actions](https://github.com/DTOcean/dtocean/actions/workflows/polite-config.yml/badge.svg?branch=next)](https://github.com/DTOcean/dtocean/actions/workflows/polite-config.yml)
+[![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=polite-config)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=polite-config)
+
 # polite-config
 
 Easy functions for paths, logging and configuration files.
