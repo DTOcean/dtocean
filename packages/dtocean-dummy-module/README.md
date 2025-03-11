@@ -1,3 +1,6 @@
+[![dtocean-dummy-module actions](https://github.com/DTOcean/dtocean/actions/workflows/dtocean-dummy-module.yml/badge.svg?branch=next)](https://github.com/DTOcean/dtocean/actions/workflows/dtocean-dummy-module.yml)
+[![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=dtocean-dummy-module)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=dtocean-dummy-module)
+
 # dtocean-dummy-module
 
 ## Overview
