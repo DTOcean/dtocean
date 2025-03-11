@@ -9,7 +9,9 @@ ocean energy converters, including the effect of interactions. It can optimise
 the position of the devices for maximum energy yield, constrained by the given
 environment.
 
-Installation and development of mdo-engine uses the
+## Installation
+
+Installation and development ofdtocean-hydrodynamics uses the
 [Poetry](https://python-poetry.org/) dependency manager. Poetry must be
 installed and available on the command line.
 
@@ -35,7 +37,7 @@ Run the tests:
 $ poetry run pytest
 ```
 
-### Data Fikes
+### Data Files
 
 When installing from source, the DTOcean data files must also be installed.
 They can be downloaded and installed using the `dtocean-hydro` command from the
