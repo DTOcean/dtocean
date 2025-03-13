@@ -29,15 +29,11 @@ class Simulation:
     def set_title(self, title):
         self._title = title
 
-        return
-
     def get_title(self):
         return self._title
 
     def set_hub(self, hub_id, hub):
         self._hubs[hub_id] = hub
-
-        return
 
     def get_hub(self, hub_id):
         new_hub = self._hubs[hub_id]
@@ -49,8 +45,6 @@ class Simulation:
 
     def set_merged_state(self, pseudo_state):
         self._merged_state = pseudo_state
-
-        return
 
     def get_merged_state(self):
         return self._merged_state
@@ -227,8 +221,6 @@ class Simulation:
         self._redo_states.append(last_state)
         self._merged_state = None
 
-        return
-
     def redo_state(self):
         """Return a datastate in the redo states back to the state history"""
 
@@ -239,14 +231,10 @@ class Simulation:
         self._active_states.append(next_state)
         self._merged_state = None
 
-        return
-
     def clear_states(self):
         self._active_states = []
         self._redo_states = []
         self._merged_state = None
-
-        return
 
     def get_active_levels(self, show_none=False, show_masked=True):
         result = []

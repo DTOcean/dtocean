@@ -22,8 +22,6 @@ class DataValidation(Plugin):
     def __init__(self, meta_cls=MetaData):
         self._meta_cls = meta_cls
 
-        return
-
     def update_data_catalog_from_definitions(
         self, data_catalog, package, super_cls="DataDefinition"
     ):
@@ -42,8 +40,6 @@ class DataValidation(Plugin):
                 obj_list = self.obj_list_from_metadef_list(metadef_list)
 
                 data_catalog.variable_map_from_objects(obj_list)
-
-        return
 
     def get_valid_variables(self, data_catalog, variables):
         """Return all valid variables in the given data catalog from variables
@@ -118,8 +114,6 @@ class DataStorage(Plugin):
         obj_map = self._init_structures(definition_module, super_cls)
 
         self._structures.update(obj_map)
-
-        return
 
     def create_new_datastate(self, level=None, force_map=None):
         new_state = DataState(level, force_map)
@@ -232,8 +226,6 @@ class DataStorage(Plugin):
 
         datastate.add_index(data_identifier, data_index)
 
-        return
-
     def remove_state(self, pool, datastate):
         """Remove an indentifier from the datastate and unlink it from the
         pool. If the data in the pool has no remaining links then delete it."""
@@ -249,8 +241,6 @@ class DataStorage(Plugin):
 
         for data_identifier in datastate.get_identifiers():
             self.remove_data_from_state(pool, datastate, data_identifier)
-
-        return
 
     def remove_data_from_state(self, pool, datastate, data_identifier):
         """Remove an indentifier from the datastate and unlink it from the
@@ -284,8 +274,6 @@ class DataStorage(Plugin):
             ).format(data_identifier, data_index)
             module_logger.info(log_msg)
 
-        return
-
     def create_new_data(
         self, pool, datastate, data_catalog, raw_data, metadata
     ):
@@ -312,8 +300,6 @@ class DataStorage(Plugin):
             data_obj = self._get_data_obj(metadata, raw_data)
 
         self.add_data_to_state(pool, datastate, data_identifier, data_obj)
-
-        return
 
     #    def modify_data(self, data_pool, datastate, data_identifier, raw_data):
     #
@@ -397,8 +383,6 @@ class DataStorage(Plugin):
                 data_pool, data_index, data_dir, root_dir, warn_save
             )
 
-        return
-
     def deserialise_data(
         self,
         data_catalog,
@@ -418,14 +402,10 @@ class DataStorage(Plugin):
                 warn_unpickle=warn_unpickle,
             )
 
-        return
-
     def serialise_pool(
         self, data_pool, data_dir="data", root_dir=None, warn_save=True
     ):
         self.serialise_data(data_pool, data_pool, data_dir, root_dir, warn_save)
-
-        return
 
     def deserialise_pool(
         self,
@@ -443,8 +423,6 @@ class DataStorage(Plugin):
             warn_missing=warn_missing,
             warn_unpickle=warn_unpickle,
         )
-
-        return
 
     def create_pool_subset(self, data_pool, datastate):
         new_pool = DataPool()
@@ -549,8 +527,6 @@ class DataStorage(Plugin):
         data_box = SerialBox(identifier, load_dict)
         data_pool.replace(data_index, data_box)
 
-        return
-
     def _convert_box_to_data(
         self,
         data_catalog,
@@ -603,8 +579,6 @@ class DataStorage(Plugin):
 
         data_pool.replace(data_index, data_obj)
 
-        return
-
     def _make_data(self, data_catalog, identifier, data, warn_missing=False):
         if not self.is_valid(data_catalog, identifier):
             msgStr = "Data {} not found in data catalog".format(identifier)
@@ -636,5 +610,3 @@ def _check_valid_datastate(datastate):
             "but recieved {}."
         ).format(datastate.__class__.__name__)
         raise ValueError(errStr)
-
-    return

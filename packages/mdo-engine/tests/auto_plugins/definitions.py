@@ -63,8 +63,6 @@ class AutoSimple(Simple):
     def auto_connect(self):
         self.data.result = self._two * self.meta.result.auto
 
-        return
-
     @staticmethod
     def get_valid_extensions(self):
         return [".spt"]

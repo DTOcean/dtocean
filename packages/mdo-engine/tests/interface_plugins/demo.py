@@ -131,8 +131,6 @@ class TableInterface(DemoInterface):
 
         self.data.table = table_data
 
-        return
-
 
 class LaterInterface(DemoInterface):
     """Interface to test outputs generated later than table interface"""
@@ -175,8 +173,7 @@ class LaterInterface(DemoInterface):
     @classmethod
     def declare_id_map(cls):
         id_map = {"rows": "demo:demo:rows", "table": "demo:demo:table"}
-
         return id_map
 
     def connect(self):
-        return
+        pass

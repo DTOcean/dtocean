@@ -82,8 +82,6 @@ class EarlyInterface(DummyInterface):
     def connect(self):
         self.data.early = 1
 
-        return
-
 
 class LaterInterface(DummyInterface):
     """Interface to test outputs generated later than table interface"""
@@ -131,5 +129,3 @@ class LaterInterface(DummyInterface):
 
     def connect(self):
         self.data.later = self.data.early + 1
-
-        return

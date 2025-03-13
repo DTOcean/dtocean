@@ -12,8 +12,6 @@ class InterfaceFactory:
     def __init__(self, auto_cls):
         self._AutoCls = auto_cls
 
-        return
-
     def has_connect_method(self, data_obj):
         if self._AutoCls.get_connect_name() is None:
             return True

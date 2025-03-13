@@ -78,8 +78,6 @@ class SPTInterface(FileInterface):
             spt_name = self.valid_id_map.get(output)
             self.data[spt_name] = readSPT.normalised[spt_name]
 
-        return
-
     def put_data(self, *args, **kwargs):
         errStr = "SPT file interface is read-only."
 

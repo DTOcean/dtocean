@@ -19,12 +19,8 @@ class Frozen:
 
         object.__setattr__(self, key, value)
 
-        return
-
     def _freeze(self):
         self.__isfrozen = True
-
-        return
 
 
 class MetaData(Frozen):
@@ -36,8 +32,6 @@ class MetaData(Frozen):
 
         self._freeze()
         self._set_properties(props_dict)
-
-        return
 
     @classmethod
     def get_base_properties(cls):
@@ -59,8 +53,6 @@ class MetaData(Frozen):
             private_key = "_{}".format(key)
             setattr(self, private_key, value)
 
-        return
-
 
 class DataCatalog:
     """Data catalog contains a map of all of the valid metadata within the
@@ -72,8 +64,6 @@ class DataCatalog:
 
     def __init__(self):
         self._metadata_variable_map = OrderedDict()
-
-        return
 
     def get_variable_identifiers(self):
         """Return the variable identifiers in the data catalog"""
@@ -87,8 +77,6 @@ class DataCatalog:
 
         self._metadata_variable_map = variable_map
 
-        return
-
     def variable_map_from_objects(self, object_list):
         """Convert an attrribute map from plugin discovery to a variable
         mapping"""
@@ -97,16 +85,12 @@ class DataCatalog:
         for instance in object_list:
             self.add_metadata(instance)
 
-        return
-
     def add_metadata(self, metadata):
         """Add a MetaData instance to the catalog"""
 
         var_key = metadata.identifier
 
         self._metadata_variable_map[var_key] = metadata
-
-        return
 
     def get_metadata(self, variable_id):
         """Get the MetaData for a given variable ID"""
@@ -196,8 +180,6 @@ class DataPool:
 
         self._data[data_index] = data
 
-        return
-
     def pop(self, data_index):
         #        print "\npop:", self._data.keys()
 
@@ -210,8 +192,6 @@ class DataPool:
     def link(self, data_index):
         self._links[data_index] += 1
 
-        return
-
     def unlink(self, data_index):
         if self._links[data_index] == 0:
             errStr = ("Data with index {} has no recorded links.").format(
@@ -220,8 +200,6 @@ class DataPool:
             raise ValueError(errStr)
 
         self._links[data_index] -= 1
-
-        return
 
     def has_link(self, data_index):
         result = False
@@ -259,8 +237,6 @@ class BaseState:
 
         self._data = self._init_data(data_map)
         self._level = self._init_level(level)
-
-        return
 
     def _init_data(self, data_map):
         if data_map is None:
@@ -339,8 +315,6 @@ class PseudoState(BaseState):
         super(PseudoState, self).__setattr__("_data", data)
         super(PseudoState, self).__setattr__("_level", level)
 
-        return
-
     def dump(self):
         dump_dict = super(PseudoState, self).dump()
         dump_dict["type"] = "PseudoState"
@@ -375,22 +349,14 @@ class DataState(BaseState):
         super(DataState, self).__init__(force_map, level)
         self._masked = False
 
-        return
-
     def set_level(self, level):
         self._level = level
-
-        return
 
     def mask(self):
         self._masked = True
 
-        return
-
     def unmask(self):
         self._masked = False
-
-        return
 
     def ismasked(self):
         return self._masked
@@ -413,8 +379,6 @@ class Data:
         self._id = identifier
         self._structure_name = structure_name
         self._data = data
-
-        return
 
     def get_id(self):
         return self._id
