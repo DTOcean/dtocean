@@ -55,5 +55,3 @@ def add_ships():
     session.add(big_ship)
     session.add(little_ship)
     session.commit()
-
-    return

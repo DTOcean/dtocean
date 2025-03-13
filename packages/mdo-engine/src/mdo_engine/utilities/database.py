@@ -32,42 +32,35 @@ class Database(ABC):
         if config_dict is not None:
             self.set_credentials(config_dict)
 
-        return
-
     @property
     @abc.abstractmethod
     def default_port(self):
         """The default port for connecting to the database"""
-
-        return
+        pass
 
     @property
     @abc.abstractmethod
     def default_user_id(self):
         """The default user id for connecting to the database"""
-
-        return
+        pass
 
     @property
     @abc.abstractmethod
     def default_password(self):
         """The default password for connecting to the database"""
-
-        return
+        pass
 
     @property
     @abc.abstractmethod
     def default_database(self):
         """The default databse name"""
-
-        return
+        pass
 
     @property
     @abc.abstractmethod
     def valid_adapters(self):
         """List of valid adapters for the SQL manager"""
-
-        return
+        pass
 
     def _init_adapter(self, adapter_name):
         if not self._is_valid_adapter(adapter_name):
@@ -92,17 +85,11 @@ class Database(ABC):
     def set_echo(self, echo):
         self._echo = echo
 
-        return
-
     def set_timeout(self, timeout):
         self._timeout = timeout
 
-        return
-
     def set_credentials(self, config_dict):
         self._credentials = safe_update(self._credentials, config_dict)
-
-        return
 
     def get_credentials(self):
         default_dict = {
@@ -139,8 +126,6 @@ class Database(ABC):
 
         Session = sessionmaker(bind=self._engine)
         self.session = Session()
-
-        return
 
     def reflect_table(self, table_name, remove_trailing_space=True):
         if self._meta is None:
@@ -197,8 +182,6 @@ class Database(ABC):
         with self._engine.begin() as connection:
             connection.execute(query)
 
-        return
-
     def call_stored_proceedure(self, proceedure_name, proceedure_args):
         """Return the results from calling a stored proceedure. Note this
         is not DB agnostic as not all SQL DBs support stored proceedures."""
@@ -228,8 +211,6 @@ class Database(ABC):
 
         self._engine.dispose()
         self.session = None
-
-        return
 
     def _is_valid_adapter(self, adapter_name):
         """Return true if the adapter is valid for the SQL manager."""
@@ -304,8 +285,6 @@ class PostgreSQL(Database):
 
         super(PostgreSQL, self).configure(engine_args, connect_args)
 
-        return
-
     def reflect_table(
         self,
         table_name,
@@ -352,8 +331,6 @@ class PostgreSQL(Database):
                 table_name, column_name
             )
             self.execute_transaction(query_str)
-
-        return
 
     def get_table_names(self, schema=None):
         query_str = "SELECT table_name FROM information_schema.tables"
@@ -478,8 +455,6 @@ class SQLite(Database):
         config_dict = {"dbname": dbname}
 
         self.set_credentials(config_dict)
-
-        return
 
     def get_connection_string(self):
         credentials = self.get_credentials()

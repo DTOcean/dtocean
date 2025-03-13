@@ -230,8 +230,6 @@ def xl_to_data_yaml(
             explicit_start=True,
         )
 
-    return
-
 
 def dds_to_xl(dds_list, xl_path, root_cols=None):
     """1. Find all keys with string or list values
@@ -344,8 +342,6 @@ def dds_to_xl(dds_list, xl_path, root_cols=None):
     wb.Save()
     wb.Close()
 
-    return
-
 
 def xl_merge(
     original_xl_path,
@@ -378,8 +374,6 @@ def xl_merge(
         merged_xl_path = original_root + "_merge" + ext
 
     dds_to_xl(merged_dds, merged_xl_path, root_cols)
-
-    return
 
 
 def bootstrap_dds(
@@ -421,8 +415,6 @@ def bootstrap_dds(
         # Convert the files
         xl_to_data_yaml(xl_path, yaml_path, ignore_column, ignore_missing)
 
-    return
-
 
 def mkdir_p(path):
     """Create a directory structure based on path. Analagous to mkdir -p.
@@ -439,8 +431,6 @@ def mkdir_p(path):
             pass
         else:
             raise
-
-    return
 
 
 def bootstrap_dds_interface():
@@ -492,8 +482,6 @@ def bootstrap_dds_interface():
     verbose = args.verbose
 
     bootstrap_dds(xldir, yamldir, ignorecol, verbose=verbose)
-
-    return
 
 
 def xl_merge_interface():
@@ -555,8 +543,6 @@ def xl_merge_interface():
         verbose=verbose,
         dry_run=dry_run,
     )
-
-    return
 
 
 def _raise_dupes_error(file_name, sheet_name, duped_list):

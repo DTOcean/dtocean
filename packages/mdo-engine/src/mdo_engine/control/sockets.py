@@ -21,8 +21,6 @@ class Socket(Plugin):
         super(Socket, self).__init__()
         self._interface_classes = {}
 
-        return
-
     def discover_interfaces(self, package, super_cls, warn_import=False):
         """Retrieve all of the interfaces. Should be abstract?"""
 
@@ -32,12 +30,8 @@ class Socket(Plugin):
         cls_map = self._discover_plugins(package, super_cls, warn_import)
         self._interface_classes.update(cls_map)
 
-        return
-
     def add_interface(self, interface_class):
         self._interface_classes[interface_class.__name__] = interface_class
-
-        return
 
     def get_all_variables(self):
         """Return a unique list of all valid variables available from the
@@ -154,13 +148,9 @@ class NamedSocket(Socket):
         super(NamedSocket, self).__init__()
         self._interface_name = interface_name
 
-        return
-
     def discover_interfaces(self, package):
         """Retrieve all of the interfaces"""
 
         super(NamedSocket, self).discover_interfaces(
             package, self._interface_name
         )
-
-        return

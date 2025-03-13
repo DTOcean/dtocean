@@ -17,8 +17,12 @@ from copy import deepcopy
 from ..boundary.data import SerialBox
 from ..boundary.interface import MaskVariable
 from ..entity import Simulation
-from ..entity.data import DataState  # Used by eval
-from ..entity.data import BaseState, DataCatalog, PseudoState
+from ..entity.data import (
+    BaseState,
+    DataCatalog,
+    DataState,  # Used by eval
+    PseudoState,
+)
 from ..utilities.identity import get_unique_id
 from ..utilities.misc import OrderedSet
 from .data import DataStorage
@@ -36,8 +40,6 @@ class Loader:
 
     def __init__(self, datastore: DataStorage):
         self._store: DataStorage = datastore
-
-        return
 
     def get_structure(self, structure_class_name):
         cls = self._store.get_structure(structure_class_name)
@@ -214,8 +216,6 @@ class Loader:
         merged_state = self._merge_active_states(simulation)
         simulation.set_merged_state(merged_state)
 
-        return
-
     def create_merged_state(self, simulation: Simulation, use_existing=True):
         if use_existing:
             merged_state = simulation.get_merged_state()
@@ -265,8 +265,6 @@ class Loader:
             )
             simulation._merged_state = state_box
 
-        return
-
     def deserialise_states(self, simulation: Simulation, root_dir=None):
         active_boxes = simulation._active_states
         active_states = []
@@ -290,8 +288,6 @@ class Loader:
                 simulation._merged_state, root_dir
             )
             simulation._merged_state = state
-
-        return
 
     def _get_active_inputs(self, pool, simulation, input_declaration):
         input_ids = []
@@ -460,8 +456,6 @@ class Controller(Loader):
         super(Controller, self).__init__(datastore)
         self._sequencer: Sequencer = sequencer
 
-        return
-
     def copy_simulation(
         self,
         pool,
@@ -534,8 +528,6 @@ class Controller(Loader):
 
         simulation.clear_states()
 
-        return
-
     def create_new_hub(
         self,
         simulation: Simulation,
@@ -546,8 +538,6 @@ class Controller(Loader):
         hub = self._sequencer.create_new_hub(interface_type, no_complete)
         simulation.set_hub(hub_id, hub)
 
-        return
-
     def create_new_pipeline(
         self,
         simulation: Simulation,
@@ -557,8 +547,6 @@ class Controller(Loader):
     ):
         hub = self._sequencer.create_new_pipeline(interface_type, no_complete)
         simulation.set_hub(hub_id, hub)
-
-        return
 
     def get_available_interfaces(self, simulation: Simulation, hub_id):
         hub = simulation.get_hub(hub_id)
@@ -625,13 +613,9 @@ class Controller(Loader):
 
         self._sequencer.sequence(hub, interface_name)
 
-        return
-
     def check_next_interface(self, simulation, hub_id, interface_name):
         hub = simulation.get_hub(hub_id)
         self._sequencer.check_next(hub, interface_name)
-
-        return
 
     def is_interface_completed(self, simulation, hub_id, interface_name):
         hub = simulation.get_hub(hub_id)
@@ -642,8 +626,6 @@ class Controller(Loader):
     def set_interface_completed(self, simulation, hub_id, interface_name):
         hub = simulation.get_hub(hub_id)
         self._sequencer.complete(hub, interface_name)
-
-        return
 
     def get_interface_cls_name(self, simulation, hub_id, interface_name):
         hub = simulation.get_hub(hub_id)
@@ -703,8 +685,6 @@ class Controller(Loader):
         # Update the merged state stored in the simulation
         merged_state = self._merge_active_states(simulation)
         simulation.set_merged_state(merged_state)
-
-        return
 
     def get_input_status(
         self, pool, simulation, hub_id, interface_name, all_overwritten=None
@@ -1003,8 +983,6 @@ class Controller(Loader):
         hub = simulation.get_hub(hub_id)
         hub.reset()
 
-        return
-
     def _copy_active_sim_states(self, simulation, compact_none_states=False):
         active_states = simulation.mirror_active_states()
 
@@ -1090,8 +1068,6 @@ class Controller(Loader):
         merged_state = self._merge_active_states(simulation)
         simulation.set_merged_state(merged_state)
 
-        return
-
 
 def _copy_sim_class(simulation, force_title=None, null_title=False):
     # Set the title
@@ -1116,8 +1092,6 @@ def _copy_sim_hubs(old_simulation, new_simulation):
         hub = old_simulation.get_hub(hub_id)
         hub_copy = deepcopy(hub)
         new_simulation.set_hub(hub_id, hub_copy)
-
-    return
 
 
 def _copy_all_sim_states(simulation):

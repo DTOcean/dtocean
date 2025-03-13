@@ -12,8 +12,6 @@ class OtherRaw(RawInterface):
     def __init__(self):
         super(OtherRaw, self).__init__()
 
-        return
-
     @classmethod
     def get_name(cls):
         return "Other Raw Interface"
@@ -32,8 +30,6 @@ class OtherRaw(RawInterface):
 class WaveRaw(RawInterface):
     def __init__(self):
         super(WaveRaw, self).__init__()
-
-        return
 
     @classmethod
     def get_name(cls):

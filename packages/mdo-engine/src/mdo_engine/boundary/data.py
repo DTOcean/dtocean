@@ -33,28 +33,26 @@ class DataDefinition(ABC):
     @property
     @abc.abstractmethod
     def package_name(self):
-        return
+        pass
 
     @property
     @abc.abstractmethod
     def company_name(self):
-        return
+        pass
 
     @property
     @abc.abstractmethod
     def local_yaml_dir(self):
         """Directory path for retrieving the data catalog definitions
         in YAML format. This directory is relative to this definition"""
-
-        return
+        pass
 
     @property
     @abc.abstractmethod
     def user_yaml_dir(self):
         """Directory path for retrieving the data catalog definitions
         in YAML format"""
-
-        return
+        pass
 
     def get_metadef_lists(self):
         for abs_yaml_path in self._get_yaml_local_paths():
@@ -62,8 +60,6 @@ class DataDefinition(ABC):
 
         for abs_yaml_path in self._get_yaml_user_paths():
             yield yaml_to_py(abs_yaml_path)
-
-        return
 
     def _get_yaml_paths(self, yaml_dir):
         """Get the absolute paths to the yaml files"""
@@ -177,5 +173,3 @@ class SerialBox:
     def __init__(self, identifier, load_dict):
         self.identifier = identifier
         self.load_dict = load_dict
-
-        return

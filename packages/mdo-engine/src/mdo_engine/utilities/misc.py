@@ -16,18 +16,12 @@ class Injective:
     def __init__(self):
         self._d = {}
 
-        return
-
     def add(self, k, v):
         self._d[k] = v
         self._d[v] = k
 
-        return
-
     def remove(self, k):
         self._d.pop(self._d.pop(k))
-
-        return
 
     def get(self, k):
         return self._d[k]

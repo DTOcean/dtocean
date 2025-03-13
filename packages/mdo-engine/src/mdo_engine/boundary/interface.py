@@ -58,8 +58,6 @@ class MaskVariable:
         self.unmask_variable = unmask_variable
         self.unmask_values = unmask_values
 
-        return
-
 
 class Interface(ABC):
     """The base abstract class for all interface types"""
@@ -72,8 +70,6 @@ class Interface(ABC):
 
         # Check that the optional identifiers have been set correctly
         self._check_optional_valid()
-
-        return
 
     @classmethod
     @abc.abstractmethod
@@ -164,8 +160,6 @@ class Interface(ABC):
 
         """
 
-        return
-
     def init_maps(self):
         all_keys = self._get_all_ids()
         if all_keys is None:
@@ -190,8 +184,6 @@ class Interface(ABC):
             raise KeyError(errStr)
 
         self.data[identifier] = data
-
-        return
 
     def get_data(self, identifier):
         """Get data from the interface after connecting
@@ -258,8 +250,6 @@ class Interface(ABC):
         for key, value in data_dict.items():
             self.put_data(key, value)
 
-        return
-
     def _check_optional_valid(self):
         input_identifiers = self.declare_inputs()
         optional_indentifiers = self.declare_optional()
@@ -294,8 +284,6 @@ class Interface(ABC):
 
             raise KeyError(errStr)
 
-        return
-
     @classmethod
     def _check_ids(cls, given_keys, valid_keys):
         invalid_keys = set(given_keys) - set(valid_keys)
@@ -308,8 +296,6 @@ class Interface(ABC):
 
             errStr = "The keys {} are not valid.".format(key_string)
             raise KeyError(errStr)
-
-        return
 
     @classmethod
     def _get_all_ids(cls):
@@ -340,8 +326,6 @@ class MapInterface(Interface):
     def __init__(self):
         self.valid_id_map = {}
         super(MapInterface, self).__init__()
-
-        return
 
     @classmethod
     @abc.abstractmethod
@@ -378,8 +362,6 @@ class MapInterface(Interface):
 
         setattr(self.data, local_key, data)
 
-        return
-
     def get_data(self, identifier):
         local_key = self.valid_id_map.get(identifier)
 
@@ -412,8 +394,6 @@ class MapInterface(Interface):
             self.valid_id_map.add(local, universal)
             setattr(self.data, local, None)
 
-        return
-
     def _update_data(self, data_dict):
         if data_dict is None:
             return
@@ -423,8 +403,6 @@ class MapInterface(Interface):
             if local_key is None:
                 continue
             setattr(self.data, local_key, value)
-
-        return
 
     def _check_map_valid(self):
         """Test to see if all the input and output variables are in the map."""
@@ -491,8 +469,6 @@ class MapInterface(Interface):
 
             raise KeyError(errStr)
 
-        return
-
 
 class MetaInterface(MapInterface):
     """Mapped interface which retains metadata"""
@@ -500,8 +476,6 @@ class MetaInterface(MapInterface):
     def __init__(self):
         self.meta = None
         super(MetaInterface, self).__init__()
-
-        return
 
     def init_maps(self):
         self._check_map_valid()
@@ -524,8 +498,6 @@ class MetaInterface(MapInterface):
             setattr(self.data, local, None)
             setattr(self.meta, local, None)
 
-        return
-
     def put_meta(self, identifier, metadata):
         """Put metadata into the interface, before connecting
 
@@ -545,8 +517,6 @@ class MetaInterface(MapInterface):
 
         setattr(self.meta, local_key, metadata)
 
-        return
-
 
 class RawInterface(Interface):
     """Interface for collecting any number of declared inputs using python
@@ -554,8 +524,6 @@ class RawInterface(Interface):
 
     def __init__(self):
         super(RawInterface, self).__init__()
-
-        return
 
     @classmethod
     def declare_inputs(cls):
@@ -580,8 +548,6 @@ class RawInterface(Interface):
 
         self._update_data(var_dict)
 
-        return
-
     def connect(self):
         return None
 
@@ -591,8 +557,6 @@ class FileInterface(MapInterface):
         super(FileInterface, self).__init__()
         self._path: Optional[Path] = None
 
-        return
-
     @classmethod
     @abc.abstractmethod
     def get_valid_extensions(cls) -> list[str]:
@@ -601,8 +565,6 @@ class FileInterface(MapInterface):
     @abc.abstractmethod
     def connect(self):
         self.check_path()
-
-        return
 
     def get_data(self, identifier):
         self.check_path()
@@ -623,8 +585,6 @@ class FileInterface(MapInterface):
          file_path (str): File path"""
 
         self._path = Path(file_path)
-
-        return
 
     def check_path(self, check_exists=False):
         # Test for file path
@@ -647,8 +607,6 @@ class FileInterface(MapInterface):
                 self._path
             )
             raise IOError(errStr)
-
-        return
 
 
 class QueryInterface(MetaInterface):
@@ -702,8 +660,6 @@ class QueryInterface(MetaInterface):
             msg = "Remaining database connection attempts: {}".format(attempts)
             module_logger.info(msg)
 
-        return
-
 
 class AutoInterface(MetaInterface):
     """AutoInterface subclass for creating automated simple interfaces"""
@@ -712,8 +668,6 @@ class AutoInterface(MetaInterface):
 
     def __init__(self):
         super(AutoInterface, self).__init__()
-
-        return
 
     @classmethod
     @abc.abstractmethod

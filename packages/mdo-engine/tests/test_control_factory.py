@@ -23,8 +23,6 @@ class AutoMeta(MetaData):
         self._auto = None
         super(AutoMeta, self).__init__(props_dict)
 
-        return
-
     @property
     def auto(self):
         return self._auto
@@ -34,8 +32,6 @@ class AutoTest(AutoInterface, FileInterface):
     def __init__(self):
         super(AutoTest, self).__init__()
         self._two = 2.0
-
-        return
 
     @classmethod
     def get_connect_name(cls):
@@ -50,8 +46,6 @@ class AutoRaw(AutoInterface, RawInterface):
     def __init__(self):
         AutoInterface.__init__(self)
         RawInterface.__init__(self)
-
-        return
 
     @classmethod
     def get_connect_name(cls):

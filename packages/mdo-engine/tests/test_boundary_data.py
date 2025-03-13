@@ -10,10 +10,10 @@ from mdo_engine.boundary.data import Structure
 
 class ConcreteStructure(Structure):
     def get_data(self, raw, meta_data):
-        return
+        pass
 
     def get_value(self, data):
-        return
+        pass
 
 
 def test_structure_load_data_importerror(monkeypatch):

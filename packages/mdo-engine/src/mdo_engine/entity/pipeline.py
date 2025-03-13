@@ -29,8 +29,6 @@ class Hub:
         self._scheduled_interface_map = OrderedDict()
         self._completed_interface_map = OrderedDict()
 
-        return
-
     def add_interface(self, interface_cls_name, interface_obj):
         """Assosiate an interface object to the Hub
 
@@ -52,8 +50,6 @@ class Hub:
 
         self._scheduled_interface_map[interface_cls_name] = interface_obj
 
-        return
-
     def remove_interface(self, interface_cls_name):
         """Dissassociate an interface from the hub
 
@@ -73,8 +69,6 @@ class Hub:
                 interface_cls_name
             )
             raise KeyError(errStr)
-
-        return
 
     def refresh_interface(self, interface_cls_name, interface_obj):
         """Replace the interface object for a given class name.
@@ -97,8 +91,6 @@ class Hub:
                 interface_cls_name
             )
             raise KeyError(errStr)
-
-        return
 
     def get_interface_obj(self, interface_cls_name):
         """Retrieve an interface object
@@ -280,8 +272,6 @@ class Hub:
 
         self._completed_interface_map = new_completed
 
-        return
-
     def is_completed(self, interface_cls_name):
         if interface_cls_name in self._completed_interface_map.keys():
             result = True
@@ -319,13 +309,9 @@ class Hub:
         while interface_cls_name in self.get_completed_cls_names():
             self.undo()
 
-        return
-
     def reset(self):
         while self.undo():
             continue
-
-        return
 
     def check_next_scheduled(self, interface_cls_name):
         """If possible move the given interface to being the next
@@ -342,8 +328,6 @@ class Hub:
                 interface_cls_name
             )
             raise ValueError(errStr)
-
-        return
 
     @classmethod
     def _last_dict_key(cls, ordered_dict):
@@ -362,8 +346,6 @@ class Pipeline(Hub):
     def __init__(self, interface_name, no_complete=False):
         super(Pipeline, self).__init__(interface_name, no_complete)
         self.has_order = True
-
-        return
 
     def get_next_scheduled(self):
         if not self._scheduled_interface_map:
@@ -391,8 +373,6 @@ class Pipeline(Hub):
 
         super(Pipeline, self).set_completed(next_cls_name)
 
-        return
-
     def check_next_scheduled(self, interface_cls_name):
         """If possible move the given interface to being the next
         scheduled interface otherwise throw an error."""
@@ -408,5 +388,3 @@ class Pipeline(Hub):
                 interface_cls_name
             )
             raise ValueError(errStr)
-
-        return

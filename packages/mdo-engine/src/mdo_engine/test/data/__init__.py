@@ -12,8 +12,6 @@ class MyMetaData(MetaData):
 
         super(MyMetaData, self).__init__(props_dict)
 
-        return
-
     @classmethod
     def get_base_properties(cls):
         """Properties that must be provided"""

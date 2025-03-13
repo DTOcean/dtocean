@@ -33,8 +33,6 @@ class Sequencer:
             interface_types, interface_modules, warn_import
         )
 
-        return
-
     def _init_sockets(
         self,
         interface_types: Sequence[str],
@@ -50,7 +48,9 @@ class Sequencer:
         for cls_name in interface_types:
             socket_obj = Socket()
             for interface_module in interface_modules:
-                socket_obj.discover_interfaces(interface_module, cls_name, warn_import)
+                socket_obj.discover_interfaces(
+                    interface_module, cls_name, warn_import
+                )
 
             sockets[cls_name] = socket_obj
 
@@ -75,7 +75,9 @@ class Sequencer:
 
             if dupes:
                 dupes_str = ", ".join(dupes)
-                errStr = ("Duplicate interfaces names found: {}").format(dupes_str)
+                errStr = ("Duplicate interfaces names found: {}").format(
+                    dupes_str
+                )
                 raise ValueError(errStr)
 
             socket_names[cls_name] = names_map
@@ -115,7 +117,9 @@ class Sequencer:
 
         new_pipeline = Pipeline(interface_type, no_complete)
 
-        log_msg = ("New Pipeline created for interface {}.").format(interface_type)
+        log_msg = ("New Pipeline created for interface {}.").format(
+            interface_type
+        )
         module_logger.info(log_msg)
 
         return new_pipeline
@@ -171,8 +175,6 @@ class Sequencer:
 
             # Store an object of the interface
             hub.refresh_interface(interface_cls_name, interface_obj)
-
-        return
 
     def is_available(self, hub, interface_name):
         """Return all the interface names found as plugins for the given
@@ -232,12 +234,12 @@ class Sequencer:
     def sequence(self, hub, interface_name):
         """Sequence an interface for execution."""
 
-        interface_cls_name, interface_obj = self._get_interface(hub, interface_name)
+        interface_cls_name, interface_obj = self._get_interface(
+            hub, interface_name
+        )
 
         # Store an object of the interface
         hub.add_interface(interface_cls_name, interface_obj)
-
-        return
 
     def check_next(self, hub, interface_name):
         interface_cls_name = self.get_cls_name(hub, interface_name)
@@ -250,8 +252,6 @@ class Sequencer:
 
         hub.check_next_scheduled(interface_cls_name)
 
-        return
-
     def complete(self, hub, interface_name):
         interface_cls_name = self.get_cls_name(hub, interface_name)
 
@@ -262,8 +262,6 @@ class Sequencer:
             raise ValueError(errStr)
 
         hub.set_completed(interface_cls_name)
-
-        return
 
     def is_complete(self, hub, interface_name):
         interface_cls_name = self.get_cls_name(hub, interface_name)
