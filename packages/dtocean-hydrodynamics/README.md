@@ -11,13 +11,13 @@ environment.
 
 ## Installation
 
-Installation and development ofdtocean-hydrodynamics uses the
+Installation and development of dtocean-hydrodynamics uses the
 [Poetry](https://python-poetry.org/) dependency manager. Poetry must be
 installed and available on the command line.
 
 To install:
 
-```
+```sh
 $ poetry install
 ```
 
