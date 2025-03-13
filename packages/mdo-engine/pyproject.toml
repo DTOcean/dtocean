@@ -25,6 +25,7 @@ polite-config = {path = "../polite-config", develop = true}
 python-box = "^7.2.0"
 pywin32 = {version = "^308", platform = "win32"}
 pandas-stubs = "^2.2.3.241126"
+psycopg = {extras = ["binary"], version = "^3.2.6"}
 
 [tool.poetry.group.test]
 optional = true
