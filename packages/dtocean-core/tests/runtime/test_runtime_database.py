@@ -44,7 +44,6 @@ class MuleInterface(QueryInterface):
 # Test for a database connection
 def _is_port_open(dbname):
     data_menu = DataMenu()
-
     return data_menu.check_database(dbname)
 
 
