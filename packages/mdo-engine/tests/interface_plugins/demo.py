@@ -125,10 +125,10 @@ class TableInterface(DemoInterface):
             config["high"] = self.data.high
 
         sheet = Spreadsheet(**config)
-
         sheet.make_table(rows)
-        table_data = sheet.table.to_dict()
 
+        assert sheet.table is not None
+        table_data = sheet.table.to_dict()
         self.data.table = table_data
 
 
