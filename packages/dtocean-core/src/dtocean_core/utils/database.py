@@ -332,7 +332,6 @@ def build_tidal_series_step(step_table, xi, yj):
 
 def get_table_df(db, schema, table, columns):
     df = pd.read_sql_table(table, db._engine, schema=schema, columns=columns)
-
     return df
 
 

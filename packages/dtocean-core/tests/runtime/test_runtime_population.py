@@ -10,7 +10,6 @@ from dtocean_core.pipeline import InputVariable, Tree
 # Test for a database connection
 def _is_port_open():
     data_menu = DataMenu()
-
     return data_menu.check_database("local")
 
 
@@ -21,19 +20,13 @@ port_open = _is_port_open()
 @pytest.fixture(scope="module")
 def core():
     """Share a Core object"""
-
-    new_core = Core()
-
-    return new_core
+    return Core()
 
 
 @pytest.fixture(scope="module")
 def tree():
     """Share a Tree object"""
-
-    new_tree = Tree()
-
-    return new_tree
+    return Tree()
 
 
 @pytest.fixture(scope="module")
@@ -41,9 +34,7 @@ def project(core, tree):
     """Share a Project object"""
 
     project_title = "Test"
-
     project_menu = ProjectMenu()
-
     new_project = project_menu.new_project(core, project_title)
 
     options_branch = tree.get_branch(core, new_project, "System Type Selection")
