@@ -28,7 +28,7 @@ mdo-engine = {path = "../mdo-engine", develop = true}
 polite-config = {path = "../polite-config", develop = true}
 cma = "^4.0.0"
 cycler = "^0.12.1"
-geoalchemy2 = "^0.16.0"
+geoalchemy2 = "^0.17.1"
 matplotlib = "^3.8.4"
 natsort = "^8.4.0"
 netcdf4 = "^1.7.2"
