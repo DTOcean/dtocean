@@ -27,6 +27,7 @@ pywin32 = {version = "^308", platform = "win32"}
 pandas-stubs = "^2.2.3.241126"
 psycopg = {extras = ["binary"], version = "^3.2.6"}
 geoalchemy2 = "^0.17.1"
+shapely = "^2.0.7"
 
 [tool.poetry.group.test]
 optional = true
