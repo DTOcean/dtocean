@@ -7,6 +7,9 @@ import logging
 import socket
 from abc import ABC
 
+import psycopg
+from psycopg.types import TypeInfo
+from psycopg.types.shapely import register_shapely
 from sqlalchemy import MetaData, Table, create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -180,7 +183,7 @@ class Database(ABC):
 
         # runs a transaction
         with self._engine.begin() as connection:
-            connection.execute(query)
+            connection.execute(text(query))
 
     def call_stored_proceedure(self, proceedure_name, proceedure_args):
         """Return the results from calling a stored proceedure. Note this
@@ -425,6 +428,38 @@ class PostgreSQL(Database):
             connection.close()
 
         return results
+
+
+class PostGIS(PostgreSQL):
+    def get_connection_string(self):
+        conn_string = super(PostGIS, self).get_connection_string()
+        conn_string += "?plugin=geoalchemy2"
+        return conn_string
+
+    def configure(self):
+        credentials = self.get_credentials()
+
+        host = credentials["host"]
+        port = credentials["port"]
+        uid = credentials["user"]
+        pwd = credentials["pwd"]
+        db_name = credentials["dbname"]
+
+        hostString = "postgresql://{}:{}@{}:{}".format(
+            uid,
+            pwd,
+            host,
+            port,
+        )
+
+        conninfo = "{}/{}".format(hostString, db_name)
+
+        with psycopg.connect(conninfo) as conn:
+            info = TypeInfo.fetch(conn, "geometry")
+            assert info is not None
+            register_shapely(info)
+
+        super(PostGIS, self).configure()
 
 
 class SQLite(Database):
