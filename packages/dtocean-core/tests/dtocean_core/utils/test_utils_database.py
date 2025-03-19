@@ -182,6 +182,7 @@ def test_check_dict():
             "stripf",
             "table",
             "time",
+            "date",
         ]
     )
 
