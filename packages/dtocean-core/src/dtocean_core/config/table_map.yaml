@@ -198,21 +198,29 @@
       fkey: fk_site_id
       time:
         - measure_time
+      date:
+        - measure_date
       stripf: True
     - table: time_series_om_tidal
       fkey: fk_site_id
       time:
         - measure_time
+      date:
+        - measure_date
       stripf: True
     - table: time_series_om_wave
       fkey: fk_site_id
       time:
         - measure_time
+      date:
+        - measure_date
       stripf: True
     - table: time_series_om_wind
       fkey: fk_site_id
       time:
         - measure_time
+      date:
+        - measure_date
       stripf: True
     - table: constraint
       fkey: fk_site_id
@@ -248,4 +256,5 @@
           fkey: fk_bathymetry_id
           time:
             - measure_time
-
+          date:
+            - measure_date

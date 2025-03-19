@@ -23,15 +23,18 @@ import platform
 import re
 import shutil
 import time
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
 import pandas as pd
+import sqlalchemy
 import yaml
-from mdo_engine.utilities.database import PostgreSQL
+from geoalchemy2 import Geometry
+from mdo_engine.utilities.database import PostGIS
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
-from shapely import get_srid, wkb
+from shapely import get_srid, set_srid, wkb, wkt
+from sqlalchemy.dialects import postgresql
 
 from . import SmartFormatter
 from .files import onerror
@@ -546,8 +549,6 @@ def database_to_files(
 
                 table_df.to_csv(tab_path, index=False)
 
-        assert table_df is not None
-
         if full_dict["children"] is not None:
             # Include pid in iteration
             if full_dict["pkey"] is not None:
@@ -558,6 +559,7 @@ def database_to_files(
 
             # Check autokey
             if full_dict["autokey"]:
+                assert table_df is not None
                 pkids = table_df[full_dict["pkey"]]
                 del table_df
 
@@ -700,8 +702,48 @@ def database_from_files(
                     df = df.drop(list(missing_set), axis=1)
                     assert df is not None
 
+            dtype = {}
+
+            if full_dict["bool"] is not None:
+                bool_str = ", ".join(full_dict["bool"])
+                msg_str = "Reverting boolean columns: {}".format(bool_str)
+                print_function(msg_str)
+
+                df = revert_bool(df, full_dict["bool"])
+
+            if full_dict["geo"] is not None:
+                geo_str = ", ".join(full_dict["geo"])
+                msg_str = "Reverting Geometry columns: {}".format(geo_str)
+                print_function(msg_str)
+
+                df = revert_geo(df, full_dict["geo"])
+
+                for x in full_dict["geo"]:
+                    dtype[x] = Geometry
+
+            if full_dict["array"] is not None:
+                array_str = ", ".join(full_dict["array"])
+                msg_str = "Reverting array columns: {}".format(array_str)
+                print_function(msg_str)
+
+                df = revert_array(df, full_dict["array"])
+
+                for x in full_dict["array"]:
+                    dtype[x] = postgresql.ARRAY(sqlalchemy.types.REAL)
+
+            if full_dict["time"] is not None:
+                for x in full_dict["time"]:
+                    dtype[x] = postgresql.TIME
+
+            if full_dict["date"] is not None:
+                for x in full_dict["date"]:
+                    dtype[x] = postgresql.DATE
+
             msg_str = "Writing to table: {}".format(dbname)
             print_function(msg_str)
+
+            if not dtype:
+                dtype = None
 
             df.to_sql(
                 full_dict["table"],
@@ -710,6 +752,7 @@ def database_from_files(
                 if_exists="append",
                 index=False,
                 chunksize=50000,
+                dtype=dtype,
             )
 
             del df
@@ -849,6 +892,22 @@ def convert_array(table_df, array_cols):
     return table_df
 
 
+def revert_array(table_df, array_cols):
+    brackets = str.maketrans("{}", "[]")
+
+    def _safe_curly2list(x):
+        if pd.isna(x):
+            return
+        else:
+            y = eval(x.translate(brackets))
+            return y
+
+    for array_col in array_cols:
+        table_df[array_col] = table_df[array_col].apply(_safe_curly2list)
+
+    return table_df
+
+
 def convert_bool(table_df, bool_cols):
     def _safe_bool2str(x):
         if x is None:
@@ -862,6 +921,27 @@ def convert_bool(table_df, bool_cols):
 
     for bool_col in bool_cols:
         table_df[bool_col] = table_df[bool_col].apply(_safe_bool2str)
+
+    return table_df
+
+
+def revert_bool(table_df, bool_cols):
+    def _safe_str2bool(x):
+        if pd.isna(x):
+            y = None
+        elif isinstance(x, bool):
+            y = x
+        elif x == "yes":
+            y = True
+        elif x == "no":
+            y = False
+        else:
+            y = None
+
+        return y
+
+    for bool_col in bool_cols:
+        table_df[bool_col] = table_df[bool_col].apply(_safe_str2bool)
 
     return table_df
 
@@ -881,6 +961,31 @@ def convert_geo(table_df, geo_cols):
 
     for geo_col in geo_cols:
         table_df[geo_col] = table_df[geo_col].apply(_safe_to_wkt)
+
+    return table_df
+
+
+def revert_geo(table_df: pd.DataFrame, geo_cols: Sequence[str]):
+    def _safe_to_wkb(x):
+        if pd.isna(x):
+            return
+        else:
+            srid = None
+            parts = x.split(";")
+            if len(parts) == 2:
+                srid = int(parts[0][5:])
+                geom = parts[1]
+            else:
+                geom = parts[0]
+
+            geo_shape = wkt.loads(geom)
+            if srid is not None:
+                set_srid(geo_shape, srid)
+
+            return geo_shape
+
+    for geo_col in geo_cols:
+        table_df[geo_col] = table_df[geo_col].apply(_safe_to_wkb)  # type: ignore
 
     return table_df
 
@@ -911,6 +1016,7 @@ def check_dict(table_dict):
         "schema": None,
         "stripf": False,
         "time": None,
+        "date": None,
     }
 
     full_dict.update(table_dict)
@@ -1001,7 +1107,7 @@ def get_database_config(db_config_name="database.yaml"):
 
 
 def get_database(credentials, echo=False, timeout=None, db_adapter="psycopg"):
-    database = PostgreSQL(db_adapter)
+    database = PostGIS(db_adapter)
     database.set_credentials(credentials)
     database.set_echo(echo)
     database.set_timeout(timeout)

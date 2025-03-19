@@ -35,7 +35,7 @@ from geoalchemy2.shape import to_shape
 from matplotlib.figure import Figure
 from mdo_engine.boundary import Structure
 from mdo_engine.boundary.interface import Box
-from mdo_engine.utilities.database import PostgreSQL
+from mdo_engine.utilities.database import PostGIS
 from natsort import natsorted
 from scipy import interpolate
 from shapely import Point, Polygon
@@ -72,7 +72,7 @@ class FileMixin(BaseMixin):
 
 class DBMixin(BaseMixin):
     @property
-    def _db(self) -> PostgreSQL: ...
+    def _db(self) -> PostGIS: ...
 
 
 class PlotMixin(BaseMixin):
