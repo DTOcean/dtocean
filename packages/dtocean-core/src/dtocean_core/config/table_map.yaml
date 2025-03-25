@@ -16,13 +16,11 @@
       geo:
         - point_location
     - table: component
-      pkey: id
       children:
         - table: component_shared
           fkey: fk_component_id
         - table: component_discrete
           fkey: fk_component_id
-          pkey: id
           children:
             - table: component_anchor
               fkey: fk_component_discrete_id
@@ -39,7 +37,6 @@
               fkey: fk_component_discrete_id
         - table: component_continuous
           fkey: fk_component_id
-          pkey: id
           children:
             - table: component_cable
               fkey: fk_component_continuous_id
@@ -55,24 +52,43 @@
       dummy: True
       children:
         - table: constants
+          pkey: lock
         - table: ref_current_drag_coef_rect
+          pkey: width_length
         - table: ref_drag_coef_cyl
+          pkey: reynolds_number
         - table: ref_drift_coef_float_rect
+          pkey: wavenumber_draft
         - table: ref_holding_capacity_factors_plate_anchors
+          pkey: relative_embedment_depth
         - table: ref_line_bcf
+          pkey: soil_friction_angle
         - table: ref_pile_deflection_coefficients
+          pkey: depth_coefficient
         - table: ref_pile_limiting_values_noncalcareous
+          pkey: soil_friction_angle
         - table: ref_pile_moment_coefficient_sam
+          pkey: depth_coefficient
         - table: ref_pile_moment_coefficient_sbm
+          pkey: depth_coefficient
         - table: ref_rectangular_wave_inertia
+          pkey: width/length
         - table: ref_subgrade_reaction_coefficient_cohesionless
+          pkey: allowable_deflection_diameter
         - table: ref_subgrade_reaction_coefficient_k1_cohesive
+          pkey: allowable_deflection_diameter
         - table: ref_superline_nylon
+          pkey: extension
         - table: ref_superline_polyester
+          pkey: extension
         - table: ref_superline_steelite
+          pkey: extension
         - table: ref_wake_amplification_factor_cyl
+          pkey: kc_steady_drag_coefficient
         - table: ref_wind_drag_coef_rect
+          pkey: width_length
         - table: soil_type_geotechnical_properties
+          pkey: fk_soil_type_id
     - table: equipment
       dummy: True
       children:
@@ -89,7 +105,9 @@
         - table: equipment_rock_filter_bags
         - table: equipment_rov
         - table: equipment_soil_lay_rates
+          pkey: equipment_type
         - table: equipment_soil_penet_rates
+          pkey: equipment_type
         - table: equipment_split_pipe
         - table: equipment_vibro_driver
     - table: operations
@@ -100,7 +118,6 @@
         - table: operations_limit_ws
         - table: operations_limit_cs
     - table: vehicle
-      pkey: id
       children:
         - table: vehicle_shared
           fkey: fk_vehicle_id
@@ -124,7 +141,6 @@
         - table: vehicle_vessel_tugboat
           fkey: fk_vehicle_id
 - table: device
-  pkey: id
   autokey: True
   schema: project
   children:
@@ -159,7 +175,6 @@
       fkey: fk_device_id
       stripf: True
     - table: sub_systems
-      pkey: id
       fkey: fk_device_id
       stripf: True
       children:
@@ -182,7 +197,6 @@
           bool:
             - interruptible
 - table: site
-  pkey: id
   autokey: True
   geo:
     - site_boundary
@@ -236,7 +250,6 @@
       stripf: True
     - table: cable_corridor_bathymetry
       fkey: fk_site_id
-      pkey: id
       geo:
         - utm_point
       stripf: True
@@ -245,7 +258,6 @@
           fkey: fk_bathymetry_id
     - table: bathymetry
       fkey: fk_site_id
-      pkey: id
       geo:
         - utm_point
       stripf: True

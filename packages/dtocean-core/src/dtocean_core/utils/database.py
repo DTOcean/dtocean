@@ -466,14 +466,22 @@ def database_to_files(
                 table_idx = len(table_name_list)
                 new_name_list = table_name_list + [full_dict["table"]]
 
+                fkey = full_dict["fkey"]
+                if fkey is None:
+                    raise RuntimeError("fkey must be defined for child tables")
+
                 if fid_list is None:
-                    new_fid_list = [full_dict["fkey"]]
+                    new_fid_list = [fkey]
                 else:
-                    new_fid_list = fid_list + [full_dict["fkey"]]
+                    new_fid_list = fid_list + [fkey]
 
             # Filter by the parent table if required
             query_str = query_builder(
-                new_name_list, pid_list, new_fid_list, where_list, var_schema
+                new_name_list,
+                pid_list,
+                new_fid_list,
+                where_list,
+                var_schema,
             )
 
             msg_str = "Executing query: {}".format(query_str)
@@ -517,6 +525,8 @@ def database_to_files(
 
                 table_df = convert_time(table_df, full_dict["time"])
 
+            table_df.sort_values(by=[full_dict["pkey"]], inplace=True)
+
             if len(table_df) < 1e6:
                 table_fname = full_dict["table"] + ".xlsx"
                 tab_path = os.path.join(root_path, table_fname)
@@ -551,11 +561,13 @@ def database_to_files(
 
         if full_dict["children"] is not None:
             # Include pid in iteration
-            if full_dict["pkey"] is not None:
+            if not full_dict["dummy"]:
+                pkey = full_dict["pkey"]
+
                 if pid_list is None:
-                    new_pid_list = [full_dict["pkey"]]
+                    new_pid_list = [pkey]
                 else:
-                    new_pid_list = pid_list + [full_dict["pkey"]]
+                    new_pid_list = pid_list + [pkey]
 
             # Check autokey
             if full_dict["autokey"]:
@@ -765,6 +777,7 @@ def database_from_files(
                 if not tab_dirs:
                     continue
 
+                # Truncate table for first ID but not others
                 first_dir = tab_dirs.pop(0)
                 first_fid = fids.pop(0)
 
@@ -806,7 +819,11 @@ def database_from_files(
 
 
 def query_builder(
-    table_list, pid_list=None, fid_list=None, where_list=None, schema=None
+    table_list,
+    pid_list=None,
+    fid_list=None,
+    where_list=None,
+    schema=None,
 ):
     def _add_schema(table_name, schema=None):
         if schema is None:
@@ -830,11 +847,10 @@ def query_builder(
 
     query_str = "SELECT {0}.*\nFROM {1} {0}".format(table_short, table_name)
 
-    consume_pid = pid_list[:]
-
     # Add joins
     if fid_list is not None:
         consume_fid = fid_list[:]
+        consume_pid = pid_list[:]
 
         while consume_list:
             table_fid = consume_fid.pop()
@@ -842,7 +858,7 @@ def query_builder(
             join_table_name = _add_schema(consume_list.pop(), schema)
             join_table_short = consume_shorts.pop()
 
-            query_str += ("\nJOIN {0} {1} ON {1}.{2} = " "{3}.{4}").format(
+            query_str += ("\nJOIN {0} {1} ON {1}.{2} = {3}.{4}").format(
                 join_table_name,
                 join_table_short,
                 join_table_pid,
@@ -951,12 +967,11 @@ def convert_geo(table_df, geo_cols):
         if x is None:
             return
         else:
-            geo_shape = wkb.loads(x, hex=True)
-            srid = get_srid(geo_shape)
+            srid = get_srid(x)
             if srid > 0:
-                result = "SRID={};{}".format(srid, geo_shape.wkt)
+                result = "SRID={};{}".format(srid, x.wkt)
             else:
-                result = geo_shape.wkt
+                result = x.wkt
             return result
 
     for geo_col in geo_cols:
@@ -1012,7 +1027,7 @@ def check_dict(table_dict):
         "dummy": False,
         "fkey": None,
         "geo": None,
-        "pkey": None,
+        "pkey": "id",
         "schema": None,
         "stripf": False,
         "time": None,
