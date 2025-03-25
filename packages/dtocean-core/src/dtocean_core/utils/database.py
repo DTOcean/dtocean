@@ -23,7 +23,7 @@ import platform
 import re
 import shutil
 import time
-from typing import Any, Sequence
+from typing import Any, Optional, Sequence
 
 import numpy as np
 import pandas as pd
@@ -31,6 +31,7 @@ import sqlalchemy
 import yaml
 from geoalchemy2 import Geometry
 from mdo_engine.utilities.database import PostGIS
+from pandas.api.types import is_integer_dtype
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
 from shapely import get_srid, set_srid, wkb, wkt
@@ -378,13 +379,18 @@ def database_to_files(
     schema=None,
     table_name_list=None,
     pid_list=None,
-    fid_list=None,
+    join_list=None,
     where_list=None,
     auto_child=False,
+    prefer_csv=False,
     print_function=None,
 ):
     if print_function is None:
-        print_function = print
+
+        def _print_function(x: str):
+            pass
+
+        print_function = _print_function
 
     def _dump_child(
         root_path,
@@ -406,7 +412,7 @@ def database_to_files(
 
         # dump a directory
         if os.path.exists(child_path):
-            shutil.rmtree(child_path, onerror=onerror)
+            shutil.rmtree(child_path, onexc=onerror)
 
         os.makedirs(child_path)
 
@@ -421,6 +427,7 @@ def database_to_files(
             fid_list,
             where_list,
             auto_child,
+            prefer_csv,
             print_function,
         )
 
@@ -443,7 +450,7 @@ def database_to_files(
         table_df = None
         new_name_list = None
         new_pid_list = None
-        new_fid_list = None
+        new_join_list = None
         new_where_list = None
 
         full_dict = check_dict(table_dict)
@@ -466,20 +473,20 @@ def database_to_files(
                 table_idx = len(table_name_list)
                 new_name_list = table_name_list + [full_dict["table"]]
 
-                fkey = full_dict["fkey"]
-                if fkey is None:
-                    raise RuntimeError("fkey must be defined for child tables")
+                join = full_dict["join"]
+                if join is None:
+                    raise RuntimeError("join must be defined for child tables")
 
-                if fid_list is None:
-                    new_fid_list = [fkey]
+                if join_list is None:
+                    new_join_list = [join]
                 else:
-                    new_fid_list = fid_list + [fkey]
+                    new_join_list = join_list + [join]
 
             # Filter by the parent table if required
             query_str = query_builder(
                 new_name_list,
                 pid_list,
-                new_fid_list,
+                new_join_list,
                 where_list,
                 var_schema,
             )
@@ -491,10 +498,10 @@ def database_to_files(
             table_df = pd.read_sql(query_str, database._engine)
 
             if full_dict["stripf"] and auto_child:
-                msg_str = "Stripping column: {}".format(full_dict["fkey"])
+                msg_str = "Stripping column: {}".format(full_dict["join"])
                 print_function(msg_str)
 
-                table_df = table_df.drop(full_dict["fkey"], axis=1)
+                table_df = table_df.drop(full_dict["join"], axis=1)
                 assert table_df is not None
 
             if full_dict["array"] is not None:
@@ -527,7 +534,7 @@ def database_to_files(
 
             table_df.sort_values(by=[full_dict["pkey"]], inplace=True)
 
-            if len(table_df) < 1e6:
+            if len(table_df) < 1e6 and os.name == "nt" and not prefer_csv:
                 table_fname = full_dict["table"] + ".xlsx"
                 tab_path = os.path.join(root_path, table_fname)
 
@@ -591,7 +598,7 @@ def database_to_files(
                         var_schema,
                         new_name_list,
                         new_pid_list,
-                        new_fid_list,
+                        new_join_list,
                         new_where_list,
                         pkid,
                     )
@@ -611,7 +618,7 @@ def database_to_files(
                     var_schema,
                     new_name_list,
                     new_pid_list,
-                    new_fid_list,
+                    new_join_list,
                     new_where_list,
                 )
 
@@ -624,10 +631,17 @@ def database_from_files(
     add_fid=None,
     truncate=True,
     drop_missing=True,
+    parent: Optional[str] = None,
+    first_idx_map: Optional[dict[str, int]] = None,
+    offset_maps: Optional[dict[str, dict[int, int]]] = None,
     print_function=None,
 ):
     if print_function is None:
-        print_function = print
+
+        def _print_function(x: str):
+            pass
+
+        print_function = _print_function
 
     def _list_dirs(path, tab_match):
         dir_list = [
@@ -680,11 +694,11 @@ def database_from_files(
 
             if add_fid is not None:
                 msg_str = ("Adding foreign key '{}' with value: " "{}").format(
-                    full_dict["fkey"], add_fid
+                    full_dict["join"], add_fid
                 )
                 print_function(msg_str)
 
-                df[full_dict["fkey"]] = add_fid
+                df[full_dict["join"]] = add_fid
 
             # Get the table name
             dbname = "{}.{}".format(var_schema, full_dict["table"])
@@ -751,6 +765,47 @@ def database_from_files(
                 for x in full_dict["date"]:
                     dtype[x] = postgresql.DATE
 
+            df.sort_values(by=[full_dict["pkey"]], inplace=True)
+
+            if is_integer_dtype(df[full_dict["pkey"]]):
+                msg_str = "Resetting primary and foreign keys"
+                print_function(msg_str)
+
+                if first_idx_map is None:
+                    first_idx = 1
+                elif dbname in first_idx_map:
+                    first_idx = first_idx_map[dbname]
+                else:
+                    first_idx = 1
+
+                offset_map = get_offset_map(df, full_dict["pkey"], first_idx)
+                to_replace = {full_dict["pkey"]: offset_map}
+
+                if full_dict["fkeys"] is not None:
+                    fkeys = full_dict["fkeys"]
+                else:
+                    fkeys = {}
+
+                if full_dict["join"] is not None:
+                    if parent is None:
+                        raise ValueError(
+                            "parent must not be None for joined tables"
+                        )
+
+                    fkeys[full_dict["join"]] = parent
+
+                if fkeys:
+                    if offset_maps is None:
+                        raise ValueError(
+                            "offset_maps must not be None when join or fkeys "
+                            "are defined"
+                        )
+                    for fkey, ptable in fkeys.items():
+                        to_replace[fkey] = offset_maps[ptable]
+
+                for key, val_map in to_replace.items():
+                    df[key] = df[key].map(val_map)
+
             msg_str = "Writing to table: {}".format(dbname)
             print_function(msg_str)
 
@@ -766,6 +821,22 @@ def database_from_files(
                 chunksize=50000,
                 dtype=dtype,
             )
+
+            # Record tables next available index and pkey offset
+            if is_integer_dtype(df[full_dict["pkey"]]):
+                next_idx = df[full_dict["pkey"]].max() + 1
+
+                if first_idx_map is None:
+                    first_idx_map = {dbname: next_idx}
+                else:
+                    first_idx_map[dbname] = next_idx
+
+                if offset_maps is None:
+                    offset_maps = {dbname: offset_map}
+                elif dbname not in offset_maps:
+                    offset_maps[dbname] = offset_map
+                else:
+                    offset_maps[dbname].update(offset_map)
 
             del df
 
@@ -783,25 +854,31 @@ def database_from_files(
 
                 child_path = os.path.join(root_path, first_dir)
 
-                database_from_files(
+                first_idx_map, offset_maps = database_from_files(
                     child_path,
                     full_dict["children"],
                     database,
                     var_schema,
                     first_fid,
+                    parent=dbname,
+                    first_idx_map=first_idx_map,
+                    offset_maps=offset_maps,
                     print_function=print_function,
                 )
 
                 for next_tab_dir, next_fid in zip(tab_dirs, fids):
                     child_path = os.path.join(root_path, next_tab_dir)
 
-                    database_from_files(
+                    first_idx_map, offset_maps = database_from_files(
                         child_path,
                         full_dict["children"],
                         database,
                         var_schema,
                         next_fid,
                         False,
+                        parent=dbname,
+                        first_idx_map=first_idx_map,
+                        offset_maps=offset_maps,
                         print_function=print_function,
                     )
 
@@ -814,14 +891,19 @@ def database_from_files(
                     database,
                     var_schema,
                     truncate=truncate,
+                    parent=dbname,
+                    first_idx_map=first_idx_map,
+                    offset_maps=offset_maps,
                     print_function=print_function,
                 )
+
+    return first_idx_map, offset_maps
 
 
 def query_builder(
     table_list,
     pid_list=None,
-    fid_list=None,
+    join_list=None,
     where_list=None,
     schema=None,
 ):
@@ -848,8 +930,8 @@ def query_builder(
     query_str = "SELECT {0}.*\nFROM {1} {0}".format(table_short, table_name)
 
     # Add joins
-    if fid_list is not None:
-        consume_fid = fid_list[:]
+    if join_list is not None:
+        consume_fid = join_list[:]
         consume_pid = pid_list[:]
 
         while consume_list:
@@ -1025,9 +1107,10 @@ def check_dict(table_dict):
         "bool": None,
         "children": None,
         "dummy": False,
-        "fkey": None,
+        "join": None,
         "geo": None,
         "pkey": "id",
+        "fkeys": None,
         "schema": None,
         "stripf": False,
         "time": None,
@@ -1043,6 +1126,14 @@ def check_dict(table_dict):
         raise KeyError(errStr)
 
     return full_dict
+
+
+def get_offset_map(df: pd.DataFrame, column: str, first: int) -> dict[int, int]:
+    ordered_df = df.reset_index(drop=True)
+    offset = first - ordered_df.at[0, column]
+    new = df[column] + offset
+    offset_map = pd.Series(new.values, index=df[column]).to_dict()
+    return offset_map
 
 
 def get_table_map(map_name="table_map.yaml"):
@@ -1279,12 +1370,22 @@ def database_convert_interface():
         if not os.path.exists(request["root_path"]):
             os.makedirs(request["root_path"])
 
-        database_to_files(request["root_path"], table_list, db)
+        database_to_files(
+            request["root_path"],
+            table_list,
+            db,
+            print_function=print,
+        )
 
         return
 
     if request["action"] == "load":
-        database_from_files(request["root_path"], table_list, db)
+        database_from_files(
+            request["root_path"],
+            table_list,
+            db,
+            print_function=print,
+        )
 
         return
 
