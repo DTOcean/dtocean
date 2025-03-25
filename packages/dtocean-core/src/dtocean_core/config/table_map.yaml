@@ -18,34 +18,52 @@
     - table: component
       children:
         - table: component_shared
-          fkey: fk_component_id
+          join: fk_component_id
         - table: component_discrete
-          fkey: fk_component_id
+          join: fk_component_id
           children:
             - table: component_anchor
-              fkey: fk_component_discrete_id
+              join: fk_component_discrete_id
+              fkeys:
+                fk_component_type_id: reference.component_type
             - table: component_collection_point
-              fkey: fk_component_discrete_id
+              join: fk_component_discrete_id
+              fkeys:
+                fk_component_type_id: reference.component_type
               array:
                 - foundation_locations
                 - centre_of_gravity
             - table: component_connector
-              fkey: fk_component_discrete_id
+              join: fk_component_discrete_id
+              fkeys:
+                fk_component_type_id: reference.component_type
             - table: component_mooring_discrete
-              fkey: fk_component_discrete_id
+              join: fk_component_discrete_id
+              fkeys:
+                fk_component_type_id: reference.component_type
             - table: component_transformer
-              fkey: fk_component_discrete_id
+              join: fk_component_discrete_id
+              fkeys:
+                fk_component_type_id: reference.component_type
         - table: component_continuous
-          fkey: fk_component_id
+          join: fk_component_id
           children:
             - table: component_cable
-              fkey: fk_component_continuous_id
+              join: fk_component_continuous_id
+              fkeys:
+                fk_component_type_id: reference.component_type
             - table: component_mooring_continuous
-              fkey: fk_component_continuous_id
+              join: fk_component_continuous_id
+              fkeys:
+                fk_component_type_id: reference.component_type
             - table: component_pile
-              fkey: fk_component_continuous_id
+              join: fk_component_continuous_id
+              fkeys:
+                fk_component_type_id: reference.component_type
             - table: component_rope
-              fkey: fk_component_continuous_id
+              join: fk_component_continuous_id
+              fkeys:
+                fk_component_type_id: reference.component_type
               array:
                 - rope_stiffness_curve
     - table: constants
@@ -89,6 +107,8 @@
           pkey: width_length
         - table: soil_type_geotechnical_properties
           pkey: fk_soil_type_id
+          fkeys:
+            fk_soil_type_id: reference.soil_type
     - table: equipment
       dummy: True
       children:
@@ -114,32 +134,52 @@
       dummy: True
       children:
         - table: operations_limit_hs
+          fkeys:
+            fk_operations_id: reference.operations_type
         - table: operations_limit_tp
+          fkeys:
+            fk_operations_id: reference.operations_type
         - table: operations_limit_ws
+          fkeys:
+            fk_operations_id: reference.operations_type
         - table: operations_limit_cs
+          fkeys:
+            fk_operations_id: reference.operations_type
     - table: vehicle
       children:
         - table: vehicle_shared
-          fkey: fk_vehicle_id
+          join: fk_vehicle_id
         - table: vehicle_helicopter
-          fkey: fk_vehicle_id
+          join: fk_vehicle_id
+          fkeys:
+            fk_vehicle_type_id: reference.vehicle_type
         - table : vehicle_vessel_anchor_handling
-          fkey: fk_vehicle_id
+          join: fk_vehicle_id
+          fkeys:
+            fk_vehicle_type_id: reference.vehicle_type
         - table: vehicle_vessel_cable_laying
-          fkey: fk_vehicle_id
+          join: fk_vehicle_id
+          fkeys:
+            fk_vehicle_type_id: reference.vehicle_type
           bool:
             - cable_splice_capabilities
             - dynamic_positioning_capabilities 
         - table: vehicle_vessel_cargo
-          fkey: fk_vehicle_id
+          join: fk_vehicle_id
+          fkeys:
+            fk_vehicle_type_id: reference.vehicle_type
           bool:
             - dynamic_positioning_capabilities
         - table: vehicle_vessel_jackup
-          fkey: fk_vehicle_id
+          join: fk_vehicle_id
+          fkeys:
+            fk_vehicle_type_id: reference.vehicle_type
           bool:
             - dynamic_positioning_capabilities
         - table: vehicle_vessel_tugboat
-          fkey: fk_vehicle_id
+          join: fk_vehicle_id
+          fkeys:
+            fk_vehicle_type_id: reference.vehicle_type
 - table: device
   autokey: True
   schema: project
@@ -152,7 +192,7 @@
         - variable_power_factor
       bool:
         - two_stage_assembly
-      fkey: fk_device_id
+      join: fk_device_id
       stripf: True
     - table: device_floating
       array:
@@ -161,39 +201,39 @@
         - umbilical_connection_point
       bool:
         - depth_variation_permitted
-      fkey: fk_device_id
+      join: fk_device_id
       stripf: True
     - table: device_tidal
       bool:
         - two_ways_flow
-      fkey: fk_device_id
+      join: fk_device_id
       stripf: True
     - table: device_tidal_power_performance
-      fkey: fk_device_id
+      join: fk_device_id
       stripf: True
     - table: device_wave
-      fkey: fk_device_id
+      join: fk_device_id
       stripf: True
     - table: sub_systems
-      fkey: fk_device_id
+      join: fk_device_id
       stripf: True
       children:
         - table: sub_systems_access
-          fkey: fk_sub_system_id
+          join: fk_sub_system_id
         - table: sub_systems_economic
-          fkey: fk_sub_system_id
+          join: fk_sub_system_id
         - table: sub_systems_inspection
-          fkey: fk_sub_system_id
+          join: fk_sub_system_id
         - table: sub_systems_install
-          fkey: fk_sub_system_id
+          join: fk_sub_system_id
         - table: sub_systems_maintenance
-          fkey: fk_sub_system_id
+          join: fk_sub_system_id
           bool:
             - interruptible
         - table: sub_systems_operation_weightings
-          fkey: fk_sub_system_id
+          join: fk_sub_system_id
         - table: sub_systems_replace
-          fkey: fk_sub_system_id
+          join: fk_sub_system_id
           bool:
             - interruptible
 - table: site
@@ -206,66 +246,70 @@
   schema: project
   children:
     - table: cable_corridor_constraint
-      fkey: fk_site_id
+      join: fk_site_id
       stripf: True
     - table: time_series_energy_wave
-      fkey: fk_site_id
+      join: fk_site_id
       time:
         - measure_time
       date:
         - measure_date
       stripf: True
     - table: time_series_om_tidal
-      fkey: fk_site_id
+      join: fk_site_id
       time:
         - measure_time
       date:
         - measure_date
       stripf: True
     - table: time_series_om_wave
-      fkey: fk_site_id
+      join: fk_site_id
       time:
         - measure_time
       date:
         - measure_date
       stripf: True
     - table: time_series_om_wind
-      fkey: fk_site_id
+      join: fk_site_id
       time:
         - measure_time
       date:
         - measure_date
       stripf: True
     - table: constraint
-      fkey: fk_site_id
+      join: fk_site_id
       geo:
         - boundary
       stripf: True
     - table: lease_area
-      fkey: fk_site_id
+      join: fk_site_id
       geo:
         - tidal_occurrence_point
       bool:
         - has_helipad
       stripf: True
     - table: cable_corridor_bathymetry
-      fkey: fk_site_id
+      join: fk_site_id
       geo:
         - utm_point
       stripf: True
       children:
         - table: cable_corridor_bathymetry_layer
-          fkey: fk_bathymetry_id
+          join: fk_bathymetry_id
+          fkeys:
+            fk_soil_type_id: reference.soil_type
     - table: bathymetry
-      fkey: fk_site_id
+      join: fk_site_id
       geo:
         - utm_point
       stripf: True
       children: 
         - table: bathymetry_layer
-          fkey: fk_bathymetry_id
+          join: fk_bathymetry_id
+          fkeys:
+            fk_soil_type_id: reference.soil_type
         - table: time_series_energy_tidal
-          fkey: fk_bathymetry_id
+          join: fk_bathymetry_id
           time:
             - measure_time
           date:
