@@ -1,44 +1,16 @@
-from copy import deepcopy
+from pathlib import Path
 
+import pandas as pd
 import pytest
-from mdo_engine.boundary.interface import QueryInterface
+from shapely import from_wkt
 from sqlalchemy.engine import Engine
 
-from dtocean_core.core import Core
-from dtocean_core.menu import DataMenu, ProjectMenu
-from dtocean_core.pipeline import InputVariable, Tree
-from dtocean_core.utils.database import get_database
-
-
-class MuleInterface(QueryInterface):
-    """Test database interface."""
-
-    @classmethod
-    def get_name(cls):
-        return "Test"
-
-    @classmethod
-    def declare_inputs(cls):
-        input_list = ["test"]
-
-        return input_list
-
-    @classmethod
-    def declare_outputs(cls):
-        return None
-
-    @classmethod
-    def declare_optional(cls):
-        return None
-
-    @classmethod
-    def declare_id_map(cls):
-        id_map = {"result": "test"}
-
-        return id_map
-
-    def connect(self):
-        return None
+from dtocean_core.menu import DataMenu
+from dtocean_core.utils.database import (
+    database_to_files,
+    get_database,
+    get_database_config,
+)
 
 
 # Test for a database connection
@@ -48,100 +20,129 @@ def _is_port_open(dbname):
 
 
 local_port_open = _is_port_open("local")
+pytestmark = pytest.mark.skipif(
+    not local_port_open,
+    reason="Can't connect to DB",
+)
 
 
 # Using a py.test fixture to reduce boilerplate and test times.
 @pytest.fixture(scope="module")
-def core():
-    """Share a Core object"""
-
-    new_core = Core()
-
-    return new_core
-
-
-@pytest.fixture(scope="module")
-def project(core):
-    """Share a Project object"""
-
-    project_title = "Test"
-
-    project_menu = ProjectMenu()
-    var_tree = Tree()
-
-    new_project = project_menu.new_project(core, project_title)
-
-    options_branch = var_tree.get_branch(
-        core, new_project, "System Type Selection"
-    )
-    device_type = options_branch.get_input_variable(
-        core, new_project, "device.system_type"
-    )
-
-    assert isinstance(device_type, InputVariable)
-    device_type.set_raw_interface(core, "Tidal Fixed")
-    device_type.read(core, new_project)
-
-    project_menu.initiate_pipeline(core, new_project)
-
-    return new_project
-
-
-# Using a py.test fixture to reduce boilerplate and test times.
-@pytest.fixture(scope="module")
-def database(core, project):
-    project = deepcopy(project)
-    data_menu = DataMenu()
-
-    data_menu.select_database(project, "testing")
-    database = get_database(project.get_database_credentials())
-
+def local():
+    _, db_config = get_database_config()
+    database = get_database(db_config["local"], echo=True, timeout=60)
     return database
 
 
-# Using a py.test fixture to reduce boilerplate and test times.
+def test_connect_local(local):
+    assert isinstance(local._engine, Engine)
+
+
 @pytest.fixture(scope="module")
-def localhost(core, project):
-    project = deepcopy(project)
-    data_menu = DataMenu()
+def component_map():
+    return [
+        {"table": "component_type", "schema": "reference"},
+        {
+            "table": "other",
+            "dummy": True,
+            "schema": "reference",
+            "children": [
+                {
+                    "table": "ports",
+                    "bool": ["jacking_capability"],
+                    "geo": ["point_location"],
+                },
+                {
+                    "table": "component",
+                    "children": [
+                        {
+                            "table": "component_discrete",
+                            "join": "fk_component_id",
+                            "children": [
+                                {
+                                    "table": "component_collection_point",
+                                    "join": "fk_component_discrete_id",
+                                    "fkeys": {
+                                        "fk_component_type_id": "reference.component_type"
+                                    },
+                                    "array": [
+                                        "foundation_locations",
+                                        "centre_of_gravity",
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ]
 
-    credentials = data_menu._dbconfig["local"]
-    project.set_database_credentials(credentials)
 
-    database = get_database(project.get_database_credentials(), echo=True)
-
-    return database
-
-
-@pytest.mark.skipif(not local_port_open, reason="Can't connect to DB")
-def test_connect_local(localhost):
-    assert isinstance(localhost._engine, Engine)
+@pytest.fixture(scope="module")
+def component_dump_path_static(tmp_path_factory, local, component_map):
+    tmp_path = tmp_path_factory.mktemp("component_dump")
+    database_to_files(tmp_path, component_map, local, prefer_csv=True)
+    return tmp_path
 
 
-# @pytest.mark.skipif(local_port_open == False,
-#                    reason="Can't connect to local DB")
-# def test_polygon(localhost):
-#
-#    test_interface = MuleInterface()
-#
-#    meta_dict = {"identifier": "test",
-#                 "title": "test",
-#                 "structure": "Polygon",
-#                 "tables": ["polygons", "polygon"]}
-#    meta = CoreMetaData(meta_dict)
-#    test_interface.put_meta("test", meta)
-#    test_interface.put_database(localhost)
-#
-#    with pytest.warns(None) as record:
-#
-#        PolygonDataColumn.auto_db(test_interface)
-#
-#    polygon = PolygonDataColumn()
-#    test = polygon.get_data(test_interface.data.result, None)
-#
-#    assert len(record) == 0
-#    assert isinstance(test, Polygon)
-#    assert len(test.exterior.coords) == 4
+@pytest.fixture()
+def component_dump_path(tmp_path, local, component_map):
+    database_to_files(tmp_path, component_map, local, prefer_csv=True)
+    return tmp_path
+
+
+def test_component_dump_tree(component_dump_path_static: Path):
+    dump_tree = [
+        (root, dirs, files)
+        for root, dirs, files in component_dump_path_static.walk()
+    ]
+
+    assert dump_tree[0][1] == ["other"]
+    assert dump_tree[0][2] == ["component_type.csv"]
+
+    assert dump_tree[1][0] == component_dump_path_static / "other"
+    assert dump_tree[1][1] == ["component"]
+    assert dump_tree[1][2] == ["component.csv", "ports.csv"]
+
+    assert dump_tree[2][0] == component_dump_path_static / "other" / "component"
+    assert dump_tree[2][1] == ["component_discrete"]
+    assert dump_tree[2][2] == ["component_discrete.csv"]
+
+    assert (
+        dump_tree[3][0]
+        == component_dump_path_static
+        / "other"
+        / "component"
+        / "component_discrete"
+    )
+    assert not dump_tree[3][1]
+    assert dump_tree[3][2] == ["component_collection_point.csv"]
+
+
+@pytest.fixture(scope="module")
+def ports_table_static(component_dump_path_static: Path):
+    ports_path = component_dump_path_static / "other" / "ports.csv"
+    return pd.read_csv(ports_path)
+
+
+def test_bool_conversion(ports_table_static: pd.DataFrame):
+    assert set(ports_table_static["jacking_capability"].unique()) == set(
+        ["yes", "no"]
+    )
+
+
+def test_geo_conversion(ports_table_static: pd.DataFrame):
+    geo_srid_str = ports_table_static["point_location"].iat[0]
+    assert isinstance(geo_srid_str, str)
+
+    srid_srt, geo_str = geo_srid_str.split(";")
+    assert from_wkt(geo_str)
+
+    if srid_srt is not None:
+        assert srid_srt[:5] == "SRID="
+        assert int(srid_srt[5:])
+
 
 # def test_stored_proceedure(database):
 #
@@ -150,57 +151,3 @@ def test_connect_local(localhost):
 #                                        [1]
 #                                        )
 #    assert len(result[0]) == 52
-
-# def test_plot_bathy(test_db):
-#
-#    result = test_db.call_stored_proceedure(
-#                                        "public.__select_bathymetry_by_box",
-#                                        [455400,0,999999,9999999]
-#                                            )
-#
-#    print result[0]
-#
-#    all_lists = map(list, zip(*result))
-#    xys = [ast.literal_eval(x) for x in all_lists[0]]
-#    xy_lists = map(list, zip(*xys))
-#
-#    xs = np.array(xy_lists[0])
-#    ys = np.array(xy_lists[1])
-#    zs = np.array(all_lists[1])
-#
-#    print xs[0], ys[0], zs[0]
-#
-#    test_bathy = PointBathymetry(xs, ys, zs, 20, 300,
-#                                 proj_string=("+proj=utm +zone=29 +ellps=WGS84"
-#                                              " +datum=WGS84 +units=m "
-#                                              "+no_defs")
-#                                )
-#
-#
-#    # Make a UTM basemap at 9W (UTM-29)
-#    m = UTMmap( llcrnrlon=-9.67, llcrnrlat=52.725,
-#                urcrnrlon=-9.55, urcrnrlat=52.825,
-#                resolution='f', central_meridian=-9.0)
-#
-#
-#    # create figure, axes instances.
-#    fig = plt.figure()
-#    ax1 = fig.add_axes([0.05,0.1,0.9,0.85])
-#
-#    im1 = test_bathy.plot_bathy(ax1, m, cmap=cm.GMT_haxby)
-#
-#    m.fillcontinents(color='#cc9966',lake_color='#afeeee', ax=ax1)
-#    m.drawcoastlines(ax=ax1)
-#    m.drawmapboundary(fill_color='#afeeee', ax=ax1)
-#    m.drawgrid(ax=ax1)
-#    plt.xticks(rotation=90)
-#
-#    # add colorbar
-#    cb = m.colorbar(im1, "right", size="10%", pad='5%', ax=ax1)
-#    cb.set_label('Depth (m)')
-#
-#    ax1.set_title('County Clare - UTM-29')
-#
-#    plt.show()
-
-#    assert False
