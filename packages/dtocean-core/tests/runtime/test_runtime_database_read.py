@@ -126,13 +126,13 @@ def ports_table_static(component_dump_path_static: Path):
     return pd.read_csv(ports_path)
 
 
-def test_bool_conversion(ports_table_static: pd.DataFrame):
+def test_dump_bool(ports_table_static: pd.DataFrame):
     assert set(ports_table_static["jacking_capability"].unique()) == set(
         ["yes", "no"]
     )
 
 
-def test_geo_conversion(ports_table_static: pd.DataFrame):
+def test_dump_geometry(ports_table_static: pd.DataFrame):
     geo_srid_str = ports_table_static["point_location"].iat[0]
     assert isinstance(geo_srid_str, str)
 
@@ -142,6 +142,31 @@ def test_geo_conversion(ports_table_static: pd.DataFrame):
     if srid_srt is not None:
         assert srid_srt[:5] == "SRID="
         assert int(srid_srt[5:])
+
+
+def test_dump_array(component_dump_path_static: Path):
+    collection_point_path = (
+        component_dump_path_static
+        / "other"
+        / "component"
+        / "component_discrete"
+        / "component_collection_point.csv"
+    )
+    assert collection_point_path.is_file()
+
+    collection_point_table = pd.read_csv(collection_point_path)
+    foundation_location_str = collection_point_table[
+        "foundation_locations"
+    ].iat[0]
+
+    assert isinstance(foundation_location_str, str)
+
+    brackets = str.maketrans("{}", "[]")
+    foundation_location = eval(foundation_location_str.translate(brackets))
+
+    assert isinstance(foundation_location, list)
+    if foundation_location:
+        assert isinstance(foundation_location[0], list)
 
 
 # def test_stored_proceedure(database):
