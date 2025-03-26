@@ -4,6 +4,7 @@ import sys
 
 import pandas as pd
 import pytest
+from shapely import Polygon, get_srid, set_srid
 from shapely.geometry import Point
 
 from dtocean_core.utils.config import init_config
@@ -18,8 +19,12 @@ from dtocean_core.utils.database import (
     draw_map,
     filter_map,
     get_database_config,
+    get_offset_map,
     get_table_map,
     query_builder,
+    revert_array,
+    revert_bool,
+    revert_geo,
 )
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -100,12 +105,22 @@ def test_query_builder_no_schema():
 
 
 def test_convert_array():
-    df_dict = {"A": ["[test]", None], "B": [1, 2]}
+    df_dict = {"A": [[1, 2, 3, 4], None], "B": [1, 2]}
     df = pd.DataFrame(df_dict)
 
     result = convert_array(df, ["A"])
 
-    assert result["A"].iloc[0] == "{test}"
+    assert result["A"].iloc[0] == "{1, 2, 3, 4}"
+    assert result["A"].iloc[1] is None
+
+
+def test_revert_array():
+    df_dict = {"A": ["{1, 2, 3, 4}", None], "B": [1, 2]}
+    df = pd.DataFrame(df_dict)
+
+    result = revert_array(df, ["A"])
+
+    assert result["A"].iloc[0] == [1, 2, 3, 4]
     assert result["A"].iloc[1] is None
 
 
@@ -120,8 +135,19 @@ def test_convert_bool():
     assert result["A"].iloc[2] is None
 
 
+def test_revert_bool():
+    df_dict = {"A": ["yes", "no", None], "B": [1, 2, 3]}
+    df = pd.DataFrame(df_dict)
+
+    result = revert_bool(df, ["A"])
+
+    assert result["A"].iloc[0] is True
+    assert result["A"].iloc[1] is False
+    assert result["A"].iloc[2] is None
+
+
 def test_convert_geo():
-    x = Point(0, 0).wkb.hex()
+    x = Point(0, 0)
 
     df_dict = {"A": [x, None], "B": [1, 2]}
     df = pd.DataFrame(df_dict)
@@ -132,21 +158,50 @@ def test_convert_geo():
     assert result["A"].iloc[1] is None
 
 
-def test_convert_geo_SRID(mocker):
-    x = Point(0, 0).wkb.hex()
+def test_convert_geo_SRID():
+    x = set_srid(Point(0, 0), 1)
 
     df_dict = {"A": [x, None], "B": [1, 2]}
     df = pd.DataFrame(df_dict)
-
-    mocker.patch(
-        "dtocean_core.utils.database.get_srid",
-        return_value=1,
-        autospec=True,
-    )
-
     result = convert_geo(df, ["A"])
 
     assert result["A"].iloc[0] == "SRID=1;POINT (0 0)"
+    assert result["A"].iloc[1] is None
+
+
+def test_revert_geo():
+    df_dict = {"A": ["POINT (0 0)", None], "B": [1, 2]}
+    df = pd.DataFrame(df_dict)
+
+    result = revert_geo(df, ["A"])
+
+    assert result["A"].iloc[0] == Point(0, 0)
+    assert result["A"].iloc[1] is None
+
+
+def test_revert_geo_SRID():
+    df_dict = {
+        "A": [
+            "SRID=4326;POLYGON ((-124.15 40.75, -124.375 40.75, "
+            "-124.375 40.925, -124.15 40.925, -124.15 40.75))",
+            None,
+        ],
+        "B": [1, 2],
+    }
+    df = pd.DataFrame(df_dict)
+    result = revert_geo(df, ["A"])
+
+    polygon = Polygon(
+        (
+            (-124.15, 40.75),
+            (-124.375, 40.75),
+            (-124.375, 40.925),
+            (-124.15, 40.925),
+            (-124.15, 40.75),
+        )
+    )
+    assert result["A"].iloc[0] == polygon
+    assert get_srid(result["A"].iloc[0]) == 4326
     assert result["A"].iloc[1] is None
 
 
@@ -168,25 +223,34 @@ def test_check_dict():
     table_dict = {"table": "test"}
     result = check_dict(table_dict)
 
-    assert set(result.keys()) == set(
-        [
-            "array",
-            "autokey",
-            "bool",
-            "children",
-            "dummy",
-            "fkey",
-            "geo",
-            "pkey",
-            "schema",
-            "stripf",
-            "table",
-            "time",
-            "date",
-        ]
-    )
+    expected_keys = [
+        "array",
+        "autokey",
+        "bool",
+        "children",
+        "date",
+        "dummy",
+        "fkeys",
+        "geo",
+        "join",
+        "pkey",
+        "schema",
+        "stripf",
+        "table",
+        "time",
+    ]
+    assert set(result.keys()) == set(expected_keys)
 
-    assert set(result.values()) == set([None, False, "test"])
+    autokey = result.pop("autokey")
+    dummy = result.pop("dummy")
+    pkey = result.pop("pkey")
+    stripf = result.pop("stripf")
+    table = result.pop("table")
+
+    assert (autokey or dummy or stripf) is False
+    assert pkey == "id"
+    assert table == "test"
+    assert set(result.values()) == set([None])
 
 
 def test_check_dict_no_table_key():
@@ -194,9 +258,18 @@ def test_check_dict_no_table_key():
         check_dict({})
 
 
+def test_get_offset_map():
+    df = pd.DataFrame(
+        {
+            "id": {0: 1, 1: 2, 2: 3, 3: 4, 4: 5},
+        }
+    )
+    test = get_offset_map(df, "id", 10)
+    assert test == {1: 10, 2: 11, 3: 12, 4: 13, 5: 14}
+
+
 def test_get_table_map():
     result = get_table_map()
-
     assert isinstance(result, list)
 
 

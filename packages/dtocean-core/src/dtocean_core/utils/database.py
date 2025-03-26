@@ -1077,7 +1077,7 @@ def revert_geo(table_df: pd.DataFrame, geo_cols: Sequence[str]):
 
             geo_shape = wkt.loads(geom)
             if srid is not None:
-                set_srid(geo_shape, srid)
+                geo_shape = set_srid(geo_shape, srid)
 
             return geo_shape
 
