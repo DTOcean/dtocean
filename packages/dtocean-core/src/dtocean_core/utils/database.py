@@ -385,13 +385,6 @@ def database_to_files(
     prefer_csv=False,
     print_function=None,
 ):
-    if print_function is None:
-
-        def _print_function(x: str):
-            pass
-
-        print_function = _print_function
-
     def _dump_child(
         root_path,
         table_dict,
@@ -435,7 +428,7 @@ def database_to_files(
         if platform.system() != "Windows":
             return
 
-        from win32com.client import Dispatch
+        from win32com.client import Dispatch  # type: ignore
 
         excel = Dispatch("Excel.Application")
         wb = excel.Workbooks.Open(os.path.abspath(xlpath))
@@ -445,6 +438,19 @@ def database_to_files(
 
         wb.Save()
         wb.Close()
+
+    if print_function is None:
+
+        def _print_function(x: str):
+            pass
+
+        print_function = _print_function
+
+    # Clean and setup dump directory
+    if os.path.exists(root_path):
+        shutil.rmtree(root_path, onexc=onerror)
+
+    os.makedirs(root_path)
 
     for table_dict in table_list:
         table_df = None
