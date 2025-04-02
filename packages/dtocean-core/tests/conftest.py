@@ -8,6 +8,14 @@ import pytest
 FILE = Path(__file__).resolve()
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--postgresql-path",
+        dest="postgresql_path",
+        help="path to postgresql database setup files",
+    )
+
+
 @pytest.fixture(scope="session")
 def test_data_path():
     return FILE.parents[1] / "test_data"
