@@ -1,37 +1,83 @@
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
+import psycopg
 import pytest
+from pytest_postgresql.janitor import DatabaseJanitor
 from shapely import from_wkt
 from sqlalchemy.engine import Engine
 
-from dtocean_core.menu import DataMenu
 from dtocean_core.utils.database import (
     database_to_files,
     get_database,
-    get_database_config,
 )
 
-
-# Test for a database connection
-def _is_port_open(dbname):
-    data_menu = DataMenu()
-    return data_menu.check_database(dbname)
-
-
-local_port_open = _is_port_open("local")
 pytestmark = pytest.mark.skipif(
-    not local_port_open,
-    reason="Can't connect to DB",
+    (
+        "not (config.getoption('postgresql_path') and "
+        "config.getoption('postgresql_password'))"
+    ),
+    reason=(
+        "Arguments --postgresql-path and --postgresql-password are required "
+        "for database tests"
+    ),
 )
 
 
-# Using a py.test fixture to reduce boilerplate and test times.
+def _load_database(**kwargs: Any) -> None:
+    """Prepare the database for tests."""
+    db_connection: psycopg.Connection = psycopg.connect(**kwargs)
+    with db_connection.cursor() as cur:
+        cur.execute("""SELECT public.db_from_csv(
+    '/home/postgres/export',
+    'reference.component_type',
+    'reference.component',
+    'reference.ports',
+    'reference.component_discrete',
+    'reference.component_collection_point'
+);""")
+        db_connection.commit()
+
+
 @pytest.fixture(scope="module")
-def local():
-    _, db_config = get_database_config()
-    database = get_database(db_config["local"], echo=True, timeout=60)
-    return database
+def postgresql_path(request):
+    return Path(request.config.getoption("postgresql_path"))
+
+
+@pytest.fixture(scope="module")
+def local(postgresql_noproc, postgresql_path):
+    """
+    Given the postgresql process fixture object returns a db connection
+    :param psql_proc: postgres process fixture
+    :return: psycopg2 connection
+    """
+    janitor = DatabaseJanitor(
+        user=postgresql_noproc.user,
+        host=postgresql_noproc.host,
+        port=postgresql_noproc.port,
+        version=postgresql_noproc.version,
+        dbname=postgresql_noproc.dbname,
+        password=postgresql_noproc.password,
+    )
+    pg_load = [
+        postgresql_path / "postgresql" / "admin.sql",
+        postgresql_path / "postgresql" / "schema.sql",
+        _load_database,
+    ]
+
+    with janitor:
+        for load_element in pg_load:
+            janitor.load(load_element)
+        db_config = {
+            "host": postgresql_noproc.host,
+            "port": postgresql_noproc.port,
+            "dbname": postgresql_noproc.dbname,
+            "user": postgresql_noproc.user,
+            "pwd": postgresql_noproc.password,
+        }
+        database = get_database(db_config, echo=True, timeout=60)
+        yield database
 
 
 def test_connect_local(local):
