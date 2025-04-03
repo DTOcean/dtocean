@@ -17,6 +17,7 @@
 
 import argparse
 import datetime as dt
+import json
 import logging
 import os
 import platform
@@ -30,10 +31,11 @@ import pandas as pd
 import sqlalchemy
 import yaml
 from geoalchemy2 import Geometry
-from mdo_engine.utilities.database import PostGIS
+from mdo_engine.utilities.database import Database, PostGIS
 from pandas.api.types import is_integer_dtype
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
+from polite_config.version import Version
 from shapely import get_srid, set_srid, wkb, wkt
 from sqlalchemy.dialects import postgresql
 
@@ -1218,14 +1220,56 @@ def get_database_config(db_config_name="database.yaml"):
     return useryaml, config
 
 
-def get_database(credentials, echo=False, timeout=None, db_adapter="psycopg"):
+def get_database(
+    credentials,
+    echo=False,
+    timeout=None,
+    db_adapter="psycopg",
+    min_version: Optional[str] = None,
+):
     database = PostGIS(db_adapter)
     database.set_credentials(credentials)
     database.set_echo(echo)
     database.set_timeout(timeout)
     database.configure()
 
+    if min_version is not None:
+        actual_version = get_database_version(database)
+        if actual_version is None:
+            raise RuntimeError("Database version is unknown")
+
+        if Version(actual_version) < Version(min_version):
+            raise RuntimeError(
+                f"Database version {actual_version} is less than the required "
+                f"{min_version}"
+            )
+
     return database
+
+
+def get_database_version(database: Database):
+    credentials = database.get_credentials()
+    query = f"""SELECT pg_catalog.shobj_description(d.oid, 'pg_database') AS "Description"
+FROM pg_catalog.pg_database d
+WHERE datname = '{credentials["dbname"]}';"""
+    with database.exectute_query(query) as cur:
+        first = cur.fetchone()
+        if first is None:
+            return None
+        meta_str = first[0]
+
+    if not meta_str:
+        return None
+
+    try:
+        meta = json.loads(meta_str)
+    except (json.JSONDecodeError, TypeError):
+        return None
+
+    if "version" not in meta:
+        return None
+
+    return meta["version"]
 
 
 def database_convert_parser():
