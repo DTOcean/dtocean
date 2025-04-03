@@ -3,6 +3,7 @@ from typing import Any
 
 import pandas as pd
 import psycopg
+import psycopg.sql as sql
 import pytest
 from pytest_postgresql.janitor import DatabaseJanitor
 from shapely import from_wkt
@@ -11,6 +12,7 @@ from sqlalchemy.engine import Engine
 from dtocean_core.utils.database import (
     database_to_files,
     get_database,
+    get_database_version,
 )
 
 pytestmark = pytest.mark.skipif(
@@ -28,21 +30,65 @@ pytestmark = pytest.mark.skipif(
 def _load_database(**kwargs: Any) -> None:
     """Prepare the database for tests."""
     db_connection: psycopg.Connection = psycopg.connect(**kwargs)
-    with db_connection.cursor() as cur:
-        cur.execute("""SELECT public.db_from_csv(
+    query = sql.SQL("""COMMENT ON DATABASE {} IS '{{\"version\": \"1.2.3\"}}';
+
+SELECT public.db_from_csv(
     '/home/postgres/export',
     'reference.component_type',
     'reference.component',
     'reference.ports',
     'reference.component_discrete',
     'reference.component_collection_point'
-);""")
+);""").format(sql.Identifier(kwargs["dbname"]))
+    with db_connection.cursor() as cur:
+        cur.execute(query)
         db_connection.commit()
 
 
 @pytest.fixture(scope="module")
 def postgresql_path(request):
     return Path(request.config.getoption("postgresql_path"))
+
+
+def test_get_database_bad_version(postgresql_noproc, postgresql_path):
+    """
+    Given the postgresql process fixture object returns a db connection
+    :param psql_proc: postgres process fixture
+    :return: psycopg2 connection
+    """
+    janitor = DatabaseJanitor(
+        user=postgresql_noproc.user,
+        host=postgresql_noproc.host,
+        port=postgresql_noproc.port,
+        version=postgresql_noproc.version,
+        dbname=postgresql_noproc.dbname,
+        password=postgresql_noproc.password,
+    )
+    pg_load = [
+        postgresql_path / "postgresql" / "admin.sql",
+        postgresql_path / "postgresql" / "schema.sql",
+        _load_database,
+    ]
+
+    with janitor:
+        for load_element in pg_load:
+            janitor.load(load_element)
+        db_config = {
+            "host": postgresql_noproc.host,
+            "port": postgresql_noproc.port,
+            "dbname": postgresql_noproc.dbname,
+            "user": postgresql_noproc.user,
+            "pwd": postgresql_noproc.password,
+        }
+        with pytest.raises(RuntimeError) as exc_info:
+            get_database(
+                db_config,
+                echo=True,
+                timeout=60,
+                min_version="1.2.4",
+            )
+
+    assert "less than the required" in str(exc_info)
 
 
 @pytest.fixture(scope="module")
@@ -82,6 +128,11 @@ def local(postgresql_noproc, postgresql_path):
 
 def test_connect_local(local):
     assert isinstance(local._engine, Engine)
+
+
+def test_get_database_version(local):
+    version = get_database_version(local)
+    assert version == "1.2.3"
 
 
 @pytest.fixture(scope="module")
