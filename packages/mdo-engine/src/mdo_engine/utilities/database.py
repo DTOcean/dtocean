@@ -209,8 +209,7 @@ class Database(ABC):
 
     def close(self):
         if self._engine is None:
-            errStr = "No connection has been made."
-            raise IOError(errStr)
+            return
 
         self._engine.dispose()
         self.session = None
