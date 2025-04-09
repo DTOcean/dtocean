@@ -200,7 +200,7 @@ def test_component_dump_tree(component_dump_path_static: Path):
 
     assert dump_tree[1][0] == component_dump_path_static / "other"
     assert dump_tree[1][1] == ["component"]
-    assert dump_tree[1][2] == ["component.csv", "ports.csv"]
+    assert set(dump_tree[1][2]) == set(["component.csv", "ports.csv"])
 
     assert dump_tree[2][0] == component_dump_path_static / "other" / "component"
     assert dump_tree[2][1] == ["component_discrete"]
