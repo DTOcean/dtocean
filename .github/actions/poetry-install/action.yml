@@ -1,0 +1,36 @@
+name: poetry install
+description: 'Install a Python package using Poetry'
+inputs:
+  root-directory:
+    description: 'Source code root directory'
+    required: true
+  python-version:
+    description: 'Python version to install (defaults to 3.12)'
+    default: "3.12"
+  groups:
+    description: 'Optional groups to include, as a json list'
+    default: "[]"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build groups argument
+      shell: bash
+      run: |
+        GROUPS_ARG=""
+
+        for element in ${{ join(fromJSON(inputs.groups), ' ') }}; do
+            GROUPS_ARG="${GROUPS_ARG} --with ${element}"
+        done
+
+        echo "GROUPS_ARG=${GROUPS_ARG}" >> $GITHUB_ENV
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Install poetry
+      uses: abatilo/actions-poetry@v2
+    - name: Install package
+      shell: bash
+      run: |
+        cd "${{ inputs.root-directory }}"
+        poetry install${GROUPS_ARG}
