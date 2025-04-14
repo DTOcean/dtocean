@@ -1,3 +1,4 @@
+from datetime import datetime, time
 from pathlib import Path
 from typing import Any
 
@@ -5,11 +6,13 @@ import pandas as pd
 import psycopg
 import psycopg.sql as sql
 import pytest
+from pandas.testing import assert_frame_equal
 from pytest_postgresql.janitor import DatabaseJanitor
 from shapely import from_wkt
 from sqlalchemy.engine import Engine
 
 from dtocean_core.utils.database import (
+    database_from_files,
     database_to_files,
     get_database,
     get_database_version,
@@ -34,6 +37,8 @@ def _load_database(**kwargs: Any) -> None:
 
 SELECT public.db_from_csv(
     '/home/postgres/export',
+    'project.site',
+    'project.time_series_om_tidal',
     'reference.component_type',
     'reference.component',
     'reference.ports',
@@ -92,18 +97,20 @@ def test_get_database_bad_version(postgresql_noproc, postgresql_path):
 
 
 @pytest.fixture(scope="module")
-def local(postgresql_noproc, postgresql_path):
+def static(postgresql_noproc, postgresql_path):
     """
     Given the postgresql process fixture object returns a db connection
     :param psql_proc: postgres process fixture
     :return: psycopg2 connection
     """
+    dbname = f"{postgresql_noproc.dbname}_static"
+
     janitor = DatabaseJanitor(
         user=postgresql_noproc.user,
         host=postgresql_noproc.host,
         port=postgresql_noproc.port,
         version=postgresql_noproc.version,
-        dbname=postgresql_noproc.dbname,
+        dbname=dbname,
         password=postgresql_noproc.password,
     )
     pg_load = [
@@ -118,20 +125,20 @@ def local(postgresql_noproc, postgresql_path):
         db_config = {
             "host": postgresql_noproc.host,
             "port": postgresql_noproc.port,
-            "dbname": postgresql_noproc.dbname,
+            "dbname": dbname,
             "user": postgresql_noproc.user,
             "pwd": postgresql_noproc.password,
         }
-        database = get_database(db_config, echo=True, timeout=60)
+        database = get_database(db_config, timeout=60)
         yield database
 
 
-def test_connect_local(local):
-    assert isinstance(local._engine, Engine)
+def test_connect_local_static(static):
+    assert isinstance(static._engine, Engine)
 
 
-def test_get_database_version(local):
-    version = get_database_version(local)
+def test_get_database_version(static):
+    version = get_database_version(static)
     assert version == "1.2.3"
 
 
@@ -177,15 +184,9 @@ def component_map():
 
 
 @pytest.fixture(scope="module")
-def component_dump_path_static(tmp_path_factory, local, component_map):
+def component_dump_path_static(tmp_path_factory, static, component_map):
     tmp_path = tmp_path_factory.mktemp("component_dump")
-    database_to_files(tmp_path, component_map, local, prefer_csv=True)
-    return tmp_path
-
-
-@pytest.fixture()
-def component_dump_path(tmp_path, local, component_map):
-    database_to_files(tmp_path, component_map, local, prefer_csv=True)
+    database_to_files(tmp_path, component_map, static, prefer_csv=True)
     return tmp_path
 
 
@@ -266,10 +267,213 @@ def test_dump_array(component_dump_path_static: Path):
         assert isinstance(foundation_location[0], list)
 
 
-# def test_stored_proceedure(database):
-#
-#    result = database.call_stored_proceedure(
-#                                        "beta.sp_get_farm_by_site_id",
-#                                        [1]
-#                                        )
-#    assert len(result[0]) == 52
+@pytest.fixture(scope="module")
+def site_map():
+    return [
+        {
+            "table": "site",
+            "autokey": True,
+            "geo": [
+                "site_boundary",
+                "lease_boundary",
+                "corridor_boundary",
+                "cable_landing_location",
+            ],
+            "schema": "project",
+            "children": [
+                {
+                    "table": "time_series_om_tidal",
+                    "join": "fk_site_id",
+                    "time": ["measure_time"],
+                    "date": ["measure_date"],
+                    "stripf": True,
+                },
+            ],
+        },
+    ]
+
+
+@pytest.fixture(scope="module")
+def site_dump_path_static(tmp_path_factory, static, site_map):
+    tmp_path = tmp_path_factory.mktemp("site_dump")
+    database_to_files(tmp_path, site_map, static, prefer_csv=True)
+    return tmp_path
+
+
+@pytest.fixture
+def expected_site_dirs(site_dump_path_static: Path):
+    site_path = site_dump_path_static / "site.csv"
+    assert site_path.is_file()
+
+    site_table = pd.read_csv(site_path)
+    site_dirs = [f"site{id}" for id in site_table["id"].values]
+
+    return site_dirs
+
+
+def test_site_dump_tree(
+    site_dump_path_static: Path,
+    expected_site_dirs: list[str],
+):
+    dump_tree = [
+        (root, dirs, files)
+        for root, dirs, files in site_dump_path_static.walk()
+    ]
+
+    assert len(dump_tree) == 1 + len(expected_site_dirs)
+    assert set(dump_tree[0][1]) == set(expected_site_dirs)
+    assert dump_tree[0][2] == ["site.csv"]
+
+    for site_tree in dump_tree[1:]:
+        assert not site_tree[1]
+        assert site_tree[2] == ["time_series_om_tidal.csv"]
+
+
+def test_dump_datetime(
+    site_dump_path_static: Path,
+    expected_site_dirs: list[str],
+):
+    if len(expected_site_dirs) < 1:
+        pytest.skip("No sites defined in database")
+
+    time_series_energy_wave_path = (
+        site_dump_path_static / "site1" / "time_series_om_tidal.csv"
+    )
+    assert time_series_energy_wave_path.is_file()
+
+    time_series_energy_wave_table = pd.read_csv(time_series_energy_wave_path)
+
+    def is_date(x: datetime) -> bool:
+        return x.time() == time(0, 0)
+
+    measure_date = pd.to_datetime(time_series_energy_wave_table["measure_date"])
+    check_dates = measure_date.apply(is_date)
+    assert check_dates.all()
+
+    def is_time(x: str) -> bool:
+        try:
+            time.fromisoformat(x)
+            return True
+        except Exception:
+            return False
+
+    measure_time = time_series_energy_wave_table["measure_time"]
+    check_times = measure_time.apply(is_time)
+    assert check_times.all()
+
+
+@pytest.fixture
+def empty(postgresql_noproc, postgresql_path):
+    """
+    Given the postgresql process fixture object returns a db connection
+    :param psql_proc: postgres process fixture
+    :return: psycopg2 connection
+    """
+    dbname = f"{postgresql_noproc.dbname}_empty"
+
+    janitor = DatabaseJanitor(
+        user=postgresql_noproc.user,
+        host=postgresql_noproc.host,
+        port=postgresql_noproc.port,
+        version=postgresql_noproc.version,
+        dbname=dbname,
+        password=postgresql_noproc.password,
+    )
+    pg_load = [
+        postgresql_path / "postgresql" / "admin.sql",
+        postgresql_path / "postgresql" / "schema.sql",
+    ]
+
+    with janitor:
+        for load_element in pg_load:
+            janitor.load(load_element)
+        db_config = {
+            "host": postgresql_noproc.host,
+            "port": postgresql_noproc.port,
+            "dbname": dbname,
+            "user": postgresql_noproc.user,
+            "pwd": postgresql_noproc.password,
+        }
+        database = get_database(db_config, timeout=60)
+        yield database
+
+
+def test_connect_local(empty):
+    assert isinstance(empty._engine, Engine)
+
+
+@pytest.fixture(scope="module")
+def combined_map(component_map, site_map):
+    return component_map + site_map
+
+
+@pytest.fixture(scope="module")
+def combined_dump_path_static(tmp_path_factory, static, combined_map):
+    tmp_path = tmp_path_factory.mktemp("combined_dump")
+    database_to_files(tmp_path, combined_map, static, prefer_csv=True)
+    return tmp_path
+
+
+@pytest.mark.parametrize(
+    "table",
+    [
+        "reference.ports",
+        "reference.component_collection_point",
+        "project.time_series_om_tidal",
+    ],
+)
+def test_round_trip_convert(
+    combined_dump_path_static,
+    combined_map,
+    static,
+    empty,
+    table,
+):
+    schema, table_name = table.split(".")
+    before = pd.read_sql_table(table_name, static._engine, schema=schema)
+
+    database_from_files(combined_dump_path_static, combined_map, empty)
+    after = pd.read_sql_table(table_name, empty._engine, schema=schema)
+    assert_frame_equal(before, after)
+
+
+def test_id_renumbering(
+    tmp_path,
+    static,
+    empty,
+    site_map,
+    expected_site_dirs,
+):
+    if len(expected_site_dirs) < 2:
+        pytest.skip("A minimum of two defined sites are required for this test")
+
+    before = pd.read_sql_table(
+        "time_series_om_tidal",
+        static._engine,
+        schema="project",
+    )
+
+    database_to_files(tmp_path, site_map, static, prefer_csv=True)
+
+    time_series_energy_wave_path = (
+        tmp_path / "site2" / "time_series_om_tidal.csv"
+    )
+    assert time_series_energy_wave_path.is_file()
+
+    time_series_energy_wave_table = pd.read_csv(time_series_energy_wave_path)
+    time_series_energy_wave_table["id"] = (
+        time_series_energy_wave_table.index.values
+    )
+    time_series_energy_wave_table.to_csv(
+        time_series_energy_wave_path,
+        index=False,
+    )
+
+    database_from_files(tmp_path, site_map, empty)
+    after = pd.read_sql_table(
+        "time_series_om_tidal",
+        empty._engine,
+        schema="project",
+    )
+
+    assert_frame_equal(before, after)
