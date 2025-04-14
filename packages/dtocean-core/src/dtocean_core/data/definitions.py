@@ -26,7 +26,6 @@ import matplotlib.patheffects as PathEffects
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pytz
 import shapefile
 import xarray as xr
 import yaml
@@ -2724,11 +2723,14 @@ class DateTimeDict(DateTimeData):
     def auto_file_output(auto: FileMixin):
         auto.check_path()
 
+        def tz_fix(dt: datetime) -> datetime:
+            if dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None:
+                return dt.replace(tzinfo=None)
+            else:
+                return dt
+
         dc = auto.data.result
-        data = [
-            [k, v.astimezone(pytz.utc).replace(tzinfo=None)]
-            for k, v in dc.items()
-        ]
+        data = [[k, tz_fix(v)] for k, v in dc.items()]
         df = pd.DataFrame(data, columns=["ID", "data"])
 
         if ".xls" in auto._path.suffix:
