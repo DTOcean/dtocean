@@ -477,3 +477,61 @@ def test_id_renumbering(
     )
 
     assert_frame_equal(before, after)
+
+
+def test_fkey_renumbering(
+    tmp_path,
+    static,
+    empty,
+    component_map,
+):
+    before = pd.read_sql_table(
+        "component_collection_point",
+        static._engine,
+        schema="reference",
+    )
+
+    database_to_files(tmp_path, component_map, static, prefer_csv=True)
+
+    # Add a delta to the component_discrete table IDs
+    component_discrete_path = (
+        tmp_path / "other" / "component" / "component_discrete.csv"
+    )
+    assert component_discrete_path.is_file()
+
+    component_discrete_table = pd.read_csv(component_discrete_path)
+    component_discrete_table["id"] = component_discrete_table["id"] + 10
+    component_discrete_table.to_csv(
+        component_discrete_path,
+        index=False,
+    )
+
+    # Add a matching delta to the component_discrete foreign key
+    component_collection_point_path = (
+        tmp_path
+        / "other"
+        / "component"
+        / "component_discrete"
+        / "component_collection_point.csv"
+    )
+    assert component_collection_point_path.is_file()
+
+    component_collection_point_table = pd.read_csv(
+        component_collection_point_path
+    )
+    component_collection_point_table["fk_component_discrete_id"] = (
+        component_collection_point_table["fk_component_discrete_id"] + 10
+    )
+    component_collection_point_table.to_csv(
+        component_collection_point_path,
+        index=False,
+    )
+
+    database_from_files(tmp_path, component_map, empty)
+    after = pd.read_sql_table(
+        "component_collection_point",
+        empty._engine,
+        schema="reference",
+    )
+
+    assert_frame_equal(before, after)
