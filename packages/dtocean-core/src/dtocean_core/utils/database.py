@@ -35,7 +35,7 @@ from mdo_engine.utilities.database import Database, PostGIS
 from pandas.api.types import is_integer_dtype
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
-from polite_config.version import Version
+from packaging.version import Version
 from shapely import get_srid, set_srid, wkb, wkt
 from sqlalchemy.dialects import postgresql
 

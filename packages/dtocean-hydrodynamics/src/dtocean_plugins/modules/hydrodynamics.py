@@ -35,7 +35,7 @@ from typing import Any
 import numpy as np
 from natsort import natsorted
 from polite_config.paths import UserDataPath
-from polite_config.version import Version
+from packaging.version import Version
 
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
 from dtocean_hydro.main import WP2
