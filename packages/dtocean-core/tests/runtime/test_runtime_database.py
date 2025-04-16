@@ -12,6 +12,7 @@ from shapely import from_wkt
 from sqlalchemy.engine import Engine
 
 from dtocean_core.utils.database import (
+    MIN_DB_VERSION,
     database_from_files,
     database_to_files,
     get_database,
@@ -30,12 +31,22 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def _load_database(**kwargs: Any) -> None:
+def _set_database_version(**kwargs: Any) -> None:
     """Prepare the database for tests."""
     db_connection: psycopg.Connection = psycopg.connect(**kwargs)
-    query = sql.SQL("""COMMENT ON DATABASE {} IS '{{\"version\": \"1.2.3\"}}';
+    query = sql.SQL("COMMENT ON DATABASE {} IS '{{\"version\": {}}}';").format(
+        sql.Identifier(kwargs["dbname"]),
+        sql.Identifier(MIN_DB_VERSION),
+    )
+    with db_connection.cursor() as cur:
+        cur.execute(query)
+        db_connection.commit()
 
-SELECT public.db_from_csv(
+
+def _load_database_tables(**kwargs: Any) -> None:
+    """Prepare the database for tests."""
+    db_connection: psycopg.Connection = psycopg.connect(**kwargs)
+    query = sql.SQL("""SELECT public.db_from_csv(
     '/home/postgres/export',
     'project.site',
     'project.time_series_om_tidal',
@@ -44,7 +55,7 @@ SELECT public.db_from_csv(
     'reference.ports',
     'reference.component_discrete',
     'reference.component_collection_point'
-);""").format(sql.Identifier(kwargs["dbname"]))
+);""")
     with db_connection.cursor() as cur:
         cur.execute(query)
         db_connection.commit()
@@ -72,8 +83,17 @@ def test_get_database_bad_version(postgresql_noproc, postgresql_path):
     pg_load = [
         postgresql_path / "postgresql" / "admin.sql",
         postgresql_path / "postgresql" / "schema.sql",
-        _load_database,
+        _set_database_version,
+        _load_database_tables,
     ]
+
+    # Make a release number greater than the min
+    min_version_parts = [
+        int(c) for c in MIN_DB_VERSION.split(".") if c.isnumeric()
+    ]
+    min_version_parts[0] += 1
+    min_version_parts_str = [str(i) for i in min_version_parts]
+    next_version = ".".join(min_version_parts_str)
 
     with janitor:
         for load_element in pg_load:
@@ -90,7 +110,7 @@ def test_get_database_bad_version(postgresql_noproc, postgresql_path):
                 db_config,
                 echo=True,
                 timeout=60,
-                min_version="1.2.4",
+                min_version=next_version,
             )
 
     assert "less than the required" in str(exc_info)
@@ -116,7 +136,8 @@ def static(postgresql_noproc, postgresql_path):
     pg_load = [
         postgresql_path / "postgresql" / "admin.sql",
         postgresql_path / "postgresql" / "schema.sql",
-        _load_database,
+        _set_database_version,
+        _load_database_tables,
     ]
 
     with janitor:
@@ -129,7 +150,11 @@ def static(postgresql_noproc, postgresql_path):
             "user": postgresql_noproc.user,
             "pwd": postgresql_noproc.password,
         }
-        database = get_database(db_config, timeout=60)
+        database = get_database(
+            db_config,
+            timeout=60,
+            min_version=MIN_DB_VERSION,
+        )
         yield database
 
 
@@ -139,7 +164,8 @@ def test_connect_local_static(static):
 
 def test_get_database_version(static):
     version = get_database_version(static)
-    assert version == "1.2.3"
+    assert version is not None
+    assert version == MIN_DB_VERSION
 
 
 @pytest.fixture(scope="module")
@@ -382,6 +408,7 @@ def empty(postgresql_noproc, postgresql_path):
     pg_load = [
         postgresql_path / "postgresql" / "admin.sql",
         postgresql_path / "postgresql" / "schema.sql",
+        _set_database_version,
     ]
 
     with janitor:
@@ -394,7 +421,11 @@ def empty(postgresql_noproc, postgresql_path):
             "user": postgresql_noproc.user,
             "pwd": postgresql_noproc.password,
         }
-        database = get_database(db_config, timeout=60)
+        database = get_database(
+            db_config,
+            timeout=60,
+            min_version=MIN_DB_VERSION,
+        )
         yield database
 
 

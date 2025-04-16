@@ -49,7 +49,7 @@ from dtocean_plugins.core import FileInputInterface, FileOutputInterface
 from dtocean_plugins.plots.plots import PlotInterface
 
 from . import data as core_data
-from .utils.database import get_database
+from .utils.database import MIN_DB_VERSION, get_database
 from .utils.files import package_dir, unpack_archive
 
 StrOrPath = Union[str, Path]
@@ -1424,7 +1424,12 @@ class Core:
             and project.get_database_credentials() is not None
         ):
             credentials = project.get_database_credentials()
-            database = get_database(credentials, timeout=60, echo=False)
+            database = get_database(
+                credentials,
+                timeout=60,
+                echo=False,
+                min_version=MIN_DB_VERSION,
+            )
             interface.put_database(database)
 
         # If its a MetaInterface try to add meta data
