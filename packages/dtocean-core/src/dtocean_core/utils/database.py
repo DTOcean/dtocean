@@ -45,6 +45,8 @@ from .files import onerror
 # Set up logging
 module_logger = logging.getLogger(__name__)
 
+MIN_DB_VERSION = "2025.04.0"
+
 
 def bathy_records_to_strata(bathy_records=None, pre_bathy=None):
     """Convert the bathymetry layers table returned by the database into
@@ -1247,7 +1249,7 @@ def get_database(
     return database
 
 
-def get_database_version(database: Database):
+def get_database_version(database: Database) -> Optional[str]:
     credentials = database.get_credentials()
     query = f"""SELECT pg_catalog.shobj_description(d.oid, 'pg_database') AS "Description"
 FROM pg_catalog.pg_database d
@@ -1413,7 +1415,7 @@ def database_convert_interface():
     if request["db_pwd"] is not None:
         cred["pwd"] = "postgres"
 
-    db = get_database(cred, timeout=60)
+    db = get_database(cred, timeout=60, min_version=MIN_DB_VERSION)
 
     if request["action"] == "dump":
         # make a directory if required
