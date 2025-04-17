@@ -1,14 +1,10 @@
 import os
-import sys
-
-import pytest
 
 from dtocean_core.core import Core, Project
 from dtocean_core.extensions import StrategyManager
 from dtocean_core.menu import ModuleMenu
 from dtocean_core.utils.execute import (  # pylint: disable=no-name-in-module
     main,
-    main_interface,
 )
 from dtocean_plugins.strategies.base import Strategy
 
@@ -125,23 +121,3 @@ def test_main_save_path(mocker, tmpdir):
 
     assert len(os.listdir(str(tmpdir))) == 1
     assert os.listdir(str(tmpdir))[0] == "other.prj"
-
-
-@pytest.mark.parametrize(
-    "arg, expected", [("", True), ("-o out.prj", "out.prj"), ("-n", False)]
-)
-def test_main_interface(mocker, arg, expected):
-    testargs = ["execute_dtocean_project", "mock.prj", "-fwl"]
-    if arg:
-        testargs.append(arg)
-
-    mocker.patch.object(sys, "argv", testargs)
-
-    test = mocker.patch("dtocean_core.utils.execute.main", autospec=True)
-
-    main_interface()
-
-    assert test.call_args.args == ("mock.prj", expected, True, True, True)
-    main_interface()
-
-    assert test.call_args.args == ("mock.prj", expected, True, True, True)

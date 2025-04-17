@@ -15,7 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import argparse
 import datetime as dt
 import json
 import logging
@@ -24,7 +23,7 @@ import platform
 import re
 import shutil
 import time
-from typing import Any, Optional, Sequence
+from typing import Optional, Sequence
 
 import numpy as np
 import pandas as pd
@@ -32,14 +31,13 @@ import sqlalchemy
 import yaml
 from geoalchemy2 import Geometry
 from mdo_engine.utilities.database import Database, PostGIS
+from packaging.version import Version
 from pandas.api.types import is_integer_dtype
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
-from packaging.version import Version
 from shapely import get_srid, set_srid, wkb, wkt
 from sqlalchemy.dialects import postgresql
 
-from . import SmartFormatter
 from .files import onerror
 
 # Set up logging
@@ -1272,173 +1270,3 @@ WHERE datname = '{credentials["dbname"]}';"""
         return None
 
     return meta["version"]
-
-
-def database_convert_parser():
-    """Command line parser for database_to_files and database_from_files."""
-
-    desStr = "Convert DTOcean database to and from structured files"
-    epiStr = "Mathew Topper, Data Only Greater, (c) 2018"
-
-    parser = argparse.ArgumentParser(
-        description=desStr, epilog=epiStr, formatter_class=SmartFormatter
-    )
-
-    parser.add_argument(
-        "action",
-        choices=["dump", "load", "list", "view", "dir"],
-        help="R|Select an action, where\n"
-        " dump = export database to files\n"
-        " load = import files into database\n"
-        " list = print stored credentials identifiers\n"
-        " view = print stored credentials (using -i "
-        "option)\n"
-        "  dir = print table structure",
-    )
-
-    parser.add_argument(
-        "-d",
-        "--directory",
-        help=("directory to add or read files from. " "Defaults to '.'"),
-        type=str,
-        default=".",
-    )
-
-    parser.add_argument(
-        "-s",
-        "--section",
-        choices=["device", "site", "other"],
-        help="R|Only operate on section from\n"
-        " device = tables related to the OEC\n"
-        " site = tables related to the deployment site\n"
-        " other = tables related to the reference data",
-    )
-
-    parser.add_argument(
-        "-i", "--identifier", help=("stored credentials identifier"), type=str
-    )
-
-    parser.add_argument("--host", help=("override database host"), type=str)
-
-    parser.add_argument("--name", help=("override database name"), type=str)
-
-    parser.add_argument("--user", help=("override database username"), type=str)
-
-    parser.add_argument(
-        "-p", "--pwd", help=("override database password"), type=str
-    )
-
-    args = parser.parse_args()
-
-    result = {
-        "action": args.action,
-        "root_path": args.directory,
-        "filter_table": args.section,
-        "db_id": args.identifier,
-        "db_host": args.host,
-        "db_name": args.name,
-        "db_user": args.user,
-        "db_pwd": args.pwd,
-    }
-
-    return result
-
-
-def database_convert_interface():
-    """Command line interface for database_to_files and database_from_files.
-
-    Example:
-
-        To get help::
-
-            $ dtocean-database -h
-
-    """
-
-    cred: dict[str, Any]
-    request = database_convert_parser()
-    _, config = get_database_config()
-
-    # List the available database configurations
-    if request["action"] == "list":
-        id_str = ", ".join(config.keys())
-
-        if id_str:
-            msg_str = (
-                "Available database configuration identifiers are: " "{}"
-            ).format(id_str)
-        else:
-            msg_str = "No database configurations are stored"
-
-        print(msg_str)
-
-        return
-
-    if request["action"] == "view":
-        if request["db_id"] is None:
-            err_msg = "Option '-i' must be specified with 'view' action"
-            raise ValueError(err_msg)
-
-        cred = config[request["db_id"]]
-
-        for k, v in cred.items():
-            print("{:>8} ::  {}".format(k, v))
-
-        return
-
-    table_list = get_table_map()
-
-    # Filter the table if required
-    if request["filter_table"] is not None:
-        filtered_dict = filter_map(table_list, request["filter_table"])
-        table_list = [filtered_dict]
-
-    if request["action"] == "dir":
-        print("\n" + draw_map(table_list))
-        return
-
-    # Set up the DB
-    if request["db_id"] is not None:
-        cred = config[request["db_id"]]
-    else:
-        cred = {"host": None, "dbname": None, "user": None, "pwd": None}
-
-    if request["db_host"] is not None:
-        cred["host"] = request["db_host"]
-
-    if request["db_name"] is not None:
-        cred["dbname"] = request["db_name"]
-
-    if request["db_user"] is not None:
-        cred["user"] = request["db_user"]
-
-    if request["db_pwd"] is not None:
-        cred["pwd"] = "postgres"
-
-    db = get_database(cred, timeout=60, min_version=MIN_DB_VERSION)
-
-    if request["action"] == "dump":
-        # make a directory if required
-        if not os.path.exists(request["root_path"]):
-            os.makedirs(request["root_path"])
-
-        database_to_files(
-            request["root_path"],
-            table_list,
-            db,
-            print_function=print,
-        )
-
-        return
-
-    if request["action"] == "load":
-        database_from_files(
-            request["root_path"],
-            table_list,
-            db,
-            print_function=print,
-        )
-
-        return
-
-    raise RuntimeError("Highly illogical...")

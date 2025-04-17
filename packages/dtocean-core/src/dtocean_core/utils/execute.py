@@ -15,7 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import argparse
 import os
 import sys
 import time
@@ -109,80 +108,3 @@ def main(
     print(msg_str)
 
     my_core.dump_project(my_project, save_path)
-
-
-def main_interface():
-    """Command line interface for execute_dtocean_project.
-
-    Example:
-
-        To get help::
-
-            $ python execute_dtocean_project -h
-
-    """
-
-    desStr = (
-        "Execute DTOcean .prj project files. By default, the next "
-        "module scheduled is executed. All scheduled modules can also "
-        "be run using the appropriate option. Completed simulations are "
-        "saved to a new project file with '_complete' appended to the "
-        "file path."
-    )
-
-    parser = argparse.ArgumentParser(description=desStr)
-
-    parser.add_argument(
-        "fpath", help=("path to DTOcean project file"), type=str
-    )
-
-    parser.add_argument(
-        "-o",
-        "--out",
-        help=("specify output path for results file"),
-        type=str,
-        default=None,
-    )
-
-    parser.add_argument(
-        "-f",
-        "--full",
-        help=("execute all scheduled modules"),
-        action="store_true",
-    )
-
-    parser.add_argument(
-        "-n", "--no-save", help=("do not save the results"), action="store_true"
-    )
-
-    parser.add_argument(
-        "-w",
-        "--warnings",
-        help=("show tracebacks for all warnings"),
-        action="store_true",
-    )
-
-    parser.add_argument(
-        "-l",
-        "--logging",
-        help=("activate the DTOcean logging system"),
-        action="store_true",
-    )
-
-    args = parser.parse_args()
-
-    fpath = args.fpath
-    rpath = args.out
-    full = args.full
-    warn = args.warnings
-    no_save = args.no_save
-    log = args.logging
-
-    if no_save is True:
-        save = False
-    elif rpath is not None:
-        save = rpath.strip()
-    else:
-        save = True
-
-    main(fpath, save, full, warn, log)
