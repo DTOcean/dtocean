@@ -1,6 +1,5 @@
 import datetime
 import os
-import sys
 
 import pandas as pd
 import pytest
@@ -15,7 +14,6 @@ from dtocean_core.utils.database import (
     convert_bool,
     convert_geo,
     convert_time,
-    database_convert_parser,
     draw_map,
     filter_map,
     get_database_config,
@@ -343,19 +341,3 @@ def test_get_user_database_config(mocker, tmp_path):
 
     assert os.path.isfile(useryaml.get_config_path())
     assert isinstance(config, dict)
-
-
-def test_database_convert_parser_help():
-    sys.argv[1:] = ["-h"]
-
-    with pytest.raises(SystemExit):
-        database_convert_parser()
-
-
-def test_database_convert_parser_args():
-    sys.argv[1:] = ["dump", "-i", "local"]
-
-    result = database_convert_parser()
-
-    assert result["action"] == "dump"
-    assert result["db_id"] == "local"
