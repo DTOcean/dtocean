@@ -38,7 +38,7 @@ class Plugin:
         return cls_map
 
 
-def get_module_names_from_package(package: ModuleType):
+def get_module_names_from_package(package: ModuleType) -> list[str]:
     """Return the names of modules in the given package"""
 
     prefix = package.__name__ + "."
@@ -47,10 +47,10 @@ def get_module_names_from_package(package: ModuleType):
     return module_names
 
 
-def get_module_names_from_paths(package_paths, prefix=""):
+def get_module_names_from_paths(package_paths, prefix="") -> list[str]:
     """Return the names of modules in the given list of package paths"""
 
-    module_names = []
+    module_names: list[str] = []
 
     for _, modname, _ in pkgutil.iter_modules(package_paths, prefix):
         module_names.append(modname)
@@ -134,9 +134,9 @@ def get_module_attr(mod_name, warn_import=False):
     try:
         module = importlib.import_module(mod_name)
     except Exception:
-        msgStr = ("Importing module {} failed with an unexpected error:\n{}").format(
-            mod_name, traceback.format_exc()
-        )
+        msgStr = (
+            "Importing module {} failed with an unexpected error:\n{}"
+        ).format(mod_name, traceback.format_exc())
         if warn_import:
             module_logger.warning(msgStr)
             return
