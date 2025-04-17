@@ -10,8 +10,8 @@ import pytest
 from dtocean_core.core import Connector, Core, OrderedSim, Project
 from dtocean_core.menu import ModuleMenu, ProjectMenu, ThemeMenu
 from dtocean_core.pipeline import Tree
-from dtocean_plugins.modules.modules import ModuleInterface
-from dtocean_plugins.themes.themes import ThemeInterface
+from dtocean_plugins.modules.base import ModuleInterface
+from dtocean_plugins.themes.base import ThemeInterface
 
 DIR_PATH = os.path.dirname(__file__)
 

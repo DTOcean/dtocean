@@ -17,7 +17,7 @@
 
 import logging
 
-from .strategies import Strategy
+from .base import Strategy
 
 # Set up logging
 module_logger = logging.getLogger(__name__)

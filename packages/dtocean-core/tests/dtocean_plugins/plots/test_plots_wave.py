@@ -8,7 +8,7 @@ import pytest
 from dtocean_core.core import Core
 from dtocean_core.menu import ModuleMenu, ProjectMenu
 from dtocean_core.pipeline import Tree
-from dtocean_plugins.modules.modules import ModuleInterface
+from dtocean_plugins.modules.base import ModuleInterface
 
 dir_path = os.path.dirname(__file__)
 

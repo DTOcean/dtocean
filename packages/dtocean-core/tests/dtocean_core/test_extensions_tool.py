@@ -5,7 +5,7 @@ import pytest
 from dtocean_core.core import Core
 from dtocean_core.extensions import ToolManager
 from dtocean_core.menu import ProjectMenu
-from dtocean_plugins.tools.tools import Tool
+from dtocean_plugins.tools.base import Tool
 
 
 class MockTool(Tool):

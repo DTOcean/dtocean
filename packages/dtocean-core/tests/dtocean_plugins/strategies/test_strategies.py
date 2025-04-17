@@ -2,7 +2,7 @@
 
 # pylint: disable=protected-access
 
-from dtocean_plugins.strategies.strategies import Strategy
+from dtocean_plugins.strategies.base import Strategy
 
 
 class MockStrategy(Strategy):

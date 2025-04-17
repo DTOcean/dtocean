@@ -9,7 +9,7 @@ import pytest
 from dtocean_core.core import OrderedSim, Project
 from dtocean_core.data import CoreMetaData
 from dtocean_core.extensions import StrategyManager
-from dtocean_plugins.strategies.strategies import Strategy
+from dtocean_plugins.strategies.base import Strategy
 
 
 class MockStrategy(Strategy):

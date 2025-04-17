@@ -12,8 +12,8 @@ from dtocean_core.pipeline import (
     Variable,
     set_output_scope,
 )
-from dtocean_plugins.modules.modules import ModuleInterface
-from dtocean_plugins.themes.themes import ThemeInterface
+from dtocean_plugins.modules.base import ModuleInterface
+from dtocean_plugins.themes.base import ThemeInterface
 
 DIR_PATH = os.path.dirname(__file__)
 

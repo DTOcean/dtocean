@@ -39,7 +39,7 @@ from matplotlib.dates import (
     rrulewrapper,
 )
 
-from .plots import PlotInterface
+from .base import PlotInterface
 
 
 class InstallationGanttChartPlot(PlotInterface):

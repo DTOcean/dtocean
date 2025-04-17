@@ -7,8 +7,8 @@ from mdo_engine.entity import Pipeline
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ModuleMenu, ProjectMenu, ThemeMenu
 from dtocean_core.pipeline import Tree
-from dtocean_plugins.modules.modules import ModuleInterface
-from dtocean_plugins.themes.themes import ThemeInterface
+from dtocean_plugins.modules.base import ModuleInterface
+from dtocean_plugins.themes.base import ThemeInterface
 
 dir_path = os.path.dirname(__file__)
 

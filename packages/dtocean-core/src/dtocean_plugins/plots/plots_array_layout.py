@@ -27,7 +27,7 @@ from matplotlib.lines import Line2D
 from shapely import Point, Polygon
 from shapely.plotting import patch_from_polygon
 
-from .plots import PlotInterface
+from .base import PlotInterface
 
 BLUE = "#6699cc"
 GREEN = "#32CD32"
