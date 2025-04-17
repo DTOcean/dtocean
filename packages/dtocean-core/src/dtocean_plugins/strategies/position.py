@@ -33,6 +33,7 @@ from dtocean_core.menu import ModuleMenu
 from dtocean_core.pipeline import Tree
 from dtocean_core.utils.maths import radians_to_bearing
 
+from .base import Strategy
 from .position_optimiser import PositionOptimiser, dump_config, load_config
 from .position_optimiser.iterator import (
     get_positioner,
@@ -40,7 +41,6 @@ from .position_optimiser.iterator import (
     prepare,
     write_result_file,
 )
-from .strategies import Strategy
 
 # Set up logging
 module_logger = logging.getLogger(__name__)

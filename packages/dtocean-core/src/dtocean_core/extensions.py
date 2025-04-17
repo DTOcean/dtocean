@@ -28,7 +28,7 @@ from mdo_engine.utilities.plugins import Plugin
 import dtocean_plugins.strategies as strategies
 import dtocean_plugins.tools as tools
 from dtocean_core.core import Core, Project
-from dtocean_plugins.tools.tools import Tool
+from dtocean_plugins.tools.base import Tool
 
 from .menu import ModuleMenu
 

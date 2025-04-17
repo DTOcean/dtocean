@@ -30,7 +30,7 @@ from pyproj import Transformer
 from shapely import Polygon, transform
 from shapely.plotting import patch_from_polygon
 
-from .plots import PlotInterface
+from .base import PlotInterface
 
 BLUE = "#6699cc"
 GREEN = "#32CD32"

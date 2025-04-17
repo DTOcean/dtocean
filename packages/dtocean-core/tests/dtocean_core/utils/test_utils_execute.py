@@ -10,7 +10,7 @@ from dtocean_core.utils.execute import (  # pylint: disable=no-name-in-module
     main,
     main_interface,
 )
-from dtocean_plugins.strategies.strategies import Strategy
+from dtocean_plugins.strategies.base import Strategy
 
 
 class MockCore(Core):

@@ -25,7 +25,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 
-from .plots import PlotInterface
+from .base import PlotInterface
 
 
 class WaveOccurrencePlot(PlotInterface):

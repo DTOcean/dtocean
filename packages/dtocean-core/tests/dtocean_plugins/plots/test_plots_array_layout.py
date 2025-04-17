@@ -10,7 +10,7 @@ from shapely.geometry import Polygon
 from dtocean_core.core import Core
 from dtocean_core.menu import ModuleMenu, ProjectMenu
 from dtocean_core.pipeline import InputVariable, Tree
-from dtocean_plugins.modules.modules import ModuleInterface
+from dtocean_plugins.modules.base import ModuleInterface
 from dtocean_plugins.plots.plots_array_layout import clockwise
 
 DIR_PATH = os.path.dirname(__file__)

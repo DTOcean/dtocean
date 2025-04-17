@@ -33,7 +33,7 @@ import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 
-from .plots import PlotInterface
+from .base import PlotInterface
 
 
 class EISPlot_hydro(PlotInterface):

@@ -46,7 +46,7 @@ import dtocean_plugins.modules as module_interfaces
 import dtocean_plugins.plots as plot_interfaces
 import dtocean_plugins.themes as theme_interfaces
 from dtocean_plugins.core import FileInputInterface, FileOutputInterface
-from dtocean_plugins.plots.plots import PlotInterface
+from dtocean_plugins.plots.base import PlotInterface
 
 from . import data as core_data
 from .utils.database import MIN_DB_VERSION, get_database

@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Rectangle
 
-from .plots import PlotInterface
+from .base import PlotInterface
 
 
 class CombinedBathyPlot(PlotInterface):
