@@ -16,7 +16,7 @@ class SmartFormatter(argparse.HelpFormatter):
 
 def subcommand(subparser):
     parser = subparser.add_parser("core")
-    sp = parser.add_subparsers(help="sub-command help")
+    sp = parser.add_subparsers(help="sub-command help", required=True)
     _setup_run(sp)
     _setup_config(sp)
 
