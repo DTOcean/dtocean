@@ -15,25 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import importlib.metadata
 import platform
 import subprocess
 
-from packaging.version import Version
-
-# Check module version
-pkg_title = "dtocean-core"
-major_version = 4
-version = importlib.metadata.version(pkg_title)
-
-if not Version(version).major == major_version:
-    ERR_MSG = (
-        "Incompatible version of {} detected! Major version {} is "
-        "required, but version {} is installed"
-    ).format(pkg_title, major_version, version)
-    raise ImportError(ERR_MSG)
-else:
-    from dtocean_plugins.tools.tools import Tool
+from dtocean_plugins.tools.base import Tool
 
 
 class WECSimulatorTool(Tool):

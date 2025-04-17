@@ -22,11 +22,10 @@ Note:
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-import importlib.metadata
 from typing import Optional, Union
 
 import numpy as np
-from packaging.version import Version
+from mdo_engine.boundary.interface import MaskVariable
 from shapely.geometry import Polygon, box
 
 from dtocean_hydro.array import Array_pkg
@@ -37,22 +36,7 @@ from dtocean_hydro.utils.convert import (
     make_wave_statistics,
 )
 from dtocean_hydro.utils.set_wdirs_multibody import anglewrap, convertangle
-
-# Check module version
-pkg_title = "dtocean-core"
-major_version = 4
-version = importlib.metadata.version(pkg_title)
-
-if not Version(version).major == major_version:
-    ERR_MSG = (
-        "Incompatible version of {} detected! Major version {} is "
-        "required, but version {} is installed"
-    ).format(pkg_title, major_version, version)
-    raise ImportError(ERR_MSG)
-else:
-    from mdo_engine.boundary.interface import MaskVariable
-
-    from dtocean_plugins.tools.tools import Tool
+from dtocean_plugins.tools.base import Tool
 
 FloatOrInt = Union[float, int]
 
