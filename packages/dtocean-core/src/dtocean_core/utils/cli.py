@@ -15,12 +15,32 @@ def main():
 
     parser = argparse.ArgumentParser(prog="dtocean", epilog=epiStr)
     subparser = parser.add_subparsers(help="sub-command help", required=True)
+    setup_init(subparser)
 
     for subcommand in get_plugin_function("subcommand", cli):
         subcommand(subparser)
 
     args = parser.parse_args()
     args.func(args)
+
+
+def setup_init(subparser):
+    def run_inits(args):
+        for f in get_plugin_function("init", cli):
+            f(args)
+
+    parser = subparser.add_parser(
+        "init",
+        description="Download module data (all modules)",
+    )
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="overwrite existing files",
+    )
+
+    parser.set_defaults(func=run_inits)
 
 
 def get_plugin_function(function_name: str, module: ModuleType):
