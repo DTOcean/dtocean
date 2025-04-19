@@ -4,9 +4,8 @@ import importlib
 from inspect import getmembers, isfunction
 from types import FunctionType, ModuleType
 
-from mdo_engine.utilities.plugins import get_module_names_from_package
-
 import dtocean_plugins.cli as cli
+from mdo_engine.utilities.plugins import get_module_names_from_package
 
 
 def main():

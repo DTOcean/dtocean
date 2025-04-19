@@ -42,7 +42,7 @@ def gui_interface():
 
     """
 
-    desStr = "Run the WEC standalone GUI."
+    desStr = "Run the WEC pre-processor GUI."
     parser = argparse.ArgumentParser(description=desStr)
     parser.parse_args()
 
