@@ -14,7 +14,7 @@ def main():
     epiStr = "The DTOcean Developers (c) {}.".format(now.year)
 
     parser = argparse.ArgumentParser(prog="dtocean", epilog=epiStr)
-    subparser = parser.add_subparsers(help="sub-command help", required=True)
+    subparser = parser.add_subparsers(required=True)
     setup_init(subparser)
 
     for subcommand in get_plugin_function("subcommand", cli):
@@ -29,9 +29,11 @@ def setup_init(subparser):
         for f in get_plugin_function("init", cli):
             f(args)
 
+    description = "initialize modules (requires internet connection)"
     parser = subparser.add_parser(
         "init",
-        description="Download module data (all modules)",
+        description=description,
+        help=description,
     )
     parser.add_argument(
         "-f",

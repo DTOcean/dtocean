@@ -20,6 +20,7 @@ def subcommand(subparser):
     parser = subparser.add_parser(
         "database",
         description=desStr,
+        help="export and import database",
         formatter_class=SmartFormatter,
     )
     _setup_database(parser)

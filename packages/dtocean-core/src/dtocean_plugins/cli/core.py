@@ -5,8 +5,8 @@ from .shared import SmartFormatter
 
 
 def subcommand(subparser):
-    parser = subparser.add_parser("core")
-    sp = parser.add_subparsers(help="sub-command help", required=True)
+    parser = subparser.add_parser("core", help="dtocean-core utilities")
+    sp = parser.add_subparsers(required=True)
     _setup_run(sp)
     _setup_config(sp)
 
@@ -20,7 +20,11 @@ def _setup_run(subparser):
         "file path."
     )
 
-    parser = subparser.add_parser("run", description=desStr)
+    parser = subparser.add_parser(
+        "run",
+        description=desStr,
+        help="run simulation",
+    )
 
     parser.add_argument(
         "fpath", help=("path to DTOcean project file"), type=str
@@ -99,6 +103,7 @@ def _setup_config(subparser):
     parser = subparser.add_parser(
         "config",
         description=desStr,
+        help="copy config files",
         formatter_class=SmartFormatter,
     )
 
