@@ -32,6 +32,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Install system dependencies (GUI)
+        run: sudo apt update && sudo apt install -y libegl1-mesa-dev
       - name: Set database root password
         run: |
           echo "POSTGRES_PASSWORD=$(uuidgen)" >> $GITHUB_ENV
