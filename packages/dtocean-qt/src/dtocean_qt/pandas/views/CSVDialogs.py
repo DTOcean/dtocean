@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
 import os
-
 from encodings.aliases import aliases as _encodings
 
 import pandas
+from PySide6 import QtGui, QtWidgets
+from PySide6.QtCore import (
+    QAbstractItemModel,
+    QRegularExpression,
+    Signal,
+    Slot,
+)
 
-from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Slot, Signal
 from dtocean_qt.pandas.encoding import detect_encoding
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.utils import convertTimestamps, fillNoneValues
+from dtocean_qt.pandas.views._ui import icons_rc  # noqa: F401
 from dtocean_qt.pandas.views.CustomDelegates import DtypeComboDelegate
-from dtocean_qt.pandas.views._ui import icons_rc
 
-from dtocean_qt.pandas.utils import fillNoneValues, convertTimestamps
 
-class DelimiterValidator(QtGui.QRegExpValidator):
+class DelimiterValidator(QtGui.QRegularExpressionValidator):
     """A Custom RegEx Validator.
 
     The validator checks, if the input has a length of 1.
@@ -31,11 +36,11 @@ class DelimiterValidator(QtGui.QRegExpValidator):
 
         """
         super(DelimiterValidator, self).__init__(parent)
-        re = QtCore.QRegExp('\S{1}')
-        self.setRegExp(re)
+        re = QRegularExpression(r"\S{1}")
+        self.setRegularExpression(re)
 
 
-class DelimiterSelectionWidget(QtGui.QGroupBox):
+class DelimiterSelectionWidget(QtWidgets.QGroupBox):
     """A custom widget with different text delimiter signs.
 
     A user can choose between 3 predefined and one user defined
@@ -59,7 +64,7 @@ class DelimiterSelectionWidget(QtGui.QGroupBox):
 
     """
 
-    delimiter = Signal('QString')
+    delimiter = Signal(str)
 
     def __init__(self, parent=None):
         """Constructs the object with the given parent.
@@ -70,13 +75,7 @@ class DelimiterSelectionWidget(QtGui.QGroupBox):
 
         """
         super(DelimiterSelectionWidget, self).__init__(parent)
-        self.semicolonRadioButton = None
-        self.commaRadioButton = None
-        self.tabRadioButton = None
-        self.otherRadioButton = None
-        self.otherSeparatorLineEdit = None
         self._initUI()
-
 
     def _initUI(self):
         """Creates the inital layout with all subwidgets.
@@ -88,15 +87,15 @@ class DelimiterSelectionWidget(QtGui.QGroupBox):
         `DelimiterValidator` enabled.
 
         """
-        #layout = QtGui.QHBoxLayout(self)
+        # layout = QtGui.QHBoxLayout(self)
 
-        self.semicolonRadioButton = QtGui.QRadioButton(u'Semicolon')
-        self.commaRadioButton = QtGui.QRadioButton(u'Comma')
-        self.tabRadioButton = QtGui.QRadioButton(u'Tab')
-        self.otherRadioButton = QtGui.QRadioButton(u'Other')
+        self.semicolonRadioButton = QtWidgets.QRadioButton("Semicolon")
+        self.commaRadioButton = QtWidgets.QRadioButton("Comma")
+        self.tabRadioButton = QtWidgets.QRadioButton("Tab")
+        self.otherRadioButton = QtWidgets.QRadioButton("Other")
         self.semicolonRadioButton.setChecked(True)
 
-        self.otherSeparatorLineEdit = QtGui.QLineEdit(self)
+        self.otherSeparatorLineEdit = QtWidgets.QLineEdit(self)
         self.otherSeparatorLineEdit.setEnabled(False)
 
         self.semicolonRadioButton.toggled.connect(self._delimiter)
@@ -104,7 +103,9 @@ class DelimiterSelectionWidget(QtGui.QGroupBox):
         self.tabRadioButton.toggled.connect(self._delimiter)
 
         self.otherRadioButton.toggled.connect(self._enableLine)
-        self.otherSeparatorLineEdit.textChanged.connect(lambda: self._delimiter(True))
+        self.otherSeparatorLineEdit.textChanged.connect(
+            lambda: self._delimiter(True)
+        )
         self.otherSeparatorLineEdit.setValidator(DelimiterValidator(self))
 
         currentLayout = self.layout()
@@ -112,7 +113,7 @@ class DelimiterSelectionWidget(QtGui.QGroupBox):
         if currentLayout is not None:
             del currentLayout
 
-        layout = QtGui.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.semicolonRadioButton)
         layout.addWidget(self.commaRadioButton)
         layout.addWidget(self.tabRadioButton)
@@ -120,8 +121,9 @@ class DelimiterSelectionWidget(QtGui.QGroupBox):
         layout.addWidget(self.otherSeparatorLineEdit)
         self.setLayout(layout)
 
-    @Slot('QBool')
+    @Slot(bool)
     def _enableLine(self, toggled):
+        assert self.otherSeparatorLineEdit is not None
         self.otherSeparatorLineEdit.setEnabled(toggled)
 
     def currentSelected(self):
@@ -132,39 +134,36 @@ class DelimiterSelectionWidget(QtGui.QGroupBox):
 
         """
         if self.commaRadioButton.isChecked():
-            return ','
+            return ","
         elif self.semicolonRadioButton.isChecked():
-            return ';'
+            return ";"
         elif self.tabRadioButton.isChecked():
-            return '\t'
+            return "\t"
         elif self.otherRadioButton.isChecked():
             return self.otherSeparatorLineEdit.text()
         return
 
-
-    @Slot('QBool')
+    @Slot(bool)
     def _delimiter(self, checked):
         if checked:
             if self.commaRadioButton.isChecked():
-                self.delimiter.emit(',')
+                self.delimiter.emit(",")
             elif self.semicolonRadioButton.isChecked():
-                self.delimiter.emit(';')
+                self.delimiter.emit(";")
             elif self.tabRadioButton.isChecked():
-                self.delimiter.emit('\t')
+                self.delimiter.emit("\t")
             elif self.otherRadioButton.isChecked():
                 ret = self.otherSeparatorLineEdit.text()
                 if len(ret) > 0:
                     self.delimiter.emit(ret)
 
     def reset(self):
-        """Resets this widget to its initial state.
-
-        """
+        """Resets this widget to its initial state."""
         self.semicolonRadioButton.setChecked(True)
-        self.otherSeparatorLineEdit.setText('')
+        self.otherSeparatorLineEdit.setText("")
 
 
-class CSVImportDialog(QtGui.QDialog):
+class CSVImportDialog(QtWidgets.QDialog):
     """A dialog to import any csv file into a pandas data frame.
 
     This modal dialog enables the user to enter any path to a csv
@@ -183,7 +182,7 @@ class CSVImportDialog(QtGui.QDialog):
             pressed. Returns DataFrameModel and path of chosen csv file.
     """
 
-    load = Signal('QAbstractItemModel', str)
+    load = Signal(QAbstractItemModel, str)
 
     def __init__(self, parent=None):
         """Constructs the object with the given parent.
@@ -195,7 +194,7 @@ class CSVImportDialog(QtGui.QDialog):
         """
         super(CSVImportDialog, self).__init__(parent)
         self._modal = True
-        self._windowTitle = u'Import CSV'
+        self._windowTitle = "Import CSV"
         self._encodingKey = None
         self._filename = None
         self._delimiter = None
@@ -203,47 +202,49 @@ class CSVImportDialog(QtGui.QDialog):
         self._initUI()
 
     def _initUI(self):
-        """Initiates the user interface with a grid layout and several widgets.
-
-        """
+        """Initiates the user interface with a grid layout and several widgets."""
         self.setModal(self._modal)
         self.setWindowTitle(self._windowTitle)
 
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
 
-        self._filenameLabel = QtGui.QLabel(u'Choose File', self)
-        self._filenameLineEdit = QtGui.QLineEdit(self)
+        self._filenameLabel = QtWidgets.QLabel("Choose File", self)
+        self._filenameLineEdit = QtWidgets.QLineEdit(self)
         self._filenameLineEdit.textEdited.connect(self._updateFilename)
-        chooseFileButtonIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/document-open.png'))
+        chooseFileButtonIcon = QtGui.QIcon(
+            QtGui.QPixmap(":/icons/document-open.png")
+        )
         self._chooseFileAction = QtGui.QAction(self)
         self._chooseFileAction.setIcon(chooseFileButtonIcon)
         self._chooseFileAction.triggered.connect(self._openFile)
 
-        self._chooseFileButton = QtGui.QToolButton(self)
+        self._chooseFileButton = QtWidgets.QToolButton(self)
         self._chooseFileButton.setDefaultAction(self._chooseFileAction)
 
         layout.addWidget(self._filenameLabel, 0, 0)
         layout.addWidget(self._filenameLineEdit, 0, 1, 1, 2)
         layout.addWidget(self._chooseFileButton, 0, 3)
 
-        self._encodingLabel = QtGui.QLabel(u'File Encoding', self)
+        self._encodingLabel = QtWidgets.QLabel("File Encoding", self)
 
-        encoding_names = map(lambda x: x.upper(), sorted(list(set(_encodings.viewvalues()))))
-        self._encodingComboBox = QtGui.QComboBox(self)
+        encoding_names = map(
+            lambda x: x.upper(), sorted(list(set(_encodings.values())))
+        )
+        self._encodingComboBox = QtWidgets.QComboBox(self)
         self._encodingComboBox.addItems(encoding_names)
         self._encodingComboBox.activated.connect(self._updateEncoding)
 
         layout.addWidget(self._encodingLabel, 1, 0)
         layout.addWidget(self._encodingComboBox, 1, 1, 1, 1)
 
-        self._hasHeaderLabel = QtGui.QLabel(u'Header Available?', self)
-        self._headerCheckBox = QtGui.QCheckBox(self)
+        self._hasHeaderLabel = QtWidgets.QLabel("Header Available?", self)
+        self._headerCheckBox = QtWidgets.QCheckBox(self)
         self._headerCheckBox.toggled.connect(self._updateHeader)
 
         layout.addWidget(self._hasHeaderLabel, 2, 0)
         layout.addWidget(self._headerCheckBox, 2, 1)
 
-        self._delimiterLabel = QtGui.QLabel(u'Column Delimiter', self)
+        self._delimiterLabel = QtWidgets.QLabel("Column Delimiter", self)
         self._delimiterBox = DelimiterSelectionWidget(self)
         self._delimiter = self._delimiterBox.currentSelected()
         self._delimiterBox.delimiter.connect(self._updateDelimiter)
@@ -251,39 +252,44 @@ class CSVImportDialog(QtGui.QDialog):
         layout.addWidget(self._delimiterLabel, 3, 0)
         layout.addWidget(self._delimiterBox, 3, 1, 1, 3)
 
-        self._tabWidget = QtGui.QTabWidget(self)
-        self._previewTableView = QtGui.QTableView(self)
-        self._datatypeTableView = QtGui.QTableView(self)
-        self._tabWidget.addTab(self._previewTableView, u'Preview')
-        self._tabWidget.addTab(self._datatypeTableView, u'Change Column Types')
+        self._tabWidget = QtWidgets.QTabWidget(self)
+        self._previewTableView = QtWidgets.QTableView(self)
+        self._datatypeTableView = QtWidgets.QTableView(self)
+        self._tabWidget.addTab(self._previewTableView, "Preview")
+        self._tabWidget.addTab(self._datatypeTableView, "Change Column Types")
         layout.addWidget(self._tabWidget, 4, 0, 3, 4)
 
         self._datatypeTableView.horizontalHeader().setDefaultSectionSize(200)
-        self._datatypeTableView.setItemDelegateForColumn(1, DtypeComboDelegate(self._datatypeTableView))
+        self._datatypeTableView.setItemDelegateForColumn(
+            1, DtypeComboDelegate(self._datatypeTableView)
+        )
 
+        self._loadButton = QtWidgets.QPushButton("Load Data", self)
+        # self.loadButton.setAutoDefault(False)
 
-        self._loadButton = QtGui.QPushButton(u'Load Data', self)
-        #self.loadButton.setAutoDefault(False)
-
-        self._cancelButton = QtGui.QPushButton(u'Cancel', self)
+        self._cancelButton = QtWidgets.QPushButton("Cancel", self)
         # self.cancelButton.setDefault(False)
         # self.cancelButton.setAutoDefault(True)
 
-        self._buttonBox = QtGui.QDialogButtonBox(self)
-        self._buttonBox.addButton(self._loadButton, QtGui.QDialogButtonBox.AcceptRole)
-        self._buttonBox.addButton(self._cancelButton, QtGui.QDialogButtonBox.RejectRole)
+        self._buttonBox = QtWidgets.QDialogButtonBox(self)
+        self._buttonBox.addButton(
+            self._loadButton, QtWidgets.QDialogButtonBox.ButtonRole.AcceptRole
+        )
+        self._buttonBox.addButton(
+            self._cancelButton, QtWidgets.QDialogButtonBox.ButtonRole.RejectRole
+        )
         self._buttonBox.accepted.connect(self.accepted)
         self._buttonBox.rejected.connect(self.rejected)
         layout.addWidget(self._buttonBox, 9, 2, 1, 2)
         self._loadButton.setDefault(False)
         self._filenameLineEdit.setFocus()
 
-        self._statusBar = QtGui.QStatusBar(self)
+        self._statusBar = QtWidgets.QStatusBar(self)
         self._statusBar.setSizeGripEnabled(False)
         layout.addWidget(self._statusBar, 8, 0, 1, 4)
         self.setLayout(layout)
 
-    @Slot('QString')
+    @Slot(str)
     def updateStatusBar(self, message):
         """Updates the status bar widget of this dialog with the given message.
 
@@ -303,12 +309,14 @@ class CSVImportDialog(QtGui.QDialog):
         This method is also a `SLOT`.
 
         """
-        ret = QtGui.QFileDialog.getOpenFileName(self, self.tr(u'open file'), filter='Comma Separated Values (*.csv)')
+        ret = QtWidgets.QFileDialog.getOpenFileName(
+            self, self.tr("open file"), filter="Comma Separated Values (*.csv)"
+        )
         if ret:
-            self._filenameLineEdit.setText(ret)
+            self._filenameLineEdit.setText(ret[0])
             self._updateFilename()
 
-    @Slot('QBool')
+    @Slot(bool)
     def _updateHeader(self, toggled):
         """Changes the internal flag, whether the csv file contains a header or not.
 
@@ -351,22 +359,22 @@ class CSVImportDialog(QtGui.QDialog):
             path (string): Path to a csv file on the file system.
 
         """
-        if os.path.exists(path) and path.lower().endswith('csv'):
+        if os.path.exists(path) and path.lower().endswith("csv"):
             encoding = detect_encoding(path)
 
             if encoding is not None:
-                if encoding.startswith('utf'):
-                    encoding = encoding.replace('-', '')
-                encoding = encoding.replace('-','_')
+                if encoding.startswith("utf"):
+                    encoding = encoding.replace("-", "")
+                encoding = encoding.replace("-", "_")
 
                 viewValue = _encodings.get(encoding)
+                assert viewValue is not None
 
                 self._encodingKey = encoding
-
                 index = self._encodingComboBox.findText(viewValue.upper())
                 self._encodingComboBox.setCurrentIndex(index)
 
-    @Slot('int')
+    @Slot(int)
     def _updateEncoding(self, index):
         """Changes the value of the encoding combo box to the value of given index.
 
@@ -383,7 +391,7 @@ class CSVImportDialog(QtGui.QDialog):
         self._encodingKey = _calculateEncodingKey(encoding)
         self._previewFile()
 
-    @Slot('QString')
+    @Slot(str)
     def _updateDelimiter(self, delimiter):
         """Changes the value of the delimiter for the csv file.
 
@@ -397,9 +405,7 @@ class CSVImportDialog(QtGui.QDialog):
         self._previewFile()
 
     def _previewFile(self):
-        """Updates the preview widgets with new models for both tab panes.
-
-        """
+        """Updates the preview widgets with new models for both tab panes."""
         dataFrame = self._loadCSVDataFrame()
         dataFrameModel = DataFrameModel(dataFrame)
         dataFrameModel.enableEditing(True)
@@ -421,33 +427,38 @@ class CSVImportDialog(QtGui.QDialog):
                 information of the csv file.
 
         """
-        if self._filename and os.path.exists(self._filename) and self._filename.endswith('.csv'):
+        if (
+            self._filename
+            and os.path.exists(self._filename)
+            and self._filename.endswith(".csv")
+        ):
             # default fallback if no encoding was found/selected
-            encoding = self._encodingKey or 'uft8'
+            encoding = self._encodingKey or "uft8"
 
             try:
-                dataFrame = pandas.read_csv(self._filename,
-                    sep=self._delimiter, encoding=encoding,
-                    header=self._header)
+                dataFrame = pandas.read_csv(
+                    self._filename,
+                    sep=self._delimiter,
+                    encoding=encoding,
+                    header=self._header,
+                )
                 dataFrame = dataFrame.apply(fillNoneValues)
                 dataFrame = dataFrame.apply(convertTimestamps)
-            except Exception, err:
+            except Exception as err:
                 self.updateStatusBar(str(err))
                 return pandas.DataFrame()
-            self.updateStatusBar('Preview generated.')
+            self.updateStatusBar("Preview generated.")
             return dataFrame
-        self.updateStatusBar('File does not exists or does not end with .csv')
+        self.updateStatusBar("File does not exists or does not end with .csv")
         return pandas.DataFrame()
 
     def _resetWidgets(self):
-        """Resets all widgets of this dialog to its inital state.
-
-        """
-        self._filenameLineEdit.setText('')
+        """Resets all widgets of this dialog to its inital state."""
+        self._filenameLineEdit.setText("")
         self._encodingComboBox.setCurrentIndex(0)
         self._delimiterBox.reset()
         self._headerCheckBox.setChecked(False)
-        self._statusBar.showMessage('')
+        self._statusBar.showMessage("")
         self._previewTableView.setModel(None)
         self._datatypeTableView.setModel(None)
 
@@ -462,6 +473,7 @@ class CSVImportDialog(QtGui.QDialog):
         """
         model = self._previewTableView.model()
         if model is not None:
+            assert isinstance(model, DataFrameModel)
             df = model.dataFrame().copy()
             dfModel = DataFrameModel(df)
             self.load.emit(dfModel, self._filename)
@@ -480,74 +492,80 @@ class CSVImportDialog(QtGui.QDialog):
         self._resetWidgets()
         self.reject()
 
-class CSVExportDialog(QtGui.QDialog):
-    """An widget to serialize a `DataFrameModel` to a `CSV-File`.
 
-    """
-    exported = Signal('QBool')
+class CSVExportDialog(QtWidgets.QDialog):
+    """An widget to serialize a `DataFrameModel` to a `CSV-File`."""
+
+    exported = Signal(bool)
 
     def __init__(self, model=None, parent=None):
         super(CSVExportDialog, self).__init__(parent)
         self._model = model
         self._modal = True
-        self._windowTitle = u'Export to CSV'
+        self._windowTitle = "Export to CSV"
         self._idx = -1
         self._initUI()
 
     def _initUI(self):
-        """Initiates the user interface with a grid layout and several widgets.
-
-        """
+        """Initiates the user interface with a grid layout and several widgets."""
         self.setModal(self._modal)
         self.setWindowTitle(self._windowTitle)
 
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
 
-        self._filenameLabel = QtGui.QLabel(u'Output File', self)
-        self._filenameLineEdit = QtGui.QLineEdit(self)
-        chooseFileButtonIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/document-save-as.png'))
+        self._filenameLabel = QtWidgets.QLabel("Output File", self)
+        self._filenameLineEdit = QtWidgets.QLineEdit(self)
+        chooseFileButtonIcon = QtGui.QIcon(
+            QtGui.QPixmap(":/icons/document-save-as.png")
+        )
         self._chooseFileAction = QtGui.QAction(self)
         self._chooseFileAction.setIcon(chooseFileButtonIcon)
         self._chooseFileAction.triggered.connect(self._createFile)
 
-        self._chooseFileButton = QtGui.QToolButton(self)
+        self._chooseFileButton = QtWidgets.QToolButton(self)
         self._chooseFileButton.setDefaultAction(self._chooseFileAction)
 
         layout.addWidget(self._filenameLabel, 0, 0)
         layout.addWidget(self._filenameLineEdit, 0, 1, 1, 2)
         layout.addWidget(self._chooseFileButton, 0, 3)
 
-        self._encodingLabel = QtGui.QLabel(u'File Encoding', self)
+        self._encodingLabel = QtWidgets.QLabel("File Encoding", self)
 
-        encoding_names = map(lambda x: x.upper(), sorted(list(set(_encodings.viewvalues()))))
-        self._encodingComboBox = QtGui.QComboBox(self)
+        encoding_names = list(
+            map(lambda x: x.upper(), sorted(list(set(_encodings.values()))))
+        )
+        self._encodingComboBox = QtWidgets.QComboBox(self)
         self._encodingComboBox.addItems(encoding_names)
-        self._idx = encoding_names.index('UTF_8')
+        self._idx = encoding_names.index("UTF_8")
         self._encodingComboBox.setCurrentIndex(self._idx)
-        #self._encodingComboBox.activated.connect(self._updateEncoding)
+        # self._encodingComboBox.activated.connect(self._updateEncoding)
 
         layout.addWidget(self._encodingLabel, 1, 0)
         layout.addWidget(self._encodingComboBox, 1, 1, 1, 1)
 
-        self._hasHeaderLabel = QtGui.QLabel(u'Header Available?', self)
-        self._headerCheckBox = QtGui.QCheckBox(self)
-        #self._headerCheckBox.toggled.connect(self._updateHeader)
+        self._hasHeaderLabel = QtWidgets.QLabel("Header Available?", self)
+        self._headerCheckBox = QtWidgets.QCheckBox(self)
+        # self._headerCheckBox.toggled.connect(self._updateHeader)
 
         layout.addWidget(self._hasHeaderLabel, 2, 0)
         layout.addWidget(self._headerCheckBox, 2, 1)
 
-        self._delimiterLabel = QtGui.QLabel(u'Column Delimiter', self)
+        self._delimiterLabel = QtWidgets.QLabel("Column Delimiter", self)
         self._delimiterBox = DelimiterSelectionWidget(self)
 
         layout.addWidget(self._delimiterLabel, 3, 0)
         layout.addWidget(self._delimiterBox, 3, 1, 1, 3)
 
-        self._exportButton = QtGui.QPushButton(u'Export Data', self)
-        self._cancelButton = QtGui.QPushButton(u'Cancel', self)
+        self._exportButton = QtWidgets.QPushButton("Export Data", self)
+        self._cancelButton = QtWidgets.QPushButton("Cancel", self)
 
-        self._buttonBox = QtGui.QDialogButtonBox(self)
-        self._buttonBox.addButton(self._exportButton, QtGui.QDialogButtonBox.AcceptRole)
-        self._buttonBox.addButton(self._cancelButton, QtGui.QDialogButtonBox.RejectRole)
+        self._buttonBox = QtWidgets.QDialogButtonBox(self)
+        self._buttonBox.addButton(
+            self._exportButton, QtWidgets.QDialogButtonBox.ButtonRole.AcceptRole
+        )
+        self._buttonBox.addButton(
+            self._cancelButton, QtWidgets.QDialogButtonBox.ButtonRole.RejectRole
+        )
 
         self._buttonBox.accepted.connect(self.accepted)
         self._buttonBox.rejected.connect(self.rejected)
@@ -556,7 +574,7 @@ class CSVExportDialog(QtGui.QDialog):
         self._exportButton.setDefault(False)
         self._filenameLineEdit.setFocus()
 
-        self._statusBar = QtGui.QStatusBar(self)
+        self._statusBar = QtWidgets.QStatusBar(self)
         self._statusBar.setSizeGripEnabled(False)
         layout.addWidget(self._statusBar, 4, 0, 1, 4)
         self.setLayout(layout)
@@ -570,42 +588,53 @@ class CSVExportDialog(QtGui.QDialog):
 
     @Slot()
     def _createFile(self):
-        ret = QtGui.QFileDialog.getSaveFileName(self, 'Save File', filter='Comma Separated Value (*.csv)')
-        self._filenameLineEdit.setText(ret)
+        ret = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Save File", filter="Comma Separated Value (*.csv)"
+        )
+        self._filenameLineEdit.setText(ret[0])
 
     def _saveModel(self):
         delimiter = self._delimiterBox.currentSelected()
-        header = self._headerCheckBox.isChecked() # column labels
+        assert delimiter is not None
+
+        header = self._headerCheckBox.isChecked()  # column labels
         filename = str(self._filenameLineEdit.text())
-        index = False # row labels
+        index = False  # row labels
 
         encodingIndex = self._encodingComboBox.currentIndex()
         encoding = str(self._encodingComboBox.itemText(encodingIndex))
         encoding = _calculateEncodingKey(encoding.lower())
 
         try:
+            assert self._model is not None
             dataFrame = self._model.dataFrame()
-        except AttributeError, err:
-            raise AttributeError('No data loaded to export.')
+        except AttributeError:
+            raise AttributeError("No data loaded to export.")
         else:
             try:
-                dataFrame.to_csv(filename, encoding=encoding, header=header, index=index, sep=delimiter)
-            except IOError, err:
-                raise IOError('No filename given')
-            except UnicodeError, err:
-                raise UnicodeError('Could not encode all data. Choose a different encoding')
+                dataFrame.to_csv(
+                    filename,
+                    encoding=encoding,
+                    header=header,
+                    index=index,
+                    sep=delimiter,
+                )
+            except IOError:
+                raise IOError("No filename given")
+            except UnicodeError:
+                raise UnicodeError(
+                    "Could not encode all data. Choose a different encoding"
+                )
             except Exception:
                 raise
 
     def _resetWidgets(self):
-        """Resets all widgets of this dialog to its inital state.
-
-        """
-        self._filenameLineEdit.setText('')
+        """Resets all widgets of this dialog to its inital state."""
+        self._filenameLineEdit.setText("")
         self._encodingComboBox.setCurrentIndex(self._idx)
         self._delimiterBox.reset()
         self._headerCheckBox.setChecked(False)
-        self._statusBar.showMessage('')
+        self._statusBar.showMessage("")
 
     @Slot()
     def accepted(self):
@@ -619,7 +648,7 @@ class CSVExportDialog(QtGui.QDialog):
         """
         try:
             self._saveModel()
-        except Exception, err:
+        except Exception as err:
             self._statusBar.showMessage(str(err))
         else:
             self._resetWidgets()
@@ -640,7 +669,6 @@ class CSVExportDialog(QtGui.QDialog):
         self.reject()
 
 
-
 def _calculateEncodingKey(comparator):
     """Gets the first key of all available encodings where the corresponding
     value matches the comparator.
@@ -653,7 +681,7 @@ def _calculateEncodingKey(comparator):
 
     """
     encodingName = None
-    for k, v in _encodings.viewitems():
+    for k, v in _encodings.items():
         if v == comparator:
             encodingName = k
             break

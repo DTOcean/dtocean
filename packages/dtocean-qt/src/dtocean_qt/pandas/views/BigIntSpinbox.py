@@ -4,10 +4,11 @@
 @author: Matthias Ludwig - Datalyze Solutions
 """
 
-from dtocean_qt.pandas.compat import QtCore, QtGui
+from PySide6 import QtGui, QtWidgets
+from PySide6.QtCore import QRegularExpression
 
 
-class BigIntSpinbox(QtGui.QAbstractSpinBox):
+class BigIntSpinbox(QtWidgets.QAbstractSpinBox):
     """Custom spinbox for very big integers (like numpy.int64 and uint64)
 
     Attributes:
@@ -29,10 +30,10 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
         self._minimum = -18446744073709551616
         self._maximum = 18446744073709551615
 
-        rx = QtCore.QRegExp("[0-9]\\d{0,20}")
-        validator = QtGui.QRegExpValidator(rx, self)
+        rx = QRegularExpression("[0-9]\\d{0,20}")
+        validator = QtGui.QRegularExpressionValidator(rx, self)
 
-        self._lineEdit = QtGui.QLineEdit(self)
+        self._lineEdit = QtWidgets.QLineEdit(self)
         self._lineEdit.setText("0")
         self._lineEdit.setValidator(validator)
         self.setLineEdit(self._lineEdit)
@@ -41,7 +42,7 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
         """getter function to _lineEdit.text. Returns 0 in case of exception."""
         try:
             return int(self._lineEdit.text())
-        except:
+        except Exception:
             return 0
 
     def setValue(self, value):
@@ -54,11 +55,11 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
             True if all went fine.
         """
         if value >= self.minimum() and value <= self.maximum():
-            self._lineEdit.setText(unicode(value))
+            self._lineEdit.setText(str(value))
         elif value < self.minimum():
-            self._lineEdit.setText(unicode(self.minimum()))
+            self._lineEdit.setText(str(self.minimum()))
         elif value > self.maximum():
-            self._lineEdit.setText(unicode(self.maximum()))
+            self._lineEdit.setText(str(self.maximum()))
         return True
 
     def stepBy(self, steps):
@@ -76,11 +77,14 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
             ored combination of StepUpEnabled | StepDownEnabled
         """
         if self.value() > self.minimum() and self.value() < self.maximum():
-            return self.StepUpEnabled | self.StepDownEnabled
+            return (
+                self.StepEnabledFlag.StepUpEnabled
+                | self.StepEnabledFlag.StepDownEnabled
+            )
         elif self.value() <= self.minimum():
-            return self.StepUpEnabled
+            return self.StepEnabledFlag.StepUpEnabled
         elif self.value() >= self.maximum():
-            return self.StepDownEnabled
+            return self.StepEnabledFlag.StepDownEnabled
 
     def singleStep(self):
         """getter to _singleStep. determines the value to add if stepBy() is done."""
@@ -117,8 +121,8 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
         Raises:
             TypeError: If the given argument is not an integer.
         """
-        if not isinstance(minimum, (int, long)):
-            raise TypeError("Argument is not of type int or long")
+        if not isinstance(minimum, int):
+            raise TypeError("Argument is not of type int")
         self._minimum = minimum
 
     def maximum(self):
@@ -131,6 +135,6 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
         Args:
             maximum (int or long): new _maximum value
         """
-        if not isinstance(maximum, (int, long)):
-            raise TypeError("Argument is not of type int or long")
+        if not isinstance(maximum, int):
+            raise TypeError("Argument is not of type int")
         self._maximum = maximum

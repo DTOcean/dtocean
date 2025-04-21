@@ -146,7 +146,7 @@ class DataSearch(object):
             question = self._dataFrame.index == -9999
             for column in self._dataFrame.columns:
                 dfColumn = self._dataFrame[column]
-                dfColumn = dfColumn.apply(unicode)
+                dfColumn = dfColumn.apply(str)
 
                 question2 = dfColumn.str.contains(
                     searchString, flags=re.IGNORECASE, regex=True, na=False

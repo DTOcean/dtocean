@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 
 
-from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Signal, Slot
-
 import numpy
-from dtocean_qt.pandas.views.BigIntSpinbox import BigIntSpinbox
+from PySide6 import QtWidgets
+from PySide6.QtCore import (
+    Qt,
+    Slot,
+)
+
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
+from dtocean_qt.pandas.views.BigIntSpinbox import BigIntSpinbox
+
 
 def createDelegate(dtype, column, view):
     try:
@@ -15,17 +20,22 @@ def createDelegate(dtype, column, view):
         raise
 
     if model is None:
-        raise ValueError('no model set for the current view')
+        raise ValueError("no model set for the current view")
 
     if not isinstance(model, DataFrameModel):
-        raise TypeError('model is not of type DataFrameModel')
+        raise TypeError("model is not of type DataFrameModel")
 
     if dtype in model._intDtypes:
         intInfo = numpy.iinfo(dtype)
         delegate = BigIntSpinboxDelegate(intInfo.min, intInfo.max, parent=view)
     elif dtype in model._floatDtypes:
         floatInfo = numpy.finfo(dtype)
-        delegate = CustomDoubleSpinboxDelegate(floatInfo.min, floatInfo.max, decimals=model._float_precisions[str(dtype)], parent=view)
+        delegate = CustomDoubleSpinboxDelegate(
+            floatInfo.min,
+            floatInfo.max,
+            decimals=model._float_precisions[str(dtype)],
+            parent=view,
+        )
     elif dtype == object:
         delegate = TextDelegate(parent=view)
     else:
@@ -39,7 +49,8 @@ def createDelegate(dtype, column, view):
     view.setItemDelegateForColumn(column, delegate)
     return delegate
 
-class BigIntSpinboxDelegate(QtGui.QItemDelegate):
+
+class BigIntSpinboxDelegate(QtWidgets.QItemDelegate):
     """delegate for very big integers.
 
     Attributes:
@@ -49,7 +60,13 @@ class BigIntSpinboxDelegate(QtGui.QItemDelegate):
 
     """
 
-    def __init__(self, minimum=-18446744073709551616, maximum=18446744073709551615, singleStep=1, parent=None):
+    def __init__(
+        self,
+        minimum=-18446744073709551616,
+        maximum=18446744073709551615,
+        singleStep=1,
+        parent=None,
+    ):
         """construct a new instance of a BigIntSpinboxDelegate.
 
         Args:
@@ -75,7 +92,7 @@ class BigIntSpinboxDelegate(QtGui.QItemDelegate):
             editor.setMinimum(self.minimum)
             editor.setMaximum(self.maximum)
             editor.setSingleStep(self.singleStep)
-        except TypeError, err:
+        except TypeError:
             # initiate the editor with default values
             pass
         return editor
@@ -88,7 +105,7 @@ class BigIntSpinboxDelegate(QtGui.QItemDelegate):
             index (QModelIndex): model data index.
         """
         if index.isValid():
-            value = index.model().data(index, QtCore.Qt.EditRole)
+            value = index.model().data(index, Qt.ItemDataRole.EditRole)
             spinBox.setValue(value)
 
     def setModelData(self, spinBox, model, index):
@@ -102,7 +119,7 @@ class BigIntSpinboxDelegate(QtGui.QItemDelegate):
         if index.isValid():
             spinBox.interpretText()
             value = spinBox.value()
-            model.setData(index, value, QtCore.Qt.EditRole)
+            model.setData(index, value, Qt.ItemDataRole.EditRole)
 
     def updateEditorGeometry(self, spinBox, option, index):
         """Updates the editor for the item specified by index according to the style option given.
@@ -115,7 +132,7 @@ class BigIntSpinboxDelegate(QtGui.QItemDelegate):
         spinBox.setGeometry(option.rect)
 
 
-class CustomDoubleSpinboxDelegate(QtGui.QItemDelegate):
+class CustomDoubleSpinboxDelegate(QtWidgets.QItemDelegate):
     """delegate for floats.
 
     Attributes:
@@ -126,7 +143,9 @@ class CustomDoubleSpinboxDelegate(QtGui.QItemDelegate):
 
     """
 
-    def __init__(self, minimum, maximum, decimals=2, singleStep=0.1, parent=None):
+    def __init__(
+        self, minimum, maximum, decimals=2, singleStep=0.1, parent=None
+    ):
         """construct a new instance of a CustomDoubleSpinboxDelegate.
 
         Args:
@@ -151,13 +170,13 @@ class CustomDoubleSpinboxDelegate(QtGui.QItemDelegate):
             option (QStyleOptionViewItem): controls how editor widget appears.
             index (QModelIndex): model data index.
         """
-        editor = QtGui.QDoubleSpinBox(parent)
+        editor = QtWidgets.QDoubleSpinBox(parent)
         try:
             editor.setMinimum(self.minimum)
             editor.setMaximum(self.maximum)
             editor.setSingleStep(self.singleStep)
             editor.setDecimals(self.decimals)
-        except TypeError, err:
+        except TypeError:
             # initiate the spinbox with default values.
             pass
         return editor
@@ -169,7 +188,7 @@ class CustomDoubleSpinboxDelegate(QtGui.QItemDelegate):
             spinBox (QDoubleSpinBox): editor widget.
             index (QModelIndex): model data index.
         """
-        value = index.model().data(index, QtCore.Qt.EditRole)
+        value = index.model().data(index, Qt.ItemDataRole.EditRole)
         spinBox.setValue(value)
 
     def setModelData(self, spinBox, model, index):
@@ -182,7 +201,7 @@ class CustomDoubleSpinboxDelegate(QtGui.QItemDelegate):
         """
         spinBox.interpretText()
         value = spinBox.value()
-        model.setData(index, value, QtCore.Qt.EditRole)
+        model.setData(index, value, Qt.ItemDataRole.EditRole)
 
     def updateEditorGeometry(self, editor, option, index):
         """Updates the editor for the item specified by index according to the style option given.
@@ -194,7 +213,8 @@ class CustomDoubleSpinboxDelegate(QtGui.QItemDelegate):
         """
         editor.setGeometry(option.rect)
 
-class TextDelegate(QtGui.QItemDelegate):
+
+class TextDelegate(QtWidgets.QItemDelegate):
     """delegate for all kind of text."""
 
     def __init__(self, parent=None):
@@ -213,7 +233,7 @@ class TextDelegate(QtGui.QItemDelegate):
             option (QStyleOptionViewItem): controls how editor widget appears.
             index (QModelIndex): model data index.
         """
-        editor = QtGui.QLineEdit(parent)
+        editor = QtWidgets.QLineEdit(parent)
         return editor
 
     def setEditorData(self, editor, index):
@@ -224,8 +244,8 @@ class TextDelegate(QtGui.QItemDelegate):
             index (QModelIndex): model data index.
         """
         if index.isValid():
-            value = index.model().data(index, QtCore.Qt.EditRole)
-            editor.setText(unicode(value))
+            value = index.model().data(index, Qt.ItemDataRole.EditRole)
+            editor.setText(str(value))
 
     def setModelData(self, editor, model, index):
         """Gets data from the editor widget and stores it in the specified model at the item index.
@@ -237,7 +257,7 @@ class TextDelegate(QtGui.QItemDelegate):
         """
         if index.isValid():
             value = editor.text()
-            model.setData(index, value, QtCore.Qt.EditRole)
+            model.setData(index, value, Qt.ItemDataRole.EditRole)
 
     def updateEditorGeometry(self, editor, option, index):
         """Updates the editor for the item specified by index according to the style option given.
@@ -249,12 +269,14 @@ class TextDelegate(QtGui.QItemDelegate):
         """
         editor.setGeometry(option.rect)
 
-class DtypeComboDelegate(QtGui.QStyledItemDelegate):
+
+class DtypeComboDelegate(QtWidgets.QStyledItemDelegate):
     """Combobox to set dtypes in a ColumnDtypeModel.
 
     Parent has to be a QTableView with a set model of type ColumnDtypeModel.
 
     """
+
     def __init__(self, parent=None):
         """Constructs a `DtypeComboDelegate` object with the given `parent`.
 
@@ -284,7 +306,7 @@ class DtypeComboDelegate(QtGui.QStyledItemDelegate):
                 for editing.
 
         """
-        combo = QtGui.QComboBox(parent)
+        combo = QtWidgets.QComboBox(parent)
         combo.addItems(SupportedDtypes.names())
         combo.currentIndexChanged.connect(self.currentIndexChanged)
         return combo
@@ -307,7 +329,7 @@ class DtypeComboDelegate(QtGui.QStyledItemDelegate):
         """
         editor.blockSignals(True)
         data = index.data()
-        dataIndex = editor.findData(data, role=Qt.EditRole)
+        dataIndex = editor.findData(data, role=Qt.ItemDataRole.EditRole)
         editor.setCurrentIndex(dataIndex)
         editor.blockSignals(False)
 
@@ -325,9 +347,5 @@ class DtypeComboDelegate(QtGui.QStyledItemDelegate):
 
     @Slot()
     def currentIndexChanged(self):
-        """Emits a signal after changing the selection for a `QComboBox`.
-
-        """
+        """Emits a signal after changing the selection for a `QComboBox`."""
         self.commitData.emit(self.sender())
-
-
