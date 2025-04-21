@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
-from dtocean_qt.compat import Qt, QtCore, QtGui, Signal, Slot
+from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Signal, Slot
 
 import numpy
-from dtocean_qt.views.BigIntSpinbox import BigIntSpinbox
-from dtocean_qt.models.DataFrameModel import DataFrameModel
-from dtocean_qt.models.SupportedDtypes import SupportedDtypes
+from dtocean_qt.pandas.views.BigIntSpinbox import BigIntSpinbox
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
 
 def createDelegate(dtype, column, view):
     try:

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from dtocean_qt.compat import Qt, QtCore, QtGui
-
 
 import pytest
 
-from dtocean_qt.views.BigIntSpinbox import BigIntSpinbox
+from dtocean_qt.pandas.views.BigIntSpinbox import BigIntSpinbox
+
 
 class TestClass(object):
-
     @pytest.fixture
     def spinbox(self, qtbot):
         widget = BigIntSpinbox()
@@ -20,7 +18,7 @@ class TestClass(object):
 
     def test_value(self, spinbox):
         assert spinbox.value() == 0
-        spinbox._lineEdit.setText('')   # runs into exception
+        spinbox._lineEdit.setText("")  # runs into exception
         assert spinbox.value() == 0
 
     def test_minimumMaximum(self, spinbox):
@@ -35,7 +33,7 @@ class TestClass(object):
         spinbox.setMinimum(-1)
         spinbox.setMinimum(long(-1))
         with pytest.raises(TypeError) as excinfo:
-            spinbox.setMinimum('')
+            spinbox.setMinimum("")
         assert "int or long" in str(excinfo.value)
 
         spinbox.setMaximum(0)
@@ -45,7 +43,7 @@ class TestClass(object):
         spinbox.setMaximum(-1)
         spinbox.setMaximum(long(-1))
         with pytest.raises(TypeError) as excinfo:
-            spinbox.setMaximum('')
+            spinbox.setMaximum("")
         assert "int or long" in str(excinfo.value)
 
     def test_setValue(self, spinbox):
@@ -64,7 +62,7 @@ class TestClass(object):
         assert spinbox.setSingleStep(10) == 10
         assert spinbox.setSingleStep(-10) == 10
         with pytest.raises(TypeError) as excinfo:
-            spinbox.setSingleStep('')
+            spinbox.setSingleStep("")
             spinbox.setSingleStep(0.1212)
         assert "int" in str(excinfo.value)
 
@@ -73,7 +71,10 @@ class TestClass(object):
     def test_stepEnabled(self, spinbox):
         assert spinbox.StepUpEnabled
         assert spinbox.StepDownEnabled
-        assert spinbox.stepEnabled() == spinbox.StepUpEnabled | spinbox.StepDownEnabled
+        assert (
+            spinbox.stepEnabled()
+            == spinbox.StepUpEnabled | spinbox.StepDownEnabled
+        )
 
         spinbox.setMinimum(0)
         spinbox.setMaximum(10)
@@ -96,8 +97,12 @@ class TestClass(object):
         spinbox.setValue(0)
 
         spinbox.stepBy(-1)
-        assert spinbox.value() == 0 # should be minimum cause -1 is out of bounds
+        assert (
+            spinbox.value() == 0
+        )  # should be minimum cause -1 is out of bounds
 
         spinbox.setValue(10)
         spinbox.stepBy(1)
-        assert spinbox.value() == 10 # should be maximum cause 11 is out of bounds
+        assert (
+            spinbox.value() == 10
+        )  # should be maximum cause 11 is out of bounds

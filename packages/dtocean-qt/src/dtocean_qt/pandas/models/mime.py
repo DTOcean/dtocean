@@ -1,6 +1,6 @@
 import cPickle as pickle
-from dtocean_qt.models.SupportedDtypes import SupportedDtypes
-from dtocean_qt.compat import QtCore
+from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
+from dtocean_qt.pandas.compat import QtCore
 
 PandasCellMimeType = "application/pandas-cell" # comparable to a QModelIndex for DataFrames
 

@@ -3,11 +3,11 @@ import os
 import pytest
 import tempfile
 
-from dtocean_qt.compat import Qt, QtCore, QtGui
+from dtocean_qt.pandas.compat import Qt, QtCore, QtGui
 
 try:
     
-    from dtocean_qt.views.CSVDialogs import (DelimiterValidator,
+    from dtocean_qt.pandas.views.CSVDialogs import (DelimiterValidator,
                                              DelimiterSelectionWidget,
                                              CSVImportDialog,
                                              CSVExportDialog)
@@ -20,7 +20,7 @@ except ImportError, e:
     else:
         raise ImportError(e)
     
-from dtocean_qt.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 
 
 pytestmark = pytest.mark.skipif(SKIPTESTS,
