@@ -1,0 +1,29 @@
+[project]
+name = "dtocean-qt"
+version = "0.10.1"
+description = "Qt extensions for the DTOcean GUI"
+authors = [
+    {name = "Mathew Topper",email = "damm_horse@yahoo.co.uk"}
+]
+readme = "README.md"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.12"
+dependencies = [
+]
+
+[project.urls]
+Homepage = "https://github.com/DTOcean/dtocean"
+Issues = "https://github.com/DTOcean/dtocean/issues"
+
+[tool.poetry]
+packages = [{include = "dtocean_qt", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
