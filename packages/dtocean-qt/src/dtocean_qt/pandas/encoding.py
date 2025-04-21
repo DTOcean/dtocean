@@ -1,23 +1,12 @@
-
-try:
-    import magic
-    AUTODETECT = True
-except ImportError, e:
-    #if sys.platform == 'darwin':
-    raise ImportError('Please install libmagic')
-    AUTODETECT = False
+import chardet
 
 
-class Detector(object):
-
-    def __init__(self):
-        if AUTODETECT:
-            self.magic = magic.Magic(mime_encoding=True)
-        else:
-            self.magic = False
-
-    def detect(self, filepath):
-        if self.magic:
-            encoding = self.magic.from_file(filepath)
-            return encoding
-        return None
+def detect_encoding(file_path):
+    with open(file_path, "rb") as file:
+        detector = chardet.universaldetector.UniversalDetector()
+        for line in file:
+            detector.feed(line)
+            if detector.done:
+                break
+        detector.close()
+    return detector.result["encoding"]
