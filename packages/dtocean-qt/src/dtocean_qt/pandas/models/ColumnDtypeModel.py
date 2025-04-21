@@ -5,13 +5,13 @@
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from dtocean_qt.compat import Qt, QtCore, QtGui, Slot, Signal
+from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Slot, Signal
 
 
 import pandas
 import numpy as np
 
-from dtocean_qt.models.SupportedDtypes import SupportedDtypes
+from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
 
 DTYPE_ROLE = Qt.UserRole + 1
 DTYPE_CHANGE_ROLE = Qt.UserRole + 3

@@ -9,10 +9,10 @@
 import numpy
 import pandas
 
-from dtocean_qt.compat import Qt, QtCore, QtGui, Slot, Signal
-from dtocean_qt.models.ColumnDtypeModel import ColumnDtypeModel
-from dtocean_qt.models.DataSearch import DataSearch
-from dtocean_qt.models.SupportedDtypes import SupportedDtypes
+from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Slot, Signal
+from dtocean_qt.pandas.models.ColumnDtypeModel import ColumnDtypeModel
+from dtocean_qt.pandas.models.DataSearch import DataSearch
+from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
 
 DATAFRAME_ROLE = Qt.UserRole + 2
 

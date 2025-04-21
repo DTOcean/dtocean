@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from dtocean_qt.compat import Qt, QtCore, QtGui
 
-import parser
 import re
 
 import numpy as np
 import pandas as pd
-
 
 
 class DataSearch(object):
@@ -23,7 +20,7 @@ class DataSearch(object):
 
     """
 
-    def __init__(self, name, filterString='', dataFrame=pd.DataFrame()):
+    def __init__(self, name, filterString="", dataFrame=pd.DataFrame()):
         """Constructs a `DataSearch` object from the given attributes.
 
         Args:
@@ -39,7 +36,9 @@ class DataSearch(object):
         self.name = name
 
     def __repr__(self):
-        string = u"DataSearch({}): {} ({})".format(hex(id(self)), self.name, self._filterString)
+        string = "DataSearch({}): {} ({})".format(
+            hex(id(self)), self.name, self._filterString
+        )
         string = string.encode("utf-8")
         return string
 
@@ -106,24 +105,25 @@ class DataSearch(object):
         # instead of this quick-and-dirty implementation.
 
         safeEnvDict = {
-            'freeSearch': self.freeSearch,
-            'extentSearch': self.extentSearch,
-            'indexSearch': self.indexSearch
-
+            "freeSearch": self.freeSearch,
+            "extentSearch": self.extentSearch,
+            "indexSearch": self.indexSearch,
         }
         for col in self._dataFrame.columns:
             safeEnvDict[col] = self._dataFrame[col]
 
         try:
-            searchIndex = eval(self._filterString, {'__builtins__': None}, safeEnvDict)
-        except NameError as err:
+            searchIndex = eval(
+                self._filterString, {"__builtins__": None}, safeEnvDict
+            )
+        except NameError:
             return [], False
-        except SyntaxError as err:
+        except SyntaxError:
             return [], False
-        except ValueError as err:
+        except ValueError:
             # the use of 'and'/'or' is not valid, need to use binary operators.
             return [], False
-        except TypeError as err:
+        except TypeError:
             # argument must be string or compiled pattern
             return [], False
         return searchIndex, True
@@ -148,7 +148,9 @@ class DataSearch(object):
                 dfColumn = self._dataFrame[column]
                 dfColumn = dfColumn.apply(unicode)
 
-                question2 = dfColumn.str.contains(searchString, flags=re.IGNORECASE, regex=True, na=False)
+                question2 = dfColumn.str.contains(
+                    searchString, flags=re.IGNORECASE, regex=True, na=False
+                )
                 question = np.logical_or(question, question2)
 
             return question
@@ -176,8 +178,12 @@ class DataSearch(object):
         """
         if not self._dataFrame.empty:
             try:
-                questionMin = (self._dataFrame.lat >= xmin) & (self._dataFrame.lng >= ymin)
-                questionMax = (self._dataFrame.lat <= xmax) & (self._dataFrame.lng <= ymax)
+                questionMin = (self._dataFrame.lat >= xmin) & (
+                    self._dataFrame.lng >= ymin
+                )
+                questionMax = (self._dataFrame.lat <= xmax) & (
+                    self._dataFrame.lng <= ymax
+                )
                 return np.logical_and(questionMin, questionMax)
             except AttributeError:
                 return []
@@ -186,7 +192,7 @@ class DataSearch(object):
 
     def indexSearch(self, indexes):
         """Filters the data by a list of indexes.
-        
+
         Args:
             indexes (list of int): List of index numbers to return.
 

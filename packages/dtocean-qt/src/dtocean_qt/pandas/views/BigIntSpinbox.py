@@ -4,7 +4,8 @@
 @author: Matthias Ludwig - Datalyze Solutions
 """
 
-from dtocean_qt.compat import Qt, QtCore, QtGui
+from dtocean_qt.pandas.compat import QtCore, QtGui
+
 
 class BigIntSpinbox(QtGui.QAbstractSpinBox):
     """Custom spinbox for very big integers (like numpy.int64 and uint64)
@@ -32,7 +33,7 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
         validator = QtGui.QRegExpValidator(rx, self)
 
         self._lineEdit = QtGui.QLineEdit(self)
-        self._lineEdit.setText('0')
+        self._lineEdit.setText("0")
         self._lineEdit.setValidator(validator)
         self.setLineEdit(self._lineEdit)
 
@@ -66,7 +67,7 @@ class BigIntSpinbox(QtGui.QAbstractSpinBox):
         Args:
             steps (int): positiv int steps up, negativ steps down
         """
-        self.setValue(self.value() + steps*self.singleStep())
+        self.setValue(self.value() + steps * self.singleStep())
 
     def stepEnabled(self):
         """Virtual function that determines whether stepping up and down is legal at any given time.

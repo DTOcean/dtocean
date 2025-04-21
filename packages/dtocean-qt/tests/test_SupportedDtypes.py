@@ -1,15 +1,33 @@
 import numpy
 import pytest
-from dtocean_qt.models.SupportedDtypes import SupportedDtypes, SupportedDtypesTranslator
+
+from dtocean_qt.pandas.models.SupportedDtypes import (
+    SupportedDtypes,
+    SupportedDtypesTranslator,
+)
+
 
 @pytest.fixture()
 def expected_support():
-    numpy_datatypes = [numpy.bool_, numpy.bool, numpy.int_,
-                 numpy.intc, numpy.intp, numpy.int8,
-                 numpy.int16, numpy.int32, numpy.int64,
-                 numpy.uint8, numpy.uint16, numpy.uint32,
-                 numpy.uint64, numpy.float_, numpy.float16,
-                 numpy.float32, numpy.float64]
+    numpy_datatypes = [
+        numpy.bool_,
+        numpy.bool,
+        numpy.int_,
+        numpy.intc,
+        numpy.intp,
+        numpy.int8,
+        numpy.int16,
+        numpy.int32,
+        numpy.int64,
+        numpy.uint8,
+        numpy.uint16,
+        numpy.uint32,
+        numpy.uint64,
+        numpy.float_,
+        numpy.float16,
+        numpy.float32,
+        numpy.float64,
+    ]
 
     python_datatypes = [bool, int, float, object]
 
@@ -18,14 +36,15 @@ def expected_support():
 
 @pytest.fixture()
 def descriptions():
-    return [(object, 'text'), (bool, 'true/false value'), (None, 'fooo')]
+    return [(object, "text"), (bool, "true/false value"), (None, "fooo")]
+
 
 @pytest.fixture()
 def obj():
     return SupportedDtypes
 
-class TestSupportedDtypes(object):
 
+class TestSupportedDtypes(object):
     def test_init(self):
         assert isinstance(SupportedDtypes, SupportedDtypesTranslator)
 
@@ -34,7 +53,14 @@ class TestSupportedDtypes(object):
             assert datatype in obj.allTypes()
 
     def test_lists(self, obj):
-        types = obj.strTypes() + obj.boolTypes() + obj.intTypes() + obj.uintTypes() + obj.floatTypes() + obj.datetimeTypes()
+        types = (
+            obj.strTypes()
+            + obj.boolTypes()
+            + obj.intTypes()
+            + obj.uintTypes()
+            + obj.floatTypes()
+            + obj.datetimeTypes()
+        )
 
         for t in types:
             assert t in obj.allTypes()
@@ -44,6 +70,7 @@ class TestSupportedDtypes(object):
             assert obj.description(datatype) is not None
 
         from StringIO import StringIO
+
         s = StringIO()
         assert obj.description(s) is None
         assert obj.description(str) is None
@@ -56,7 +83,7 @@ class TestSupportedDtypes(object):
         assert obj.description(tuple) is not None
 
     def test_dtype(self, descriptions, obj):
-        for (expected_type, desc) in descriptions:
+        for expected_type, desc in descriptions:
             assert obj.dtype(desc) == expected_type
 
     def test_names(self, obj):

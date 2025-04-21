@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from dtocean_qt.excepthook import excepthook
+from dtocean_qt.pandas.excepthook import excepthook
 sys.excepthook = excepthook
 
-from dtocean_qt.compat import QtCore, QtGui, Qt, Slot, Signal
+from dtocean_qt.pandas.compat import QtCore, QtGui, Qt, Slot, Signal
 
 import pandas
 import numpy
 
-from dtocean_qt.models.DataFrameModel import DataFrameModel
-from dtocean_qt.models.DataSearch import DataSearch
-from dtocean_qt.views.CSVDialogs import CSVImportDialog, CSVExportDialog
-from dtocean_qt.views._ui import icons_rc
-from dtocean_qt.views.DataTableView import DataTableWidget
-from dtocean_qt.views.CustomDelegates import DtypeComboDelegate
-from dtocean_qt.models.mime import PandasCellMimeType, PandasCellPayload
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.models.DataSearch import DataSearch
+from dtocean_qt.pandas.views.CSVDialogs import CSVImportDialog, CSVExportDialog
+from dtocean_qt.pandas.views._ui import icons_rc
+from dtocean_qt.pandas.views.DataTableView import DataTableWidget
+from dtocean_qt.pandas.views.CustomDelegates import DtypeComboDelegate
+from dtocean_qt.pandas.models.mime import PandasCellMimeType, PandasCellPayload
 from util import getCsvData, getRandomData
 
 class DropLineEdit(QtGui.QLineEdit):

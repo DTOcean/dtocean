@@ -5,13 +5,13 @@ from encodings.aliases import aliases as _encodings
 
 import pandas
 
-from dtocean_qt.compat import Qt, QtCore, QtGui, Slot, Signal
-from dtocean_qt.encoding import Detector
-from dtocean_qt.models.DataFrameModel import DataFrameModel
-from dtocean_qt.views.CustomDelegates import DtypeComboDelegate
-from dtocean_qt.views._ui import icons_rc
+from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Slot, Signal
+from dtocean_qt.pandas.encoding import detect_encoding
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.views.CustomDelegates import DtypeComboDelegate
+from dtocean_qt.pandas.views._ui import icons_rc
 
-from dtocean_qt.utils import fillNoneValues, convertTimestamps
+from dtocean_qt.pandas.utils import fillNoneValues, convertTimestamps
 
 class DelimiterValidator(QtGui.QRegExpValidator):
     """A Custom RegEx Validator.
@@ -200,7 +200,6 @@ class CSVImportDialog(QtGui.QDialog):
         self._filename = None
         self._delimiter = None
         self._header = None
-        self._detector = Detector()
         self._initUI()
 
     def _initUI(self):
@@ -353,7 +352,7 @@ class CSVImportDialog(QtGui.QDialog):
 
         """
         if os.path.exists(path) and path.lower().endswith('csv'):
-            encoding = self._detector.detect(path)
+            encoding = detect_encoding(path)
 
             if encoding is not None:
                 if encoding.startswith('utf'):

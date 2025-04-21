@@ -103,13 +103,13 @@ Import the required modules. Redirect exceptions and use `QtGui` from the
 >>> import pandas
 >>> import numpy
 >>> import sys
->>> from dtocean_qt.excepthook import excepthook
+>>> from dtocean_qt.pandas.excepthook import excepthook
 >>> sys.excepthook = excepthook
 
->>> from dtocean_qt.compat import QtGui
->>> from dtocean_qt.models.DataFrameModel import DataFrameModel
->>> from dtocean_qt.views.DataTableView import DataTableWidget
->>> from dtocean_qt.views._ui import icons_rc
+>>> from dtocean_qt.pandas.compat import QtGui
+>>> from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+>>> from dtocean_qt.pandas.views.DataTableView import DataTableWidget
+>>> from dtocean_qt.pandas.views._ui import icons_rc
 ```
 
 Now set up a new empty DataFrame model:
