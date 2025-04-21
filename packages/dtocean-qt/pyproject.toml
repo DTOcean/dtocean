@@ -23,6 +23,11 @@ Issues = "https://github.com/DTOcean/dtocean/issues"
 [tool.poetry]
 packages = [{include = "dtocean_qt", from = "src"}]
 
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
