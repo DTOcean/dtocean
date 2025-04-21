@@ -1,22 +1,20 @@
-# -*- coding: utf-8 -*-
 """Easy integration of DataFrame into pyqt framework
 
 .. moduleauthor:: Matthias Ludwig - Datalyze Solutions
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Slot, Signal
-
-
-import pandas
 import numpy as np
+import pandas
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, Signal
 
 from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
 
-DTYPE_ROLE = Qt.UserRole + 1
-DTYPE_CHANGE_ROLE = Qt.UserRole + 3
+DTYPE_ROLE = Qt.ItemDataRole.UserRole + 1
+DTYPE_CHANGE_ROLE = Qt.ItemDataRole.UserRole + 3
 
-class ColumnDtypeModel(QtCore.QAbstractTableModel):
+
+class ColumnDtypeModel(QAbstractTableModel):
     """data model returning datatypes per column
 
     Attributes:
@@ -24,8 +22,9 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
         changeFailed (Signal('QString')): emitted if a column
             datatype could not be changed. An errormessage is provided.
     """
+
     dtypeChanged = Signal(int, object)
-    changeFailed = Signal('QString', QtCore.QModelIndex, object)
+    changeFailed = Signal(str, QModelIndex, object)
 
     def __init__(self, dataFrame=None, editable=False):
         """the __init__ method.
@@ -37,7 +36,7 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
 
         """
         super(ColumnDtypeModel, self).__init__()
-        self.headers = ['column', 'data type']
+        self.headers = ["column", "data type"]
 
         self._editable = editable
 
@@ -64,18 +63,18 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
             TypeError: if dataFrame is not of type pandas.core.frame.DataFrame.
 
         Args:
-            dataFrame (pandas.core.frame.DataFrame): assign dataFrame to _dataFrame. Holds all the data displayed.
+            dataFrame (pandas.DataFrame): assign dataFrame to _dataFrame. Holds all the data displayed.
 
         """
-        if not isinstance(dataFrame, pandas.core.frame.DataFrame):
-            raise TypeError('Argument is not of type pandas.core.frame.DataFrame')
+        if not isinstance(dataFrame, pandas.DataFrame):
+            raise TypeError("Argument is not of type pandas.DataFrame")
 
         self.layoutAboutToBeChanged.emit()
         self._dataFrame = dataFrame
         self.layoutChanged.emit()
 
     def editable(self):
-        """getter to _editable """
+        """getter to _editable"""
         return self._editable
 
     def setEditable(self, editable):
@@ -89,10 +88,15 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
 
         """
         if not isinstance(editable, bool):
-            raise TypeError('Argument is not of type bool')
+            raise TypeError("Argument is not of type bool")
         self._editable = editable
 
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
+    def headerData(
+        self,
+        section,
+        orientation,
+        role=Qt.ItemDataRole.DisplayRole,
+    ):
         """defines which labels the view/user shall see.
 
         Args:
@@ -105,16 +109,16 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
                 role is fitting, None if not.
 
         """
-        if role != Qt.DisplayRole:
+        if role != Qt.ItemDataRole.DisplayRole:
             return None
 
-        if orientation == Qt.Horizontal:
+        if orientation == Qt.Orientation.Horizontal:
             try:
                 return self.headers[section]
-            except (IndexError, ):
+            except (IndexError,):
                 return None
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
         """Retrieve the data stored in the model at the given `index`.
 
         Args:
@@ -144,11 +148,14 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
 
         col = index.column()
 
-        #row = self._dataFrame.columns[index.column()]
+        # row = self._dataFrame.columns[index.column()]
         columnName = self._dataFrame.columns[index.row()]
         columnDtype = self._dataFrame[columnName].dtype
 
-        if role == Qt.DisplayRole or role == Qt.EditRole:
+        if (
+            role == Qt.ItemDataRole.DisplayRole
+            or role == Qt.ItemDataRole.EditRole
+        ):
             if col == 0:
                 if columnName == index.row():
                     return index.row()
@@ -200,31 +207,37 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
 
         if dtype is not None:
             if dtype != currentDtype:
-                col = index.column()
-                #row = self._dataFrame.columns[index.column()]
                 columnName = self._dataFrame.columns[index.row()]
 
                 try:
-                    if dtype == np.dtype('<M8[ns]'):
+                    if dtype == np.dtype("<M8[ns]"):
                         if currentDtype in SupportedDtypes.boolTypes():
-                            raise Exception, u"Can't convert a boolean value into a datetime value."
-                        self._dataFrame[columnName] = self._dataFrame[columnName].apply(pandas.to_datetime)
+                            raise Exception(
+                                "Can't convert a boolean value into a datetime value."
+                            )
+                        self._dataFrame[columnName] = self._dataFrame[
+                            columnName
+                        ].apply(pandas.to_datetime)
                     else:
-                        self._dataFrame[columnName] = self._dataFrame[columnName].astype(dtype)
+                        self._dataFrame[columnName] = self._dataFrame[
+                            columnName
+                        ].astype(dtype)
                     self.dtypeChanged.emit(index.row(), dtype)
                     self.layoutChanged.emit()
 
                     return True
-                except Exception, e:
-                    message = 'Could not change datatype %s of column %s to datatype %s' % (currentDtype, columnName, dtype)
+                except Exception:
+                    message = (
+                        "Could not change datatype %s of column %s to datatype %s"
+                        % (currentDtype, columnName, dtype)
+                    )
                     self.changeFailed.emit(message, index, dtype)
                     raise
                     # self._dataFrame[columnName] = self._dataFrame[columnName].astype(currentDtype)
                     # self.layoutChanged.emit()
                     # self.dtypeChanged.emit(columnName)
-                    #raise NotImplementedError, "dtype changing not fully working, original error:\n{}".format(e)
+                    # raise NotImplementedError, "dtype changing not fully working, original error:\n{}".format(e)
         return False
-
 
     def flags(self, index):
         """Returns the item flags for the given index as ored value, e.x.: Qt.ItemIsUserCheckable | Qt.ItemIsEditable
@@ -238,18 +251,22 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
 
         """
         if not index.isValid():
-            return Qt.NoItemFlags
+            return Qt.ItemFlag.NoItemFlags
 
         col = index.column()
 
-        flags = Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
 
         if col > 0 and self.editable():
-            flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
+            flags = (
+                Qt.ItemFlag.ItemIsSelectable
+                | Qt.ItemFlag.ItemIsEnabled
+                | Qt.ItemFlag.ItemIsEditable
+            )
 
         return flags
 
-    def rowCount(self, index=QtCore.QModelIndex()):
+    def rowCount(self, index=QModelIndex()):
         """returns number of rows
 
         Args:
@@ -260,7 +277,7 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
         """
         return len(self._dataFrame.columns)
 
-    def columnCount(self, index=QtCore.QModelIndex()):
+    def columnCount(self, index=QModelIndex()):
         """returns number of columns
 
         Args:
@@ -270,4 +287,3 @@ class ColumnDtypeModel(QtCore.QAbstractTableModel):
             number of columns
         """
         return len(self.headers)
-

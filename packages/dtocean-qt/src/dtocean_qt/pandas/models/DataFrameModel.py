@@ -6,18 +6,28 @@
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
+from typing import cast
+
 import numpy
 import pandas
+from PySide6 import QtGui
+from PySide6.QtCore import (
+    QAbstractTableModel,
+    QDateTime,
+    QModelIndex,
+    Qt,
+    Signal,
+    Slot,
+)
 
-from dtocean_qt.pandas.compat import Qt, QtCore, QtGui, Slot, Signal
 from dtocean_qt.pandas.models.ColumnDtypeModel import ColumnDtypeModel
 from dtocean_qt.pandas.models.DataSearch import DataSearch
 from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
 
-DATAFRAME_ROLE = Qt.UserRole + 2
+DATAFRAME_ROLE = Qt.ItemDataRole.UserRole + 2
 
 
-class DataFrameModel(QtCore.QAbstractTableModel):
+class DataFrameModel(QAbstractTableModel):
     """data model for use in QTableView, QListView, QComboBox, etc.
 
     Attributes:
@@ -39,7 +49,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
     _float_precisions = {
         "float16": numpy.finfo(numpy.float16).precision - 2,
         "float32": numpy.finfo(numpy.float32).precision - 1,
-        "float64": numpy.finfo(numpy.float64).precision - 1
+        "float64": numpy.finfo(numpy.float64).precision - 1,
     }
 
     """list of int datatypes for easy checking in data() and setData()"""
@@ -51,15 +61,15 @@ class DataFrameModel(QtCore.QAbstractTableModel):
     """list of datetime datatypes for easy checking in data() and setData()"""
     _dateDtypes = SupportedDtypes.datetimeTypes()
 
-    _timestampFormat = Qt.ISODate
-    
+    _timestampFormat = Qt.DateFormat.ISODate
+
     # Number of rows to display per fetch
     _row_batch_count = 100
 
     sortingAboutToStart = Signal()
     sortingFinished = Signal()
     dtypeChanged = Signal(int, object)
-    changingDtypeFailed = Signal(object, QtCore.QModelIndex, object)
+    changingDtypeFailed = Signal(object, QModelIndex, object)
     dataChanged = Signal()
     dataFrameChanged = Signal()
 
@@ -67,12 +77,12 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         """the __init__ method.
 
         Args:
-            dataFrame (pandas.core.frame.DataFrame, optional): initializes the model with given DataFrame.
+            dataFrame (pandas.DataFrame, optional): initializes the model with given DataFrame.
                 If none is given an empty DataFrame will be set. defaults to None.
             copyDataFrame (bool, optional): create a copy of dataFrame or use it as is. defaults to False.
                 If you use it as is, you can change it from outside otherwise you have to reset the dataFrame
                 after external changes.
-                
+
         Attributes:
             freeze_first (bool, optional): Do not allow the first column to be
                 modified after initialisation.
@@ -89,9 +99,9 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         self._search = DataSearch("nothing", "")
         self.editable = False
         self.freeze_first = False
-        
+
         self.rowsLoaded = DataFrameModel._row_batch_count
-        
+
         return
 
     def dataFrame(self):
@@ -110,17 +120,17 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             It's not implemented with python properties to keep Qt conventions.
 
         Raises:
-            TypeError: if dataFrame is not of type pandas.core.frame.DataFrame.
+            TypeError: if dataFrame is not of type pandas.DataFrame.
 
         Args:
-            dataFrame (pandas.core.frame.DataFrame): assign dataFrame to _dataFrame. Holds all the data displayed.
+            dataFrame (pandas.DataFrame): assign dataFrame to _dataFrame. Holds all the data displayed.
             copyDataFrame (bool, optional): create a copy of dataFrame or use it as is. defaults to False.
                 If you use it as is, you can change it from outside otherwise you have to reset the dataFrame
                 after external changes.
 
         """
-        if not isinstance(dataFrame, pandas.core.frame.DataFrame):
-            raise TypeError("not of type pandas.core.frame.DataFrame")
+        if not isinstance(dataFrame, pandas.DataFrame):
+            raise TypeError("not of type pandas.DataFrame")
 
         self.layoutAboutToBeChanged.emit()
         if copyDataFrame:
@@ -131,7 +141,9 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         self._columnDtypeModel = ColumnDtypeModel(dataFrame)
         self._columnDtypeModel.dtypeChanged.connect(self.propagateDtypeChanges)
         self._columnDtypeModel.changeFailed.connect(
-            lambda columnName, index, dtype: self.changingDtypeFailed.emit(columnName, index, dtype)
+            lambda columnName, index, dtype: self.changingDtypeFailed.emit(
+                columnName, index, dtype
+            )
         )
         self.layoutChanged.emit()
         self.dataChanged.emit()
@@ -158,12 +170,11 @@ class DataFrameModel(QtCore.QAbstractTableModel):
                 Formatting string for conversion of timestamps to QtCore.QDateTime. Used in data method.
 
         """
-        if not isinstance(timestampFormat, (unicode, )):
-            raise TypeError('not of type unicode')
-        #assert isinstance(timestampFormat, unicode) or timestampFormat.__class__.__name__ == "DateFormat", "not of type unicode"
         self._timestampFormat = timestampFormat
 
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
+    def headerData(
+        self, section, orientation, role=Qt.ItemDataRole.DisplayRole
+    ):
         """return the header depending on section, orientation and Qt::ItemDataRole
 
         Args:
@@ -173,26 +184,26 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             role (Qt::ItemDataRole):
 
         Returns:
-            None if not Qt.DisplayRole
+            None if not Qt.ItemDataRole.DisplayRole
             _dataFrame.columns.tolist()[section] if orientation == Qt.Horizontal
             section if orientation == Qt.Vertical
             None if horizontal orientation and section raises IndexError
         """
-        if role != Qt.DisplayRole:
+        if role != Qt.ItemDataRole.DisplayRole:
             return None
 
-        if orientation == Qt.Horizontal:
+        if orientation == Qt.Orientation.Horizontal:
             try:
                 label = self._dataFrame.columns.tolist()[section]
                 if label == section:
                     label = section
                 return label
-            except (IndexError, ):
+            except (IndexError,):
                 return None
-        elif orientation == Qt.Vertical:
+        elif orientation == Qt.Orientation.Vertical:
             return section
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
         """return data depending on index, Qt::ItemDataRole and data type of the column.
 
         Args:
@@ -231,12 +242,16 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         def convertValue(row, col, columnDtype):
             value = None
-            if columnDtype == object:
+            if columnDtype is object:
                 value = self._dataFrame.iloc[row, col]
             elif columnDtype in self._floatDtypes:
-                value = round(float(self._dataFrame.iloc[row, col]), self._float_precisions[str(columnDtype)])
+                to_convert = cast(float, self._dataFrame.iloc[row, col])
+                value = round(
+                    float(to_convert), self._float_precisions[str(columnDtype)]
+                )
             elif columnDtype in self._intDtypes:
-                value = int(self._dataFrame.iloc[row, col])
+                to_convert = cast(int, self._dataFrame.iloc[row, col])
+                value = int(to_convert)
             elif columnDtype in self._boolDtypes:
                 # TODO this will most likely always be true
                 # See: http://stackoverflow.com/a/715455
@@ -245,10 +260,13 @@ class DataFrameModel(QtCore.QAbstractTableModel):
                 value = bool(self._dataFrame.iloc[row, col])
 
             elif columnDtype in self._dateDtypes:
-                #print numpy.datetime64(self._dataFrame.ix[row, col])
-                value = pandas.Timestamp(self._dataFrame.iloc[row, col])
-                value = QtCore.QDateTime.fromString(str(value), self.timestampFormat)
-                #print value
+                # print numpy.datetime64(self._dataFrame.ix[row, col])
+                to_convert = cast(
+                    numpy.datetime64, self._dataFrame.iloc[row, col]
+                )
+                value = pandas.Timestamp(to_convert)
+                value = QDateTime.fromString(str(value), self.timestampFormat)
+                # print value
             # else:
             #     raise TypeError, "returning unhandled data type"
             return value
@@ -258,43 +276,46 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         columnDtype = self._dataFrame.dtypes[coli]
 
-        if role == Qt.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole:
             # return the value if you wanne show True/False as text
-            if columnDtype == numpy.bool:
+            if columnDtype == numpy.bool_:
                 result = self._dataFrame.iloc[rowi, coli]
             else:
                 result = convertValue(rowi, coli, columnDtype)
-        elif role  == Qt.EditRole:
+        elif role == Qt.ItemDataRole.EditRole:
             result = convertValue(rowi, coli, columnDtype)
-        elif role  == Qt.CheckStateRole:
+        elif role == Qt.ItemDataRole.CheckStateRole:
             if columnDtype == numpy.bool_:
                 if convertValue(rowi, coli, columnDtype):
-                    result = Qt.Checked
+                    result = Qt.CheckState.Checked
                 else:
-                    result = Qt.Unchecked
+                    result = Qt.CheckState.Unchecked
             else:
                 result = None
         elif role == DATAFRAME_ROLE:
             result = self._dataFrame.iloc[rowi, coli]
-        elif role == Qt.BackgroundRole:
+        elif role == Qt.ItemDataRole.BackgroundRole:
             if self.freeze_first and coli == 0:
-                return QtGui.QBrush(Qt.lightGray)
+                return QtGui.QBrush(Qt.GlobalColor.lightGray)
             else:
-                return QtGui.QBrush(Qt.white)
-        elif role == Qt.FontRole:
+                return QtGui.QBrush(Qt.GlobalColor.white)
+        elif role == Qt.ItemDataRole.FontRole:
             if self.freeze_first and coli == 0:
                 font = QtGui.QFont()
                 font.setBold(True)
                 return font
             else:
                 return QtGui.QFont
-        elif role == Qt.TextAlignmentRole:
+        elif role == Qt.ItemDataRole.TextAlignmentRole:
             if self.freeze_first and coli == 0:
-                return Qt.AlignCenter
+                return Qt.AlignmentFlag.AlignCenter
             else:
-                return Qt.AlignLeft | QtCore.Qt.AlignVCenter
+                return (
+                    Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+                )
         else:
             result = None
+
         return result
 
     def flags(self, index):
@@ -315,15 +336,15 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             return flags
 
         columnDtype = self._dataFrame.dtypes[index.column()]
-        if columnDtype == numpy.bool:
-            flags |= Qt.ItemIsUserCheckable
+        if columnDtype == numpy.bool_:
+            flags |= Qt.ItemFlag.ItemIsUserCheckable
         else:
             # if you want to have a combobox for bool columns set this
-            flags |= Qt.ItemIsEditable
+            flags |= Qt.ItemFlag.ItemIsEditable
 
         return flags
 
-    def setData(self, index, value, role=Qt.DisplayRole):
+    def setData(self, index, value, role=Qt.ItemDataRole.DisplayRole):
         """Set the value to the index position depending on Qt::ItemDataRole and data type of the column
 
         Args:
@@ -341,63 +362,52 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         """
         if not index.isValid() or not self.editable:
             return False
-            
-        if value != index.data(role):
 
+        if value != index.data(role):
             self.layoutAboutToBeChanged.emit()
 
             row = self._dataFrame.index[index.row()]
             col = self._dataFrame.columns[index.column()]
-            #print 'before change: ', index.data().toUTC(), self._dataFrame.iloc[row][col]
             columnDtype = self._dataFrame.dtypes[index.column()]
 
-            if columnDtype == object:
-                if isinstance(value, QtCore.QString):
-                    value = str(value)
-
-            elif columnDtype in self._intDtypes:
-                dtypeInfo = numpy.iinfo(columnDtype)
+            if columnDtype in self._intDtypes:
+                dtypeInfo = numpy.iinfo(columnDtype)  # type: ignore
                 if value < dtypeInfo.min:
                     value = dtypeInfo.min
                 elif value > dtypeInfo.max:
                     value = dtypeInfo.max
 
             elif columnDtype in self._floatDtypes:
-                if isinstance(value, QtCore.QVariant):
-                    value, _ = value.toFloat()
-                value = numpy.float64(value).astype(columnDtype)
+                value = numpy.float64(value).astype(columnDtype)  # type: ignore
 
             elif columnDtype in self._boolDtypes:
-                if isinstance(value, QtCore.QVariant):
-                    value = value.toInt()[0]
                 value = numpy.bool_(value)
 
             elif columnDtype in self._dateDtypes:
                 # convert the given value to a compatible datetime object.
                 # if the conversation could not be done, keep the original
                 # value.
-                if isinstance(value, QtCore.QDateTime):
+                if isinstance(value, QDateTime):
                     value = value.toString(self.timestampFormat)
-                elif isinstance(value, QtCore.QVariant):
-                    value = value.toString()
-                
+
                 try:
                     value = pandas.to_datetime(str(value))
                 except Exception:
-                    raise Exception, u"Can't convert '{0}' into a datetime".format(value)
-                    return False
+                    raise Exception(
+                        "Can't convert '{0}' into a datetime".format(value)
+                    )
             else:
-                raise TypeError, "try to set unhandled data type"
+                raise TypeError("try to set unhandled data type")
 
             self._dataFrame.at[row, col] = value
-            
-            #print 'after change: ', value, self._dataFrame.iloc[row][col]
             self.layoutChanged.emit()
+
             return True
+
         else:
             return False
 
-    def rowCount(self, index=QtCore.QModelIndex()):
+    def rowCount(self, index=QModelIndex()):
         """returns number of rows
 
         Args:
@@ -413,40 +423,40 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         # 10000000 loops, best of 3: 110 ns per loop
         # In [14]: %timeit df.__len__()
         # 1000000 loops, best of 3: 215 ns per loop
-        
+
         n_rows = len(self._dataFrame.index)
- 
+
         if n_rows <= self.rowsLoaded:
             return n_rows
         else:
             return self.rowsLoaded
-            
-    def canFetchMore(self, index=QtCore.QModelIndex()):
-        
+
+    def canFetchMore(self, index=QModelIndex()):
         n_rows = len(self._dataFrame.index)
-        
+
         if n_rows > self.rowsLoaded:
             return True
         else:
             return False
-            
-    def fetchMore(self, index=QtCore.QModelIndex()):
-        
+
+    def fetchMore(self, index=QModelIndex()):
         n_rows = len(self._dataFrame.index)
-        
+
         remainder = n_rows - self.rowsLoaded
         itemsToFetch = min(remainder, DataFrameModel._row_batch_count)
-        
-        self.beginInsertRows(QtCore.QModelIndex(),
-                             self.rowsLoaded,
-                             self.rowsLoaded + itemsToFetch - 1)
-        
+
+        self.beginInsertRows(
+            QModelIndex(),
+            self.rowsLoaded,
+            self.rowsLoaded + itemsToFetch - 1,
+        )
+
         self.rowsLoaded += itemsToFetch
         self.endInsertRows()
-        
+
         return
 
-    def columnCount(self, index=QtCore.QModelIndex()):
+    def columnCount(self, index=QModelIndex()):
         """returns number of columns
 
         Args:
@@ -463,7 +473,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         # 1000000 loops, best of 3: 440 ns per loop
         return len(self._dataFrame.columns)
 
-    def sort(self, columnId, order=Qt.AscendingOrder):
+    def sort(self, columnId, order=Qt.SortOrder.AscendingOrder):
         """sort the model column
 
         After sorting the data in ascending or descending order, a signal
@@ -471,15 +481,15 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         Args:
             columnId (int): columnIndex
-            order (Qt::SortOrder, optional): descending(1) or ascending(0). defaults to Qt.AscendingOrder
+            order (Qt::SortOrder, optional): descending(1) or ascending(0). defaults to Qt.SortOrder.AscendingOrder
 
         """
         self.layoutAboutToBeChanged.emit()
         self.sortingAboutToStart.emit()
         column = self._dataFrame.columns[columnId]
-        self._dataFrame.sort_values(column,
-                                    ascending=not bool(order),
-                                    inplace=True)
+        self._dataFrame.sort_values(
+            column, ascending=not bool(order), inplace=True
+        )
         self._dataFrame.reset_index(drop=True, inplace=True)
         self.layoutChanged.emit()
         self.sortingFinished.emit()
@@ -501,7 +511,9 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         """
         if not isinstance(search, DataSearch):
-            raise TypeError('The given parameter must an `dtocean_qt.DataSearch` object')
+            raise TypeError(
+                "The given parameter must an `dtocean_qt.DataSearch` object"
+            )
 
         self._search = search
 
@@ -524,9 +536,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         self.dataFrameChanged.emit()
 
     def clearFilter(self):
-        """clear all filters.
-
-        """
+        """clear all filters."""
         if self._dataFrameOriginal is not None:
             self.layoutAboutToBeChanged.emit()
             self._dataFrame = self._dataFrameOriginal
@@ -540,7 +550,6 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             ColumnDtypeModel
         """
         return self._columnDtypeModel
-
 
     def enableEditing(self, editable):
         self.editable = editable
@@ -556,17 +565,22 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         elements = self.rowCount()
         columnPosition = self.columnCount()
 
-        newColumn = pandas.Series([defaultValue]*elements, index=self._dataFrame.index, dtype=dtype)
+        newColumn = pandas.Series(
+            [defaultValue] * elements, index=self._dataFrame.index, dtype=dtype
+        )
 
-        self.beginInsertColumns(QtCore.QModelIndex(), columnPosition - 1, columnPosition - 1)
+        self.beginInsertColumns(
+            QModelIndex(), columnPosition - 1, columnPosition - 1
+        )
         try:
-            self._dataFrame.insert(columnPosition, columnName, newColumn, allow_duplicates=False)
-        except ValueError, e:
+            self._dataFrame.insert(
+                columnPosition, columnName, newColumn, allow_duplicates=False
+            )
+        except ValueError:
             # columnName does already exist
             return False
 
         self.endInsertColumns()
-
         self.propagateDtypeChanges(columnPosition, newColumn.dtype)
 
         return True
@@ -590,19 +604,19 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         # Note: This function emits the rowsAboutToBeInserted() signal which
         # connected views (or proxies) must handle before the data is
         # inserted. Otherwise, the views may end up in an invalid state.
-        self.beginInsertRows(QtCore.QModelIndex(), position, position + count - 1)
+        self.beginInsertRows(QModelIndex(), position, position + count - 1)
 
         defaultValues = []
         for dtype in self._dataFrame.dtypes:
-            if dtype.type == numpy.dtype('<M8[ns]'):
-                val = pandas.Timestamp('')
+            if dtype.type == numpy.dtype("<M8[ns]"):
+                val = pandas.Timestamp("")
             elif dtype.type == numpy.dtype(object):
-                val = ''
+                val = ""
             else:
                 val = dtype.type()
             defaultValues.append(val)
 
-        for i in xrange(count):
+        for i in range(count):
             self._dataFrame.loc[position + i] = defaultValues
         self._dataFrame.reset_index()
         self.endInsertRows()
@@ -615,14 +629,14 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         if columns:
             deleted = 0
             errorOccured = False
-            for (position, name) in columns:
+            for position, name in columns:
                 position = position - deleted
                 if position < 0:
                     position = 0
-                self.beginRemoveColumns(QtCore.QModelIndex(), position, position)
+                self.beginRemoveColumns(QModelIndex(), position, position)
                 try:
                     self._dataFrame.drop(name, axis=1, inplace=True)
-                except KeyError, e:
+                except KeyError:
                     errorOccured = True
                     continue
                 self.endRemoveColumns()
@@ -642,7 +656,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         if rows:
             position = min(rows)
             count = len(rows)
-            self.beginRemoveRows(QtCore.QModelIndex(), position, position + count - 1)
+            self.beginRemoveRows(QModelIndex(), position, position + count - 1)
 
             removedAny = False
             for idx, line in self._dataFrame.iterrows():
@@ -657,4 +671,5 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
             self.endRemoveRows()
             return True
+
         return False

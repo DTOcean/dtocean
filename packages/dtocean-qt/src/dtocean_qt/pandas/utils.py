@@ -1,6 +1,5 @@
-from random import randint
 from pandas import to_datetime
-import numpy as np
+
 
 def fillNoneValues(column):
     """Fill all NaN/NaT values of a column with an empty string
@@ -12,8 +11,9 @@ def fillNoneValues(column):
         column: Series with filled NaN values.
     """
     if column.dtype == object:
-        column.fillna('', inplace=True)
+        column.fillna("", inplace=True)
     return column
+
 
 def convertTimestamps(column):
     """Convert a dtype of a given column to a datetime.
@@ -31,9 +31,7 @@ def convertTimestamps(column):
     tempColumn = column
     try:
         # try to convert the first row and a random row instead of the complete column, might be faster
-        tempValue = np.datetime64(column[0])
-        tempValue = np.datetime64(column[randint(0, len(column.index) - 1)])
         tempColumn = column.apply(to_datetime)
-    except:
+    except Exception:
         pass
     return tempColumn
