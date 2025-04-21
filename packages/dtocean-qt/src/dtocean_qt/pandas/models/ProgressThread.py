@@ -1,7 +1,12 @@
-from dtocean_qt.pandas.compat import QtCore, Signal, Slot
+from PySide6.QtCore import (
+    QObject,
+    QThread,
+    Signal,
+    Slot,
+)
 
 
-class ProgressWorker(QtCore.QObject):
+class ProgressWorker(QObject):
     progressChanged = Signal(int)  # set value of OverlayProgressView
     finished = Signal()
 
@@ -39,7 +44,7 @@ def createThread(parent, worker, deleteWorkerLater=False):
         QThread
 
     """
-    thread = QtCore.QThread(parent)
+    thread = QThread(parent)
     thread.started.connect(worker.doWork)
     worker.finished.connect(thread.quit)
     if deleteWorkerLater:
