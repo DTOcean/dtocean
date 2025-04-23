@@ -11,7 +11,6 @@ from dtocean_qt.pandas.models.SupportedDtypes import (
 def expected_support():
     numpy_datatypes = [
         numpy.bool_,
-        numpy.bool,
         numpy.int_,
         numpy.intc,
         numpy.intp,
@@ -69,7 +68,7 @@ class TestSupportedDtypes(object):
         for datatype in expected_support:
             assert obj.description(datatype) is not None
 
-        from StringIO import StringIO
+        from io import StringIO
 
         s = StringIO()
         assert obj.description(s) is None

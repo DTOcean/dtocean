@@ -3,8 +3,12 @@
 import numpy
 import pandas
 import pytest
+from PySide6 import QtGui, QtWidgets
+from PySide6.QtCore import (
+    QPoint,
+    Qt,
+)
 
-from dtocean_qt.pandas.compat import QtCore, QtGui
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 from dtocean_qt.pandas.views.CustomDelegates import (
     BigIntSpinboxDelegate,
@@ -14,7 +18,7 @@ from dtocean_qt.pandas.views.CustomDelegates import (
 )
 
 
-class DemoTableView(QtGui.QTableView):
+class DemoTableView(QtWidgets.QTableView):
     def __init__(self, parent=None):
         super(DemoTableView, self).__init__(parent)
         self.resize(800, 600)
@@ -50,7 +54,12 @@ class TestCustomDelegates(object):
     @pytest.mark.parametrize(
         "widgetClass, model, exception, exceptionContains",
         [
-            (QtGui.QWidget, None, AttributeError, "has no attribute 'model'"),
+            (
+                QtWidgets.QWidget,
+                None,
+                AttributeError,
+                "has no attribute 'model'",
+            ),
             (
                 DemoTableView,
                 None,
@@ -104,10 +113,10 @@ class TestCustomDelegates(object):
         for i, delegate in enumerate([dlg]):
             assert tableView.itemDelegateForColumn(i) == delegate
 
-            option = QtGui.QStyleOptionViewItem()
-            option.rect = QtCore.QRect(0, 0, 100, 100)
+            option = QtWidgets.QStyleOptionViewItem()
             editor = delegate.createEditor(tableView, option, index)
             delegate.setEditorData(editor, index)
+            assert not isinstance(editor, QtWidgets.QLineEdit)
             assert editor.value() == index.data()
             delegate.setModelData(editor, model, index)
 
@@ -124,6 +133,8 @@ class TestCustomDelegates(object):
                     delegate.decimals
                     == DataFrameModel._float_precisions[str(value.dtype)]
                 )
+
+            assert not isinstance(delegate, TextDelegate)
             assert delegate.maximum == info.max
             assert editor.maximum() == info.max
             assert delegate.minimum == info.min
@@ -138,8 +149,8 @@ class TestCustomDelegates(object):
         with qtbot.waitSignal(tableView.clicked) as blocker:
             qtbot.mouseClick(
                 tableView.viewport(),
-                QtCore.Qt.LeftButton,
-                pos=QtCore.QPoint(10, 10),
+                Qt.MouseButton.LeftButton,
+                pos=QPoint(10, 10),
             )
         assert blocker.signal_triggered
 
@@ -158,26 +169,22 @@ class TestTextDelegate(object):
 
     def test_editing(self, dataFrame, qtbot):
         model = DataFrameModel(dataFrame)
-
-        tableView = QtGui.QTableView()
+        tableView = QtWidgets.QTableView()
 
         qtbot.addWidget(tableView)
         tableView.setModel(model)
 
-        delegate = TextDelegate(tableView)
         createDelegate(numpy.dtype("O"), 0, tableView)
         tableView.show()
-
         index = model.index(0, 0)
-        preedit_data = index.data()
 
         assert not model.editable
         model.enableEditing(True)
         tableView.edit(index)
-        editor = tableView.findChildren(QtGui.QLineEdit)[0]
-        qtbot.keyPress(editor, QtCore.Qt.Key_F)
-        qtbot.keyPress(editor, QtCore.Qt.Key_Enter)
-        QtGui.QApplication.processEvents()
+        editor = list(tableView.findChildren(QtWidgets.QLineEdit))[0]
+        qtbot.keyPress(editor, Qt.Key.Key_F)
+        qtbot.keyPress(editor, Qt.Key.Key_Enter)
+        QtWidgets.QApplication.processEvents()
         #        with qtbot.waitSignal(timeout=100):
         #            print index.data(QtCore.Qt.DisplayRole).toPyObject()
-        assert index.data(QtCore.Qt.DisplayRole).toPyObject() == "f"
+        assert index.data(Qt.ItemDataRole.DisplayRole).toPyObject() == "f"

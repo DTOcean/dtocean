@@ -3,9 +3,12 @@
 import numpy
 import pandas
 import pytest
-import pytestqt
+from PySide6 import QtWidgets
+from PySide6.QtCore import (
+    QModelIndex,
+    Qt,
+)
 
-from dtocean_qt.pandas.compat import Qt, QtCore, QtGui
 from dtocean_qt.pandas.models.ColumnDtypeModel import (
     DTYPE_ROLE,
     ColumnDtypeModel,
@@ -31,25 +34,27 @@ class TestColumnDType(object):
     def test_customDTypeModel_check_init(self):
         model = ColumnDtypeModel()
 
-        assert model.dataFrame().empty == True
-        assert model.editable() == False
+        assert model.dataFrame().empty
+        assert not model.editable()
 
         model = ColumnDtypeModel(editable=True)
-        assert model.editable() == True
+        assert model.editable()
 
     def test_headerData(self):
         model = ColumnDtypeModel()
 
-        ret = model.headerData(0, Qt.Horizontal)
+        ret = model.headerData(0, Qt.Orientation.Horizontal)
         assert ret == "column"
-        ret = model.headerData(1, Qt.Horizontal)
+        ret = model.headerData(1, Qt.Orientation.Horizontal)
         assert ret == "data type"
-        ret = model.headerData(2, Qt.Horizontal)
-        assert ret == None
-        ret = model.headerData(0, Qt.Horizontal, Qt.EditRole)
-        assert ret == None
-        ret = model.headerData(0, Qt.Vertical)
-        assert ret == None
+        ret = model.headerData(2, Qt.Orientation.Horizontal)
+        assert ret is None
+        ret = model.headerData(
+            0, Qt.Orientation.Horizontal, Qt.ItemDataRole.EditRole
+        )
+        assert ret is None
+        ret = model.headerData(0, Qt.Orientation.Vertical)
+        assert ret is None
 
     def test_data(self, dataframe):
         model = ColumnDtypeModel(dataFrame=dataframe)
@@ -60,12 +65,12 @@ class TestColumnDType(object):
         assert ret == "Foo"
 
         # edit role does the same as display role
-        ret = index.data(Qt.EditRole)
+        ret = index.data(Qt.ItemDataRole.EditRole)
         assert ret == "Foo"
 
         # datatype only defined for column 1
         ret = index.data(DTYPE_ROLE)
-        assert ret == None
+        assert ret is None
 
         # datatype column
         index = index.sibling(0, 1)
@@ -81,11 +86,11 @@ class TestColumnDType(object):
 
         # column not defined
         index = index.sibling(0, 2)
-        assert index.data(DTYPE_ROLE) == None
+        assert index.data(DTYPE_ROLE) is None
 
         # invalid index
-        index = QtCore.QModelIndex()
-        assert model.data(index) == None
+        index = QModelIndex()
+        assert model.data(index) is None
 
         index = model.index(2, 0)
 
@@ -108,7 +113,8 @@ class TestColumnDType(object):
                 model.setData(index, string)
                 assert index.data(DTYPE_ROLE).toPyObject() == expected_type
 
-        assert model.setData(index, "bool", Qt.DisplayRole) == False
+        assert len(datetime) == 2
+        assert not model.setData(index, "bool", Qt.ItemDataRole.DisplayRole)
 
         with pytest.raises(Exception) as err:
             model.setData(index, datetime[0])
@@ -126,12 +132,12 @@ class TestColumnDType(object):
             model = ColumnDtypeModel(dataFrame=df)
             index = model.index(0, 0)
             model.setEditable(True)
-            assert model.setData(index, "date and time") == True
+            assert model.setData(index, "date and time")
 
         # convert datetime to anything else does not work and leave the
         # datatype unchanged. An error message is emitted.
 
-        with pytest.raises(pytestqt.qtbot.TimeoutError):
+        with pytest.raises(qtbot.TimeoutError):
             with qtbot.waitSignal(model.changeFailed):
                 model.setData(index, "bool")
 
@@ -140,15 +146,20 @@ class TestColumnDType(object):
         model.setEditable(True)
 
         index = model.index(0, 0)
-        assert model.flags(index) == Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        assert (
+            model.flags(index)
+            == Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
+        )
         index = index.sibling(0, 1)
         assert (
             model.flags(index)
-            == Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
+            == Qt.ItemFlag.ItemIsSelectable
+            | Qt.ItemFlag.ItemIsEnabled
+            | Qt.ItemFlag.ItemIsEditable
         )
 
         index = index.sibling(15, 1)
-        assert model.flags(index) == Qt.NoItemFlags
+        assert model.flags(index) == Qt.ItemFlag.NoItemFlags
 
     def test_columnCount(self):
         model = ColumnDtypeModel()
@@ -159,13 +170,13 @@ class TestColumnDType(object):
         assert model.rowCount() == 0
 
         model.setDataFrame(dataframe)
-        assert model.rowCount(5)
+        assert model.rowCount() == 5
 
     def test_setDataFrame(self, dataframe):
         model = ColumnDtypeModel()
 
         model.setDataFrame(dataframe)
-        assert model.rowCount(5)
+        assert model.rowCount() == 5
 
         with pytest.raises(TypeError) as err:
             model.setDataFrame(["some", "neat", "list", "entries"])
@@ -178,7 +189,7 @@ class TestDtypeComboDelegate(object):
 
         model.setEditable(True)
 
-        tableView = QtGui.QTableView()
+        tableView = QtWidgets.QTableView()
         qtbot.addWidget(tableView)
 
         tableView.setModel(model)
@@ -190,13 +201,9 @@ class TestDtypeComboDelegate(object):
         preedit_data = index.data(DTYPE_ROLE)
 
         tableView.edit(index)
-        editor = tableView.findChildren(QtGui.QComboBox)[0]
+        editor = list(tableView.findChildren(QtWidgets.QComboBox))[0]
         selectedIndex = editor.currentIndex()
         editor.setCurrentIndex(selectedIndex + 1)
         postedit_data = index.data(DTYPE_ROLE)
 
         assert preedit_data != postedit_data
-
-
-if __name__ == "__main__":
-    pytest.main()

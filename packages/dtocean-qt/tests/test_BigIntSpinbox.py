@@ -13,40 +13,40 @@ class TestClass(object):
         qtbot.addWidget(widget)
         return widget
 
-    def test_init(self, spinbox):
+    def test_init(self, spinbox: BigIntSpinbox):
         assert spinbox
 
-    def test_value(self, spinbox):
+    def test_value(self, spinbox: BigIntSpinbox):
         assert spinbox.value() == 0
         spinbox._lineEdit.setText("")  # runs into exception
         assert spinbox.value() == 0
 
-    def test_minimumMaximum(self, spinbox):
+    def test_minimumMaximum(self, spinbox: BigIntSpinbox):
         assert spinbox.minimum() == -18446744073709551616
         assert spinbox.maximum() == 18446744073709551615
 
-    def test_setMinimumMaximum(self, spinbox):
+    def test_setMinimumMaximum(self, spinbox: BigIntSpinbox):
         spinbox.setMinimum(0)
-        spinbox.setMinimum(long(0))
+        spinbox.setMinimum(0)
         spinbox.setMinimum(1)
-        spinbox.setMinimum(long(1))
+        spinbox.setMinimum(1)
         spinbox.setMinimum(-1)
-        spinbox.setMinimum(long(-1))
+        spinbox.setMinimum(-1)
         with pytest.raises(TypeError) as excinfo:
             spinbox.setMinimum("")
-        assert "int or long" in str(excinfo.value)
+        assert "int" in str(excinfo.value)
 
         spinbox.setMaximum(0)
-        spinbox.setMaximum(long(0))
+        spinbox.setMaximum(0)
         spinbox.setMaximum(1)
-        spinbox.setMaximum(long(1))
+        spinbox.setMaximum(1)
         spinbox.setMaximum(-1)
-        spinbox.setMaximum(long(-1))
+        spinbox.setMaximum(-1)
         with pytest.raises(TypeError) as excinfo:
             spinbox.setMaximum("")
-        assert "int or long" in str(excinfo.value)
+        assert "int" in str(excinfo.value)
 
-    def test_setValue(self, spinbox):
+    def test_setValue(self, spinbox: BigIntSpinbox):
         assert spinbox.setValue(10)
         assert spinbox.value() == 10
 
@@ -56,7 +56,7 @@ class TestClass(object):
         assert spinbox.setValue(-18446744073709551616 - 1)
         assert spinbox.value() == spinbox.minimum()
 
-    def test_singleStep(self, spinbox):
+    def test_singleStep(self, spinbox: BigIntSpinbox):
         assert spinbox.singleStep() == 1
 
         assert spinbox.setSingleStep(10) == 10
@@ -68,22 +68,21 @@ class TestClass(object):
 
         assert spinbox.setSingleStep(0) == 0
 
-    def test_stepEnabled(self, spinbox):
-        assert spinbox.StepUpEnabled
-        assert spinbox.StepDownEnabled
+    def test_stepEnabled(self, spinbox: BigIntSpinbox):
         assert (
             spinbox.stepEnabled()
-            == spinbox.StepUpEnabled | spinbox.StepDownEnabled
+            == spinbox.StepEnabledFlag.StepUpEnabled
+            | spinbox.StepEnabledFlag.StepDownEnabled
         )
 
         spinbox.setMinimum(0)
         spinbox.setMaximum(10)
         spinbox._lineEdit.setText(str(-1))
-        assert spinbox.stepEnabled() == spinbox.StepUpEnabled
+        assert spinbox.stepEnabled() == spinbox.StepEnabledFlag.StepUpEnabled
         spinbox._lineEdit.setText(str(11))
-        assert spinbox.stepEnabled() == spinbox.StepDownEnabled
+        assert spinbox.stepEnabled() == spinbox.StepEnabledFlag.StepDownEnabled
 
-    def test_stepBy(self, spinbox):
+    def test_stepBy(self, spinbox: BigIntSpinbox):
         spinbox.setMinimum(0)
         spinbox.setMaximum(10)
         spinbox.setValue(0)

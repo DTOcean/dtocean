@@ -1,8 +1,11 @@
 import numpy
 import pandas
 import pytest
+from PySide6 import QtWidgets
+from PySide6.QtCore import (
+    Qt,
+)
 
-from dtocean_qt.pandas.compat import QtCore, QtGui
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 from dtocean_qt.pandas.views.DataTableView import DataTableWidget
 
@@ -39,7 +42,7 @@ class TestTableViewWidget(object):
 
         assert widget.view().model() is None
 
-        buttons = widget.findChildren(QtGui.QToolButton)
+        buttons = widget.findChildren(QtWidgets.QToolButton)
 
         enabled_counter = 0
         for btn in buttons:
@@ -56,12 +59,12 @@ class TestTableViewWidget(object):
 
         assert widget.view().model() is None
 
-        buttons = widget.findChildren(QtGui.QToolButton)
+        buttons = widget.findChildren(QtWidgets.QToolButton)
 
         exclude_button = None
         for btn in buttons:
             if btn.isEnabled:
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
                 exclude_button = btn
                 assert btn.isChecked()
                 break
@@ -69,7 +72,7 @@ class TestTableViewWidget(object):
         for button in buttons:
             assert button.isEnabled()
 
-        qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
+        qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
 
         for button in buttons:
             if button == exclude_button:
@@ -87,14 +90,18 @@ class TestTableViewWidget(object):
         assert widget.view().model() is not None
         assert widget.view().model() == dataModel
 
-        buttons = widget.findChildren(QtGui.QToolButton)
+        buttons = widget.findChildren(QtWidgets.QToolButton)
         for btn in buttons:
             if btn.isEnabled:
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
-                assert widget.view().model().editable
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
+                model = widget.view().model()
+                assert isinstance(model, DataFrameModel)
+                assert model.editable
 
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
-                assert not widget.view().model().editable
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
+                model = widget.view().model()
+                assert isinstance(model, DataFrameModel)
+                assert not model.editable
 
                 break
 
@@ -105,10 +112,10 @@ class TestTableViewWidget(object):
 
         widget.setViewModel(dataModel)
 
-        buttons = widget.findChildren(QtGui.QToolButton)
+        buttons = widget.findChildren(QtWidgets.QToolButton)
         for btn in buttons:
             if btn.isEnabled:
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
                 break
 
         for btn in buttons:
@@ -116,17 +123,17 @@ class TestTableViewWidget(object):
                 continue
 
             if btn.objectName() in ["addcolumnbutton", "removecolumnbutton"]:
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
-                dlg = widget.findChildren(QtGui.QDialog)[-1]
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
+                dlg = list(widget.findChildren(QtWidgets.QDialog))[-1]
 
-                dlg_buttons = dlg.findChildren(QtGui.QPushButton)
+                dlg_buttons = dlg.findChildren(QtWidgets.QPushButton)
 
                 for b in dlg_buttons:
                     if str(b.text()) == "Cancel":
-                        qtbot.mouseClick(b, QtCore.Qt.LeftButton)
+                        qtbot.mouseClick(b, Qt.MouseButton.LeftButton)
                         break
             else:
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
 
     def test_addColumn(self, qtbot, dataModel):
         widget = DataTableWidget()
@@ -135,47 +142,46 @@ class TestTableViewWidget(object):
 
         widget.setViewModel(dataModel)
 
-        buttons = widget.findChildren(QtGui.QToolButton)
+        buttons = widget.findChildren(QtWidgets.QToolButton)
         for btn in buttons:
             if btn.isEnabled:
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
                 break
 
         columns = []
-        addButton = None
         for btn in buttons:
             if btn.objectName == "addcolumnbutton":
                 addbutton = btn
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
-                dlg = widget.findChildren(QtGui.QDialog)[-1]
-                dlg_buttons = dlg.findChildren(QtGui.QPushButton)
-                comboBox = dlg.findChildren(QtGui.QComboBox)[-1]
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
+                dlg = list(widget.findChildren(QtWidgets.QDialog))[-1]
+                dlg_buttons = dlg.findChildren(QtWidgets.QPushButton)
+                comboBox = list(dlg.findChildren(QtWidgets.QComboBox))[-1]
 
-                for i in xrange(comboBox.count()):
+                for i in range(comboBox.count()):
                     columns.append(comboBox.itemText(i))
 
                 for b in dlg_buttons:
                     if str(b.text()) == "Cancel":
-                        qtbot.mouseClick(b, QtCore.Qt.LeftButton)
+                        qtbot.mouseClick(b, Qt.MouseButton.LeftButton)
                         break
                 break
 
         columnCountBeforeInsert = widget.view().model().columnCount()
         for index, column in enumerate(columns):
-            qtbot.mouseClick(addbutton, QtCore.Qt.LeftButton)
-            dlg = widget.findChildren(QtGui.QDialog)[-1]
+            qtbot.mouseClick(addbutton, Qt.MouseButton.LeftButton)
+            dlg = list(widget.findChildren(QtWidgets.QDialog))[-1]
 
-            textedits = dlg.findChildren(QtGui.QLineEdit)
+            textedits = list(dlg.findChildren(QtWidgets.QLineEdit))
             qtbot.keyClicks(textedits[0], column)
 
-            comboBox = dlg.findChildren(QtGui.QComboBox)[-1]
+            comboBox = list(dlg.findChildren(QtWidgets.QComboBox))[-1]
             comboBox.setCurrentIndex(index)
 
-            dlg_buttons = dlg.findChildren(QtGui.QPushButton)
+            dlg_buttons = dlg.findChildren(QtWidgets.QPushButton)
 
             for b in dlg_buttons:
                 if str(b.text()) == "OK":
-                    qtbot.mouseClick(b, QtCore.Qt.LeftButton)
+                    qtbot.mouseClick(b, Qt.MouseButton.LeftButton)
                     break
 
             assert (
@@ -189,26 +195,26 @@ class TestTableViewWidget(object):
         widget.show()
 
         widget.setViewModel(dataModel2)
-        buttons = widget.findChildren(QtGui.QToolButton)
+        buttons = list(widget.findChildren(QtWidgets.QToolButton))
 
         for btn in buttons:
             if btn.isEnabled():
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
                 break
 
         for btn in buttons:
             if str(btn.objectName()) == "removecolumnbutton":
-                qtbot.mouseClick(btn, QtCore.Qt.LeftButton)
-                dlg = widget.findChildren(QtGui.QDialog)[-1]
+                qtbot.mouseClick(btn, Qt.MouseButton.LeftButton)
+                dlg = list(widget.findChildren(QtWidgets.QDialog))[-1]
 
-                listview = dlg.findChildren(QtGui.QListView)[-1]
+                listview = list(dlg.findChildren(QtWidgets.QListView))[-1]
                 listview.selectAll()
 
-                dlg_buttons = dlg.findChildren(QtGui.QPushButton)
+                dlg_buttons = dlg.findChildren(QtWidgets.QPushButton)
 
                 for b in dlg_buttons:
                     if str(b.text()) == "OK":
-                        qtbot.mouseClick(b, QtCore.Qt.LeftButton)
+                        qtbot.mouseClick(b, Qt.MouseButton.LeftButton)
                         break
 
                 break
@@ -223,8 +229,9 @@ class TestTableViewWidget(object):
         widget.setViewModel(dataModel3)
 
         model = widget.tableView.model()
-        scroll_bar = widget.tableView.verticalScrollBar()
+        assert isinstance(model, DataFrameModel)
 
+        scroll_bar = widget.tableView.verticalScrollBar()
         scroll_bar_value = scroll_bar.value()
         scroll_bar.setValue(scroll_bar_value + 110)
 

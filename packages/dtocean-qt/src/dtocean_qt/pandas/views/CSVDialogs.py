@@ -363,13 +363,7 @@ class CSVImportDialog(QtWidgets.QDialog):
             encoding = detect_encoding(path)
 
             if encoding is not None:
-                if encoding.startswith("utf"):
-                    encoding = encoding.replace("-", "")
-                encoding = encoding.replace("-", "_")
-
-                viewValue = _encodings.get(encoding)
-                assert viewValue is not None
-
+                viewValue = encoding
                 self._encodingKey = encoding
                 index = self._encodingComboBox.findText(viewValue.upper())
                 self._encodingComboBox.setCurrentIndex(index)

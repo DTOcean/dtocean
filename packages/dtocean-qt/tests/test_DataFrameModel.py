@@ -4,8 +4,12 @@ import random
 import numpy
 import pandas
 import pytest
+from PySide6.QtCore import (
+    QDateTime,
+    QModelIndex,
+    Qt,
+)
 
-from dtocean_qt.pandas.compat import Qt, QtCore
 from dtocean_qt.pandas.models.DataFrameModel import (
     DATAFRAME_ROLE,
     DataFrameModel,
@@ -35,7 +39,7 @@ def test_setDataFrame():
 
     with pytest.raises(TypeError) as excinfo:
         model.setDataFrame(None)
-    assert "pandas.core.frame.DataFrame" in unicode(excinfo.value)
+    assert "pandas.core.frame.DataFrame" in str(excinfo.value)
 
 
 @pytest.mark.parametrize(
@@ -52,14 +56,14 @@ def test_copyDataFrame(copy, operator):
 
 def test_TimestampFormat():
     model = DataFrameModel()
-    assert model.timestampFormat == Qt.ISODate
+    assert model.timestampFormat == Qt.DateFormat.ISODate
     newFormat = "yy-MM-dd hh:mm"
     model.timestampFormat = newFormat
     assert model.timestampFormat == newFormat
 
     with pytest.raises(TypeError) as excinfo:
         model.timestampFormat = "yy-MM-dd hh:mm"
-    assert "unicode" in unicode(excinfo.value)
+    assert "unicode" in str(excinfo.value)
 
 
 # def test_signalUpdate(qtbot):
@@ -76,12 +80,17 @@ def test_TimestampFormat():
 @pytest.mark.parametrize(
     "orientation, role, index, expectedHeader",
     [
-        (Qt.Horizontal, Qt.EditRole, 0, None),
-        (Qt.Vertical, Qt.EditRole, 0, None),
-        (Qt.Horizontal, Qt.DisplayRole, 0, "A"),
-        (Qt.Horizontal, Qt.DisplayRole, 1, None),  # run into IndexError
-        (Qt.Vertical, Qt.DisplayRole, 0, 0),
-        (Qt.Vertical, Qt.DisplayRole, 1, 1),
+        (Qt.Orientation.Horizontal, Qt.ItemDataRole.EditRole, 0, None),
+        (Qt.Orientation.Vertical, Qt.ItemDataRole.EditRole, 0, None),
+        (Qt.Orientation.Horizontal, Qt.ItemDataRole.DisplayRole, 0, "A"),
+        (
+            Qt.Orientation.Horizontal,
+            Qt.ItemDataRole.DisplayRole,
+            1,
+            None,
+        ),  # run into IndexError
+        (Qt.Orientation.Vertical, Qt.ItemDataRole.DisplayRole, 0, 0),
+        (Qt.Orientation.Vertical, Qt.ItemDataRole.DisplayRole, 1, 1),
     ],
 )
 def test_headerData(orientation, role, index, expectedHeader):
@@ -93,12 +102,17 @@ def test_flags():
     model = DataFrameModel(pandas.DataFrame([0], columns=["A"]))
     index = model.index(0, 0)
     assert index.isValid()
-    assert model.flags(index) == Qt.ItemIsSelectable | Qt.ItemIsEnabled
+    assert (
+        model.flags(index)
+        == Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled
+    )
 
     model.enableEditing(True)
     assert (
         model.flags(index)
-        == Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
+        == Qt.ItemFlag.ItemIsSelectable
+        | Qt.ItemFlag.ItemIsEnabled
+        | Qt.ItemFlag.ItemIsEditable
     )
 
     model.setDataFrame(pandas.DataFrame([True], columns=["A"]))
@@ -106,11 +120,15 @@ def test_flags():
     model.enableEditing(True)
     assert (
         model.flags(index)
-        != Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
+        != Qt.ItemFlag.ItemIsSelectable
+        | Qt.ItemFlag.ItemIsEnabled
+        | Qt.ItemFlag.ItemIsEditable
     )
     assert (
         model.flags(index)
-        == Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsUserCheckable
+        == Qt.ItemFlag.ItemIsSelectable
+        | Qt.ItemFlag.ItemIsEnabled
+        | Qt.ItemFlag.ItemIsUserCheckable
     )
 
 
@@ -162,9 +180,9 @@ class TestSort(object):
     @pytest.mark.parametrize(
         "testAscending, modelAscending, isIdentic",
         [
-            (True, Qt.AscendingOrder, True),
-            (False, Qt.DescendingOrder, True),
-            (True, Qt.DescendingOrder, False),
+            (True, Qt.SortOrder.AscendingOrder, True),
+            (False, Qt.SortOrder.DescendingOrder, True),
+            (True, Qt.SortOrder.DescendingOrder, False),
         ],
     )
     def test_sort(
@@ -191,11 +209,11 @@ class TestData(object):
         return index
 
     def test_invalidIndex(self, model):
-        assert model.data(QtCore.QModelIndex()) is None
+        assert model.data(QModelIndex()) is None
 
     def test_unknownRole(self, model, index):
         assert index.isValid()
-        assert model.data(index, role="unknownRole") == None
+        assert model.data(index, role="unknownRole") is None
 
     def test_unhandledDtype(self, model, index):
         dataFrame = pandas.DataFrame([92.289 + 151.96j], columns=["A"])
@@ -205,10 +223,10 @@ class TestData(object):
         assert model.dataFrame() is dataFrame
 
         assert index.isValid()
-        assert model.data(index) == None
+        assert model.data(index) is None
         # with pytest.raises(TypeError) as excinfo:
         #     model.data(index)
-        # assert "unhandled data type" in unicode(excinfo.value)
+        # assert "unhandled data type" in str(excinfo.value)
 
     @pytest.mark.parametrize(
         "value, dtype",
@@ -217,7 +235,7 @@ class TestData(object):
             ("äöü", object),
         ],
     )
-    def test_strAndUnicode(self, model, index, value, dtype):
+    def test_strAndstr(self, model, index, value, dtype):
         dataFrame = pandas.DataFrame([value], columns=["A"])
         dataFrame["A"] = dataFrame["A"].astype(dtype)
         model.setDataFrame(dataFrame)
@@ -226,9 +244,9 @@ class TestData(object):
 
         assert index.isValid()
         assert model.data(index) == value
-        assert model.data(index, role=Qt.DisplayRole) == value
-        assert model.data(index, role=Qt.EditRole) == value
-        assert model.data(index, role=Qt.CheckStateRole) == None
+        assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == value
+        assert model.data(index, role=Qt.ItemDataRole.EditRole) == value
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) is None
         assert isinstance(model.data(index, role=DATAFRAME_ROLE), dtype)
 
     @pytest.mark.parametrize(
@@ -268,19 +286,18 @@ class TestData(object):
 
         assert index.isValid()
         if precision:
-            modelValue = model.data(index, role=Qt.DisplayRole)
             assert model.data(index) == round(value, precision)
-            assert model.data(index, role=Qt.DisplayRole) == round(
+            assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == round(
                 value, precision
             )
-            assert model.data(index, role=Qt.EditRole) == round(
+            assert model.data(index, role=Qt.ItemDataRole.EditRole) == round(
                 value, precision
             )
         else:
             assert model.data(index) == value
-            assert model.data(index, role=Qt.DisplayRole) == value
-            assert model.data(index, role=Qt.EditRole) == value
-        assert model.data(index, role=Qt.CheckStateRole) == None
+            assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == value
+            assert model.data(index, role=Qt.ItemDataRole.EditRole) == value
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) is None
         assert isinstance(model.data(index, role=DATAFRAME_ROLE), dtype)
         assert model.data(index, role=DATAFRAME_ROLE).dtype == dtype
 
@@ -319,7 +336,8 @@ class TestData(object):
     # assert model.data(index) == getattr(ii, border2)
 
     @pytest.mark.parametrize(
-        "value, qtbool", [(True, Qt.Checked), (False, Qt.Unchecked)]
+        "value, qtbool",
+        [(True, Qt.CheckState.Checked), (False, Qt.CheckState.Unchecked)],
     )
     def test_bool(self, model, index, value, qtbool):
         dataFrame = pandas.DataFrame([value], columns=["A"])
@@ -329,24 +347,24 @@ class TestData(object):
         assert model.dataFrame() is dataFrame
 
         assert index.isValid()
-        assert model.data(index, role=Qt.DisplayRole) == value
-        assert model.data(index, role=Qt.EditRole) == value
-        assert model.data(index, role=Qt.CheckStateRole) == qtbool
+        assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == value
+        assert model.data(index, role=Qt.ItemDataRole.EditRole) == value
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) == qtbool
         assert model.data(index, role=DATAFRAME_ROLE) == value
         assert isinstance(model.data(index, role=DATAFRAME_ROLE), numpy.bool_)
 
     def test_date(self, model, index):
         pandasDate = pandas.Timestamp("1990-10-08T10:15:45")
-        qDate = QtCore.QDateTime.fromString(str(pandasDate), Qt.ISODate)
+        qDate = QDateTime.fromString(str(pandasDate), Qt.DateFormat.ISODate)
         dataFrame = pandas.DataFrame([pandasDate], columns=["A"])
         model.setDataFrame(dataFrame)
         assert not model.dataFrame().empty
         assert model.dataFrame() is dataFrame
 
         assert index.isValid()
-        assert model.data(index, role=Qt.DisplayRole) == qDate
-        assert model.data(index, role=Qt.EditRole) == qDate
-        assert model.data(index, role=Qt.CheckStateRole) == None
+        assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == qDate
+        assert model.data(index, role=Qt.ItemDataRole.EditRole) == qDate
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) is None
         assert model.data(index, role=DATAFRAME_ROLE) == pandasDate
         assert isinstance(
             model.data(index, role=DATAFRAME_ROLE), pandas.Timestamp
@@ -367,10 +385,10 @@ class TestSetData(object):
         return model.index(0, 0)
 
     def test_invalidIndex(self, model):
-        assert model.setData(QtCore.QModelIndex(), None) == False
+        assert not model.setData(QModelIndex(), None)
 
     def test_nothingHasChanged(self, model, index):
-        assert model.setData(index, 10) == False
+        assert not model.setData(index, 10)
 
     def test_unhandledDtype(self, model, index):
         dataFrame = pandas.DataFrame([92.289 + 151.96j], columns=["A"])
@@ -383,7 +401,7 @@ class TestSetData(object):
         model.enableEditing(True)
         with pytest.raises(TypeError) as excinfo:
             model.setData(index, numpy.complex64(92 + 151j))
-        assert "unhandled data type" in unicode(excinfo.value)
+        assert "unhandled data type" in str(excinfo.value)
 
     @pytest.mark.parametrize(
         "value, dtype",
@@ -392,7 +410,7 @@ class TestSetData(object):
             ("äöü", object),
         ],
     )
-    def test_strAndUnicode(self, model, index, value, dtype):
+    def test_strAndstr(self, model, index, value, dtype):
         dataFrame = pandas.DataFrame([value], columns=["A"])
         dataFrame["A"] = dataFrame["A"].astype(dtype)
         model.setDataFrame(dataFrame)
@@ -400,14 +418,15 @@ class TestSetData(object):
         model.enableEditing(True)
         assert model.setData(index, newValue)
         assert model.data(index) == newValue
-        assert model.data(index, role=Qt.DisplayRole) == newValue
-        assert model.data(index, role=Qt.EditRole) == newValue
-        assert model.data(index, role=Qt.CheckStateRole) == None
+        assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == newValue
+        assert model.data(index, role=Qt.ItemDataRole.EditRole) == newValue
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) is None
         assert model.data(index, role=DATAFRAME_ROLE) == newValue
         assert isinstance(model.data(index, role=DATAFRAME_ROLE), dtype)
 
     @pytest.mark.parametrize(
-        "value, qtbool", [(True, Qt.Checked), (False, Qt.Unchecked)]
+        "value, qtbool",
+        [(True, Qt.CheckState.Checked), (False, Qt.CheckState.Unchecked)],
     )
     def test_bool(self, model, index, value, qtbool):
         dataFrame = pandas.DataFrame([value], columns=["A"])
@@ -421,10 +440,10 @@ class TestSetData(object):
         # pytest.set_trace()
         # everything is already set as false and since Qt.Unchecked = 0, 0 == False
         # therefore the assert will fail without further constraints
-        assert model.setData(index, qtbool) == True
-        assert model.data(index, role=Qt.DisplayRole) == value
-        assert model.data(index, role=Qt.EditRole) == value
-        assert model.data(index, role=Qt.CheckStateRole) == qtbool
+        assert model.setData(index, qtbool)
+        assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == value
+        assert model.data(index, role=Qt.ItemDataRole.EditRole) == value
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) == qtbool
         assert model.data(index, role=DATAFRAME_ROLE) == value
         assert isinstance(model.data(index, role=DATAFRAME_ROLE), numpy.bool_)
 
@@ -437,12 +456,12 @@ class TestSetData(object):
 
         assert index.isValid()
         newDate = pandas.Timestamp("2000-12-08T10:15:45")
-        newQDate = QtCore.QDateTime.fromString(str(newDate), Qt.ISODate)
+        newQDate = QDateTime.fromString(str(newDate), Qt.DateFormat.ISODate)
         model.enableEditing(True)
         assert model.setData(index, newQDate)
-        assert model.data(index, role=Qt.DisplayRole) == newQDate
-        assert model.data(index, role=Qt.EditRole) == newQDate
-        assert model.data(index, role=Qt.CheckStateRole) == None
+        assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == newQDate
+        assert model.data(index, role=Qt.ItemDataRole.EditRole) == newQDate
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) is None
         assert model.data(index, role=DATAFRAME_ROLE) == newDate
         assert isinstance(
             model.data(index, role=DATAFRAME_ROLE), pandas.Timestamp
@@ -494,20 +513,20 @@ class TestSetData(object):
         assert model.setData(index, newValue)
 
         if precision:
-            modelValue = model.data(index, role=Qt.DisplayRole)
-            # assert abs(decimal.Decimal(str(modelValue)).as_tuple().exponent) == precision
             assert model.data(index) == round(newValue, precision)
-            assert model.data(index, role=Qt.DisplayRole) == round(
+            assert model.data(index, role=Qt.ItemDataRole.DisplayRole) == round(
                 newValue, precision
             )
-            assert model.data(index, role=Qt.EditRole) == round(
+            assert model.data(index, role=Qt.ItemDataRole.EditRole) == round(
                 newValue, precision
             )
         else:
             assert model.data(index) == newValue
-            assert model.data(index, role=Qt.DisplayRole) == newValue
-            assert model.data(index, role=Qt.EditRole) == newValue
-        assert model.data(index, role=Qt.CheckStateRole) == None
+            assert (
+                model.data(index, role=Qt.ItemDataRole.DisplayRole) == newValue
+            )
+            assert model.data(index, role=Qt.ItemDataRole.EditRole) == newValue
+        assert model.data(index, role=Qt.ItemDataRole.CheckStateRole) is None
         assert isinstance(model.data(index, role=DATAFRAME_ROLE), dtype)
         assert model.data(index, role=DATAFRAME_ROLE).dtype == dtype
 
@@ -653,7 +672,7 @@ class TestEditMode(object):
                 defaultVal = _type()
 
             assert model.addDataFrameColumn(desc, _type, defaultVal)
-            for row in xrange(rowCount):
+            for row in range(rowCount):
                 idx = model.index(row, columnCount + index)
                 newVal = idx.data(DATAFRAME_ROLE)
                 assert newVal.toPyObject() == defaultVal
@@ -683,7 +702,7 @@ class TestEditMode(object):
         columnNames = dataFrame.columns.tolist()
         columnNames = [(i, n) for i, n in enumerate(columnNames)]
 
-        for cycle in xrange(1000):
+        for _ in range(1000):
             elements = random.randint(1, len(columnNames))
             names = random.sample(columnNames, elements)
             df = dataFrame.copy()
@@ -737,7 +756,3 @@ class TestEditMode(object):
         assert model.removeDataFrameRows([0, 1, 7, 10])
         assert model.rowCount() < rows
         assert model.rowCount() == 1
-
-
-if __name__ == "__main__":
-    pytest.main()
