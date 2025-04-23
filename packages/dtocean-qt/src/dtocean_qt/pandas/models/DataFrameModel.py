@@ -149,7 +149,7 @@ class DataFrameModel(QAbstractTableModel):
         self.dataChanged.emit()
         self.dataFrameChanged.emit()
 
-    @Slot(int, object)
+    @Slot(int, object)  # type: ignore
     def propagateDtypeChanges(self, column, dtype):
         self.dtypeChanged.emit(column, dtype)
 

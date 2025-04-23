@@ -162,7 +162,3 @@ class TestDataSearch(object):
         ret, valid = datasearch.search()
         assert valid
         assert sum(ret) == 0
-
-
-if __name__ == "__main__":
-    pytest.main()

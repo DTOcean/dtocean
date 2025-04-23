@@ -26,6 +26,23 @@ Issues = "https://github.com/DTOcean/dtocean/issues"
 [tool.poetry]
 packages = [{include = "dtocean_qt", from = "src"}]
 
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-qt = "^4.4.0"
+pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.396"
+deptry = "^0.21.1"
+pandas-stubs = "^2.2.3.241126"
+
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
