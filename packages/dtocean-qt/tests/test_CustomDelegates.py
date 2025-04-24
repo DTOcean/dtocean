@@ -182,9 +182,9 @@ class TestTextDelegate(object):
         model.enableEditing(True)
         tableView.edit(index)
         editor = list(tableView.findChildren(QtWidgets.QLineEdit))[0]
-        qtbot.keyPress(editor, Qt.Key.Key_F)
-        qtbot.keyPress(editor, Qt.Key.Key_Enter)
-        QtWidgets.QApplication.processEvents()
-        #        with qtbot.waitSignal(timeout=100):
-        #            print index.data(QtCore.Qt.DisplayRole).toPyObject()
-        assert index.data(Qt.ItemDataRole.DisplayRole).toPyObject() == "f"
+        qtbot.keyClick(editor, Qt.Key.Key_F)
+        qtbot.keyClick(editor, Qt.Key.Key_Enter)
+
+        # QtWidgets.QApplication.processEvents()
+
+        assert index.data(Qt.ItemDataRole.DisplayRole) == "f"

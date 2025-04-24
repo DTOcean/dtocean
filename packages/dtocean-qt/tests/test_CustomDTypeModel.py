@@ -74,12 +74,12 @@ class TestColumnDType(object):
 
         # datatype column
         index = index.sibling(0, 1)
-        ret = index.data(DTYPE_ROLE).toPyObject()
+        ret = index.data(DTYPE_ROLE)
         assert ret == numpy.dtype(numpy.int64)
 
         # check translation / display text
         assert (
-            index.data().toPyObject()
+            index.data()
             == "integer (64 bit)"
             == SupportedDtypes.description(ret)
         )
@@ -111,7 +111,7 @@ class TestColumnDType(object):
                 continue
             else:
                 model.setData(index, string)
-                assert index.data(DTYPE_ROLE).toPyObject() == expected_type
+                assert index.data(DTYPE_ROLE) == expected_type
 
         assert len(datetime) == 2
         assert not model.setData(index, "bool", Qt.ItemDataRole.DisplayRole)
@@ -180,7 +180,7 @@ class TestColumnDType(object):
 
         with pytest.raises(TypeError) as err:
             model.setDataFrame(["some", "neat", "list", "entries"])
-        assert "not of type pandas.core.frame.DataFrame" in str(err.value)
+        assert "not of type pandas.DataFrame" in str(err.value)
 
 
 class TestDtypeComboDelegate(object):

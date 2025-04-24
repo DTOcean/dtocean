@@ -333,9 +333,7 @@ class DataTableWidget(QtWidgets.QWidget):
 
         if model is not None:
             assert isinstance(model, DataFrameModel)
-            sane_names = [
-                (pos, str(qvar.toPyObject())) for pos, qvar in columnNames
-            ]
+            sane_names = [(pos, str(qvar)) for pos, qvar in columnNames]
             model.removeDataFrameColumns(sane_names)
 
         self.removeColumnButton.setChecked(False)

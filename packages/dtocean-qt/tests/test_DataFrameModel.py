@@ -675,7 +675,7 @@ class TestEditMode(object):
             for row in range(rowCount):
                 idx = model.index(row, columnCount + index)
                 newVal = idx.data(DATAFRAME_ROLE)
-                assert newVal.toPyObject() == defaultVal
+                assert newVal == defaultVal
 
     def test_remove_columns(self, model):
         model.enableEditing(True)
