@@ -278,8 +278,8 @@ class CSVImportDialog(QtWidgets.QDialog):
         self._buttonBox.addButton(
             self._cancelButton, QtWidgets.QDialogButtonBox.ButtonRole.RejectRole
         )
-        self._buttonBox.accepted.connect(self.accepted)
-        self._buttonBox.rejected.connect(self.rejected)
+        self._buttonBox.accepted.connect(self._accepted)
+        self._buttonBox.rejected.connect(self._rejected)
         layout.addWidget(self._buttonBox, 9, 2, 1, 2)
         self._loadButton.setDefault(False)
         self._filenameLineEdit.setFocus()
@@ -457,7 +457,7 @@ class CSVImportDialog(QtWidgets.QDialog):
         self._datatypeTableView.setModel(None)
 
     @Slot()
-    def accepted(self):
+    def _accepted(self):
         """Successfully close the widget and return the loaded model.
 
         This method is also a `SLOT`.
@@ -475,7 +475,7 @@ class CSVImportDialog(QtWidgets.QDialog):
         self.accept()
 
     @Slot()
-    def rejected(self):
+    def _rejected(self):
         """Close the widget and reset its inital state.
 
         This method is also a `SLOT`.
@@ -561,8 +561,8 @@ class CSVExportDialog(QtWidgets.QDialog):
             self._cancelButton, QtWidgets.QDialogButtonBox.ButtonRole.RejectRole
         )
 
-        self._buttonBox.accepted.connect(self.accepted)
-        self._buttonBox.rejected.connect(self.rejected)
+        self._buttonBox.accepted.connect(self._accepted)
+        self._buttonBox.rejected.connect(self._rejected)
 
         layout.addWidget(self._buttonBox, 5, 2, 1, 2)
         self._exportButton.setDefault(False)
@@ -631,7 +631,7 @@ class CSVExportDialog(QtWidgets.QDialog):
         self._statusBar.showMessage("")
 
     @Slot()
-    def accepted(self):
+    def _accepted(self):
         """Successfully close the widget and emit an export signal.
 
         This method is also a `SLOT`.
@@ -650,7 +650,7 @@ class CSVExportDialog(QtWidgets.QDialog):
             self.accept()
 
     @Slot()
-    def rejected(self):
+    def _rejected(self):
         """Close the widget and reset its inital state.
 
         This method is also a `SLOT`.

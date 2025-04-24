@@ -162,7 +162,6 @@ class TestCSVImportWidget(object):
 
         buttons = list(csvwidget.findChildren(QtWidgets.QPushButton))
         for button in buttons:
-            print(button.text())
             qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
 
             def is_invisible():
@@ -198,7 +197,7 @@ class TestCSVImportWidget(object):
 
         csvwidget.load.connect(_assert)
         with qtbot.waitSignal(csvwidget.load):
-            csvwidget.accepted()
+            csvwidget._accepted()
 
 
 class TestCSVExportWidget(object):
@@ -213,7 +212,7 @@ class TestCSVExportWidget(object):
         csvwidget = CSVExportDialog()
         qtbot.addWidget(csvwidget)
         csvwidget.show()
-        labels = list(csvwidget.findChildren(QtWidgets.QLineEdit))
+        labels = list(csvwidget.findChildren(QtWidgets.QLabel))
         assert labels[0].text() == "Output File"
         lineedits = list(csvwidget.findChildren(QtWidgets.QLineEdit))
         qtbot.keyClicks(lineedits[0], csv_file)
