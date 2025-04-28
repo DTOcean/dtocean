@@ -185,10 +185,7 @@ class TestTextDelegate(object):
         tableView.setCurrentIndex(index)
         tableView.edit(index)
         editor = list(tableView.findChildren(QtWidgets.QLineEdit))[0]
-
-        qtbot.keyClick(editor, Qt.Key.Key_F, delay=1)
-        qtbot.wait(500)
-        qtbot.keyClick(editor, Qt.Key.Key_Enter, delay=1)
-        qtbot.wait(500)
+        editor.setText("f")
+        tableView.setCurrentIndex(model.index(0, 1))
 
         assert index.data(Qt.ItemDataRole.DisplayRole) == "f"
