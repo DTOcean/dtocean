@@ -26,6 +26,9 @@ Issues = "https://github.com/DTOcean/dtocean/issues"
 [tool.poetry]
 packages = [{include = "dtocean_qt", from = "src"}]
 
+[tool.poetry.build]
+script = "scripts/build-icons.py"
+
 [tool.poetry.group.test]
 optional = true
 
