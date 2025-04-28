@@ -1,3 +1,4 @@
+import numpy as np
 from pandas import to_datetime
 
 
@@ -10,7 +11,7 @@ def fillNoneValues(column):
     Returns:
         column: Series with filled NaN values.
     """
-    if column.dtype == object:
+    if column.dtype == np.dtype(object):
         column.fillna("", inplace=True)
     return column
 

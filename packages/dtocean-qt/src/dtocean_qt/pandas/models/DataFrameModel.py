@@ -6,6 +6,7 @@
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
+from enum import Enum
 from typing import cast
 
 import numpy
@@ -163,13 +164,16 @@ class DataFrameModel(QAbstractTableModel):
         """setter to _timestampFormat. Formatting string for conversion of timestamps to QtCore.QDateTime
 
         Raises:
-            AssertionError: if timestampFormat is not of type unicode.
+            AssertionError: if timestampFormat is not str.
 
         Args:
-            timestampFormat (unicode): assign timestampFormat to _timestampFormat.
+            timestampFormat (str): assign timestampFormat to _timestampFormat.
                 Formatting string for conversion of timestamps to QtCore.QDateTime. Used in data method.
 
         """
+        if not isinstance(timestampFormat, str):
+            raise TypeError("timestampFormat must be a string")
+
         self._timestampFormat = timestampFormat
 
     def headerData(
@@ -242,7 +246,7 @@ class DataFrameModel(QAbstractTableModel):
 
         def convertValue(row, col, columnDtype):
             value = None
-            if columnDtype is object:
+            if columnDtype is numpy.dtype(object):
                 value = self._dataFrame.iloc[row, col]
             elif columnDtype in self._floatDtypes:
                 to_convert = cast(float, self._dataFrame.iloc[row, col])
@@ -274,7 +278,7 @@ class DataFrameModel(QAbstractTableModel):
         rowi = index.row()
         coli = index.column()
 
-        columnDtype = self._dataFrame.dtypes[coli]
+        columnDtype = self._dataFrame.dtypes.iloc[coli]
 
         if role == Qt.ItemDataRole.DisplayRole:
             # return the value if you wanne show True/False as text
@@ -335,7 +339,7 @@ class DataFrameModel(QAbstractTableModel):
         if not self.editable or (self.freeze_first and index.column() == 0):
             return flags
 
-        columnDtype = self._dataFrame.dtypes[index.column()]
+        columnDtype = self._dataFrame.dtypes.iloc[index.column()]
         if columnDtype == numpy.bool_:
             flags |= Qt.ItemFlag.ItemIsUserCheckable
         else:
@@ -344,7 +348,12 @@ class DataFrameModel(QAbstractTableModel):
 
         return flags
 
-    def setData(self, index, value, role=Qt.ItemDataRole.DisplayRole):
+    def setData(
+        self,
+        index: QModelIndex,
+        value,
+        role: Qt.ItemDataRole = Qt.ItemDataRole.DisplayRole,
+    ):
         """Set the value to the index position depending on Qt::ItemDataRole and data type of the column
 
         Args:
@@ -368,9 +377,12 @@ class DataFrameModel(QAbstractTableModel):
 
             row = self._dataFrame.index[index.row()]
             col = self._dataFrame.columns[index.column()]
-            columnDtype = self._dataFrame.dtypes[index.column()]
+            columnDtype = self._dataFrame.dtypes.iloc[index.column()]
 
-            if columnDtype in self._intDtypes:
+            if columnDtype is numpy.dtype(object):
+                pass
+
+            elif columnDtype in self._intDtypes:
                 dtypeInfo = numpy.iinfo(columnDtype)  # type: ignore
                 if value < dtypeInfo.min:
                     value = dtypeInfo.min
@@ -381,7 +393,8 @@ class DataFrameModel(QAbstractTableModel):
                 value = numpy.float64(value).astype(columnDtype)  # type: ignore
 
             elif columnDtype in self._boolDtypes:
-                value = numpy.bool_(value)
+                if isinstance(value, Enum):
+                    value = numpy.bool_(value.value)
 
             elif columnDtype in self._dateDtypes:
                 # convert the given value to a compatible datetime object.
@@ -488,7 +501,9 @@ class DataFrameModel(QAbstractTableModel):
         self.sortingAboutToStart.emit()
         column = self._dataFrame.columns[columnId]
         self._dataFrame.sort_values(
-            column, ascending=not bool(order), inplace=True
+            column,
+            ascending=not bool(order.value),
+            inplace=True,
         )
         self._dataFrame.reset_index(drop=True, inplace=True)
         self.layoutChanged.emit()

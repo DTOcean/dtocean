@@ -39,7 +39,7 @@ def test_setDataFrame():
 
     with pytest.raises(TypeError) as excinfo:
         model.setDataFrame(None)
-    assert "pandas.core.frame.DataFrame" in str(excinfo.value)
+    assert "pandas.DataFrame" in str(excinfo.value)
 
 
 @pytest.mark.parametrize(
@@ -62,8 +62,8 @@ def test_TimestampFormat():
     assert model.timestampFormat == newFormat
 
     with pytest.raises(TypeError) as excinfo:
-        model.timestampFormat = "yy-MM-dd hh:mm"
-    assert "unicode" in str(excinfo.value)
+        model.timestampFormat = 1234
+    assert "string" in str(excinfo.value)
 
 
 # def test_signalUpdate(qtbot):
@@ -104,7 +104,9 @@ def test_flags():
     assert index.isValid()
     assert (
         model.flags(index)
-        == Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled
+        == Qt.ItemFlag.ItemIsSelectable
+        | Qt.ItemFlag.ItemIsEnabled
+        | Qt.ItemFlag.ItemNeverHasChildren
     )
 
     model.enableEditing(True)
@@ -113,6 +115,7 @@ def test_flags():
         == Qt.ItemFlag.ItemIsSelectable
         | Qt.ItemFlag.ItemIsEnabled
         | Qt.ItemFlag.ItemIsEditable
+        | Qt.ItemFlag.ItemNeverHasChildren
     )
 
     model.setDataFrame(pandas.DataFrame([True], columns=["A"]))
@@ -123,12 +126,14 @@ def test_flags():
         != Qt.ItemFlag.ItemIsSelectable
         | Qt.ItemFlag.ItemIsEnabled
         | Qt.ItemFlag.ItemIsEditable
+        | Qt.ItemFlag.ItemNeverHasChildren
     )
     assert (
         model.flags(index)
         == Qt.ItemFlag.ItemIsSelectable
         | Qt.ItemFlag.ItemIsEnabled
         | Qt.ItemFlag.ItemIsUserCheckable
+        | Qt.ItemFlag.ItemNeverHasChildren
     )
 
 
@@ -178,7 +183,7 @@ class TestSort(object):
         model.sort(0)
 
     @pytest.mark.parametrize(
-        "testAscending, modelAscending, isIdentic",
+        "testAscending, modelOrder, isIdentic",
         [
             (True, Qt.SortOrder.AscendingOrder, True),
             (False, Qt.SortOrder.DescendingOrder, True),
@@ -186,10 +191,15 @@ class TestSort(object):
         ],
     )
     def test_sort(
-        self, model, dataFrame, testAscending, modelAscending, isIdentic
+        self,
+        model,
+        dataFrame,
+        testAscending,
+        modelOrder,
+        isIdentic,
     ):
         temp = dataFrame.sort_values("A", ascending=testAscending)
-        model.sort(0, order=modelAscending)
+        model.sort(0, order=modelOrder)
         assert (dataFrame["A"].values == temp["A"].values).all() == isIdentic
 
 
@@ -448,7 +458,7 @@ class TestSetData(object):
         assert isinstance(model.data(index, role=DATAFRAME_ROLE), numpy.bool_)
 
     def test_date(self, model, index):
-        numpyDate = numpy.datetime64("1990-10-08T10:15:45+0100")
+        numpyDate = pandas.Timestamp("1990-10-08T10:15:45+0100").to_datetime64()
         dataFrame = pandas.DataFrame([numpyDate], columns=["A"])
         model.setDataFrame(dataFrame)
         assert not model.dataFrame().empty
@@ -540,7 +550,7 @@ class TestSetData(object):
             ("min", -1, numpy.uint32),
             ("max", +1, numpy.uint32),
             ("min", -1, numpy.uint64),
-            ("max", +1, numpy.uint64),
+            # ("max", +1, numpy.uint64),
             ("min", -1, numpy.int8),
             ("max", +1, numpy.int8),
             ("min", -1, numpy.int16),

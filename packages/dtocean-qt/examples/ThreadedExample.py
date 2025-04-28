@@ -1,11 +1,9 @@
 import sys
 import time
-from dtocean_qt.pandas.compat import QtCore, QtGui, Qt, Slot, Signal
-import imgs
 
-from dtocean_qt.pandas.views.OverlayProgressView import OverlayProgressWidget
-
+from dtocean_qt.pandas.compat import QtGui, Slot
 from dtocean_qt.pandas.models.ProgressThread import ProgressWorker, createThread
+from dtocean_qt.pandas.views.OverlayProgressView import OverlayProgressWidget
 
 
 class ExampleWorker(ProgressWorker):
@@ -32,26 +30,25 @@ class Example(QtGui.QWidget):
 
         self.initUI()
 
-
     def initUI(self):
         self.setGeometry(100, 100, 300, 300)
 
         self.vlayout = QtGui.QVBoxLayout(self)
 
         self.imgContainer = QtGui.QLabel(self)
-        img = QtGui.QPixmap(':/europe.png')
+        img = QtGui.QPixmap(":/europe.png")
         self.imgContainer.setPixmap(img)
         size = img.size()
         self.imgContainer.resize(size.width(), self.height())
 
         self.vlayout.addWidget(self.imgContainer)
-        self.vlayout.addWidget(QtGui.QLabel('FOOO',self))
+        self.vlayout.addWidget(QtGui.QLabel("FOOO", self))
 
         threads = []
 
-        worker1 = ExampleWorker('foo', 10)
-        worker2 = ExampleWorker('bar', 13)
-        worker3 = ExampleWorker('spam', 25)
+        worker1 = ExampleWorker("foo", 10)
+        worker2 = ExampleWorker("bar", 13)
+        worker3 = ExampleWorker("spam", 25)
 
         workers = [worker1, worker2, worker3]
         for worker in workers:
@@ -66,11 +63,10 @@ class Example(QtGui.QWidget):
 
     @Slot()
     def debugPrint(self):
-        print 'THREAD %s ended' % (self.sender().name, )
+        print("THREAD %s ended" % (self.sender().name,))
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     widget = Example()
     widget.show()
