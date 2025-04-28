@@ -67,5 +67,5 @@ QT_DEBUG_PLUGINS = 1
 line-length = 80
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core>=2.0.0,<3.0.0", "pyside6"]
 build-backend = "poetry.core.masonry.api"
