@@ -538,6 +538,8 @@ develop = true
 [package.dependencies]
 chardet = ">=5.2.0,<6.0.0"
 easygui = ">=0.98.3,<0.99.0"
+numpy = "<2"
+pandas = ">=2.2.3,<3.0.0"
 pyside6 = ">=6.9.0,<7.0.0"
 
 [package.source]

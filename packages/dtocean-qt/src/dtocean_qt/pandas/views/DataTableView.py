@@ -7,10 +7,10 @@ from PySide6.QtCore import (
     Slot,
 )
 
-from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
-from dtocean_qt.pandas.models.mime import MimeData, PandasCellPayload
-from dtocean_qt.pandas.views.CustomDelegates import createDelegate
-from dtocean_qt.pandas.views.EditDialogs import (
+from ..models.DataFrameModel import DataFrameModel
+from ..models.mime import MimeData, PandasCellPayload
+from ..views.CustomDelegates import createDelegate
+from ..views.EditDialogs import (
     AddAttributesDialog,
     RemoveAttributesDialog,
 )

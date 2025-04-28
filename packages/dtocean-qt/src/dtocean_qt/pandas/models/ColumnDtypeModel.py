@@ -8,7 +8,7 @@ import numpy as np
 import pandas
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, Signal
 
-from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
+from ..models.SupportedDtypes import SupportedDtypes
 
 DTYPE_ROLE = Qt.ItemDataRole.UserRole + 1
 DTYPE_CHANGE_ROLE = Qt.ItemDataRole.UserRole + 3
