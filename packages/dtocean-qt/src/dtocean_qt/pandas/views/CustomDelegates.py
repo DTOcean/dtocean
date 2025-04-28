@@ -36,7 +36,7 @@ def createDelegate(dtype, column, view):
             decimals=model._float_precisions[str(dtype)],
             parent=view,
         )
-    elif dtype == object:
+    elif dtype is numpy.dtype(object):
         delegate = TextDelegate(parent=view)
     else:
         delegate = None

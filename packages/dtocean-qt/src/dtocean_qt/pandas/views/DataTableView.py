@@ -210,9 +210,9 @@ class DataTableWidget(QtWidgets.QWidget):
                 button.setChecked(False)
 
         model = self.tableView.model()
-        assert isinstance(model, DataFrameModel)
 
         if model is not None:
+            assert isinstance(model, DataFrameModel)
             model.enableEditing(enabled)
 
     @Slot()

@@ -180,11 +180,15 @@ class TestTextDelegate(object):
 
         assert not model.editable
         model.enableEditing(True)
+        assert model.editable
+
+        tableView.setCurrentIndex(index)
         tableView.edit(index)
         editor = list(tableView.findChildren(QtWidgets.QLineEdit))[0]
-        qtbot.keyClick(editor, Qt.Key.Key_F)
-        qtbot.keyClick(editor, Qt.Key.Key_Enter)
 
-        # QtWidgets.QApplication.processEvents()
+        qtbot.keyClick(editor, Qt.Key.Key_F, delay=1)
+        qtbot.wait(500)
+        qtbot.keyClick(editor, Qt.Key.Key_Enter, delay=1)
+        qtbot.wait(500)
 
         assert index.data(Qt.ItemDataRole.DisplayRole) == "f"

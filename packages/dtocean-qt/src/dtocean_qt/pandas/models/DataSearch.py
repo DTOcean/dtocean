@@ -39,7 +39,6 @@ class DataSearch(object):
         string = "DataSearch({}): {} ({})".format(
             hex(id(self)), self.name, self._filterString
         )
-        string = string.encode("utf-8")
         return string
 
     def dataFrame(self):

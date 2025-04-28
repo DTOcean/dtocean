@@ -33,6 +33,7 @@ optional = true
 pytest = "^8.3.4"
 pytest-qt = "^4.4.0"
 pytest-cov = "^6.0.0"
+pytest-env = "^1.1.5"
 
 [tool.poetry.group.audit]
 optional = true
@@ -50,6 +51,14 @@ version-pinning-rule = '=='
 
 [tool.pyright]
 typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    'ignore:Failed to disconnect *:RuntimeWarning',
+]
+
+[tool.pytest_env]
+QT_DEBUG_PLUGINS = 1
 
 [tool.ruff]
 line-length = 80
