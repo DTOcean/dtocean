@@ -21,9 +21,9 @@ from PySide6.QtCore import (
     Slot,
 )
 
-from dtocean_qt.pandas.models.ColumnDtypeModel import ColumnDtypeModel
-from dtocean_qt.pandas.models.DataSearch import DataSearch
-from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
+from ..models.ColumnDtypeModel import ColumnDtypeModel
+from ..models.DataSearch import DataSearch
+from ..models.SupportedDtypes import SupportedDtypes
 
 DATAFRAME_ROLE = Qt.ItemDataRole.UserRole + 2
 

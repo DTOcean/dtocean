@@ -2,7 +2,7 @@ import pickle
 
 from PySide6.QtCore import QMimeData
 
-from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
+from ..models.SupportedDtypes import SupportedDtypes
 
 PandasCellMimeType = (
     "application/pandas-cell"  # comparable to a QModelIndex for DataFrames

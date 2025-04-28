@@ -8,9 +8,9 @@ from PySide6.QtCore import (
     Slot,
 )
 
-from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
-from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
-from dtocean_qt.pandas.views.BigIntSpinbox import BigIntSpinbox
+from ..models.DataFrameModel import DataFrameModel
+from ..models.SupportedDtypes import SupportedDtypes
+from ..views.BigIntSpinbox import BigIntSpinbox
 
 
 def createDelegate(dtype, column, view):

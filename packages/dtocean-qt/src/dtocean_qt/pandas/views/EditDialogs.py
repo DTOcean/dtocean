@@ -9,7 +9,7 @@ from PySide6.QtCore import (
     Slot,
 )
 
-from dtocean_qt.pandas.models.SupportedDtypes import SupportedDtypes
+from ..models.SupportedDtypes import SupportedDtypes
 
 
 class DefaultValueValidator(QtGui.QValidator):

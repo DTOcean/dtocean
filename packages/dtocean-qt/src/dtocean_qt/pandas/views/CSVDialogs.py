@@ -11,11 +11,11 @@ from PySide6.QtCore import (
     Slot,
 )
 
-from dtocean_qt.pandas.encoding import detect_encoding
-from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
-from dtocean_qt.pandas.utils import convertTimestamps, fillNoneValues
-from dtocean_qt.pandas.views._ui import icons_rc  # noqa: F401
-from dtocean_qt.pandas.views.CustomDelegates import DtypeComboDelegate
+from ..encoding import detect_encoding
+from ..models.DataFrameModel import DataFrameModel
+from ..utils import convertTimestamps, fillNoneValues
+from ..views._ui import icons_rc  # noqa: F401
+from ..views.CustomDelegates import DtypeComboDelegate
 
 
 class DelimiterValidator(QtGui.QRegularExpressionValidator):
