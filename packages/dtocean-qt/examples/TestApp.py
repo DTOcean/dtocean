@@ -1,29 +1,33 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from dtocean_qt.pandas.excepthook import excepthook
-sys.excepthook = excepthook
-
-from dtocean_qt.pandas.compat import QtCore, QtGui, Qt, Slot, Signal
-
 import pandas
-import numpy
-
-from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
-from dtocean_qt.pandas.models.DataSearch import DataSearch
-from dtocean_qt.pandas.views.CSVDialogs import CSVImportDialog, CSVExportDialog
-from dtocean_qt.pandas.views._ui import icons_rc
-from dtocean_qt.pandas.views.DataTableView import DataTableWidget
-from dtocean_qt.pandas.views.CustomDelegates import DtypeComboDelegate
-from dtocean_qt.pandas.models.mime import PandasCellMimeType, PandasCellPayload
+from PySide6 import QtGui, QtWidgets
+from PySide6.QtCore import (
+    QAbstractItemModel,
+    QMimeData,
+    Signal,
+    Slot,
+)
 from util import getCsvData, getRandomData
 
-class DropLineEdit(QtGui.QLineEdit):
-    
+from dtocean_qt.pandas.excepthook import excepthook
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.models.DataSearch import DataSearch
+from dtocean_qt.pandas.models.mime import PandasCellMimeType, PandasCellPayload
+from dtocean_qt.pandas.views._ui import icons_rc  # noqa: F401
+from dtocean_qt.pandas.views.CSVDialogs import CSVExportDialog, CSVImportDialog
+from dtocean_qt.pandas.views.CustomDelegates import DtypeComboDelegate
+from dtocean_qt.pandas.views.DataTableView import DataTableWidget
+
+sys.excepthook = excepthook
+
+
+class DropLineEdit(QtWidgets.QLineEdit):
     def __init__(self, text, parent=None):
         super(DropLineEdit, self).__init__(text, parent)
         self.setAcceptDrops(True)
-        
+
     def dragEnterEvent(self, event):
         """recieve a drag event and check if we want to accept or reject
 
@@ -46,16 +50,16 @@ class DropLineEdit(QtGui.QLineEdit):
         """
         super(DropLineEdit, self).dropEvent(event)
         mimeDataPayload = event.mimeData().data()
-        self.setText(u"dropped column: {0}".format(mimeDataPayload.column))
-        
-class ComplexDropWidget(QtGui.QLineEdit):
-    
-    dropRecieved = Signal(QtCore.QMimeData)
+        self.setText("dropped column: {0}".format(mimeDataPayload.column))
+
+
+class ComplexDropWidget(QtWidgets.QLineEdit):
+    dropRecieved = Signal(QMimeData)
 
     def __init__(self, parent=None):
         super(ComplexDropWidget, self).__init__(parent)
         self.setAcceptDrops(True)
-        
+
     def dragEnterEvent(self, event):
         """recieve a drag event and check if we want to accept or reject
 
@@ -69,7 +73,7 @@ class ComplexDropWidget(QtGui.QLineEdit):
                 event.ignore()
         else:
             event.ignore()
-            
+
     def dropEvent(self, event):
         """process the dragged data
 
@@ -77,9 +81,9 @@ class ComplexDropWidget(QtGui.QLineEdit):
             event (QDragEnterEvent)
         """
         self.dropRecieved.emit(event.mimeData())
-    
-class TestWidget(QtGui.QWidget):
 
+
+class TestWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(TestWidget, self).__init__(parent)
         self.resize(1680, 756)
@@ -93,91 +97,99 @@ class TestWidget(QtGui.QWidget):
         # self.dataTableView.setSortingEnabled(True)
         # self.dataTableView.setAlternatingRowColors(True)
 
-        self.dataListView = QtGui.QListView(self)
+        self.dataListView = QtWidgets.QListView(self)
         self.dataListView.setAlternatingRowColors(True)
 
-        self.dataComboBox = QtGui.QComboBox(self)
+        self.dataComboBox = QtWidgets.QComboBox(self)
 
         # make combobox to choose the model column for dataComboBox and dataListView
-        self.chooseColumnComboBox = QtGui.QComboBox(self)
+        self.chooseColumnComboBox = QtWidgets.QComboBox(self)
 
-        self.buttonCsvData = QtGui.QPushButton("load csv data")
-        self.buttonRandomData = QtGui.QPushButton("load random data")
+        self.buttonCsvData = QtWidgets.QPushButton("load csv data")
+        self.buttonRandomData = QtWidgets.QPushButton("load random data")
         importDialog = CSVImportDialog(self)
         importDialog.load.connect(self.updateModel)
         self.buttonCsvData.clicked.connect(lambda: importDialog.show())
-        self.buttonRandomData.clicked.connect(lambda: self.setDataFrame( getRandomData(rows=100, columns=100) ))
+        self.buttonRandomData.clicked.connect(
+            lambda: self.setDataFrame(getRandomData(rows=100, columns=100))
+        )
 
         self.exportDialog = CSVExportDialog(self)
 
-        self.buttonCSVExport = QtGui.QPushButton("export to csv")
+        self.buttonCSVExport = QtWidgets.QPushButton("export to csv")
         self.buttonCSVExport.clicked.connect(self._exportModel)
-        self.buttonLayout = QtGui.QHBoxLayout()
+        self.buttonLayout = QtWidgets.QHBoxLayout()
         self.buttonLayout.addWidget(self.buttonCsvData)
         self.buttonLayout.addWidget(self.buttonCSVExport)
         self.buttonLayout.addWidget(self.buttonRandomData)
 
-        self.mainLayout = QtGui.QVBoxLayout()
+        self.mainLayout = QtWidgets.QVBoxLayout()
         self.setLayout(self.mainLayout)
         self.mainLayout.addLayout(self.buttonLayout)
 
         self.mainLayout.addWidget(self.dataTableView)
 
-        self.spinbox = QtGui.QSpinBox()
+        self.spinbox = QtWidgets.QSpinBox()
         self.mainLayout.addWidget(self.spinbox)
-        self.spinbox.setMaximum(99999999999)
-        self.spinbox.setValue(99999999999)
+        self.spinbox.setMaximum(999999999)
+        self.spinbox.setValue(999999999)
 
-        self.rightLayout = QtGui.QVBoxLayout()
-        self.chooseColumLayout = QtGui.QHBoxLayout()
+        self.rightLayout = QtWidgets.QVBoxLayout()
+        self.chooseColumLayout = QtWidgets.QHBoxLayout()
         self.mainLayout.addLayout(self.rightLayout)
         self.rightLayout.addLayout(self.chooseColumLayout)
-        self.chooseColumLayout.addWidget(QtGui.QLabel("Choose column:"))
+        self.chooseColumLayout.addWidget(QtWidgets.QLabel("Choose column:"))
         self.chooseColumLayout.addWidget(self.chooseColumnComboBox)
         self.rightLayout.addWidget(self.dataListView)
         self.rightLayout.addWidget(self.dataComboBox)
 
-        self.tableViewColumnDtypes = QtGui.QTableView(self)
-        self.rightLayout.addWidget(QtGui.QLabel('dtypes'))
+        self.tableViewColumnDtypes = QtWidgets.QTableView(self)
+        self.rightLayout.addWidget(QtWidgets.QLabel("dtypes"))
         self.rightLayout.addWidget(self.tableViewColumnDtypes)
-        self.buttonGoToColumn = QtGui.QPushButton("go to column")
+        self.buttonGoToColumn = QtWidgets.QPushButton("go to column")
         self.rightLayout.addWidget(self.buttonGoToColumn)
         self.buttonGoToColumn.clicked.connect(self.goToColumn)
 
-        self.buttonSetFilter = QtGui.QPushButton("set filter")
+        self.buttonSetFilter = QtWidgets.QPushButton("set filter")
         self.rightLayout.addWidget(self.buttonSetFilter)
         self.buttonSetFilter.clicked.connect(self.setFilter)
-        self.buttonClearFilter = QtGui.QPushButton("clear filter")
+        self.buttonClearFilter = QtWidgets.QPushButton("clear filter")
         self.rightLayout.addWidget(self.buttonClearFilter)
         self.buttonClearFilter.clicked.connect(self.clearFilter)
-        self.lineEditFilterCondition = QtGui.QLineEdit("freeSearch('am')")
+        self.lineEditFilterCondition = QtWidgets.QLineEdit("freeSearch('am')")
         self.rightLayout.addWidget(self.lineEditFilterCondition)
 
-        self.chooseColumnComboBox.currentIndexChanged.connect(self.setModelColumn)
+        self.chooseColumnComboBox.currentIndexChanged.connect(
+            self.setModelColumn
+        )
 
         self.dataListView.mouseReleaseEvent = self.mouseReleaseEvent
-        
+
         self.dropLineEdit = DropLineEdit("drop data from table here", self)
         self.rightLayout.addWidget(self.dropLineEdit)
-        
+
         self.dropWidget = ComplexDropWidget(self)
         self.dropWidget.dropRecieved.connect(self.processDataDrops)
         self.rightLayout.addWidget(self.dropWidget)
-        
-    @Slot('QMimeData')
+
+    @Slot(QMimeData)
     def processDataDrops(self, mimeData):
         """if you have more complicated stuff to do and you want to match some models, might be possible like that"""
         mimeDataPayload = mimeData.data()
         if isinstance(mimeDataPayload, PandasCellPayload):
             if self.dataModel is not None:
                 if hex(id(self.dataModel)) == mimeDataPayload.parentId:
-                    self.dropWidget.setText("complex stuff done after drop event. {0}".format(mimeDataPayload.column))
+                    self.dropWidget.setText(
+                        "complex stuff done after drop event. {0}".format(
+                            mimeDataPayload.column
+                        )
+                    )
 
     def setDataFrame(self, dataFrame):
         self.df = dataFrame
         dataModel = DataFrameModel()
         dataModel.setDataFrame(self.df)
-        
+
         self.dataModel = dataModel
 
         self.dataListView.setModel(dataModel)
@@ -194,7 +206,9 @@ class TestWidget(QtGui.QWidget):
 
         self.tableViewColumnDtypes.setModel(dataModel.columnDtypeModel())
         self.tableViewColumnDtypes.horizontalHeader().setDefaultSectionSize(200)
-        self.tableViewColumnDtypes.setItemDelegateForColumn(1, DtypeComboDelegate(self.tableViewColumnDtypes))
+        self.tableViewColumnDtypes.setItemDelegateForColumn(
+            1, DtypeComboDelegate(self.tableViewColumnDtypes)
+        )
         dataModel.changingDtypeFailed.connect(self.changeColumnValue)
 
     @Slot()
@@ -203,7 +217,7 @@ class TestWidget(QtGui.QWidget):
         self.exportDialog.setExportModel(model)
         self.exportDialog.show()
 
-    @Slot('QAbstractItemModel')
+    @Slot(QAbstractItemModel)
     def updateModel(self, model):
         self.dataModel = model
         self.dataListView.setModel(model)
@@ -217,32 +231,36 @@ class TestWidget(QtGui.QWidget):
         self.dataComboBox.setModelColumn(index)
 
     def goToColumn(self):
-        print "go to column 7"
+        print("go to column 7")
         index = self.dataTableView.view().model().index(7, 0)
         self.dataTableView.view().setCurrentIndex(index)
 
     def changeColumnValue(self, columnName, index, dtype):
-        print "failed to change", columnName, "to", dtype
-        print index.data(), index.isValid()
+        print("failed to change", columnName, "to", dtype)
+        print(index.data(), index.isValid())
         self.dataTableView.view().setCurrentIndex(index)
 
     def setFilter(self):
-        #filterIndex = eval(self.lineEditFilterCondition.text())
+        # filterIndex = eval(self.lineEditFilterCondition.text())
         search = DataSearch("Test", self.lineEditFilterCondition.text())
-        self.dataTableView.view().model().setFilter(search)
-        #raise NotImplementedError
+        model = self.dataTableView.view().model()
+        assert isinstance(model, DataFrameModel)
+        model.setFilter(search)
+        # raise NotImplementedError
 
     def clearFilter(self):
-        self.dataTableView.view().model().clearFilter()
+        model = self.dataTableView.view().model()
+        assert isinstance(model, DataFrameModel)
+        model.clearFilter()
 
-if __name__ == '__main__':
 
-    app = QtGui.QApplication(sys.argv)
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
     widget = TestWidget()
     widget.show()
 
-    widget.setDataFrame( getCsvData() )
+    widget.setDataFrame(getCsvData())
 
-    #widget.setDataFrame( getRandomData(2, 2) )
+    # widget.setDataFrame( getRandomData(2, 2) )
 
-    app.exec_()
+    app.exec()
