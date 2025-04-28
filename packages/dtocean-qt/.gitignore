@@ -106,3 +106,6 @@ ENV/
 
 # ruff
 .ruff_cache/
+
+# Generated RC icon file
+src/dtocean_qt/pandas/views/_ui/icons_rc.py
