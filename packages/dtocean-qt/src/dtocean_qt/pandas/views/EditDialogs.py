@@ -17,9 +17,9 @@ class DefaultValueValidator(QtGui.QValidator):
         super(DefaultValueValidator, self).__init__(parent)
         self.dtype = None
 
-        self.intPattern = re.compile("[-+]?\d+")
-        self.uintPattern = re.compile("\d+")
-        self.floatPattern = re.compile("[+-]? *(?:\d+(?:\.\d*)?|\.\d+)")
+        self.intPattern = re.compile(r"[-+]?\d+")
+        self.uintPattern = re.compile(r"\d+")
+        self.floatPattern = re.compile(r"[+-]? *(?:\d+(?:\.\d*)?|\.\d+)")
         self.boolPattern = re.compile("(1|t|0|f){1}$")
 
     @Slot(numpy.dtype)  # type: ignore

@@ -55,7 +55,7 @@ class DragTable(QtWidgets.QTableView):
         pixmap = QtGui.QPixmap(":/icons/insert-table.png")
         drag.setHotSpot(QPoint(pixmap.width() // 3, pixmap.height() // 3))
         drag.setPixmap(pixmap)
-        result = drag.exec(Qt.DropAction.MoveAction)
+        drag.exec(Qt.DropAction.MoveAction)
 
     def mouseMoveEvent(self, event):
         super(DragTable, self).mouseMoveEvent(event)

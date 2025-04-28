@@ -23,7 +23,7 @@ class DelimiterValidator(QtGui.QRegularExpressionValidator):
 
     The validator checks, if the input has a length of 1.
     The input may contain any non-whitespace-character
-    as denoted by the RegEx term `\S`.
+    as denoted by the RegEx term `\\S`.
 
     """
 
