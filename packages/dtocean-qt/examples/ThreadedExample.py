@@ -1,7 +1,9 @@
 import sys
 import time
 
-from dtocean_qt.pandas.compat import QtGui, Slot
+from PySide6 import QtGui, QtWidgets
+from PySide6.QtCore import Slot
+
 from dtocean_qt.pandas.models.ProgressThread import ProgressWorker, createThread
 from dtocean_qt.pandas.views.OverlayProgressView import OverlayProgressWidget
 
@@ -24,7 +26,7 @@ class ExampleWorker(ProgressWorker):
             self.progressChanged.emit(count)
 
 
-class Example(QtGui.QWidget):
+class Example(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(Example, self).__init__(parent)
 
@@ -33,16 +35,16 @@ class Example(QtGui.QWidget):
     def initUI(self):
         self.setGeometry(100, 100, 300, 300)
 
-        self.vlayout = QtGui.QVBoxLayout(self)
+        self.vlayout = QtWidgets.QVBoxLayout(self)
 
-        self.imgContainer = QtGui.QLabel(self)
+        self.imgContainer = QtWidgets.QLabel(self)
         img = QtGui.QPixmap(":/europe.png")
         self.imgContainer.setPixmap(img)
         size = img.size()
         self.imgContainer.resize(size.width(), self.height())
 
         self.vlayout.addWidget(self.imgContainer)
-        self.vlayout.addWidget(QtGui.QLabel("FOOO", self))
+        self.vlayout.addWidget(QtWidgets.QLabel("FOOO", self))
 
         threads = []
 
@@ -63,11 +65,13 @@ class Example(QtGui.QWidget):
 
     @Slot()
     def debugPrint(self):
-        print("THREAD %s ended" % (self.sender().name,))
+        sender = self.sender()
+        assert isinstance(sender, ProgressWorker)
+        print("THREAD %s ended" % (sender.name,))
 
 
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     widget = Example()
     widget.show()
-    app.exec_()
+    app.exec()
