@@ -10,6 +10,16 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
+dtocean-core = {path = "../dtocean-core", develop = true}
+polite-config = {path = "../polite-config", develop = true}
+matplotlib = ">=3.8.4,<3.9"
+numpy = ">=1.26.4,<2.0.0"
+pandas = ">=2.2.3,<3.0.0"
+
+[tool.poetry-monoranger-plugin]
+enabled = true
+monorepo-root = "../../"
+version-pinning-rule = '=='
 
 [tool.pyright]
 typeCheckingMode = "basic"
