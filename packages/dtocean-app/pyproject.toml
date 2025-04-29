@@ -4,9 +4,18 @@ version = "2.1.1"
 description = "Main graphical application for the DTOcean tools"
 authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
 readme = "README.md"
+packages = [
+  {include = "dtocean_app", from="src"}
+  ]
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = ">=3.12,<3.13"
+
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
 
 [build-system]
 requires = ["poetry-core"]

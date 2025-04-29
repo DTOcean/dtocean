@@ -1,0 +1,31 @@
+<RCC>
+  <qresource>
+    <file>icons/folder_open.png</file>
+    <file>icons/Information_icon.svg</file>
+    <file>icons/media-floppy.svg</file>
+    <file>icons/document-new.svg</file>
+    <file>icons/document-open.svg</file>
+    <file>icons/player_calc.png</file>
+    <file>icons/colors-window-close.svg</file>
+    <file>icons/db_select.png</file>
+    <file>icons/maps.svg</file>
+    <file>icons/player_end.png</file>
+    <file>icons/data.svg</file>
+    <file>icons/files.svg</file>
+    <file>icons/ruler.svg</file>
+    <file>icons/plots.png</file>
+    <file>icons/hardware.png</file>
+    <file>icons/help_index.png</file>
+    <file>icons/pipe.png</file>
+    <file>icons/player_play.png</file>
+    <file>icons/editcopy.png</file>
+    <file>icons/editpaste.png</file>
+    <file>icons/kwin4.png</file>
+    <file>icons/redo-128.png</file>
+    <file>icons/undo-128.png</file>
+    <file>icons/calc.png</file>
+    <file>icons/db_update.png</file>
+    <file>icons/button_cancel-128.png</file>
+    <file>icons/turbine.ico</file>
+  </qresource>
+</RCC>
