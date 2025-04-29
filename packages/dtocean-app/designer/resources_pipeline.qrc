@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icons/200px-Blue_Light_Icon.png</file>
+    <file>icons/button_cancel-128.png</file>
+    <file>icons/120px-Green_Light_Icon.png</file>
+    <file>icons/120px-Red_Light_Icon.png</file>
+    <file>icons/circle-128.png</file>
+    <file>icons/diamond-rounded-128.png</file>
+    <file>icons/square-rounded-128.png</file>
+  </qresource>
+</RCC>
