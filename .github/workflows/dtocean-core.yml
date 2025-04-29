@@ -31,6 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          lfs: true
           persist-credentials: false
       - name: Install system dependencies (GUI)
         run: sudo apt update && sudo apt install -y libegl1-mesa-dev
@@ -82,6 +83,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          lfs: true
           persist-credentials: false
       - name: Install dtocean-core
         uses: ./.github/actions/poetry-install
@@ -104,6 +106,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          lfs: true
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
