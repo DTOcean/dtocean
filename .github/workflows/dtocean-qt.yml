@@ -44,6 +44,7 @@ jobs:
           poetry install --with test
       - name: Run tests
         run: |
+          poetry run pytest --doctest-glob=README.md README.md
           poetry run pytest --cov src --cov-report=xml tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
