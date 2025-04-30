@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from typing import TYPE_CHECKING
+
 import pandas as pd
 from dtocean_core.pipeline import Tree
 from dtocean_plugins.strategies.multi import MultiSensitivity
@@ -26,7 +28,7 @@ from ..utils.display import is_high_dpi
 from ..widgets.extendedcombobox import ExtendedComboBox
 from . import GUIStrategy, PyQtABCMeta, StrategyWidget
 
-if is_high_dpi():
+if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.multisensitivity import Ui_MultiSensitivityWidget
 else:
     from ..designer.low.multisensitivity import Ui_MultiSensitivityWidget
@@ -61,7 +63,7 @@ class GUIMultiSensitivity(GUIStrategy, MultiSensitivity):
 
 class MultiSensitivityWidget(
     QtWidgets.QWidget,
-    Ui_MultiSensitivityWidget,  # type: ignore
+    Ui_MultiSensitivityWidget,
     StrategyWidget,
     metaclass=PyQtABCMeta,
 ):

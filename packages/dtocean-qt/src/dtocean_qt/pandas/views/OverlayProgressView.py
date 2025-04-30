@@ -77,7 +77,7 @@ class OverlayProgressWidget(QtWidgets.QFrame):
         yAnchor = self._margin
         self.setGeometry(xAnchor, yAnchor, self._width, self._minHeight)
 
-    @Slot(bool)  # type: ignore
+    @Slot(bool)
     def showDetails(self, toggled):
         for progressBar, label in self._detailProgressBars:
             progressBar.setVisible(toggled)

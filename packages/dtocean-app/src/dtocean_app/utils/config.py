@@ -110,7 +110,7 @@ def init_config_parser(args):
 
     desStr = (
         "Copy user modifiable configuration files to "
-        "<UserName>\AppData\Roaming\DTOcean\dtocean-app\config"
+        r"<UserName>\AppData\Roaming\DTOcean\dtocean-app\config"
     )
 
     parser = argparse.ArgumentParser(

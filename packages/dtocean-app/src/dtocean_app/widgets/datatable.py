@@ -20,7 +20,7 @@
 Created on Wed Aug 31 12:18:05 2016
 
 This is a spin on the DataTableWidget defined in the dtocean-qt package in the
-file: dtocean_qt\views\DataTableView.py
+file: dtocean_qt\\pandas\\views\\DataTableView.py
 
 Converted to GPL under the terms of the original MIT Licence:
 https://opensource.org/licenses/MIT
@@ -33,24 +33,17 @@ https://opensource.org/licenses/MIT
 import csv
 import io
 
-from dtocean_qt.compat import QtCore, QtGui, Slot
-from dtocean_qt.models.DataFrameModel import DataFrameModel
-from dtocean_qt.views.CustomDelegates import createDelegate
-from dtocean_qt.views.DataTableView import DragTable
-from dtocean_qt.views.EditDialogs import (
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.views.CustomDelegates import createDelegate
+from dtocean_qt.pandas.views.DataTableView import DragTable
+from dtocean_qt.pandas.views.EditDialogs import (
     AddAttributesDialog,
     RemoveAttributesDialog,
 )
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
+from PySide6 import QtCore, QtGui, QtWidgets
 
 
-class DataTableWidget(QtGui.QWidget):
+class DataTableWidget(QtWidgets.QWidget):
     """A Custom widget with a TableView and a toolbar.
 
     This widget shall display all `DataFrameModels` and
@@ -81,37 +74,38 @@ class DataTableWidget(QtGui.QWidget):
 
     def initUi(self, edit_rows, edit_cols, edit_cells=False):
         """Initalizes the Uuser Interface with all sub widgets."""
-        self.gridLayout = QtGui.QGridLayout(self)
+        self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
 
-        buttonFrame = QtGui.QFrame(self)
+        buttonFrame = QtWidgets.QFrame(self)
         # self.buttonFrame.setMinimumSize(QtCore.QSize(250, 50))
         # self.buttonFrame.setMaximumSize(QtCore.QSize(250, 50))
-        buttonFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        spacerItemButton = QtGui.QSpacerItem(
-            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        buttonFrame.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
+        spacerItemButton = QtWidgets.QSpacerItem(
+            40,
+            20,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Minimum,
         )
 
         if edit_rows:
-            self.addRowButton = QtGui.QToolButton(buttonFrame)
+            self.addRowButton = QtWidgets.QToolButton(buttonFrame)
             self.addRowButton.setObjectName("addrowbutton")
             self.addRowButton.setText(self.tr("+row"))
             self.addRowButton.setToolTip(self.tr("add new row"))
             icon = QtGui.QIcon(
-                QtGui.QPixmap(
-                    _fromUtf8(":/icons/edit-table-insert-row-below.png")
-                )
+                QtGui.QPixmap(":/icons/edit-table-insert-row-below.png")
             )
 
             self.addRowButton.setIcon(icon)
             self.addRowButton.toggled.connect(self.addRow)
 
-            self.removeRowButton = QtGui.QToolButton(buttonFrame)
+            self.removeRowButton = QtWidgets.QToolButton(buttonFrame)
             self.removeRowButton.setObjectName("removerowbutton")
             self.removeRowButton.setText(self.tr("-row"))
             self.removeRowButton.setToolTip(self.tr("remove selected rows"))
             icon = QtGui.QIcon(
-                QtGui.QPixmap(_fromUtf8(":/icons/edit-table-delete-row.png"))
+                QtGui.QPixmap(":/icons/edit-table-delete-row.png")
             )
 
             self.removeRowButton.setIcon(icon)
@@ -120,25 +114,23 @@ class DataTableWidget(QtGui.QWidget):
             row_buttons = [self.addRowButton, self.removeRowButton]
 
         if edit_cols:
-            self.addColumnButton = QtGui.QToolButton(buttonFrame)
+            self.addColumnButton = QtWidgets.QToolButton(buttonFrame)
             self.addColumnButton.setObjectName("addcolumnbutton")
             self.addColumnButton.setText(self.tr("+col"))
             self.addColumnButton.setToolTip(self.tr("add new column"))
             icon = QtGui.QIcon(
-                QtGui.QPixmap(
-                    _fromUtf8(":/icons/edit-table-insert-column-right.png")
-                )
+                QtGui.QPixmap(":/icons/edit-table-insert-column-right.png")
             )
 
             self.addColumnButton.setIcon(icon)
             self.addColumnButton.toggled.connect(self.showAddColumnDialog)
 
-            self.removeColumnButton = QtGui.QToolButton(buttonFrame)
+            self.removeColumnButton = QtWidgets.QToolButton(buttonFrame)
             self.removeColumnButton.setObjectName("removecolumnbutton")
             self.removeColumnButton.setText(self.tr("-col"))
             self.removeColumnButton.setToolTip(self.tr("remove a column"))
             icon = QtGui.QIcon(
-                QtGui.QPixmap(_fromUtf8(":/icons/edit-table-delete-column.png"))
+                QtGui.QPixmap(":/icons/edit-table-delete-column.png")
             )
 
             self.removeColumnButton.setIcon(icon)
@@ -147,16 +139,14 @@ class DataTableWidget(QtGui.QWidget):
             col_buttons = [self.addColumnButton, self.removeColumnButton]
 
         if edit_rows or edit_cols or edit_cells:
-            self.buttonFrameLayout = QtGui.QGridLayout(buttonFrame)
+            self.buttonFrameLayout = QtWidgets.QGridLayout(buttonFrame)
             self.buttonFrameLayout.setContentsMargins(0, 0, 0, 0)
 
-            self.editButton = QtGui.QToolButton(buttonFrame)
+            self.editButton = QtWidgets.QToolButton(buttonFrame)
             self.editButton.setObjectName("editbutton")
             self.editButton.setText(self.tr("edit"))
             self.editButton.setToolTip(self.tr("toggle editing mode"))
-            icon = QtGui.QIcon(
-                QtGui.QPixmap(_fromUtf8(":/icons/document-edit.png"))
-            )
+            icon = QtGui.QIcon(QtGui.QPixmap(":/icons/document-edit.png"))
 
             self.editButton.setIcon(icon)
             self.editButton.toggled.connect(self.enableEditing)
@@ -199,12 +189,13 @@ class DataTableWidget(QtGui.QWidget):
             self.buttons = None
             tab_layout_idx = 0
 
-        # self.tableView = QtGui.QTableView(self)
+        # self.tableView = QtWidgets.QTableView(self)
         self.tableView = DragTable(self)
         self.tableView.setAlternatingRowColors(True)
         self.tableView.setSortingEnabled(True)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
         )
         self.tableView.setSizePolicy(sizePolicy)
         self.tableView.installEventFilter(self)
@@ -213,6 +204,8 @@ class DataTableWidget(QtGui.QWidget):
 
     def setButtonsVisible(self, visible):
         """hide/show the edit buttons"""
+        if self.buttonFrame is None:
+            return
         self.buttonFrame.setVisible(visible)
 
     def hideVerticalHeader(self, arg=True):
@@ -259,7 +252,7 @@ class DataTableWidget(QtGui.QWidget):
         """Gets the enclosed TableView
 
         Returns:
-            QtGui.QTableView: A Qt TableView object.
+            QtWidgets.QTableView: A Qt TableView object.
 
         """
         return self.tableView
@@ -280,11 +273,11 @@ class DataTableWidget(QtGui.QWidget):
 
     def updateDelegates(self):
         """reset all delegates"""
+        model = self.tableView.model()
+        assert isinstance(model, DataFrameModel)
 
-        for index, column in enumerate(
-            self.tableView.model().dataFrame().columns
-        ):
-            dtype = self.tableView.model().dataFrame().dtypes[index]
+        for index, _ in enumerate(model.dataFrame().columns):
+            dtype = model.dataFrame().dtypes[index]
             self.updateDelegate(index, dtype)
 
         self.tableView.resizeColumnsToContents()
@@ -294,8 +287,8 @@ class DataTableWidget(QtGui.QWidget):
         return self.view().selectionModel()
 
     def eventFilter(self, source, event):
-        if event.type() == QtCore.QEvent.KeyPress and event.matches(
-            QtGui.QKeySequence.Copy
+        if event.type() == QtCore.QEvent.Type.KeyPress and event.matches(
+            QtGui.QKeySequence.StandardKey.Copy
         ):
             self.copySelection()
 
@@ -318,11 +311,11 @@ class DataTableWidget(QtGui.QWidget):
                 column = index.column() - columns[0]
                 table[row][column] = index.data().toPyObject()
 
-            stream = io.BytesIO()
+            stream = io.StringIO()
             csv.writer(stream).writerows(table)
-            QtGui.qApp.clipboard().setText(stream.getvalue())
+            QtWidgets.QApplication().clipboard().setText(stream.getvalue())
 
-    @Slot(bool)
+    @QtCore.Slot(bool)
     def enableEditing(self, enabled):
         """Enable the editing buttons to add/remove rows/columns and to edit the data.
 
@@ -339,6 +332,7 @@ class DataTableWidget(QtGui.QWidget):
         model = self.tableView.model()
 
         if model is not None:
+            assert isinstance(model, DataFrameModel)
             model.enableEditing(enabled)
 
         if self.buttons is None:
@@ -349,7 +343,7 @@ class DataTableWidget(QtGui.QWidget):
             if button.isChecked():
                 button.setChecked(False)
 
-    @Slot()
+    @QtCore.Slot()
     def uncheckButton(self):
         """Removes the checked stated of all buttons in this widget.
 
@@ -368,7 +362,7 @@ class DataTableWidget(QtGui.QWidget):
                 button.setChecked(False)
             button.blockSignals(False)
 
-    @Slot(str, object, object)
+    @QtCore.Slot(str, object, object)
     def addColumn(self, columnName, dtype, defaultValue):
         """Adds a column with the given parameters to the underlying model
 
@@ -384,11 +378,12 @@ class DataTableWidget(QtGui.QWidget):
         model = self.tableView.model()
 
         if model is not None:
+            assert isinstance(model, DataFrameModel)
             model.addDataFrameColumn(columnName, dtype, defaultValue)
 
         self.addColumnButton.setChecked(False)
 
-    @Slot(bool)
+    @QtCore.Slot(bool)
     def showAddColumnDialog(self, triggered):
         """Display the dialog to add a column to the model.
 
@@ -405,7 +400,7 @@ class DataTableWidget(QtGui.QWidget):
             dialog.rejected.connect(self.uncheckButton)
             dialog.show()
 
-    @Slot(bool)
+    @QtCore.Slot(bool)
     def addRow(self, triggered):
         """Adds a row to the model.
 
@@ -418,10 +413,14 @@ class DataTableWidget(QtGui.QWidget):
         """
         if triggered:
             model = self.tableView.model()
+            assert isinstance(model, DataFrameModel)
             model.addDataFrameRows()
-            self.sender().setChecked(False)
 
-    @Slot(bool)
+            sender = self.sender()
+            assert isinstance(sender, QtWidgets.QToolButton)
+            sender.setChecked(False)
+
+    @QtCore.Slot(bool)
     def removeRow(self, triggered):
         """Removes a row to the model.
 
@@ -435,13 +434,16 @@ class DataTableWidget(QtGui.QWidget):
         """
         if triggered:
             model = self.tableView.model()
+            assert isinstance(model, DataFrameModel)
             selection = self.tableView.selectedIndexes()
-
             rows = [index.row() for index in selection]
             model.removeDataFrameRows(set(rows))
-            self.sender().setChecked(False)
 
-    @Slot(list)
+            sender = self.sender()
+            assert isinstance(sender, QtWidgets.QToolButton)
+            sender.setChecked(False)
+
+    @QtCore.Slot(list)
     def removeColumns(self, columnNames):
         """Removes one or multiple columns from the model.
 
@@ -455,6 +457,7 @@ class DataTableWidget(QtGui.QWidget):
         model = self.tableView.model()
 
         if model is not None:
+            assert isinstance(model, DataFrameModel)
             sane_names = [
                 (pos, str(name.toPyObject())) for pos, name in columnNames
             ]
@@ -462,7 +465,7 @@ class DataTableWidget(QtGui.QWidget):
 
         self.removeColumnButton.setChecked(False)
 
-    @Slot(bool)
+    @QtCore.Slot(bool)
     def showRemoveColumnDialog(self, triggered):
         """Display the dialog to remove column(s) from the model.
 
@@ -476,6 +479,7 @@ class DataTableWidget(QtGui.QWidget):
         if triggered:
             model = self.tableView.model()
             if model is not None:
+                assert isinstance(model, DataFrameModel)
                 columns = model.dataFrameColumns()
                 dialog = RemoveAttributesDialog(columns, self)
                 dialog.accepted.connect(self.removeColumns)

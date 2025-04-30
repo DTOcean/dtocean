@@ -22,7 +22,7 @@ class DefaultValueValidator(QtGui.QValidator):
         self.floatPattern = re.compile(r"[+-]? *(?:\d+(?:\.\d*)?|\.\d+)")
         self.boolPattern = re.compile("(1|t|0|f){1}$")
 
-    @Slot(numpy.dtype)  # type: ignore
+    @Slot(numpy.dtype)
     def validateType(self, dtype):
         self.dtype = dtype
 
@@ -190,7 +190,7 @@ class AddAttributesDialog(QtWidgets.QDialog):
 
         self.accepted.emit(newColumn, dtype, defaultValue)
 
-    @Slot(int)  # type: ignore
+    @Slot(int)
     def updateValidatorDtype(self, index):
         (dtype, name) = SupportedDtypes.tupleAt(index)  # type: ignore
         self.defaultValueLineEdit.clear()
