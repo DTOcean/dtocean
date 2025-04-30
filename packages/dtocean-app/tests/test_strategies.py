@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2022 Mathew Topper
+#    Copyright (C) 2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,22 +20,22 @@
 import pytest
 
 from dtocean_app.strategies import StrategyWidget
-from dtocean_app.strategies.sensitivity import GUIUnitSensitivity
 from dtocean_app.strategies.multi import GUIMultiSensitivity
 from dtocean_app.strategies.position import GUIAdvancedPosition
+from dtocean_app.strategies.sensitivity import GUIUnitSensitivity
 
 
-@pytest.mark.parametrize("project, expected", [
-                            (["a"], True),
-                            (["a", "b"], False)])
+@pytest.mark.parametrize(
+    "project, expected", [(["a"], True), (["a", "b"], False)]
+)
 def test_GUIUnitSensitivity_allow_run(project, expected):
     test = GUIUnitSensitivity()
     assert test.allow_run("mock", project) is expected
 
 
-@pytest.mark.parametrize("project, expected", [
-                            (["a"], True),
-                            (["a", "b"], False)])
+@pytest.mark.parametrize(
+    "project, expected", [(["a"], True), (["a", "b"], False)]
+)
 def test_GUIMultiSensitivity_allow_run(project, expected):
     test = GUIMultiSensitivity()
     assert test.allow_run("mock", project) is expected
@@ -47,21 +47,26 @@ def test_GUIAdvancedPosition_allow_run_no_config():
 
 
 def test_GUIAdvancedPosition_allow_run(mocker):
+    mocker.patch(
+        "dtocean_app.strategies.position.AdvancedPosition.allow_run",
+        return_value=True,
+    )
 
-    mocker.patch('dtocean_app.strategies.position.AdvancedPosition.allow_run',
-                 return_value=True)
-    
     test = GUIAdvancedPosition()
     test._config = "mock"
-    
+
     assert test.allow_run("mock", "mock") is True
 
 
-@pytest.mark.parametrize("raw_string_input, expected", [
-                            ("None", [None]),
-                            ("True, False", [True, False]),
-                            ("1, 1.", [1, 1.]),
-                            ("one, 2, 3.", ["one", 2, 3.])])
+@pytest.mark.parametrize(
+    "raw_string_input, expected",
+    [
+        ("None", [None]),
+        ("True, False", [True, False]),
+        ("1, 1.", [1, 1.0]),
+        ("one, 2, 3.", ["one", 2, 3.0]),
+    ],
+)
 def test_StrategyWidget_string2types(raw_string_input, expected):
     results = StrategyWidget.string2types(raw_string_input)
     assert results == expected

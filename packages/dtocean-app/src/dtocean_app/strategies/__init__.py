@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,14 +16,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
+from abc import ABC
 
 from PySide6 import QtCore
 
+pyqtWrapperType = type(QtCore.QObject)
 
-class GUIStrategy(object):
-    __metaclass__ = abc.ABCMeta
 
-    """The base abstract class for discovery of GUI supported strategy 
+class GUIStrategy(ABC):
+    """The base abstract class for discovery of GUI supported strategy
     classes"""
 
     @abc.abstractmethod
@@ -48,10 +49,8 @@ class GUIStrategy(object):
         """
 
 
-class StrategyWidget(object):
-    __metaclass__ = abc.ABCMeta
-
-    """The base abstract class for widgets used to configure the strategy 
+class StrategyWidget(ABC):
+    """The base abstract class for widgets used to configure the strategy
     classes"""
 
     @abc.abstractmethod
@@ -100,5 +99,5 @@ class StrategyWidget(object):
         return params
 
 
-class PyQtABCMeta(QtCore.pyqtWrapperType, abc.ABCMeta):
+class PyQtABCMeta(abc.ABCMeta, pyqtWrapperType):
     pass

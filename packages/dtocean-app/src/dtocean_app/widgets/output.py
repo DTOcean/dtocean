@@ -18,7 +18,7 @@
 """
 Created on Thu Apr 23 12:51:14 2015
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import re

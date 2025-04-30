@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2022 Mathew Topper
+#    Copyright (C) 2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,17 +19,16 @@
 
 import pytest
 
-from dtocean_app.widgets.docks import LogDock
 from dtocean_app.utils.qtlog import XStream
+from dtocean_app.widgets.docks import LogDock
 
 
 @pytest.fixture
 def log_dock_widget(qtbot):
-    
     widget = LogDock()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     return widget
 
 

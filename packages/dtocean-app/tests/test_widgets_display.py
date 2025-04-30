@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,22 +17,23 @@
 
 # pylint: disable=redefined-outer-name
 
-import pytest
 import matplotlib.pyplot as plt
+import pytest
 
-from dtocean_app.widgets.display import (MPLWidget,
-                                         get_current_filetypes,
-                                         save_current_figure,
-                                         get_current_figure_size)
+from dtocean_app.widgets.display import (
+    MPLWidget,
+    get_current_figure_size,
+    get_current_filetypes,
+    save_current_figure,
+)
 
 
 @pytest.fixture
 def mpl_widget(qtbot, figure):
-    
     widget = MPLWidget(figure)
     widget.show()
     qtbot.addWidget(widget)
-    
+
     return widget
 
 
@@ -41,61 +42,55 @@ def test_MPLWidget_init(mpl_widget):
 
 
 def test_MPLWidget_closing(qtbot, mpl_widget):
-    
     with qtbot.waitSignal(mpl_widget.closing, timeout=10000) as blocker:
         mpl_widget.close()
-    
+
     assert blocker.signal_triggered
 
 
 def test_get_current_filetypes():
-    
     plt.figure()
     test = get_current_filetypes()
-    plt.close('all')
-    
-    assert 'png' in test
+    plt.close("all")
+
+    assert "png" in test
 
 
 def test_get_current_filetypes_no_figure():
-    plt.close('all')
+    plt.close("all")
     test = get_current_filetypes()
     assert not test
 
 
 def test_save_current_figure(tmp_path):
-    
     plt.figure()
     p = tmp_path / "mock.png"
     save_current_figure(str(p))
-    plt.close('all')
-    
+    plt.close("all")
+
     assert p.is_file()
 
 
 def test_save_current_figureno_figure(tmp_path):
-    
-    plt.close('all')
+    plt.close("all")
     p = tmp_path / "mock.png"
     save_current_figure(str(p))
-    
+
     assert not p.is_file()
 
 
 def test_get_current_figure_size_no_figure():
-    
-    plt.close('all')
-    
+    plt.close("all")
+
     with pytest.raises(RuntimeError) as excinfo:
         get_current_figure_size()
-    
+
     assert "No open plots" in str(excinfo)
 
 
 def test_get_current_figure_size():
-    
     plt.figure()
     test = get_current_figure_size()
-    plt.close('all')
-    
-    assert (test == [8., 6.]).all()
+    plt.close("all")
+
+    assert (test == [8.0, 6.0]).all()

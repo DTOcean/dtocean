@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2022 Mathew Topper
+#    Copyright (C) 2019-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,21 +27,25 @@ import traceback
 import types
 from copy import deepcopy
 from functools import partial
+from typing import Any, Optional
 
 import matplotlib as mpl
+import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
-import sip
-from aneris.utilities.misc import OrderedSet
+import pandas as pd
 from dtocean_core.pipeline import Tree
-from dtocean_core.strategies.position import AdvancedPosition
-from dtocean_core.strategies.position_optimiser import (
+from dtocean_plugins.strategies.position import AdvancedPosition
+from dtocean_plugins.strategies.position_optimiser import (
     _load_config_template,
     dump_config,
 )
-from dtocean_qt.models.DataFrameModel import DataFrameModel
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from mdo_engine.utilities.misc import OrderedSet
 from PIL import Image
-from PySide6 import QtCore, QtGui
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
+from shiboken6 import Shiboken
 
 from ..utils.display import is_high_dpi
 from ..widgets.datatable import DataTableWidget
@@ -57,31 +61,12 @@ from . import GUIStrategy, PyQtABCMeta, StrategyWidget
 
 if is_high_dpi():
     from ..designer.high.advancedposition import (
-        Ui_AdvancedPositionWidget,  # pylint: disable=no-name-in-module
+        Ui_AdvancedPositionWidget,
     )
-
 else:
     from ..designer.low.advancedposition import (
-        Ui_AdvancedPositionWidget,  # pylint: disable=no-name-in-module
+        Ui_AdvancedPositionWidget,
     )
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
-
-
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
 
 
 # Set up logging
@@ -146,10 +131,9 @@ class ThreadLoadSimulations(QtCore.QThread):
                 self._shell.core, self._shell.project, self._sim_numbers
             )
 
-        except:  # pylint: disable=bare-except
+        except Exception:
             etype, evalue, etraceback = sys.exc_info()
             self.error_detected.emit(etype, evalue, etraceback)
-
         finally:
             # Reinstate signals and emit
             self._shell.core.blockSignals(False)
@@ -157,10 +141,8 @@ class ThreadLoadSimulations(QtCore.QThread):
             self.taskFinished.emit()
 
 
-class GUIAdvancedPosition(GUIStrategy, AdvancedPosition):
+class GUIAdvancedPosition(GUIStrategy, AdvancedPosition, metaclass=PyQtABCMeta):
     """GUI for AdvancedPosition strategy."""
-
-    __metaclass__ = PyQtABCMeta
 
     def __init__(self):
         AdvancedPosition.__init__(self)
@@ -188,24 +170,25 @@ class GUIAdvancedPosition(GUIStrategy, AdvancedPosition):
 
 
 class AdvancedPositionWidget(
-    QtGui.QWidget, Ui_AdvancedPositionWidget, StrategyWidget
+    QtWidgets.QWidget,
+    Ui_AdvancedPositionWidget,  # type: ignore
+    StrategyWidget,
+    metaclass=PyQtABCMeta,
 ):
-    __metaclass__ = PyQtABCMeta
-
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()
     reset = QtCore.Signal()
 
-    def __init__(self, parent, shell, config):
-        QtGui.QWidget.__init__(self, parent)
+    def __init__(self, parent, shell, config: dict[str, Any]):
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_AdvancedPositionWidget.__init__(self)
         StrategyWidget.__init__(self)
 
         self._shell = shell
         self._config = _init_config(config)
         self._max_threads = multiprocessing.cpu_count()
-        self._progress = None
-        self._results_df = None
+        self._progress: ProgressBar
+        self._results_df: Optional[pd.DataFrame] = None
         self._delete_sims = True
         self._protect_default = True
         self._sims_to_load = None
@@ -214,10 +197,10 @@ class AdvancedPositionWidget(
         self._param_lines = []
         self._worker_dir_status_code = None
         self._optimiser_status_code = None
-        self._var_id_to_title_map = None
-        self._var_id_to_unit_map = None
-        self._cost_var_box_to_var_id_map = None
-        self._var_id_to_cost_var_box_map = None
+        self._cost_var_box_to_var_id_map: Optional[dict[int, str]] = None
+        self._var_id_to_title_map: dict[str, str]
+        self._var_id_to_unit_map: dict[str, str]
+        self._var_id_to_cost_var_box_map: dict[str, int]
 
         self._default_base_penalty = 1.0
         self._default_tolerance = 1e-11
@@ -308,12 +291,12 @@ class AdvancedPositionWidget(
         ]
 
         param_box_classes = {
-            "grid_orientation": QtGui.QDoubleSpinBox,
-            "delta_row": QtGui.QDoubleSpinBox,
-            "delta_col": QtGui.QDoubleSpinBox,
-            "n_nodes": QtGui.QSpinBox,
-            "t1": QtGui.QDoubleSpinBox,
-            "t2": QtGui.QDoubleSpinBox,
+            "grid_orientation": QtWidgets.QDoubleSpinBox,
+            "delta_row": QtWidgets.QDoubleSpinBox,
+            "delta_col": QtWidgets.QDoubleSpinBox,
+            "n_nodes": QtWidgets.QSpinBox,
+            "t1": QtWidgets.QDoubleSpinBox,
+            "t2": QtWidgets.QDoubleSpinBox,
         }
 
         param_box_types = {
@@ -354,8 +337,8 @@ class AdvancedPositionWidget(
             )
             self.paramsFrameLayout.addWidget(var_box["root"])
 
-            box_minimum = -sys.maxint  # pylint: disable=no-member
-            box_maximum = sys.maxint  # pylint: disable=no-member
+            box_minimum = -sys.maxsize
+            box_maximum = sys.maxsize
             set_box_min = False
             set_box_max = False
             param_limits = None
@@ -451,16 +434,19 @@ class AdvancedPositionWidget(
 
             if i != len(param_names) - 1:
                 line_name = "{} Line".format(param_name)
-                line = QtGui.QFrame(self.paramsFrame)
-                line.setFrameShape(QtGui.QFrame.HLine)
-                line.setFrameShadow(QtGui.QFrame.Sunken)
-                line.setObjectName(_fromUtf8(line_name))
+                line = QtWidgets.QFrame(self.paramsFrame)
+                line.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+                line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+                line.setObjectName(line_name)
                 self.paramsFrameLayout.addWidget(line)
 
                 self._param_lines.append(line)
 
-        final_spacer = QtGui.QSpacerItem(
-            20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        final_spacer = QtWidgets.QSpacerItem(
+            20,
+            20,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
         )
         self.paramsFrameLayout.addItem(final_spacer)
 
@@ -480,8 +466,9 @@ class AdvancedPositionWidget(
             self, edit_rows=False, edit_cols=False, edit_cells=False
         )
 
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
         )
         self.dataTableWidget.setSizePolicy(sizePolicy)
         self.dataTableWidget.setMinimumSize(QtCore.QSize(0, 0))
@@ -818,6 +805,7 @@ class AdvancedPositionWidget(
         current_tab_idx = self.tabWidget.currentIndex()
 
         init |= self._update_status_control()
+        assert self._worker_dir_status_code is not None
 
         if init:
             self._init_tab_control()
@@ -921,6 +909,7 @@ class AdvancedPositionWidget(
         )
 
         if optimiser_status_code >= 1:
+            assert old_config is not None
             if has_stored_config:
                 shell_config = self._shell.strategy.get_config()
                 old_config["clean_existing_dir"] = shell_config[
@@ -1030,8 +1019,11 @@ class AdvancedPositionWidget(
         msg = "Import Configuration"
         valid_exts = "Configuration files (*.yaml *.yml)"
 
-        file_path = QtGui.QFileDialog.getOpenFileName(
-            self, msg, HOME, valid_exts
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            msg,
+            HOME,
+            valid_exts,
         )
 
         if not file_path:
@@ -1047,8 +1039,11 @@ class AdvancedPositionWidget(
         msg = "Export Configuration"
         valid_exts = "Configuration files (*.yaml *.yml)"
 
-        file_path = QtGui.QFileDialog.getSaveFileName(
-            self, msg, HOME, valid_exts
+        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            msg,
+            HOME,
+            valid_exts,
         )
 
         if not file_path:
@@ -1084,8 +1079,11 @@ class AdvancedPositionWidget(
             start_dir = HOME
 
         title_str = "Select Directory for Worker Files"
-        worker_dir = QtGui.QFileDialog.getExistingDirectory(
-            self, title_str, start_dir, QtGui.QFileDialog.ShowDirsOnly
+        worker_dir = QtWidgets.QFileDialog.getExistingDirectory(
+            self,
+            title_str,
+            start_dir,
+            QtWidgets.QFileDialog.Option.ShowDirsOnly,
         )
 
         if worker_dir:
@@ -1096,7 +1094,7 @@ class AdvancedPositionWidget(
     @QtCore.Slot(object)
     def _update_clean_existing_dir(self, checked_state):
         self._config["clean_existing_dir"] = bool(
-            checked_state == QtCore.Qt.Checked
+            checked_state == Qt.CheckState.Checked
         )
         self._update_status()
         return
@@ -1106,6 +1104,7 @@ class AdvancedPositionWidget(
         if box_number < 0:
             return
 
+        assert self._cost_var_box_to_var_id_map is not None
         var_id = self._cost_var_box_to_var_id_map[box_number]
         var_meta = self._shell.core.get_metadata(var_id)
 
@@ -1123,7 +1122,7 @@ class AdvancedPositionWidget(
 
     @QtCore.Slot(object)
     def _update_maximise(self, checked_state):
-        self._config["maximise"] = bool(checked_state == QtCore.Qt.Checked)
+        self._config["maximise"] = bool(checked_state == Qt.CheckState.Checked)
 
     @QtCore.Slot(float)
     def _update_base_penalty(self, value):
@@ -1158,7 +1157,7 @@ class AdvancedPositionWidget(
 
     @QtCore.Slot(object)
     def _update_min_noise_auto(self, checked_state):
-        if checked_state == QtCore.Qt.Checked:
+        if checked_state == Qt.CheckState.Checked:
             self._config["min_evals"] = None
             self.minNoiseSpinBox.setValue(self._default_min_evals)
             self.minNoiseSpinBox.setEnabled(False)
@@ -1181,7 +1180,7 @@ class AdvancedPositionWidget(
 
     @QtCore.Slot(object)
     def _update_population_auto(self, checked_state):
-        if checked_state == QtCore.Qt.Checked:
+        if checked_state == Qt.CheckState.Checked:
             self._config["popsize"] = None
             self.populationSpinBox.setValue(self._default_popsize)
             self.populationSpinBox.setEnabled(False)
@@ -1268,7 +1267,7 @@ class AdvancedPositionWidget(
 
     @QtCore.Slot(object)
     def _update_delete_sims(self, checked_state):
-        if checked_state == QtCore.Qt.Checked:
+        if checked_state == Qt.CheckState.Checked:
             self._delete_sims = True
             self.protectDefaultBox.setEnabled(True)
         else:
@@ -1277,10 +1276,12 @@ class AdvancedPositionWidget(
 
     @QtCore.Slot(object)
     def _update_protect_default(self, checked_state):
-        self._protect_default = bool(checked_state == QtCore.Qt.Checked)
+        self._protect_default = bool(checked_state == Qt.CheckState.Checked)
 
     @QtCore.Slot(int)
     def _select_sims_to_load(self, button_id):
+        assert isinstance(self._results_df, pd.DataFrame)
+
         objective = self._results_df.columns[1]
         ascending = True
 
@@ -1364,6 +1365,7 @@ class AdvancedPositionWidget(
 
     @QtCore.Slot()
     def _finish_load_sims(self):
+        assert isinstance(self._load_sims_thread, ThreadLoadSimulations)
         self._load_sims_thread.error_detected.disconnect()
         self._load_sims_thread.taskFinished.disconnect()
         self._load_sims_thread = None
@@ -1385,13 +1387,14 @@ class AdvancedPositionWidget(
 
         fdialog_msg = "Save data"
 
-        save_path = QtGui.QFileDialog.getSaveFileName(
+        save_path = QtWidgets.QFileDialog.getSaveFileName(
             self, fdialog_msg, HOME, extStr
         )
 
         if not save_path:
             return
 
+        assert self._results_df is not None
         self._results_df.to_csv(str(save_path), index=False)
 
     def _update_status_plots(self):
@@ -1410,6 +1413,8 @@ class AdvancedPositionWidget(
 
     @QtCore.Slot()
     def _set_plot(self, set_widget=True):
+        assert self._results_df is not None
+
         x_axis_str = str(self.xAxisVarBox.currentText())
         y_axis_str = str(self.yAxisVarBox.currentText())
         color_axis_str = str(self.colorAxisVarBox.currentText())
@@ -1426,11 +1431,11 @@ class AdvancedPositionWidget(
         if filter_str:
             filter_data = self._results_df[filter_str]
 
-            if self.filterVarMinBox.checkState() == QtCore.Qt.Checked:
+            if self.filterVarMinBox.checkState() == Qt.CheckState.Checked:
                 filter_val = float(self.filterVarMinSpinBox.value())
                 data_filter = data_filter & (filter_data >= filter_val)
 
-            if self.filterVarMaxBox.checkState() == QtCore.Qt.Checked:
+            if self.filterVarMaxBox.checkState() == Qt.CheckState.Checked:
                 filter_val = float(self.filterVarMaxSpinBox.value())
                 data_filter = data_filter & (filter_data <= filter_val)
 
@@ -1439,7 +1444,7 @@ class AdvancedPositionWidget(
             y_axis_data = y_axis_data[data_filter]
 
         color_axis_data = None
-        cmap = plt.cm.brg
+        cmap = mpl.colormaps["brg"]
         norm = None
         vmin = None
         vmax = None
@@ -1448,22 +1453,22 @@ class AdvancedPositionWidget(
         ymin = None
         ymax = None
 
-        if self.xAxisMinBox.checkState() == QtCore.Qt.Checked:
+        if self.xAxisMinBox.checkState() == Qt.CheckState.Checked:
             xmin = float(self.xAxisMinSpinBox.value())
 
-        if self.xAxisMaxBox.checkState() == QtCore.Qt.Checked:
+        if self.xAxisMaxBox.checkState() == Qt.CheckState.Checked:
             xmax = float(self.xAxisMaxSpinBox.value())
 
-        if self.yAxisMinBox.checkState() == QtCore.Qt.Checked:
+        if self.yAxisMinBox.checkState() == Qt.CheckState.Checked:
             ymin = float(self.yAxisMinSpinBox.value())
 
-        if self.yAxisMaxBox.checkState() == QtCore.Qt.Checked:
+        if self.yAxisMaxBox.checkState() == Qt.CheckState.Checked:
             ymax = float(self.yAxisMaxSpinBox.value())
 
-        if self.colorAxisMinBox.checkState() == QtCore.Qt.Checked:
+        if self.colorAxisMinBox.checkState() == Qt.CheckState.Checked:
             vmin = float(self.colorAxisMinSpinBox.value())
 
-        if self.colorAxisMaxBox.checkState() == QtCore.Qt.Checked:
+        if self.colorAxisMaxBox.checkState() == Qt.CheckState.Checked:
             vmax = float(self.colorAxisMaxSpinBox.value())
 
         if color_axis_str:
@@ -1499,7 +1504,7 @@ class AdvancedPositionWidget(
 
                 bounds = np.linspace(color_axis_min, color_axis_max + 1, n_vals)
 
-                norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+                norm = colors.BoundaryNorm(bounds, cmap.N)
 
         fig, ax = plt.subplots()
 
@@ -1536,8 +1541,8 @@ class AdvancedPositionWidget(
                 # Relabel to centre of intervals
                 labels = np.arange(color_axis_min, color_axis_max + 1, 1)
                 loc = labels + 0.5
-                cb.set_ticks(loc)
-                cb.set_ticklabels(labels)
+                cb.set_ticks(loc.tolist())
+                cb.set_ticklabels(labels.tolist())
 
         fig.subplots_adjust(0.2, 0.2, 0.8, 0.8)
 
@@ -1545,7 +1550,7 @@ class AdvancedPositionWidget(
             return
 
         n_figs = len(plt.get_fignums())
-        log_str = "Opening figure {} ({} open)".format(fig.number, n_figs)
+        log_str = "Opening figure {} ({} open)".format(fig.number, n_figs)  # type: ignore
         module_logger.debug(log_str)
 
         self._clear_plot_widget()
@@ -1578,7 +1583,7 @@ class AdvancedPositionWidget(
         self.plotWidget.setParent(None)
 
         _close_plot(self.plotWidget)
-        sip.delete(self.plotWidget)
+        Shiboken.delete(self.plotWidget)
 
         self.plotWidget = None
 
@@ -1590,17 +1595,20 @@ class AdvancedPositionWidget(
         plot_ext_types = get_current_filetypes()
 
         msg = "Save plot"
-        extlist = [
-            "{} (*.{})".format(v, k) for k, v in plot_ext_types.iteritems()
-        ]
+        extlist = ["{} (*.{})".format(v, k) for k, v in plot_ext_types.items()]
         extStr = ";;".join(extlist)
 
-        save_path = QtGui.QFileDialog.getSaveFileName(self, msg, HOME, extStr)
+        save_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            msg,
+            HOME,
+            extStr,
+        )
 
         if not save_path:
             return
 
-        if self.customSizeBox.checkState() == QtCore.Qt.Checked:
+        if self.customSizeBox.checkState() == Qt.CheckState.Checked:
             size = (
                 float(self.customWidthSpinBox.value()),
                 float(self.customHeightSpinBox.value()),
@@ -1636,8 +1644,11 @@ class AdvancedPositionWidget(
         msg = "Import Simulation"
         valid_exts = "Output files (*.yaml)"
 
-        yaml_file_path = QtGui.QFileDialog.getOpenFileName(
-            self, msg, HOME, valid_exts
+        yaml_file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            msg,
+            HOME,
+            valid_exts,
         )
 
         if not yaml_file_path:
@@ -1664,7 +1675,7 @@ class AdvancedPositionWidget(
 
         module_logger.critical(errMsg)
         module_logger.critical("".join(traceback.format_tb(etraceback)))
-        QtGui.QMessageBox.critical(self, "ERROR", errMsg)
+        QtWidgets.QMessageBox.critical(self, "ERROR", errMsg)
 
     @staticmethod
     def _on_destroyed(widget):
@@ -1696,7 +1707,7 @@ class AdvancedPositionWidget(
         self._update_status(init=True)
 
 
-def _init_config(config):
+def _init_config(config: dict[str, Any]):
     new_config = deepcopy(config)
 
     config_template = _load_config_template()
@@ -1717,7 +1728,7 @@ def _init_config(config):
 def _make_var_box(widget, parent, object_name, group_title, box_class):
     var_box_dict = {}
 
-    var_box_dict["root"] = QtGui.QGroupBox(parent)
+    var_box_dict["root"] = QtWidgets.QGroupBox(parent)
     var_box_dict["root"].setFlat(False)
     var_box_dict["root"].setCheckable(False)
 
@@ -1728,17 +1739,17 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     new_style_sheet = parent.styleSheet().append(root_style)
     parent.setStyleSheet(new_style_sheet)
 
-    var_box_dict["root.layout"] = QtGui.QVBoxLayout(var_box_dict["root"])
+    var_box_dict["root.layout"] = QtWidgets.QVBoxLayout(var_box_dict["root"])
     var_box_dict["root.layout"].setObjectName(
         _get_obj_name(object_name, "root.layout")
     )
 
-    var_box_dict["fixed.layout"] = QtGui.QHBoxLayout()
+    var_box_dict["fixed.layout"] = QtWidgets.QHBoxLayout()
     var_box_dict["fixed.layout"].setObjectName(
         _get_obj_name(object_name, "fixed.layout")
     )
 
-    var_box_dict["fixed.check"] = QtGui.QCheckBox(var_box_dict["root"])
+    var_box_dict["fixed.check"] = QtWidgets.QCheckBox(var_box_dict["root"])
     var_box_dict["fixed.check"].setObjectName(
         _get_obj_name(object_name, "fixed.check")
     )
@@ -1746,8 +1757,9 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
 
     var_box_dict["fixed.box"] = box_class(var_box_dict["root"])
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Fixed,
+        QtWidgets.QSizePolicy.Policy.Preferred,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1762,36 +1774,42 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
     var_box_dict["fixed.layout"].addWidget(var_box_dict["fixed.box"])
 
-    spacerItem6 = QtGui.QSpacerItem(
-        40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+    spacerItem6 = QtWidgets.QSpacerItem(
+        40,
+        20,
+        QtWidgets.QSizePolicy.Policy.Expanding,
+        QtWidgets.QSizePolicy.Policy.Minimum,
     )
     var_box_dict["fixed.layout"].addItem(spacerItem6)
 
     var_box_dict["root.layout"].addLayout(var_box_dict["fixed.layout"])
 
-    var_box_dict["range.group"] = QtGui.QGroupBox(var_box_dict["root"])
+    var_box_dict["range.group"] = QtWidgets.QGroupBox(var_box_dict["root"])
     var_box_dict["range.group"].setFlat(True)
     var_box_dict["range.group"].setObjectName(
         _get_obj_name(object_name, "range.group")
     )
 
-    var_box_dict["range.layout"] = QtGui.QVBoxLayout(
+    var_box_dict["range.layout"] = QtWidgets.QVBoxLayout(
         var_box_dict["range.group"]
     )
     var_box_dict["range.layout"].setObjectName(
         _get_obj_name(object_name, "range.layout")
     )
 
-    var_box_dict["range.grid"] = QtGui.QGridLayout()
+    var_box_dict["range.grid"] = QtWidgets.QGridLayout()
     var_box_dict["range.grid"].setSpacing(10)
     var_box_dict["range.grid"].setObjectName(
         _get_obj_name(object_name, "range.grid")
     )
 
-    var_box_dict["range.label.type"] = QtGui.QLabel(var_box_dict["range.group"])
+    var_box_dict["range.label.type"] = QtWidgets.QLabel(
+        var_box_dict["range.group"]
+    )
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Fixed,
+        QtWidgets.QSizePolicy.Policy.Preferred,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1800,9 +1818,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
 
     var_box_dict["range.label.type"].setSizePolicy(sizePolicy)
-    var_box_dict["range.label.type"].setLayoutDirection(QtCore.Qt.RightToLeft)
+    var_box_dict["range.label.type"].setLayoutDirection(
+        Qt.LayoutDirection.RightToLeft
+    )
     var_box_dict["range.label.type"].setAlignment(
-        QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
+        Qt.AlignmentFlag.AlignRight
+        | Qt.AlignmentFlag.AlignTrailing
+        | Qt.AlignmentFlag.AlignVCenter
     )
     var_box_dict["range.label.type"].setObjectName(
         _get_obj_name(object_name, "range.label.type")
@@ -1812,12 +1834,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
         var_box_dict["range.label.type"], 0, 0, 1, 1
     )
 
-    var_box_dict["range.box.type"] = QtGui.QComboBox(
+    var_box_dict["range.box.type"] = QtWidgets.QComboBox(
         var_box_dict["range.group"]
     )
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Preferred,
+        QtWidgets.QSizePolicy.Policy.Fixed,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1834,10 +1857,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
         var_box_dict["range.box.type"], 0, 1, 1, 1
     )
 
-    var_box_dict["range.label.var"] = QtGui.QLabel(var_box_dict["range.group"])
+    var_box_dict["range.label.var"] = QtWidgets.QLabel(
+        var_box_dict["range.group"]
+    )
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Fixed,
+        QtWidgets.QSizePolicy.Policy.Preferred,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1846,9 +1872,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
 
     var_box_dict["range.label.var"].setSizePolicy(sizePolicy)
-    var_box_dict["range.label.var"].setLayoutDirection(QtCore.Qt.RightToLeft)
+    var_box_dict["range.label.var"].setLayoutDirection(
+        Qt.LayoutDirection.RightToLeft
+    )
     var_box_dict["range.label.var"].setAlignment(
-        QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
+        Qt.AlignmentFlag.AlignRight
+        | Qt.AlignmentFlag.AlignTrailing
+        | Qt.AlignmentFlag.AlignVCenter
     )
     var_box_dict["range.label.var"].setObjectName(
         _get_obj_name(object_name, "range.label.var")
@@ -1858,10 +1888,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
         var_box_dict["range.label.var"], 0, 2, 1, 1
     )
 
-    var_box_dict["range.box.var"] = QtGui.QComboBox(var_box_dict["range.group"])
+    var_box_dict["range.box.var"] = QtWidgets.QComboBox(
+        var_box_dict["range.group"]
+    )
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Expanding,
+        QtWidgets.QSizePolicy.Policy.Fixed,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1878,10 +1911,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
         var_box_dict["range.box.var"], 0, 3, 1, 1
     )
 
-    var_box_dict["range.label.min"] = QtGui.QLabel(var_box_dict["range.group"])
+    var_box_dict["range.label.min"] = QtWidgets.QLabel(
+        var_box_dict["range.group"]
+    )
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Fixed,
+        QtWidgets.QSizePolicy.Policy.Preferred,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1890,9 +1926,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
 
     var_box_dict["range.label.min"].setSizePolicy(sizePolicy)
-    var_box_dict["range.label.min"].setLayoutDirection(QtCore.Qt.RightToLeft)
+    var_box_dict["range.label.min"].setLayoutDirection(
+        Qt.LayoutDirection.RightToLeft
+    )
     var_box_dict["range.label.min"].setAlignment(
-        QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
+        Qt.AlignmentFlag.AlignRight
+        | Qt.AlignmentFlag.AlignTrailing
+        | Qt.AlignmentFlag.AlignVCenter
     )
     var_box_dict["range.label.min"].setObjectName(
         _get_obj_name(object_name, "range.label.min")
@@ -1904,8 +1944,8 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
 
     var_box_dict["range.box.min"] = box_class(var_box_dict["range.group"])
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1923,10 +1963,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
         var_box_dict["range.box.min"], 1, 1, 1, 1
     )
 
-    var_box_dict["range.label.max"] = QtGui.QLabel(var_box_dict["range.group"])
+    var_box_dict["range.label.max"] = QtWidgets.QLabel(
+        var_box_dict["range.group"]
+    )
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Fixed,
+        QtWidgets.QSizePolicy.Policy.Preferred,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1935,9 +1978,13 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
 
     var_box_dict["range.label.max"].setSizePolicy(sizePolicy)
-    var_box_dict["range.label.max"].setLayoutDirection(QtCore.Qt.RightToLeft)
+    var_box_dict["range.label.max"].setLayoutDirection(
+        Qt.LayoutDirection.RightToLeft
+    )
     var_box_dict["range.label.max"].setAlignment(
-        QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
+        Qt.AlignmentFlag.AlignRight
+        | Qt.AlignmentFlag.AlignTrailing
+        | Qt.AlignmentFlag.AlignVCenter
     )
     var_box_dict["range.label.max"].setObjectName(
         _get_obj_name(object_name, "range.label.max")
@@ -1949,8 +1996,9 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
 
     var_box_dict["range.box.max"] = box_class(var_box_dict["range.group"])
 
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Fixed,
+        QtWidgets.QSizePolicy.Policy.Fixed,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -1997,17 +2045,17 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
 def _get_obj_name(name, key):
     ext_key = "{}.{}".format(key, name)
     ext_key = ext_key.replace(".", "_")
-
-    return _fromUtf8(ext_key)
+    return ext_key
 
 
 def _get_translation(widget_name, text):
-    return _translate(widget_name, text, None)
+    return QtWidgets.QApplication.translate(widget_name, text, None)
 
 
 def _init_sci_spin_box(parent, name):
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Expanding,
+        QtWidgets.QSizePolicy.Policy.Fixed,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -2016,14 +2064,15 @@ def _init_sci_spin_box(parent, name):
     sciSpinBox.setSizePolicy(sizePolicy)
     sciSpinBox.setMinimumSize(QtCore.QSize(0, 0))
     sciSpinBox.setKeyboardTracking(False)
-    sciSpinBox.setObjectName(_fromUtf8(name))
+    sciSpinBox.setObjectName(name)
 
     return sciSpinBox
 
 
 def _init_extended_combo_box(parent, name):
-    sizePolicy = QtGui.QSizePolicy(
-        QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+    sizePolicy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.Policy.Expanding,
+        QtWidgets.QSizePolicy.Policy.Fixed,
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -2031,7 +2080,7 @@ def _init_extended_combo_box(parent, name):
     eComboBox = ExtendedComboBox(parent)
     eComboBox.setSizePolicy(sizePolicy)
     eComboBox.setMinimumSize(QtCore.QSize(0, 0))
-    eComboBox.setObjectName(_fromUtf8(name))
+    eComboBox.setObjectName(name)
 
     return eComboBox
 
@@ -2041,7 +2090,7 @@ def _make_fixed_combo_slot(that, param_name, param_type, name_map):
     def slot_function(that, checked_state):
         range_group = that._param_boxes[param_name]["range.group"]
 
-        if checked_state == QtCore.Qt.Checked:
+        if checked_state == Qt.CheckState.Checked:
             enabled = False
         else:
             enabled = True
@@ -2050,7 +2099,7 @@ def _make_fixed_combo_slot(that, param_name, param_type, name_map):
         param_dict = {}
         var_box_dict = that._param_boxes[param_name]
 
-        if checked_state == QtCore.Qt.Checked:
+        if checked_state == Qt.CheckState.Checked:
             value = param_type(var_box_dict["fixed.box"].value())
             param_dict["fixed"] = value
 

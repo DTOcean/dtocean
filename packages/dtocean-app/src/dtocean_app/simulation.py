@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,19 +18,17 @@
 """
 Created on Thu Apr 23 12:51:14 2015
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-# Set up logging
 import logging
-
-module_logger = logging.getLogger(__name__)
-
 import re
 
-from PySide6 import QtCore, QtGui
+from PySide6 import QtCore, QtWidgets
 
 from .widgets.docks import ListDock
+
+module_logger = logging.getLogger(__name__)
 
 
 class SimulationDock(ListDock):
@@ -48,7 +46,9 @@ class SimulationDock(ListDock):
         self.listWidget.itemClicked.connect(self._set_active_simulation)
 
         # Allow drag and drop sorting
-        self.listWidget.setDragDropMode(QtGui.QAbstractItemView.InternalMove)
+        self.listWidget.setDragDropMode(
+            QtWidgets.QAbstractItemView.DragDropMode.InternalMove
+        )
 
     def _init_title(self):
         self.setWindowTitle("Simulations")
@@ -68,7 +68,7 @@ class SimulationDock(ListDock):
             self.listWidget.addItem(sim_item)
 
     def _make_menus(self, shell, position):
-        menu = QtGui.QMenu()
+        menu = QtWidgets.QMenu()
 
         menu.addAction("Clone", lambda: self._clone_current(shell))
         delete = menu.addAction("Delete", lambda: self._delete_current(shell))
@@ -145,7 +145,7 @@ class SimulationDock(ListDock):
         self._update_simulations(shell.project)
 
 
-class SimulationItem(QtGui.QListWidgetItem):
+class SimulationItem(QtWidgets.QListWidgetItem):
     def __init__(self, parent, title):
         super(SimulationItem, self).__init__(parent)
         self._title = None
@@ -153,7 +153,7 @@ class SimulationItem(QtGui.QListWidgetItem):
         self._init_ui(title)
 
     def _init_ui(self, title):
-        self.setFlags(self.flags() | QtCore.Qt.ItemIsEditable)
+        self.setFlags(self.flags() | QtCore.Qt.ItemFlag.ItemIsEditable)
         self._set_title(title)
 
     def _get_title(self):

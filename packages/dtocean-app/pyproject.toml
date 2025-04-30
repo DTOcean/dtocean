@@ -11,6 +11,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
 dtocean-core = {path = "../dtocean-core", develop = true}
+dtocean-qt = {path = "../dtocean-qt", develop = true}
 mdo-engine = {path = "../mdo-engine", develop = true}
 polite-config = {path = "../polite-config", develop = true}
 matplotlib = ">=3.8.4,<3.9"
@@ -18,6 +19,7 @@ numpy = ">=1.26.4,<2.0.0"
 pandas = ">=2.2.3,<3.0.0"
 shiboken6 = "^6.9.0"
 pyside6 = "^6.9.0"
+pillow = "^11.2.1"
 
 [tool.poetry-monoranger-plugin]
 enabled = true

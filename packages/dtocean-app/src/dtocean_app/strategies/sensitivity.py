@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -61,10 +61,11 @@ class GUIUnitSensitivity(GUIStrategy, UnitSensitivity):
 
 
 class UnitSensitivityWidget(
-    QtGui.QWidget, Ui_UnitSensitivityWidget, StrategyWidget
+    QtGui.QWidget,
+    Ui_UnitSensitivityWidget,
+    StrategyWidget,
+    metaclass=PyQtABCMeta,
 ):
-    __metaclass__ = PyQtABCMeta
-
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()
     reset = QtCore.Signal()

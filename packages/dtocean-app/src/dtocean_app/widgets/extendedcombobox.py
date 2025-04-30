@@ -18,7 +18,7 @@
 """
 Created on Sun Nov 25 16:49:55 2018
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 from PySide6 import QtCore, QtGui

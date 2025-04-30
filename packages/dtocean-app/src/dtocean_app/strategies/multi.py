@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,10 +16,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pandas as pd
-from aneris.utilities.misc import OrderedSet
 from dtocean_core.pipeline import Tree
-from dtocean_core.strategies.multi import MultiSensitivity
-from PySide6 import QtCore, QtGui
+from dtocean_plugins.strategies.multi import MultiSensitivity
+from mdo_engine.utilities.misc import OrderedSet
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
 
 from ..utils.display import is_high_dpi
 from ..widgets.extendedcombobox import ExtendedComboBox
@@ -27,7 +28,6 @@ from . import GUIStrategy, PyQtABCMeta, StrategyWidget
 
 if is_high_dpi():
     from ..designer.high.multisensitivity import Ui_MultiSensitivityWidget
-
 else:
     from ..designer.low.multisensitivity import Ui_MultiSensitivityWidget
 
@@ -55,34 +55,34 @@ class GUIMultiSensitivity(GUIStrategy, MultiSensitivity):
         return 3
 
     def get_widget(self, parent, shell):
-        widget = MultiSensitivityWidget(parent)
-        widget._set_interfaces(shell)
-
+        widget = MultiSensitivityWidget(parent, shell)
         return widget
 
 
 class MultiSensitivityWidget(
-    QtGui.QWidget, Ui_MultiSensitivityWidget, StrategyWidget
+    QtWidgets.QWidget,
+    Ui_MultiSensitivityWidget,  # type: ignore
+    StrategyWidget,
+    metaclass=PyQtABCMeta,
 ):
-    __metaclass__ = PyQtABCMeta
-
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()
     reset = QtCore.Signal()
 
-    def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+    def __init__(self, parent, shell):
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_MultiSensitivityWidget.__init__(self)
         StrategyWidget.__init__(self)
 
         self._var_ids = None
-        self._mod_names = None
+        self._mod_names
 
         self._sim_info_str = (
             "The number of simulations which will be run " "is: {}"
         )
 
         self._init_ui()
+        self._set_interfaces(shell)
 
     def _init_ui(self):
         self.setupUi(self)
@@ -115,6 +115,8 @@ class MultiSensitivityWidget(
         self.removeButton.clicked.connect(self._remove_row)
 
     def _get_var_id(self, var_name):
+        if self._var_ids is None:
+            return var_name
         return self._var_ids[var_name]
 
     def _set_interfaces(self, shell, include_str=True):
@@ -275,7 +277,7 @@ class MultiSensitivityWidget(
 
     def get_configuration(self):
         df = self.tableView.model().array_df.copy()
-        df["Variable"] = df["Variable"].apply(lambda x: self._var_ids[x])
+        df["Variable"] = df["Variable"].apply(self._get_var_id)
         df["Values"] = df["Values"].apply(lambda x: self.string2types(x))
 
         subsp_ratio = self.subsetSpinBox.value() / 100.0
@@ -314,8 +316,6 @@ class SimTableModel(QtCore.QAbstractTableModel):
 
     def __init__(self, init_data=None, parent=None, *args):
         QtCore.QAbstractTableModel.__init__(self, parent, *args)
-        self.array_df = None
-
         self.array_df = self._init_df(init_data)
 
     def _init_df(self, init_records=None):
@@ -328,10 +328,15 @@ class SimTableModel(QtCore.QAbstractTableModel):
 
         return new_df
 
-    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
+    def headerData(
+        self,
+        section,
+        orientation: Qt.Orientation,
+        role=Qt.ItemDataRole.DisplayRole,
+    ):
         if (
-            role == QtCore.Qt.DisplayRole
-            and orientation == QtCore.Qt.Horizontal
+            role == Qt.ItemDataRole.DisplayRole
+            and orientation == Qt.Orientation.Horizontal
         ):
             return self.header_labels[section]
 
@@ -370,16 +375,16 @@ class SimTableModel(QtCore.QAbstractTableModel):
         return 3
 
     def data(self, index, role):
-        if not index.isValid() or role != QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
+        if not index.isValid() or role != Qt.ItemDataRole.DisplayRole:
+            return None
 
         value = self.array_df.iloc[index.row(), index.column()]
 
-        return QtCore.QVariant(value)
+        return value
 
-    def _add_records(self, df, records):
+    def _add_records(self, df: pd.DataFrame, records):
         for record in records:
             s2 = pd.Series(record, index=self.header_labels)
-            df = df.append(s2, ignore_index=True)
+            df = pd.concat([df, s2], ignore_index=True)
 
         return df

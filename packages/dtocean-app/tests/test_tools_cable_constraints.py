@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2022 Mathew Topper
+#    Copyright (C) 2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -40,15 +40,16 @@ def test_GUICableConstraintsTool_get_widget_none():
 
 @pytest.fixture()
 def constraints_tool(mocker, figure):
-    
-    mocker.patch('dtocean_app.tools.cable_constraints.plot_devices',
-                 return_value=figure,
-                 autospec=True)
-    
+    mocker.patch(
+        "dtocean_app.tools.cable_constraints.plot_devices",
+        return_value=figure,
+        autospec=True,
+    )
+
     tool = GUICableConstraintsTool()
     tool._elec = mocker.MagicMock()
     tool._constrained_lines = mocker.MagicMock()
-    
+
     return tool
 
 
@@ -59,11 +60,10 @@ def test_GUICableConstraintsTool_get_widget(qtbot, figure, constraints_tool):
 
 
 def test_GUICableConstraintsTool_destroy_widget(qtbot, constraints_tool):
-    
     n_figs = len(plt.get_fignums())
-    
+
     constraints_tool.get_widget()
     constraints_tool.destroy_widget()
-    
+
     assert len(plt.get_fignums()) == n_figs - 1
     assert constraints_tool._fig is None

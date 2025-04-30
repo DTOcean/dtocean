@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtocean_core.strategies.basic import BasicStrategy
+from dtocean_plugins.strategies.basic import BasicStrategy
 from PySide6 import QtCore
 
 from ..widgets.dialogs import Message
@@ -48,9 +48,7 @@ class GUIBasicStrategy(GUIStrategy, BasicStrategy):
         return widget
 
 
-class BasicWidget(Message, StrategyWidget):
-    __metaclass__ = PyQtABCMeta
-
+class BasicWidget(Message, StrategyWidget, metaclass=PyQtABCMeta):
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()
     reset = QtCore.Signal()
