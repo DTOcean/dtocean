@@ -15,10 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from aneris.utilities.misc import OrderedSet
 from dtocean_core.pipeline import Tree
-from dtocean_core.strategies.sensitivity import UnitSensitivity
-from PySide6 import QtCore, QtGui
+from dtocean_plugins.strategies.sensitivity import UnitSensitivity
+from mdo_engine.utilities.misc import OrderedSet
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
 
 from ..utils.display import is_high_dpi
 from ..widgets.extendedcombobox import ExtendedComboBox
@@ -54,15 +55,13 @@ class GUIUnitSensitivity(GUIStrategy, UnitSensitivity):
         return 2
 
     def get_widget(self, parent, shell):
-        widget = UnitSensitivityWidget(parent)
-        widget._set_interfaces(shell)
-
+        widget = UnitSensitivityWidget(parent, shell)
         return widget
 
 
 class UnitSensitivityWidget(
-    QtGui.QWidget,
-    Ui_UnitSensitivityWidget,
+    QtWidgets.QWidget,
+    Ui_UnitSensitivityWidget,  # type: ignore
     StrategyWidget,
     metaclass=PyQtABCMeta,
 ):
@@ -70,15 +69,16 @@ class UnitSensitivityWidget(
     config_null = QtCore.Signal()
     reset = QtCore.Signal()
 
-    def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+    def __init__(self, parent, shell):
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_UnitSensitivityWidget.__init__(self)
         StrategyWidget.__init__(self)
 
         self._var_ids = None
-        self._mod_names = None
+        self._mod_names: dict[int, str]
 
         self._init_ui()
+        self._set_interfaces(shell)
 
     def _init_ui(self):
         self.setupUi(self)
@@ -101,6 +101,8 @@ class UnitSensitivityWidget(
         self.lineEdit.textChanged.connect(self._emit_config_signal)
 
     def _get_var_id(self, var_name):
+        if self._var_ids is None:
+            return var_name
         return self._var_ids[var_name]
 
     def _set_interfaces(self, shell, include_str=True):
@@ -192,7 +194,7 @@ class UnitSensitivityWidget(
         mod_name = str(self.modBox.currentText())
 
         var_name = str(self.varBox.currentText())
-        var_id = self._var_ids[var_name]
+        var_id = self._get_var_id(var_name)
 
         var_values = self.string2types(str(self.lineEdit.text()))
 
@@ -215,7 +217,7 @@ class UnitSensitivityWidget(
         sane_var_values = [str(x) for x in var_values]
         var_values_str = ", ".join(sane_var_values)
 
-        index = self.modBox.findText(mod_name, QtCore.Qt.MatchFixedString)
+        index = self.modBox.findText(mod_name, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.modBox.setCurrentIndex(index)
         else:
@@ -230,7 +232,7 @@ class UnitSensitivityWidget(
         if var_meta.units is not None:
             title = "{} ({})".format(title, var_meta.units[0])
 
-        index = self.varBox.findText(title, QtCore.Qt.MatchFixedString)
+        index = self.varBox.findText(title, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.varBox.setCurrentIndex(index)
         else:

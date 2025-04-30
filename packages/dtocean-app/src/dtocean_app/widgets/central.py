@@ -24,9 +24,9 @@ Created on Thu Apr 23 12:51:14 2015
 import os
 from typing import Optional
 
-from aneris.utilities.misc import OrderedSet
 from dtocean_core.pipeline import Tree
-from PySide6 import QtCore, QtGui, QtWidgets
+from mdo_engine.utilities.misc import OrderedSet
+from PySide6 import QtCore, QtWidgets
 
 from ..utils.display import is_high_dpi
 from .display import get_current_figure_size, get_current_filetypes
@@ -50,14 +50,15 @@ else:
 HOME = os.path.expanduser("~")
 
 
-class SelectForSaveFileDialog(QtGui.QFileDialog):
+class SelectForSaveFileDialog(QtWidgets.QFileDialog):
     def __init__(self, *args, **kwargs):
         super(SelectForSaveFileDialog, self).__init__(*args, **kwargs)
-        self.setFileMode(QtGui.QFileDialog.AnyFile)
-        self.setAcceptMode(QtGui.QFileDialog.AcceptSave)
-        self.setLabelText(QtGui.QFileDialog.Accept, "Select")
+        self.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+        self.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave)
+        self.setLabelText(QtWidgets.QFileDialog.DialogLabel.Accept, "Select")
 
-        fileNameEdit = self.findChild(QtGui.QWidget, "fileNameEdit")
+        fileNameEdit = self.findChild(QtWidgets.QLineEdit, "fileNameEdit")
+        assert fileNameEdit is not None
         fileNameEdit.textChanged.connect(self._check_exts)
 
     def _get_valid_exts(self):
@@ -90,27 +91,28 @@ class SelectForSaveFileDialog(QtGui.QFileDialog):
         _, file_ext = os.path.splitext(str(file_path))
 
         if file_ext not in valid_exts:
-            button_box = self.findChild(QtGui.QDialogButtonBox)
-            save_button = button_box.button(QtGui.QDialogButtonBox.Save)
+            button_box = self.findChild(QtWidgets.QDialogButtonBox)
+            save_button = button_box.button(QtWidgets.QDialogButtonBox.Save)
             save_button.setEnabled(False)
 
 
-class ContextArea(QtGui.QWidget):
+class ContextArea(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(ContextArea, self).__init__(parent)
         self._init_ui()
 
     def _init_ui(self):
-        self._topbox = QtGui.QHBoxLayout()
-        self._hbox = QtGui.QHBoxLayout()
-        self._top = QtGui.QWidget()
+        self._topbox = QtWidgets.QHBoxLayout()
+        self._hbox = QtWidgets.QHBoxLayout()
+        self._top = QtWidgets.QWidget()
 
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Preferred
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.MinimumExpanding,
+            QtWidgets.QSizePolicy.Preferred,
         )
 
-        self._top_left = QtGui.QFrame()
-        self._top_left.setFrameShape(QtGui.QFrame.StyledPanel)
+        self._top_left = QtWidgets.QFrame()
+        self._top_left.setFrameShape(QtWidgets.QFrame.StyledPanel)
 
         if is_high_dpi():
             self._top_left.setMinimumWidth(375)
@@ -123,27 +125,27 @@ class ContextArea(QtGui.QWidget):
 
         self._top_left.setSizePolicy(sizePolicy)
 
-        self._top_left_box = QtGui.QHBoxLayout()
+        self._top_left_box = QtWidgets.QHBoxLayout()
         self._top_left.setLayout(self._top_left_box)
         self._top_left_contents = None
         self._top_left_box.setContentsMargins(2, 2, 2, 2)
 
-        self._top_right = QtGui.QFrame()
-        self._top_right.setFrameShape(QtGui.QFrame.StyledPanel)
+        self._top_right = QtWidgets.QFrame()
+        self._top_right.setFrameShape(QtWidgets.QFrame.StyledPanel)
 
         if is_high_dpi():
             self._top_right.setMinimumWidth(425)
         else:
             self._top_right.setMinimumWidth(360)
 
-        self._top_right_box = QtGui.QHBoxLayout()
+        self._top_right_box = QtWidgets.QHBoxLayout()
         self._top_right.setLayout(self._top_right_box)
         self._top_right_contents = None
         self._top_right_box.setContentsMargins(2, 2, 2, 2)
 
-        self._bottom = QtGui.QFrame()
-        self._bottom.setFrameShape(QtGui.QFrame.StyledPanel)
-        self._bottom_box = QtGui.QHBoxLayout()
+        self._bottom = QtWidgets.QFrame()
+        self._bottom.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self._bottom_box = QtWidgets.QHBoxLayout()
         self._bottom.setLayout(self._bottom_box)
         self._bottom_contents: Optional[QtWidgets.QWidget] = None
 
@@ -152,7 +154,7 @@ class ContextArea(QtGui.QWidget):
         self._top.setLayout(self._topbox)
         self._topbox.setContentsMargins(0, 0, 0, 2)
 
-        self._splitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+        self._splitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         self._splitter.addWidget(self._top)
         self._splitter.addWidget(self._bottom)
         self._splitter.setStretchFactor(1, 2)
@@ -161,15 +163,15 @@ class ContextArea(QtGui.QWidget):
         self.setLayout(self._hbox)
         self._hbox.setContentsMargins(0, 0, 2, 0)
 
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
         )
         self.setSizePolicy(sizePolicy)
 
 
-class DetailsWidget(QtGui.QWidget, Ui_DetailsWidget):
+class DetailsWidget(QtWidgets.QWidget, Ui_DetailsWidget):
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_DetailsWidget.__init__(self)
 
         self.setupUi(self)
@@ -188,12 +190,12 @@ class DetailsWidget(QtGui.QWidget, Ui_DetailsWidget):
         self.descriptionLabel.setText(descriptionStr)
 
 
-class FileManagerWidget(QtGui.QWidget, Ui_FileManagerWidget):
+class FileManagerWidget(QtWidgets.QWidget, Ui_FileManagerWidget):
     load_file = QtCore.Signal(object, str, str)
     save_file = QtCore.Signal(object, str, str)
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_FileManagerWidget.__init__(self)
         self._load_ext_dict = None
         self._save_ext_dict = None
@@ -212,7 +214,7 @@ class FileManagerWidget(QtGui.QWidget, Ui_FileManagerWidget):
 
         self.getPathButton.clicked.connect(self._set_path)
         self.pathEdit.textChanged.connect(self._set_okay)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(
             self._emit_file_signal
         )
 
@@ -222,7 +224,7 @@ class FileManagerWidget(QtGui.QWidget, Ui_FileManagerWidget):
         self.pathEdit.clear()
         self.saveButton.setDisabled(True)
         self.loadButton.setDisabled(True)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setDisabled(True)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDisabled(True)
 
         self._load_ext_dict = None
         self._save_ext_dict = None
@@ -274,11 +276,11 @@ class FileManagerWidget(QtGui.QWidget, Ui_FileManagerWidget):
 
         if self._file_mode == "load":
             msg = "Select path to load"
-            dialog = QtGui.QFileDialog(self, msg, HOME)
-            dialog.setFileMode(QtGui.QFileDialog.ExistingFile)
-            dialog.setOption(QtGui.QFileDialog.DontConfirmOverwrite, True)
+            dialog = QtWidgets.QFileDialog(self, msg, HOME)
+            dialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
+            dialog.setOption(QtWidgets.QFileDialog.DontConfirmOverwrite, True)
             dialog.setNameFilter(name_filter)
-            dialog.setLabelText(QtGui.QFileDialog.Accept, "Select")
+            dialog.setLabelText(QtWidgets.QFileDialog.Accept, "Select")
             dialog.selectFile(self.pathEdit.text())
 
             if dialog.exec_():
@@ -306,9 +308,13 @@ class FileManagerWidget(QtGui.QWidget, Ui_FileManagerWidget):
         _, file_ext = os.path.splitext(str(file_path))
 
         if file_ext in valid_exts:
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(
+                True
+            )
         else:
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setDisabled(True)
+            self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDisabled(
+                True
+            )
 
     @QtCore.Slot()
     def _emit_file_signal(self):
@@ -350,12 +356,12 @@ class FileManagerWidget(QtGui.QWidget, Ui_FileManagerWidget):
         return valid_exts
 
 
-class PlotManagerWidget(QtGui.QWidget, Ui_PlotManagerWidget):
+class PlotManagerWidget(QtWidgets.QWidget, Ui_PlotManagerWidget):
     plot = QtCore.Signal(object, object)
     save = QtCore.Signal(object, str, object, object)
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_PlotManagerWidget.__init__(self)
         self._controller = None
         self._ext_types = None
@@ -368,18 +374,18 @@ class PlotManagerWidget(QtGui.QWidget, Ui_PlotManagerWidget):
         self.setupUi(self)
 
         # Add buttons
-        self.plotButton = QtGui.QPushButton("Plot")
-        self.saveButton = QtGui.QPushButton("Save")
-        self.defaultButton = QtGui.QPushButton("Default")
+        self.plotButton = QtWidgets.QPushButton("Plot")
+        self.saveButton = QtWidgets.QPushButton("Save")
+        self.defaultButton = QtWidgets.QPushButton("Default")
 
         self.buttonBox.addButton(
-            self.plotButton, QtGui.QDialogButtonBox.ActionRole
+            self.plotButton, QtWidgets.QDialogButtonBox.ActionRole
         )
         self.buttonBox.addButton(
-            self.saveButton, QtGui.QDialogButtonBox.ActionRole
+            self.saveButton, QtWidgets.QDialogButtonBox.ActionRole
         )
         self.buttonBox.addButton(
-            self.defaultButton, QtGui.QDialogButtonBox.ResetRole
+            self.defaultButton, QtWidgets.QDialogButtonBox.ResetRole
         )
 
         self.getPathButton.clicked.connect(self._set_path)
@@ -522,8 +528,8 @@ class ComparisonWidget:
         self.setupUi(self)
 
         # Buttons
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setDisabled(True)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Save).setDisabled(True)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDisabled(True)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Save).setDisabled(True)
 
     def _get_var_id(self, var_name):
         return self._var_ids[var_name]
@@ -601,7 +607,7 @@ class ComparisonWidget:
 
 
 class LevelComparison(
-    QtGui.QWidget, Ui_LevelComparisonWidget, ComparisonWidget
+    QtWidgets.QWidget, Ui_LevelComparisonWidget, ComparisonWidget
 ):
     plot_levels = QtCore.Signal(str, bool)
     tab_levels = QtCore.Signal(str, bool)
@@ -609,23 +615,23 @@ class LevelComparison(
     save_data = QtCore.Signal()
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_LevelComparisonWidget.__init__(self)
         ComparisonWidget.__init__(self)
 
     def _init_ui(self):
         super(LevelComparison, self)._init_ui()
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(
             self._emit_widget_request
         )
-        self.buttonBox.button(QtGui.QDialogButtonBox.Save).clicked.connect(
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Save).clicked.connect(
             self._save
         )
 
         # Custom var box
         self.varBox = ExtendedComboBox(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -665,13 +671,17 @@ class LevelComparison(
     @QtCore.Slot(int)
     def _ok_button_ui_switch(self, box_number):
         if box_number == -1:
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setDisabled(True)
+            self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDisabled(
+                True
+            )
         else:
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(
+                True
+            )
 
 
 class SimulationComparison(
-    QtGui.QWidget, Ui_SimComparisonWidget, ComparisonWidget
+    QtWidgets.QWidget, Ui_SimComparisonWidget, ComparisonWidget
 ):
     plot_levels = QtCore.Signal(str, str, bool)
     tab_levels = QtCore.Signal(str, str, bool)
@@ -679,23 +689,23 @@ class SimulationComparison(
     save_data = QtCore.Signal()
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_SimComparisonWidget.__init__(self)
         ComparisonWidget.__init__(self)
 
     def _init_ui(self):
         super(SimulationComparison, self)._init_ui()
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(
             self._emit_widget_request
         )
-        self.buttonBox.button(QtGui.QDialogButtonBox.Save).clicked.connect(
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Save).clicked.connect(
             self._save
         )
 
         # Custom var boxes
         self.varBox = ExtendedComboBox(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -707,8 +717,8 @@ class SimulationComparison(
         self.bottomHorizontalLayout.addWidget(self.varBox)
 
         self.modBox = ExtendedComboBox(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -761,6 +771,10 @@ class SimulationComparison(
     @QtCore.Slot(int)
     def _ok_button_ui_switch(self, box_number):
         if box_number == -1:
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setDisabled(True)
+            self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDisabled(
+                True
+            )
         else:
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(
+                True
+            )

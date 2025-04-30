@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2018 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,43 +16,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from PySide6 import QtCore, QtGui
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
-
-
-from .display import is_high_dpi
-
-if is_high_dpi():
-    pass
-else:
-    pass
+from PySide6 import QtGui
 
 
 def make_redicon_pixmap():
-    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/square-rounded-128.png"))
-
+    pixmap = QtGui.QPixmap(":/icons/icons/square-rounded-128.png")
     return pixmap
 
 
 def make_greenicon_pixmap():
-    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/circle-128.png"))
-
+    pixmap = QtGui.QPixmap(":/icons/icons/circle-128.png")
     return pixmap
 
 
 def make_blueicon_pixmap():
-    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/diamond-rounded-128.png"))
-
+    pixmap = QtGui.QPixmap(":/icons/icons/diamond-rounded-128.png")
     return pixmap
 
 
 def make_buttoncancel_pixmap():
-    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/button_cancel-128.png"))
-
+    pixmap = QtGui.QPixmap(":/icons/icons/button_cancel-128.png")
     return pixmap
