@@ -36,7 +36,7 @@ def test_FileManagerWidget_load(fm_widget):
     load_ext_dict = {".in": "mock"}
     save_ext_dict = None
 
-    fm_widget._set_files("mock", load_ext_dict, save_ext_dict)
+    fm_widget.set_files("mock", load_ext_dict, save_ext_dict)
 
     assert fm_widget.loadButton.isEnabled()
     assert not fm_widget.saveButton.isEnabled()
@@ -57,7 +57,7 @@ def fm_widget_both(fm_widget):
     load_ext_dict = {".in": "mock"}
     save_ext_dict = {".out": "mock"}
 
-    fm_widget._set_files("mock", load_ext_dict, save_ext_dict)
+    fm_widget.set_files("mock", load_ext_dict, save_ext_dict)
 
     return fm_widget
 

@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from typing import TYPE_CHECKING
+
 from dtocean_core.pipeline import Tree
 from dtocean_plugins.strategies.sensitivity import UnitSensitivity
 from mdo_engine.utilities.misc import OrderedSet
@@ -25,9 +27,8 @@ from ..utils.display import is_high_dpi
 from ..widgets.extendedcombobox import ExtendedComboBox
 from . import GUIStrategy, PyQtABCMeta, StrategyWidget
 
-if is_high_dpi():
+if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.unitsensitivity import Ui_UnitSensitivityWidget
-
 else:
     from ..designer.low.unitsensitivity import Ui_UnitSensitivityWidget
 
@@ -61,7 +62,7 @@ class GUIUnitSensitivity(GUIStrategy, UnitSensitivity):
 
 class UnitSensitivityWidget(
     QtWidgets.QWidget,
-    Ui_UnitSensitivityWidget,  # type: ignore
+    Ui_UnitSensitivityWidget,
     StrategyWidget,
     metaclass=PyQtABCMeta,
 ):

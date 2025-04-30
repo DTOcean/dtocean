@@ -2449,7 +2449,7 @@ class DTOceanWindow(MainWindow):
             self._data_file_manager.save_file.disconnect()
             self._data_file_manager._save_connected = False
 
-        self._data_file_manager._set_files(
+        self._data_file_manager.set_files(
             variable, load_ext_dict, save_ext_dict
         )
 

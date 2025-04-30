@@ -191,7 +191,7 @@ class DataTableWidget(QtWidgets.QWidget):
 
         return
 
-    @Slot(bool)  # type: ignore
+    @Slot(bool)
     def enableEditing(self, enabled: bool):
         """Enable the editing buttons to add/remove rows/columns and to edit the data.
 
@@ -230,7 +230,7 @@ class DataTableWidget(QtWidgets.QWidget):
                 button.setChecked(False)
             button.blockSignals(False)
 
-    @Slot(str, object, object)  # type: ignore
+    @Slot(str, object, object)
     def addColumn(self, columnName, dtype, defaultValue):
         """Adds a column with the given parameters to the underlying model
 
@@ -251,7 +251,7 @@ class DataTableWidget(QtWidgets.QWidget):
 
         self.addColumnButton.setChecked(False)
 
-    @Slot(bool)  # type: ignore
+    @Slot(bool)
     def showAddColumnDialog(self, triggered):
         """Display the dialog to add a column to the model.
 
@@ -270,7 +270,7 @@ class DataTableWidget(QtWidgets.QWidget):
         dialog.rejected.connect(self.uncheckButton)
         dialog.show()
 
-    @Slot(bool)  # type: ignore
+    @Slot(bool)
     def addRow(self, triggered):
         """Adds a row to the model.
 
@@ -292,7 +292,7 @@ class DataTableWidget(QtWidgets.QWidget):
         assert isinstance(sender, QtWidgets.QToolButton)
         sender.setChecked(False)
 
-    @Slot(bool)  # type: ignore
+    @Slot(bool)
     def removeRow(self, triggered):
         """Removes a row to the model.
 
@@ -318,7 +318,7 @@ class DataTableWidget(QtWidgets.QWidget):
         assert isinstance(sender, QtWidgets.QToolButton)
         sender.setChecked(False)
 
-    @Slot(list)  # type: ignore
+    @Slot(list)
     def removeColumns(self, columnNames):
         """Removes one or multiple columns from the model.
 
@@ -338,7 +338,7 @@ class DataTableWidget(QtWidgets.QWidget):
 
         self.removeColumnButton.setChecked(False)
 
-    @Slot(bool)  # type: ignore
+    @Slot(bool)
     def showRemoveColumnDialog(self, triggered):
         """Display the dialog to remove column(s) from the model.
 

@@ -160,7 +160,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mesh_view = PythonQtOpenGLMeshViewer(path["path"], path["f_n"])
         self.mesh_view.show()
 
-    @Slot(str)  # pyright: ignore
+    @Slot(str)
     def handle_message(self, message: str):
         self.console.insertPlainText(message)
 
@@ -527,7 +527,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.handle_list_selection
         )
 
-    @Slot(QItemSelection, QItemSelection)  # type: ignore
+    @Slot(QItemSelection, QItemSelection)
     def handle_list_selection(
         self,
         selected: QItemSelection,

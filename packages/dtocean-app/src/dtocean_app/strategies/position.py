@@ -27,7 +27,7 @@ import traceback
 import types
 from copy import deepcopy
 from functools import partial
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import matplotlib as mpl
 import matplotlib.colors as colors
@@ -59,14 +59,10 @@ from ..widgets.extendedcombobox import ExtendedComboBox
 from ..widgets.scientificselect import ScientificDoubleSpinBox
 from . import GUIStrategy, PyQtABCMeta, StrategyWidget
 
-if is_high_dpi():
-    from ..designer.high.advancedposition import (
-        Ui_AdvancedPositionWidget,
-    )
+if is_high_dpi() or TYPE_CHECKING:
+    from ..designer.high.advancedposition import Ui_AdvancedPositionWidget
 else:
-    from ..designer.low.advancedposition import (
-        Ui_AdvancedPositionWidget,
-    )
+    from ..designer.low.advancedposition import Ui_AdvancedPositionWidget
 
 
 # Set up logging
@@ -171,7 +167,7 @@ class GUIAdvancedPosition(GUIStrategy, AdvancedPosition, metaclass=PyQtABCMeta):
 
 class AdvancedPositionWidget(
     QtWidgets.QWidget,
-    Ui_AdvancedPositionWidget,  # type: ignore
+    Ui_AdvancedPositionWidget,
     StrategyWidget,
     metaclass=PyQtABCMeta,
 ):
