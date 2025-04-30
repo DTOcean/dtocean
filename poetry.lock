@@ -445,9 +445,12 @@ develop = true
 [package.dependencies]
 dtocean-core = {path = "../dtocean-core", develop = true}
 matplotlib = ">=3.8.4,<3.9"
+mdo-engine = {path = "../mdo-engine", develop = true}
 numpy = ">=1.26.4,<2.0.0"
 pandas = ">=2.2.3,<3.0.0"
 polite-config = {path = "../polite-config", develop = true}
+pyside6 = "^6.9.0"
+shiboken6 = "^6.9.0"
 
 [package.source]
 type = "directory"

@@ -25,22 +25,19 @@ from __future__ import unicode_literals
 
 import os
 
-from PyQt4 import QtGui, QtCore
-from matplotlib.backends.backend_qt4agg import (
-                                        FigureCanvasQTAgg as FigureCanvas)
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from PySide6 import QtCore, QtGui
 
-plt.style.use('ggplot')
-plt.rcParams['svg.fonttype'] = 'none'
+plt.style.use("ggplot")
+plt.rcParams["svg.fonttype"] = "none"
 
 module_path = os.path.realpath(__file__)
-test_image_path = os.path.join(module_path, '..', 'test_images')
+test_image_path = os.path.join(module_path, "..", "test_images")
 
 
 class ImageLabel(QtGui.QLabel):
-
     def __init__(self, parent, img=None):
-
         super(ImageLabel, self).__init__(parent)
         self.setFrameStyle(QtGui.QFrame.StyledPanel)
         self._pixmap = None
@@ -49,134 +46,97 @@ class ImageLabel(QtGui.QLabel):
 
         if img is not None:
             self._img_path = img
-            self._pixmap = QtGui.QPixmap(img);
-
-        return
+            self._pixmap = QtGui.QPixmap(img)
 
     def _init_ui(self, state=None):
-
         self._display_window._add_display(self)
         self._set_state(state)
 
-        return
-
     def paintEvent(self, event):
-
         if self._pixmap is not None:
-
             size = self.size()
             painter = QtGui.QPainter(self)
-            point = QtCore.QPoint(0,0)
+            point = QtCore.QPoint(0, 0)
             scaledPix = self._pixmap.scaled(
-                                size,
-                                QtCore.Qt.KeepAspectRatio,
-                                transformMode=QtCore.Qt.SmoothTransformation)
+                size,
+                QtCore.Qt.KeepAspectRatio,
+                transformMode=QtCore.Qt.SmoothTransformation,
+            )
             # start painting the label from left upper corner
-            point.setX((size.width() - scaledPix.width())/2.)
-            point.setY((size.height() - scaledPix.height())/2.)
+            point.setX((size.width() - scaledPix.width()) / 2.0)
+            point.setY((size.height() - scaledPix.height()) / 2.0)
             painter.drawPixmap(point, scaledPix)
 
-        return
-
     def _update_display(self, img, *args, **kwargs):
-
         self._img_path = img
 
         if self._img_path is None:
-
             self._pixmap = None
 
         else:
-
             self._pixmap = QtGui.QPixmap(img)
 
         self.repaint()
 
-        return
-
     def _clear_display(self):
-
         self._update_display(None)
-
-        return
 
 
 class ImageDictLabel(ImageLabel):
-
     def __init__(self, parent, image_dict):
-
         super(ImageDictLabel, self).__init__(parent)
         self._image_dict = image_dict
 
-        return
-
     def _update_display(self, result, *args, **kwargs):
-
         key = result.values()[0]
         img = self._image_dict[key]
         abs_path = os.path.join(test_image_path, img)
         super(ImageDictLabel, self)._update_display(abs_path)
 
-        return
-
     def _clear_display(self):
-
         super(ImageDictLabel, self)._update_display(None)
-
-        return
-
 
 
 class MPLWidget(FigureCanvas):
-    
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
-    
-    closing = QtCore.pyqtSignal()
-    
+
+    closing = QtCore.Signal()
+
     def __init__(self, figure, parent=None):
-        
         FigureCanvas.__init__(self, figure)
-        FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+        FigureCanvas.setSizePolicy(
+            self, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        )
         FigureCanvas.updateGeometry(self)
-        
-        return
-    
+
     def closeEvent(self, event):
-        
         self.closing.emit()
         event.accept()
-        
-        return
 
 
 def get_current_filetypes():
-    
-    if not plt.get_fignums(): return {}
-    
+    if not plt.get_fignums():
+        return {}
+
     fig = plt.gcf()
     filetypes = fig.canvas.get_supported_filetypes()
-    
+
     return filetypes
 
 
 def save_current_figure(figure_path):
-    
-    if not plt.get_fignums(): return
-    
+    if not plt.get_fignums():
+        return
+
     fig = plt.gcf()
     fig.savefig(figure_path)
-    
-    return
 
 
 def get_current_figure_size():
-    
     if not plt.get_fignums():
         raise RuntimeError("No open plots")
-    
+
     fig = plt.gcf()
     size_inches = fig.get_size_inches()
-    
+
     return size_inches

@@ -27,38 +27,32 @@ From
 """
 
 # Built in modules
-import sys
 import logging
+import sys
 
-from PyQt4 import QtCore
+from PySide6 import QtCore
 
 
 class QtHandler(logging.Handler):
-    
     debug = False
 
     def __init__(self):
-
         super(QtHandler, self).__init__()
 
-        return
-
     def emit(self, record):
-        
-        if self.debug: return
+        if self.debug:
+            return
 
         record = self.format(record)
 
-        if record: XStream.stdout().write('{}'.format(record));
-
-        return
+        if record:
+            XStream.stdout().write("{}".format(record))
 
 
 class XStream(QtCore.QObject):
-
     _stdout = None
     _stderr = None
-    messageWritten = QtCore.pyqtSignal(str)
+    messageWritten = QtCore.Signal(str)
 
     def flush(self):
         pass
@@ -67,20 +61,19 @@ class XStream(QtCore.QObject):
         return -1
 
     def write(self, msg):
-        if ( not self.signalsBlocked() ):
+        if not self.signalsBlocked():
             self.messageWritten.emit(unicode(msg))
 
     @staticmethod
     def stdout():
-        if ( not XStream._stdout ):
+        if not XStream._stdout:
             XStream._stdout = XStream()
             sys.stdout = XStream._stdout
         return XStream._stdout
 
     @staticmethod
     def stderr():
-        if ( not XStream._stderr ):
+        if not XStream._stderr:
             XStream._stderr = XStream()
             sys.stderr = XStream._stderr
         return XStream._stderr
-

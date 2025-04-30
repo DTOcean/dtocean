@@ -34,7 +34,8 @@ class ConnectorMenu:
 
     __metaclass__ = abc.ABCMeta
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def _hub_name(self):
         return "Should never get here"
 

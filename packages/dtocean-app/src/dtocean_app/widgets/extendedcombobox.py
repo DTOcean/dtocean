@@ -21,13 +21,12 @@ Created on Sun Nov 25 16:49:55 2018
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-from PyQt4 import QtCore, QtGui
+from PySide6 import QtCore, QtGui
 
 
 class ExtendedComboBox(QtGui.QComboBox):
-    
     # https://stackoverflow.com/a/7693234/3215152
-    
+
     def __init__(self, parent=None):
         super(ExtendedComboBox, self).__init__(parent)
 
@@ -41,44 +40,35 @@ class ExtendedComboBox(QtGui.QComboBox):
 
         # Add a completer, which uses the filter model
         self.completer = QtGui.QCompleter(self.pFilterModel, self)
-        
+
         # Always show all (filtered) completions
         self.completer.setCompletionMode(
-                                QtGui.QCompleter.UnfilteredPopupCompletion)
+            QtGui.QCompleter.UnfilteredPopupCompletion
+        )
         self.setCompleter(self.completer)
 
         # Connect signals
         self.lineEdit().textEdited[str].connect(
-                                    self.pFilterModel.setFilterFixedString)
+            self.pFilterModel.setFilterFixedString
+        )
         self.completer.activated.connect(self.on_completer_activated)
-        
-        return
 
     # On selection of an item from the completer, select the corresponding item
-    # from combobox 
+    # from combobox
     def on_completer_activated(self, text):
-        
         if text:
             index = self.findText(text)
             self.setCurrentIndex(index)
-            
-        return
 
-    # On model change, update the models of the filter and completer as well 
+    # On model change, update the models of the filter and completer as well
     def setModel(self, model):
-        
         super(ExtendedComboBox, self).setModel(model)
         self.pFilterModel.setSourceModel(model)
         self.completer.setModel(self.pFilterModel)
-        
-        return
 
     # On model column change, update the model column of the filter and
     # completer as well
     def setModelColumn(self, column):
-        
         self.completer.setCompletionColumn(column)
         self.pFilterModel.setFilterKeyColumn(column)
         super(ExtendedComboBox, self).setModelColumn(column)
-        
-        return

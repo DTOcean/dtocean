@@ -25,73 +25,56 @@ Created on Sat Oct 15 12:14:30 2016
 
 import os
 
-from PIL.Image import WEB
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import QUrl
-from PyQt4.QtWebKit import QWebView
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import QUrl
+from PySide6.QtWebEngineWidgets import QWebEngineView
 
 from .utils.config import get_install_paths
 from .widgets.dialogs import Message
 
 
-class HelpWidget(QtGui.QDialog):
-    
-    force_quit = QtCore.pyqtSignal()
-    
+class HelpWidget(QtWidgets.QDialog):
+    force_quit = QtCore.Signal()
+
     def __init__(self, parent=None):
-        
         super(HelpWidget, self).__init__(parent)
-        self._layout = None
         self._msg_widget = None
         self._url_widget = None
-        
+
         self._init_ui()
-        
-        return
-        
+
     def _init_ui(self):
-        
-        self._layout = QtGui.QVBoxLayout(self)
-        
+        self._layout = QtWidgets.QVBoxLayout(self)
+
         man_paths = self._get_man_paths()
-        
+
         if man_paths is None:
             self._init_message()
         else:
             self._init_help(man_paths)
-            
+
         self.setLayout(self._layout)
 
         self.resize(900, 800)
         self.setWindowTitle("DTOcean User Manual")
-            
-        return
-        
+
     def _init_message(self):
-        
         text = "No manuals installated"
         self._msg_widget = Message(self, text)
-        
+
         self._layout.addWidget(self._msg_widget)
-        
-        return
-        
+
     def _init_help(self, path_dict):
-        
         index_path = os.path.join(path_dict["man_user_path"], "index.html")
         url = QUrl.fromLocalFile(index_path)
 
-        self._url_widget = QWebView(self)        
+        self._url_widget = QWebEngineView(self)
         self._url_widget.load(url)
         self._url_widget.show()
-        
-        self._layout.addWidget(self._url_widget)
-             
-        return
-        
-    def _get_man_paths(self):
-        
-        path_dict = get_install_paths()
-                         
-        return path_dict
 
+        self._layout.addWidget(self._url_widget)
+
+    def _get_man_paths(self):
+        path_dict = get_install_paths()
+
+        return path_dict

@@ -28,7 +28,7 @@ from copy import deepcopy
 
 import pandas as pd
 from PIL import Image
-from PyQt4 import QtCore, QtGui
+from PySide6 import QtCore, QtGui
 
 from dtocean_app.core import GUICore
 from dtocean_app.main import Shell
@@ -82,8 +82,6 @@ class MockModule(ModuleInterface):
     
     def connect(self, debug_entry=False,
                       export_data=True):
-        
-        return
 
 
 @pytest.fixture(scope="module")
