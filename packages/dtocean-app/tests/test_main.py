@@ -24,7 +24,7 @@ import contextlib
 import numpy as np
 import pytest
 import matplotlib.pyplot as plt
-from PyQt4 import QtCore, QtGui
+from PySide6 import QtCore, QtGui
 
 from polite.paths import Directory
 from dtocean_core.interfaces import ModuleInterface, ThemeInterface
@@ -104,8 +104,6 @@ class MockModule(ModuleInterface):
                  
     def connect(self, debug_entry=False,
                       export_data=True):
-        
-        return
 
 
 class MockTheme(ThemeInterface):
@@ -161,8 +159,6 @@ class MockTheme(ThemeInterface):
                  
     def connect(self, debug_entry=False,
                       export_data=True):
-        
-        return
 
 
 class MockTool(GUITool, Tool):

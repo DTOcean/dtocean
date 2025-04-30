@@ -21,27 +21,21 @@ from . import GUITool
 
 
 class GUIWECSimulatorTool(GUITool, WECSimulatorTool):
-    
     """A basic strategy which will run all selected modules and themes in
     sequence."""
-    
+
     def __init__(self):
-        
         WECSimulatorTool.__init__(self)
         GUITool.__init__(self)
-        
-        return
-    
-    def get_weight(self):
 
-        '''A method for getting the order of priority of the strategy.
+    def get_weight(self):
+        """A method for getting the order of priority of the strategy.
 
         Returns:
           int
-        '''
+        """
 
         return 1
-    
-    def has_widget(self):
 
+    def has_widget(self):
         return False

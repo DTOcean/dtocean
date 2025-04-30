@@ -19,36 +19,25 @@ import abc
 
 
 class GUITool(object):
-    
     __metaclass__ = abc.ABCMeta
-    
+
     """Plugin Discovery"""
-    
+
     def __init__(self):
-        
         self.parent = None
-        
-        return
-    
+
     @abc.abstractmethod
     def get_weight(self):
-        
-        '''A method for getting the order of priority of the tool.
-        
+        """A method for getting the order of priority of the tool.
+
         Returns:
           int
-        '''
-        
-        return
-    
+        """
+
     @abc.abstractmethod
     def has_widget(self):
-        
-        '''A method for indicating if the tool creates a widget
-        
+        """A method for indicating if the tool creates a widget
+
         Returns:
           bool
-        '''
-        
-        return
-
+        """

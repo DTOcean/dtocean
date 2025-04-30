@@ -18,18 +18,17 @@
 # pylint: disable=redefined-outer-name,protected-access
 
 import pytest
-from PyQt4 import QtCore, QtGui
+from PySide6 import QtCore, QtGui
 
-from dtocean_app.widgets.dialogs import TestDataPicker, About
+from dtocean_app.widgets.dialogs import About, TestDataPicker
 
 
 @pytest.fixture
 def picker_widget(qtbot):
-    
     widget = TestDataPicker()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     return widget
 
 
@@ -38,75 +37,74 @@ def test_TestDataPicker_init(picker_widget):
 
 
 def test_TestDataPicker_write_path(mocker, qtbot, picker_widget):
-    
     expected = "mock.pkl"
-    mocker.patch.object(QtGui.QFileDialog,
-                        'getOpenFileName',
-                        return_value=expected)
-    
+    mocker.patch.object(
+        QtGui.QFileDialog, "getOpenFileName", return_value=expected
+    )
+
     qtbot.mouseClick(picker_widget.browseButton, QtCore.Qt.LeftButton)
-    
+
     def has_path():
         assert str(picker_widget.pathLineEdit.text())
-    
+
     qtbot.waitUntil(has_path)
-    
+
     assert str(picker_widget.pathLineEdit.text()) == expected
 
 
 def test_About_init(qtbot):
-    
     widget = About()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     assert widget.isVisible()
 
 
 def test_About_names_none(qtbot, mocker):
-    
     from dtocean_app.widgets.dialogs import yaml
-    
-    mocker.patch.object(yaml, 'load', return_value=None)
-    
+
+    mocker.patch.object(yaml, "load", return_value=None)
+
     widget = About()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     assert widget.peopleIntroLabel is None
     assert widget.line is None
     assert widget.peopleLabel is None
 
 
-@pytest.mark.parametrize("names, expected", [
-                            (['mock'], 'mock'),
-                            (['mock', 'mok'], 'mock and mok'),
-                            (['mock', 'moc', 'mok'], 'mock, moc and mok')])
+@pytest.mark.parametrize(
+    "names, expected",
+    [
+        (["mock"], "mock"),
+        (["mock", "mok"], "mock and mok"),
+        (["mock", "moc", "mok"], "mock, moc and mok"),
+    ],
+)
 def test_About_names(qtbot, mocker, names, expected):
-    
     from dtocean_app.widgets.dialogs import yaml
-    
-    mocker.patch.object(yaml, 'load', return_value=names)
-    
+
+    mocker.patch.object(yaml, "load", return_value=names)
+
     widget = About()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     assert widget.peopleIntroLabel is not None
     assert widget.line is not None
     assert str(widget.peopleLabel.text()) == expected
 
 
 def test_About_pix_none(qtbot, mocker):
-    
     from dtocean_app.widgets.dialogs import glob
-    
-    mocker.patch.object(glob, 'glob', return_value=[])
-    
+
+    mocker.patch.object(glob, "glob", return_value=[])
+
     widget = About()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     assert widget._n_pix == 0
     assert widget._image_files is None
     assert widget.insitutionIntroLabel is None
@@ -116,15 +114,14 @@ def test_About_pix_none(qtbot, mocker):
 
 
 def test_About_pix_one(qtbot, mocker, picture):
-    
     from dtocean_app.widgets.dialogs import glob
-    
-    mocker.patch.object(glob, 'glob', return_value=[picture])
-    
+
+    mocker.patch.object(glob, "glob", return_value=[picture])
+
     widget = About()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     assert widget._n_pix == 1
     assert widget._image_files is not None
     assert widget.insitutionIntroLabel is not None
@@ -138,15 +135,14 @@ def test_About_pix_one(qtbot, mocker, picture):
 
 
 def test_About_pix_many(qtbot, mocker, picture):
-    
     from dtocean_app.widgets.dialogs import glob
-    
-    mocker.patch.object(glob, 'glob', return_value=[picture, picture])
-    
+
+    mocker.patch.object(glob, "glob", return_value=[picture, picture])
+
     widget = About()
     widget.show()
     qtbot.addWidget(widget)
-    
+
     assert widget._n_pix == 2
     assert widget._image_files is not None
     assert widget.insitutionIntroLabel is not None

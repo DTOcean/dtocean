@@ -16,47 +16,43 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from PyQt4 import QtCore, QtGui
+from PySide6 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
+
 
 from .display import is_high_dpi
 
 if is_high_dpi():
-    from ..designer.high import resources_pipeline_rc
+    pass
 else:
-    from ..designer.low import resources_pipeline_rc
+    pass
 
 
 def make_redicon_pixmap():
-
-    pixmap =  QtGui.QPixmap(
-                        _fromUtf8(":/icons/icons/square-rounded-128.png"))
+    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/square-rounded-128.png"))
 
     return pixmap
+
 
 def make_greenicon_pixmap():
-
-    pixmap =  QtGui.QPixmap(
-                        _fromUtf8(":/icons/icons/circle-128.png"))
+    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/circle-128.png"))
 
     return pixmap
+
 
 def make_blueicon_pixmap():
-
-    pixmap =  QtGui.QPixmap(
-                        _fromUtf8(":/icons/icons/diamond-rounded-128.png"))
+    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/diamond-rounded-128.png"))
 
     return pixmap
+
 
 def make_buttoncancel_pixmap():
-
-    pixmap =  QtGui.QPixmap(
-                        _fromUtf8(":/icons/icons/button_cancel-128.png"))
+    pixmap = QtGui.QPixmap(_fromUtf8(":/icons/icons/button_cancel-128.png"))
 
     return pixmap
-

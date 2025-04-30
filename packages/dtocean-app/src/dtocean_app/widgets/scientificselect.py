@@ -23,44 +23,46 @@ Created on Thu Apr 23 12:51:14 2015
 
 import re
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QValidator, QDoubleSpinBox
+from PySide6 import QtCore, QtGui
+from PySide6.QtGui import QDoubleSpinBox, QValidator
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
-    
+
 # Fork of jdreaver/scientificspin.py
 # https://gist.github.com/jdreaver/0be2e44981159d0854f5
 
-_float_re = re.compile(r'(([+-]?\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)')
+_float_re = re.compile(r"(([+-]?\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)")
 
 
 class ScientificDoubleSpinBox(QDoubleSpinBox):
-
     def __init__(self, *args, **kwargs):
         super(QDoubleSpinBox, self).__init__(*args, **kwargs)
-        self.setMinimum(-1.e+18)
-        self.setMaximum(1.e+18)
+        self.setMinimum(-1.0e18)
+        self.setMaximum(1.0e18)
         self.setDecimals(323)
 
     def validate(self, text, position):
-        
         string = str(text)
 
         if valid_float_string(string):
             return (QValidator.Acceptable, position)
-        if string == "" or string[position - 1] in 'e.-+':
+        if string == "" or string[position - 1] in "e.-+":
             return (QValidator.Intermediate, position)
 
         return (QValidator.Invalid, position)
@@ -89,68 +91,78 @@ class Ui_ScientificSelect(object):
         self.gridLayout = QtGui.QGridLayout()
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.staticLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-                                       QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-                self.staticLabel.sizePolicy().hasHeightForWidth())
+            self.staticLabel.sizePolicy().hasHeightForWidth()
+        )
         self.staticLabel.setSizePolicy(sizePolicy)
         self.staticLabel.setMinimumSize(QtCore.QSize(200, 0))
         self.staticLabel.setObjectName(_fromUtf8("staticLabel"))
         self.gridLayout.addWidget(self.staticLabel, 0, 0, 1, 1)
         self.valueLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
-                                       QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-                self.valueLabel.sizePolicy().hasHeightForWidth())
+            self.valueLabel.sizePolicy().hasHeightForWidth()
+        )
         self.valueLabel.setSizePolicy(sizePolicy)
         self.valueLabel.setObjectName(_fromUtf8("valueLabel"))
         self.gridLayout.addWidget(self.valueLabel, 0, 1, 1, 2)
         self.questionLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-                                       QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-                self.questionLabel.sizePolicy().hasHeightForWidth())
+            self.questionLabel.sizePolicy().hasHeightForWidth()
+        )
         self.questionLabel.setSizePolicy(sizePolicy)
         self.questionLabel.setMinimumSize(QtCore.QSize(200, 0))
         self.questionLabel.setObjectName(_fromUtf8("questionLabel"))
         self.gridLayout.addWidget(self.questionLabel, 1, 0, 1, 1)
         self.unitsLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-                                       QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-                self.unitsLabel.sizePolicy().hasHeightForWidth())
+            self.unitsLabel.sizePolicy().hasHeightForWidth()
+        )
         self.unitsLabel.setSizePolicy(sizePolicy)
         self.unitsLabel.setObjectName(_fromUtf8("unitsLabel"))
         self.gridLayout.addWidget(self.unitsLabel, 1, 2, 1, 1)
         self.doubleSpinBox = ScientificDoubleSpinBox(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-                self.doubleSpinBox.sizePolicy().hasHeightForWidth())
+            self.doubleSpinBox.sizePolicy().hasHeightForWidth()
+        )
         self.doubleSpinBox.setSizePolicy(sizePolicy)
         self.doubleSpinBox.setMinimumSize(QtCore.QSize(0, 0))
         self.doubleSpinBox.setKeyboardTracking(False)
         self.doubleSpinBox.setObjectName(_fromUtf8("doubleSpinBox"))
         self.gridLayout.addWidget(self.doubleSpinBox, 1, 1, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)
-        spacerItem = QtGui.QSpacerItem(20,
-                                       86,
-                                       QtGui.QSizePolicy.Minimum,
-                                       QtGui.QSizePolicy.Expanding)
+        spacerItem = QtGui.QSpacerItem(
+            20, 86, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.verticalLayout.addItem(spacerItem)
         self.buttonBox = QtGui.QDialogButtonBox(FloatSelect)
         self.buttonBox.setStandardButtons(
-                QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok
+        )
         self.buttonBox.setCenterButtons(False)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.verticalLayout.addWidget(self.buttonBox)
@@ -160,13 +172,13 @@ class Ui_ScientificSelect(object):
 
     def retranslateUi(self, FloatSelect):
         FloatSelect.setWindowTitle(_translate("FloatSelect", "Form", None))
-        self.staticLabel.setText(_translate("FloatSelect",
-                                            "Current value:",
-                                            None))
+        self.staticLabel.setText(
+            _translate("FloatSelect", "Current value:", None)
+        )
         self.valueLabel.setText(_translate("FloatSelect", "None", None))
-        self.questionLabel.setText(_translate("FloatSelect",
-                                              "Please enter a number:",
-                                              None))
+        self.questionLabel.setText(
+            _translate("FloatSelect", "Please enter a number:", None)
+        )
         self.unitsLabel.setText(_translate("FloatSelect", "(unit)", None))
 
 
