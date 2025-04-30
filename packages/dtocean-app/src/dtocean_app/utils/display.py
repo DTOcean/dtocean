@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,18 +18,18 @@
 """
 Created on Mon Mar 20 11:21:12 2017
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import Tkinter as tk
 
-def is_high_dpi(dpi_freshold=100.):
-    
+
+def is_high_dpi(dpi_freshold=100.0):
     try:
         root = tk.Tk()
     except tk.TclError:
         return False
-    
+
     width_px = root.winfo_screenwidth()
     height_px = root.winfo_screenheight()
     width_mm = root.winfo_screenmmwidth()
@@ -39,7 +39,8 @@ def is_high_dpi(dpi_freshold=100.):
     height_in = height_mm / 25.4
     width_dpi = width_px / width_in
     height_dpi = height_px / height_in
-    
-    if (width_dpi + height_dpi) / 2. > dpi_freshold: return True
-        
+
+    if (width_dpi + height_dpi) / 2.0 > dpi_freshold:
+        return True
+
     return False

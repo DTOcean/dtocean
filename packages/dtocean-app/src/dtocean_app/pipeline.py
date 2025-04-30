@@ -18,7 +18,7 @@
 """
 Created on Thu Apr 23 12:51:14 2015
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import os
@@ -353,7 +353,7 @@ class PipeLine(PipeLineDock):
         self.error_detected.emit(etype, evalue, etraceback)
 
 
-class BaseControl(object):
+class BaseControl:
     def __init__(self, address, title, view, model, proxy):
         self._address = address
         self._title = title

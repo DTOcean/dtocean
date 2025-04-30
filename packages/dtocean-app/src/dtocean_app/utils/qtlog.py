@@ -23,7 +23,7 @@ From
 ("http://stackoverflow.com"
  "/questions/24469662/how-to-redirect-logger-output-into-pyqt-text-widget")
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 # Built in modules

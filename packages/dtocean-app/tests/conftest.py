@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2022 Mathew Topper
+#    Copyright (C) 2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,34 +17,35 @@
 
 # pylint: disable=redefined-outer-name
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-import matplotlib.pyplot as plt
 
 
 @pytest.fixture
 def figure():
-    
     # Data for plotting
     t = np.arange(0.0, 2.0, 0.01)
     s = 1 + np.sin(2 * np.pi * t)
-    
+
     fig, ax = plt.subplots()
     ax.plot(t, s)
-    
-    ax.set(xlabel='time (s)', ylabel='voltage (mV)',
-           title='About as simple as it gets, folks')
+
+    ax.set(
+        xlabel="time (s)",
+        ylabel="voltage (mV)",
+        title="About as simple as it gets, folks",
+    )
     ax.grid()
-    
+
     yield fig
-    
+
     plt.close(fig)
 
 
 @pytest.fixture
 def picture(tmp_path, figure):
-    
     p = tmp_path / "mock.png"
     figure.savefig(str(p))
-    
+
     yield str(p)

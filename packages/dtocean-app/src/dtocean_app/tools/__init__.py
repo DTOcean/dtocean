@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
+from abc import ABC
 
 
-class GUITool(object):
-    __metaclass__ = abc.ABCMeta
-
+class GUITool(ABC):
     """Plugin Discovery"""
 
     def __init__(self):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Mathew Topper, Rui Duarte
-#    Copyright (C) 2016-2022 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,80 +18,13 @@
 
 # pylint: disable=protected-access
 
+from typing import Optional
+
+import dtocean_core.data.definitions as definitions
 import numpy as np
 import pandas as pd
-from dtocean_core.data.definitions import (
-    CartesianData,
-    CartesianDataColumn,
-    CartesianDict,
-    CartesianDictColumn,
-    CartesianList,
-    CartesianListColumn,
-    CartesianListDict,
-    CartesianListDictColumn,
-    DateTimeData,
-    DateTimeDict,
-    DirectoryData,
-    DirectoryDataColumn,
-    EIADict,
-    Histogram,
-    HistogramColumn,
-    HistogramDict,
-    IndexTable,
-    IndexTableColumn,
-    LineTable,
-    LineTableColumn,
-    LineTableExpand,
-    Network,
-    Numpy2D,
-    Numpy2DColumn,
-    Numpy3D,
-    Numpy3DColumn,
-    NumpyBar,
-    NumpyLine,
-    NumpyLineArray,
-    NumpyLineColumn,
-    NumpyLineDict,
-    NumpyLineDictArrayColumn,
-    NumpyND,
-    PathData,
-    PointData,
-    PointDataColumn,
-    PointDict,
-    PointDictColumn,
-    PointList,
-    PolygonData,
-    PolygonDataColumn,
-    PolygonDict,
-    PolygonDictColumn,
-    PolygonList,
-    PolygonListColumn,
-    RecommendationDict,
-    SeriesData,
-    SimpleData,
-    SimpleDataColumn,
-    SimpleDataForeignColumn,
-    SimpleDict,
-    SimpleDictColumn,
-    SimpleList,
-    SimpleListColumn,
-    SimplePie,
-    Strata,
-    TableData,
-    TableDataColumn,
-    TimeSeries,
-    TimeSeriesColumn,
-    TimeTable,
-    TimeTableColumn,
-    TriStateData,
-    TriStateIndexTable,
-    TriStateTable,
-    UnknownData,
-    XGrid2D,
-    XGrid3D,
-    XSet2D,
-    XSet3D,
-)
+from dtocean_core.data.definitions import BaseMixin
+from PySide6.QtWidgets import QWidget
 
 from ..widgets.input import (
     BoolSelect,
@@ -116,184 +49,189 @@ from ..widgets.input import (
 from ..widgets.output import LabelOutput, OutputDataTable, TextOutput
 
 
-class GUIStructure(object):
+class WidgetMixin(BaseMixin):
+    @property
+    def parent(auto) -> Optional[QWidget]: ...
+
+
+class GUIStructure:
     """Dummy class for plugin detection"""
 
 
-class UnknownData(GUIStructure, UnknownData):
+class UnknownData(GUIStructure, definitions.UnknownData):
     """Overloading UnknownData class"""
 
 
-class SeriesData(GUIStructure, SeriesData):
+class SeriesData(GUIStructure, definitions.SeriesData):
     """Overloading SeriesData class"""
 
     @staticmethod
-    def auto_output(self):
-        df = self.data.result.to_frame()
+    def auto_output(auto: WidgetMixin):
+        df = auto.data.result.to_frame()
 
-        if self.meta.result.labels is None:
+        if auto.meta.result.labels is None:
             labels = ["Data"]
         else:
-            labels = [self.meta.result.labels[0]]
+            labels = [auto.meta.result.labels[0]]
 
-        if self.meta.result.units is None:
+        if auto.meta.result.units is None:
             units = [None]
         else:
-            units = [self.meta.result.units[0]]
+            units = [auto.meta.result.units[0]]
 
-        widget = OutputDataTable(self.parent, labels, units)
+        widget = OutputDataTable(auto.parent, labels, units)
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class TimeSeries(GUIStructure, TimeSeries):
+class TimeSeries(GUIStructure, definitions.TimeSeries):
     """Overloading TimeSeries class"""
 
     @staticmethod
-    def auto_input(self):
-        if self.meta.result.labels is None:
+    def auto_input(auto: WidgetMixin):
+        if auto.meta.result.labels is None:
             labels = ["Data"]
         else:
-            labels = self.meta.result.labels
+            labels = auto.meta.result.labels
 
-        widget = InputTimeSeries(self.parent, labels, self.meta.result.units)
-        widget._set_value(self.data.result)
+        widget = InputTimeSeries(auto.parent, labels, auto.meta.result.units)
+        widget._set_value(auto.data.result)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
-        SeriesData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        SeriesData.auto_output(auto)
 
 
-class TimeSeriesColumn(GUIStructure, TimeSeriesColumn):
+class TimeSeriesColumn(GUIStructure, definitions.TimeSeriesColumn):
     """Overloading TimeSeriesColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        TimeSeries.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        TimeSeries.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        TimeSeries.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        TimeSeries.auto_output(auto)
 
 
-class TableData(GUIStructure, TableData):
+class TableData(GUIStructure, definitions.TableData):
     """Overloading TableData class"""
 
     @staticmethod
-    def auto_input(self):
+    def auto_input(auto: WidgetMixin):
         widget = InputDataTable(
-            self.parent, self.meta.result.labels, self.meta.result.units
+            auto.parent, auto.meta.result.labels, auto.meta.result.units
         )
-        widget._set_value(self.data.result, self.meta.result.types)
+        widget._set_value(auto.data.result, auto.meta.result.types)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         widget = OutputDataTable(
-            self.parent, self.meta.result.labels, self.meta.result.units
+            auto.parent, auto.meta.result.labels, auto.meta.result.units
         )
-        widget._set_value(self.data.result)
+        widget._set_value(auto.data.result)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class TableDataColumn(GUIStructure, TableDataColumn):
+class TableDataColumn(GUIStructure, definitions.TableDataColumn):
     """Overloading TableDataColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        TableData.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        TableData.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        TableData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        TableData.auto_output(auto)
 
 
-class IndexTable(GUIStructure, IndexTable):
+class IndexTable(GUIStructure, definitions.IndexTable):
     """Overloading IndexTable class"""
 
     @staticmethod
-    def auto_input(self):
+    def auto_input(auto: WidgetMixin):
         widget = InputDataTable(
-            self.parent,
-            self.meta.result.labels,
-            self.meta.result.units,
-            self.meta.result.labels[0],
-            self.meta.result.valid_values,
+            auto.parent,
+            auto.meta.result.labels,
+            auto.meta.result.units,
+            auto.meta.result.labels[0],
+            auto.meta.result.valid_values,
         )
 
-        if self.data.result is not None:
-            df = self.data.result.reset_index()
+        if auto.data.result is not None:
+            df = auto.data.result.reset_index()
         else:
             df = None
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         widget = OutputDataTable(
-            self.parent, self.meta.result.labels, self.meta.result.units
+            auto.parent, auto.meta.result.labels, auto.meta.result.units
         )
 
-        if self.data.result is not None:
-            df = self.data.result.reset_index()
+        if auto.data.result is not None:
+            df = auto.data.result.reset_index()
         else:
             df = None
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class IndexTableColumn(GUIStructure, IndexTableColumn):
+class IndexTableColumn(GUIStructure, definitions.IndexTableColumn):
     """Overloading IndexTableColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        IndexTable.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        IndexTable.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        IndexTable.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        IndexTable.auto_output(auto)
 
 
-class LineTable(GUIStructure, LineTable):
+class LineTable(GUIStructure, definitions.LineTable):
     """Overloading LineTable class"""
 
     @staticmethod
-    def auto_input(self):
-        IndexTable.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        IndexTable.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        IndexTable.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        IndexTable.auto_output(auto)
 
 
-class LineTableExpand(GUIStructure, LineTableExpand):
+class LineTableExpand(GUIStructure, definitions.LineTableExpand):
     """Overloading LineTableExpand class"""
 
     @staticmethod
-    def auto_input(self):
-        if self.data.result is not None:
-            df = self.data.result.reset_index()
+    def auto_input(auto: WidgetMixin):
+        if auto.data.result is not None:
+            df = auto.data.result.reset_index()
             labels = df.columns
 
         else:
             df = None
-            labels = self.meta.result.labels
+            labels = auto.meta.result.labels
 
-        if self.meta.result.units is not None:
-            units = list(self.meta.result.units[:1])
+        if auto.meta.result.units is not None:
+            units = list(auto.meta.result.units[:1])
             n_extra = len(labels) - 1
 
-            if len(self.meta.result.units) > 1:
-                add_units = [self.meta.result.units[1]] * n_extra
+            if len(auto.meta.result.units) > 1:
+                add_units = [auto.meta.result.units[1]] * n_extra
             else:
                 add_units = [None] * n_extra
 
@@ -303,34 +241,34 @@ class LineTableExpand(GUIStructure, LineTableExpand):
             units = None
 
         widget = InputDataTable(
-            self.parent,
+            auto.parent,
             labels,
             units,
-            self.meta.result.labels[0],
-            self.meta.result.valid_values,
+            auto.meta.result.labels[0],
+            auto.meta.result.valid_values,
             True,
         )
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
-        if self.data.result is not None:
-            df = self.data.result.reset_index()
+    def auto_output(auto: WidgetMixin):
+        if auto.data.result is not None:
+            df = auto.data.result.reset_index()
             labels = df.columns
 
         else:
             df = None
-            labels = self.meta.result.labels
+            labels = auto.meta.result.labels
 
-        if self.meta.result.units is not None:
-            units = list(self.meta.result.units[:1])
+        if auto.meta.result.units is not None:
+            units = list(auto.meta.result.units[:1])
             n_extra = len(labels) - 1
 
-            if len(self.meta.result.units) > 1:
-                add_units = [self.meta.result.units[1]] * n_extra
+            if len(auto.meta.result.units) > 1:
+                add_units = [auto.meta.result.units[1]] * n_extra
             else:
                 add_units = [None] * n_extra
 
@@ -339,135 +277,135 @@ class LineTableExpand(GUIStructure, LineTableExpand):
         else:
             units = None
 
-        widget = OutputDataTable(self.parent, labels, units)
+        widget = OutputDataTable(auto.parent, labels, units)
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class LineTableColumn(GUIStructure, LineTableColumn):
+class LineTableColumn(GUIStructure, definitions.LineTableColumn):
     """Overloading LineTableColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        LineTable.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        LineTable.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        LineTable.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        LineTable.auto_output(auto)
 
 
-class TimeTable(GUIStructure, TimeTable):
+class TimeTable(GUIStructure, definitions.TimeTable):
     """Overloading TimeTable class"""
 
     @staticmethod
-    def auto_input(self):
+    def auto_input(auto: WidgetMixin):
         widget = InputTimeTable(
-            self.parent, self.meta.result.labels, self.meta.result.units
+            auto.parent, auto.meta.result.labels, auto.meta.result.units
         )
 
-        if self.data.result is not None:
-            df = self.data.result.reset_index()
+        if auto.data.result is not None:
+            df = auto.data.result.reset_index()
         else:
             df = None
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         widget = OutputDataTable(
-            self.parent, self.meta.result.labels, self.meta.result.units
+            auto.parent, auto.meta.result.labels, auto.meta.result.units
         )
-        widget._set_value(self.data.result)
+        widget._set_value(auto.data.result)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class TimeTableColumn(GUIStructure, TimeTableColumn):
+class TimeTableColumn(GUIStructure, definitions.TimeTableColumn):
     """Overloading TimeTableColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        TimeTable.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        TimeTable.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        TimeTable.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        TimeTable.auto_output(auto)
 
 
-class TriStateTable(GUIStructure, TriStateTable):
+class TriStateTable(GUIStructure, definitions.TriStateTable):
     """Overloading TriStateTable class"""
 
     @staticmethod
-    def auto_input(self):
+    def auto_input(auto: WidgetMixin):
         widget = InputTriStateTable(
-            self.parent, self.meta.result.labels, self.meta.result.units
+            auto.parent, auto.meta.result.labels, auto.meta.result.units
         )
-        widget._set_value(self.data.result)
+        widget._set_value(auto.data.result)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
-        TableData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        TableData.auto_output(auto)
 
 
-class TriStateIndexTable(GUIStructure, TriStateIndexTable):
+class TriStateIndexTable(GUIStructure, definitions.TriStateIndexTable):
     """Overloading TriStateIndexTable class"""
 
     @staticmethod
-    def auto_input(self):
+    def auto_input(auto: WidgetMixin):
         widget = InputTriStateTable(
-            self.parent,
-            self.meta.result.labels,
-            self.meta.result.units,
-            self.meta.result.labels[0],
-            self.meta.result.valid_values,
+            auto.parent,
+            auto.meta.result.labels,
+            auto.meta.result.units,
+            auto.meta.result.labels[0],
+            auto.meta.result.valid_values,
         )
 
-        if self.data.result is not None:
-            df = self.data.result.reset_index()
+        if auto.data.result is not None:
+            df = auto.data.result.reset_index()
         else:
             df = None
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
-        IndexTable.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        IndexTable.auto_output(auto)
 
 
-class NumpyND(GUIStructure, NumpyND):
+class NumpyND(GUIStructure, definitions.NumpyND):
     """Overloading NumpyND class"""
 
 
-class Numpy2D(GUIStructure, Numpy2D):
+class Numpy2D(GUIStructure, definitions.Numpy2D):
     """Overloading Numpy2D class"""
 
 
-class Numpy2DColumn(GUIStructure, Numpy2DColumn):
+class Numpy2DColumn(GUIStructure, definitions.Numpy2DColumn):
     """Overloading Numpy2DColumn class"""
 
 
-class Numpy3D(GUIStructure, Numpy3D):
+class Numpy3D(GUIStructure, definitions.Numpy3D):
     """Overloading Numpy3D class"""
 
 
-class Numpy3DColumn(GUIStructure, Numpy3DColumn):
+class Numpy3DColumn(GUIStructure, definitions.Numpy3DColumn):
     """Overloading Numpy3DColumn class"""
 
 
-class NumpyLine(GUIStructure, NumpyLine):
+class NumpyLine(GUIStructure, definitions.NumpyLine):
     """Overloading NumpyLine class"""
 
     @staticmethod
-    def auto_input(self):
-        vals = self.data.result
+    def auto_input(auto: WidgetMixin):
+        vals = auto.data.result
 
         vals_df = None
 
@@ -479,15 +417,15 @@ class NumpyLine(GUIStructure, NumpyLine):
 
             vals_df = pd.DataFrame(raw_dict)
 
-        widget = InputLineTable(self.parent, self.meta.result.units)
+        widget = InputLineTable(auto.parent, auto.meta.result.units)
         widget._set_value(vals_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         labels = ["val1", "val2"]
-        vals = self.data.result
+        vals = auto.data.result
 
         if vals is None:
             vals_df = None
@@ -500,54 +438,56 @@ class NumpyLine(GUIStructure, NumpyLine):
 
             vals_df = pd.DataFrame(raw_dict)
 
-        widget = OutputDataTable(self.parent, labels)
+        widget = OutputDataTable(auto.parent, labels)
         widget._set_value(vals_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class NumpyLineDict(GUIStructure, NumpyLineDict):
+class NumpyLineDict(GUIStructure, definitions.NumpyLineDict):
     """Overloading NumpyLineDict class"""
 
 
-class NumpyLineDictArrayColumn(GUIStructure, NumpyLineDictArrayColumn):
+class NumpyLineDictArrayColumn(
+    GUIStructure, definitions.NumpyLineDictArrayColumn
+):
     """Overloading NumpyLineDictArrayColumn class"""
 
 
-class NumpyBar(GUIStructure, NumpyBar):
+class NumpyBar(GUIStructure, definitions.NumpyBar):
     """Overloading NumpyBar class"""
 
 
-class NumpyLineArray(GUIStructure, NumpyLineArray):
+class NumpyLineArray(GUIStructure, definitions.NumpyLineArray):
     """Overloading NumpyLineArray class"""
 
     @staticmethod
-    def auto_input(self):
-        NumpyLine.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        NumpyLine.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        NumpyLine.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        NumpyLine.auto_output(auto)
 
 
-class NumpyLineColumn(GUIStructure, NumpyLineColumn):
+class NumpyLineColumn(GUIStructure, definitions.NumpyLineColumn):
     """Overloading NumpyLineColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        NumpyLine.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        NumpyLine.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        NumpyLine.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        NumpyLine.auto_output(auto)
 
 
-class Histogram(GUIStructure, Histogram):
+class Histogram(GUIStructure, definitions.Histogram):
     """Overloading Histogram class"""
 
     @staticmethod
-    def auto_input(self):
-        hist = self.data.result
+    def auto_input(auto: WidgetMixin):
+        hist = auto.data.result
 
         hist_df = None
 
@@ -562,14 +502,15 @@ class Histogram(GUIStructure, Histogram):
 
             hist_df = pd.DataFrame(raw_dict)
 
-        widget = InputHistogram(self.parent)
+        widget = InputHistogram(auto.parent)
         widget._set_value(hist_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
-        hist = self.data.result
+    def auto_output(auto: WidgetMixin):
+        labels = ["bins", "values"]
+        hist = auto.data.result
 
         if hist is None:
             hist_df = None
@@ -585,66 +526,66 @@ class Histogram(GUIStructure, Histogram):
 
             hist_df = pd.DataFrame(raw_dict)
 
-        widget = OutputDataTable(self.parent)
+        widget = OutputDataTable(auto.parent, labels)
         widget._set_value(hist_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class HistogramColumn(GUIStructure, HistogramColumn):
+class HistogramColumn(GUIStructure, definitions.HistogramColumn):
     """Overloading HistogramColumn class"""
 
 
-class HistogramDict(GUIStructure, HistogramDict):
+class HistogramDict(GUIStructure, definitions.HistogramDict):
     """Overloading HistogramDict class"""
 
 
-class CartesianData(GUIStructure, CartesianData):
+class CartesianData(GUIStructure, definitions.CartesianData):
     """Overloading CartesianData class"""
 
     @staticmethod
-    def auto_input(self):
-        if self.meta.result.units is not None:
-            unit = self.meta.result.units[0]
+    def auto_input(auto: WidgetMixin):
+        if auto.meta.result.units is not None:
+            unit = auto.meta.result.units[0]
         else:
             unit = None
 
-        input_widget = CoordSelect(self.parent, unit)
+        input_widget = CoordSelect(auto.parent, unit)
 
-        input_widget._set_value(self.data.result)
+        input_widget._set_value(auto.data.result)
 
-        self.data.result = input_widget
+        auto.data.result = input_widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         unit = "m"
 
-        output_widget = LabelOutput(self.parent, unit)
+        output_widget = LabelOutput(auto.parent, unit)
 
-        coords = tuple(self.data.result)
+        coords = tuple(auto.data.result)
         output_widget._set_value(coords)
 
-        self.data.result = output_widget
+        auto.data.result = output_widget
 
 
-class CartesianDataColumn(GUIStructure, CartesianDataColumn):
+class CartesianDataColumn(GUIStructure, definitions.CartesianDataColumn):
     """Overloading CartesianDataColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        CartesianData.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        CartesianData.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        CartesianData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        CartesianData.auto_output(auto)
 
 
-class CartesianList(GUIStructure, CartesianList):
+class CartesianList(GUIStructure, definitions.CartesianList):
     """Overloading CartesianList class"""
 
     @staticmethod
-    def auto_input(self):
-        coords = self.data.result
+    def auto_input(auto: WidgetMixin):
+        coords = auto.data.result
 
         coords_df = None
 
@@ -661,14 +602,14 @@ class CartesianList(GUIStructure, CartesianList):
 
             coords_df = pd.DataFrame(raw_dict)
 
-        widget = InputPointTable(self.parent)
+        widget = InputPointTable(auto.parent)
         widget._set_value(coords_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
-        coords = self.data.result
+    def auto_output(auto: WidgetMixin):
+        coords = auto.data.result
 
         coords_df = None
         labels = ["x", "y"]
@@ -688,195 +629,197 @@ class CartesianList(GUIStructure, CartesianList):
 
             labels.append("z")
 
-        widget = OutputDataTable(self.parent, labels)
+        widget = OutputDataTable(auto.parent, labels)
         widget._set_value(coords_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class CartesianListColumn(GUIStructure, CartesianListColumn):
+class CartesianListColumn(GUIStructure, definitions.CartesianListColumn):
     """Overloading CartesianListColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        CartesianList.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        CartesianList.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        CartesianList.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        CartesianList.auto_output(auto)
 
 
-class CartesianDict(GUIStructure, CartesianDict):
+class CartesianDict(GUIStructure, definitions.CartesianDict):
     """Overloading CartesianDict class"""
 
 
-class CartesianDictColumn(GUIStructure, CartesianDictColumn):
+class CartesianDictColumn(GUIStructure, definitions.CartesianDictColumn):
     """Overloading CartesianDictColumn class"""
 
 
-class CartesianListDict(GUIStructure, CartesianListDict):
+class CartesianListDict(GUIStructure, definitions.CartesianListDict):
     """Overloading CartesianListDict class"""
 
 
-class CartesianListDictColumn(GUIStructure, CartesianListDictColumn):
+class CartesianListDictColumn(
+    GUIStructure, definitions.CartesianListDictColumn
+):
     """Overloading CartesianListDictColumn class"""
 
 
-class SimpleData(GUIStructure, SimpleData):
+class SimpleData(GUIStructure, definitions.SimpleData):
     """Overloading SimpleData class"""
 
     @staticmethod
-    def auto_input(self):
-        if self.meta.result.valid_values is not None:
+    def auto_input(auto: WidgetMixin):
+        if auto.meta.result.valid_values is not None:
             unit = None
 
-            if self.meta.result.units is not None:
-                unit = self.meta.result.units[0]
+            if auto.meta.result.units is not None:
+                unit = auto.meta.result.units[0]
 
             input_widget = ListSelect(
-                self.parent,
-                self.meta.result.valid_values,
+                auto.parent,
+                auto.meta.result.valid_values,
                 unit=unit,
-                experimental=self.meta.result.experimental,
+                experimental=auto.meta.result.experimental,
             )
-            input_widget._set_value(self.data.result)
+            input_widget._set_value(auto.data.result)
 
-        elif self.meta.result.types is None:
+        elif auto.meta.result.types is None:
             input_widget = None
 
-        elif self.meta.result.types[0] == "float":
+        elif auto.meta.result.types[0] == "float":
             unit = None
             minimum = None
             maximum = None
 
-            if self.meta.result.units is not None:
-                unit = self.meta.result.units[0]
+            if auto.meta.result.units is not None:
+                unit = auto.meta.result.units[0]
 
-            if self.meta.result.minimum_equals is not None:
-                minimum = self.meta.result.minimum_equals[0]
-            elif self.meta.result.minimums is not None:
-                minimum = np.nextafter(self.meta.result.minimums[0], np.inf)
+            if auto.meta.result.minimum_equals is not None:
+                minimum = auto.meta.result.minimum_equals[0]
+            elif auto.meta.result.minimums is not None:
+                minimum = np.nextafter(auto.meta.result.minimums[0], np.inf)
 
-            if self.meta.result.maximum_equals is not None:
-                maximum = self.meta.result.maximum_equals[0]
-            elif self.meta.result.maximums is not None:
-                maximum = np.nextafter(self.meta.result.maximums[0], -np.inf)
+            if auto.meta.result.maximum_equals is not None:
+                maximum = auto.meta.result.maximum_equals[0]
+            elif auto.meta.result.maximums is not None:
+                maximum = np.nextafter(auto.meta.result.maximums[0], -np.inf)
 
-            input_widget = FloatSelect(self.parent, unit, minimum, maximum)
-            input_widget._set_value(self.data.result)
+            input_widget = FloatSelect(auto.parent, unit, minimum, maximum)
+            input_widget._set_value(auto.data.result)
 
-        elif self.meta.result.types[0] == "int":
+        elif auto.meta.result.types[0] == "int":
             unit = None
             minimum = None
             maximum = None
 
-            if self.meta.result.units is not None:
-                unit = self.meta.result.units[0]
+            if auto.meta.result.units is not None:
+                unit = auto.meta.result.units[0]
 
-            if self.meta.result.minimum_equals is not None:
-                minimum = self.meta.result.minimum_equals[0]
-            elif self.meta.result.minimums is not None:
-                minimum = self.meta.result.minimums[0] + 1
+            if auto.meta.result.minimum_equals is not None:
+                minimum = auto.meta.result.minimum_equals[0]
+            elif auto.meta.result.minimums is not None:
+                minimum = auto.meta.result.minimums[0] + 1
 
-            if self.meta.result.maximum_equals is not None:
-                maximum = self.meta.result.maximum_equals[0]
-            elif self.meta.result.maximums is not None:
-                maximum = self.meta.result.maximums[0] - 1
+            if auto.meta.result.maximum_equals is not None:
+                maximum = auto.meta.result.maximum_equals[0]
+            elif auto.meta.result.maximums is not None:
+                maximum = auto.meta.result.maximums[0] - 1
 
-            input_widget = IntSelect(self.parent, unit, minimum, maximum)
-            input_widget._set_value(self.data.result)
+            input_widget = IntSelect(auto.parent, unit, minimum, maximum)
+            input_widget._set_value(auto.data.result)
 
-        elif self.meta.result.types[0] == "str":
+        elif auto.meta.result.types[0] == "str":
             unit = None
 
-            if self.meta.result.units is not None:
-                unit = self.meta.result.units[0]
+            if auto.meta.result.units is not None:
+                unit = auto.meta.result.units[0]
 
-            input_widget = StringSelect(self.parent, unit)
-            input_widget._set_value(self.data.result)
+            input_widget = StringSelect(auto.parent, unit)
+            input_widget._set_value(auto.data.result)
 
-        elif self.meta.result.types[0] == "bool":
-            input_widget = BoolSelect(self.parent)
-            input_widget._set_value(self.data.result)
+        elif auto.meta.result.types[0] == "bool":
+            input_widget = BoolSelect(auto.parent)
+            input_widget._set_value(auto.data.result)
 
         else:
             input_widget = None
 
-        self.data.result = input_widget
+        auto.data.result = input_widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         if (
-            self.meta.result.types[0] != "bool"
-            and self.meta.result.units is not None
+            auto.meta.result.types[0] != "bool"
+            and auto.meta.result.units is not None
         ):
-            unit = self.meta.result.units[0]
+            unit = auto.meta.result.units[0]
         else:
             unit = None
 
-        output_widget = LabelOutput(self.parent, unit)
-        output_widget._set_value(self.data.result)
+        output_widget = LabelOutput(auto.parent, unit)
+        output_widget._set_value(auto.data.result)
 
-        self.data.result = output_widget
+        auto.data.result = output_widget
 
 
-class PathData(GUIStructure, PathData):
+class PathData(GUIStructure, definitions.PathData):
     """Overloading PathData class"""
 
 
-class DirectoryData(GUIStructure, DirectoryData):
+class DirectoryData(GUIStructure, definitions.DirectoryData):
     """Overloading DirectoryData class"""
 
     @staticmethod
-    def auto_input(self):
-        input_widget = DirectorySelect(self.parent)
-        input_widget._set_value(self.data.result)
+    def auto_input(auto: WidgetMixin):
+        input_widget = DirectorySelect(auto.parent)
+        input_widget._set_value(auto.data.result)
 
-        self.data.result = input_widget
+        auto.data.result = input_widget
 
     @staticmethod
-    def auto_output(self):
-        SimpleData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        SimpleData.auto_output(auto)
 
 
-class SimpleList(GUIStructure, SimpleList):
+class SimpleList(GUIStructure, definitions.SimpleList):
     """Overloading SimpleList class"""
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         labels = ["Value"]
 
-        if self.meta.result.units is not None:
-            units = self.meta.result.units[0]
+        if auto.meta.result.units is not None:
+            units = auto.meta.result.units[0]
         else:
             units = None
 
-        widget = OutputDataTable(self.parent, labels, units)
+        widget = OutputDataTable(auto.parent, labels, units)
 
         df = None
 
-        if self.data.result is not None:
-            raw_dict = {"Value": self.data.result}
+        if auto.data.result is not None:
+            raw_dict = {"Value": auto.data.result}
             df = pd.DataFrame(raw_dict)
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class SimpleDict(GUIStructure, SimpleDict):
+class SimpleDict(GUIStructure, definitions.SimpleDict):
     """Overloading SimpleDict class"""
 
     @staticmethod
-    def auto_input(self):
+    def auto_input(auto: WidgetMixin):
         widget = InputDictTable(
-            self.parent, self.meta.result.units, self.meta.result.valid_values
+            auto.parent, auto.meta.result.units, auto.meta.result.valid_values
         )
 
-        val_types = [object, self.meta.result.types[0]]
+        val_types = [object, auto.meta.result.types[0]]
 
-        if self.data.result is not None:
-            var_dict = self.data.result
+        if auto.data.result is not None:
+            var_dict = auto.data.result
             df_dict = {"Key": var_dict.keys(), "Value": var_dict.values()}
             value = pd.DataFrame(df_dict)
             value = value.sort_values(by="Key")
@@ -885,131 +828,133 @@ class SimpleDict(GUIStructure, SimpleDict):
 
         widget._set_value(value, dtypes=val_types)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         labels = ["Key", "Value"]
 
-        if self.meta.result.units is not None:
-            units = [None, self.meta.result.units[0]]
+        if auto.meta.result.units is not None:
+            units = [None, auto.meta.result.units[0]]
         else:
             units = None
 
-        widget = OutputDataTable(self.parent, labels, units)
+        widget = OutputDataTable(auto.parent, labels, units)
 
         df = None
 
-        if self.data.result is not None:
+        if auto.data.result is not None:
             raw_dict = {
-                "Key": self.data.result.keys(),
-                "Value": self.data.result.values(),
+                "Key": auto.data.result.keys(),
+                "Value": auto.data.result.values(),
             }
             df = pd.DataFrame(raw_dict)
             df = df.sort_values(by="Key")
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class SimplePie(GUIStructure, SimplePie):
+class SimplePie(GUIStructure, definitions.SimplePie):
     """Overloading SimplePie class"""
 
     @staticmethod
-    def auto_output(self):
-        SimpleDict.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        SimpleDict.auto_output(auto)
 
 
-class SimpleDataColumn(GUIStructure, SimpleDataColumn):
+class SimpleDataColumn(GUIStructure, definitions.SimpleDataColumn):
     """Overloading SimpleColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        SimpleData.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        SimpleData.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        SimpleData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        SimpleData.auto_output(auto)
 
 
-class SimpleDataForeignColumn(GUIStructure, SimpleDataForeignColumn):
+class SimpleDataForeignColumn(
+    GUIStructure, definitions.SimpleDataForeignColumn
+):
     """Overloading SimpleDataForeignColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        SimpleData.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        SimpleData.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        SimpleData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        SimpleData.auto_output(auto)
 
 
-class DirectoryDataColumn(GUIStructure, DirectoryDataColumn):
+class DirectoryDataColumn(GUIStructure, definitions.DirectoryDataColumn):
     """Overloading DirectoryDataColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        DirectoryData.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        DirectoryData.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        DirectoryData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        DirectoryData.auto_output(auto)
 
 
-class SimpleListColumn(GUIStructure, SimpleListColumn):
+class SimpleListColumn(GUIStructure, definitions.SimpleListColumn):
     """Overloading SimpleListColumn class"""
 
     @staticmethod
-    def auto_output(self):
-        SimpleList.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        SimpleList.auto_output(auto)
 
 
-class SimpleDictColumn(GUIStructure, SimpleDictColumn):
+class SimpleDictColumn(GUIStructure, definitions.SimpleDictColumn):
     """Overloading SimpleDictColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        SimpleDict.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        SimpleDict.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        SimpleDict.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        SimpleDict.auto_output(auto)
 
 
-class DateTimeData(GUIStructure, DateTimeData):
+class DateTimeData(GUIStructure, definitions.DateTimeData):
     """Overloading DateTimeData class"""
 
     @staticmethod
-    def auto_input(self):
-        input_widget = DateSelect(self.parent)
-        input_widget._set_value(self.data.result)
+    def auto_input(auto: WidgetMixin):
+        input_widget = DateSelect(auto.parent)
+        input_widget._set_value(auto.data.result)
 
-        self.data.result = input_widget
+        auto.data.result = input_widget
 
     @staticmethod
-    def auto_output(self):
-        output_widget = LabelOutput(self.parent, None)
-        output_widget._set_value(self.data.result)
+    def auto_output(auto: WidgetMixin):
+        output_widget = LabelOutput(auto.parent, None)
+        output_widget._set_value(auto.data.result)
 
-        self.data.result = output_widget
+        auto.data.result = output_widget
 
 
-class DateTimeDict(GUIStructure, DateTimeDict):
+class DateTimeDict(GUIStructure, definitions.DateTimeDict):
     """Overloading DateTimeDict class"""
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         labels = ["Key", "DateTime"]
 
-        widget = OutputDataTable(self.parent, labels)
+        widget = OutputDataTable(auto.parent, labels)
 
         df = None
 
-        if self.data.result is not None:
+        if auto.data.result is not None:
             raw_dict = {
-                "Key": self.data.result.keys(),
-                "DateTime": self.data.result.values(),
+                "Key": auto.data.result.keys(),
+                "DateTime": auto.data.result.values(),
             }
             df = pd.DataFrame(raw_dict)
             df = df.sort_values(by="Key")
@@ -1017,52 +962,52 @@ class DateTimeDict(GUIStructure, DateTimeDict):
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class TriStateData(GUIStructure, TriStateData):
+class TriStateData(GUIStructure, definitions.TriStateData):
     """Overloading TriStateData class"""
 
 
-class PointData(GUIStructure, PointData):
+class PointData(GUIStructure, definitions.PointData):
     """Overloading PointData class"""
 
     @staticmethod
-    def auto_input(self):
-        if self.meta.result.units is not None:
-            unit = self.meta.result.units[0]
+    def auto_input(auto: WidgetMixin):
+        if auto.meta.result.units is not None:
+            unit = auto.meta.result.units[0]
         else:
             unit = None
 
-        input_widget = PointSelect(self.parent, unit)
+        input_widget = PointSelect(auto.parent, unit)
 
-        if self.data.result is None:
+        if auto.data.result is None:
             coords = None
         else:
-            coords = list(self.data.result.coords)[0]
+            coords = list(auto.data.result.coords)[0]
 
         input_widget._set_value(coords)
 
-        self.data.result = input_widget
+        auto.data.result = input_widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         unit = "m"
 
-        output_widget = LabelOutput(self.parent, unit)
+        output_widget = LabelOutput(auto.parent, unit)
 
-        coords = list(self.data.result.coords)[0]
+        coords = list(auto.data.result.coords)[0]
         output_widget._set_value(coords)
 
-        self.data.result = output_widget
+        auto.data.result = output_widget
 
 
-class PointList(GUIStructure, PointList):
+class PointList(GUIStructure, definitions.PointList):
     """Overloading PointList class"""
 
     @staticmethod
-    def auto_input(self):
-        points = self.data.result
+    def auto_input(auto: WidgetMixin):
+        points = auto.data.result
 
         point_df = None
 
@@ -1084,18 +1029,18 @@ class PointList(GUIStructure, PointList):
 
             point_df = pd.DataFrame(raw_dict)
 
-        widget = InputPointTable(self.parent)
+        widget = InputPointTable(auto.parent)
         widget._set_value(point_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class PointDict(GUIStructure, PointDict):
+class PointDict(GUIStructure, definitions.PointDict):
     """Overloading PointDict class"""
 
     @staticmethod
-    def auto_input(self):
-        point_dict = self.data.result
+    def auto_input(auto: WidgetMixin):
+        point_dict = auto.data.result
 
         point_df = None
 
@@ -1123,28 +1068,28 @@ class PointDict(GUIStructure, PointDict):
             point_df = pd.DataFrame(raw_dict)
             point_df = point_df.sort_values(by="Key")
 
-        widget = InputPointDictTable(self.parent, self.meta.result.valid_values)
+        widget = InputPointDictTable(auto.parent, auto.meta.result.valid_values)
 
         val_types = [object, float, float, float]
         widget._set_value(point_df, dtypes=val_types)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         labels = ["Key", "x", "y", "z"]
 
-        widget = OutputDataTable(self.parent, labels)
+        widget = OutputDataTable(auto.parent, labels)
 
         df = None
 
-        if self.data.result is not None:
+        if auto.data.result is not None:
             point_array = np.array(
-                [np.array(el) for el in self.data.result.values()]
+                [np.array(el) for el in auto.data.result.values()]
             )
 
             data = {
-                "Key": self.data.result.keys(),
+                "Key": auto.data.result.keys(),
                 "x": point_array[:, 0],
                 "y": point_array[:, 1],
             }
@@ -1152,38 +1097,38 @@ class PointDict(GUIStructure, PointDict):
             if point_array.shape[1] == 3:
                 data["z"] = point_array[:, 2]
             else:
-                data["z"] = [None] * len(self.data.result)
+                data["z"] = [None] * len(auto.data.result)
 
             df = pd.DataFrame(data)
             df = df.sort_values(by="Key")
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class PointDataColumn(GUIStructure, PointDataColumn):
+class PointDataColumn(GUIStructure, definitions.PointDataColumn):
     """Overloading PointDataColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        PointData.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        PointData.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        PointData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        PointData.auto_output(auto)
 
 
-class PointDictColumn(GUIStructure, PointDictColumn):
+class PointDictColumn(GUIStructure, definitions.PointDictColumn):
     """Overloading PointDictColumn class"""
 
 
-class PolygonData(GUIStructure, PolygonData):
+class PolygonData(GUIStructure, definitions.PolygonData):
     """Overloading PolygonData class"""
 
     @staticmethod
-    def auto_input(self):
-        polygon = self.data.result
+    def auto_input(auto: WidgetMixin):
+        polygon = auto.data.result
 
         poly_df = None
 
@@ -1202,15 +1147,15 @@ class PolygonData(GUIStructure, PolygonData):
 
             poly_df = pd.DataFrame(raw_dict)
 
-        widget = InputPointTable(self.parent)
+        widget = InputPointTable(auto.parent)
         widget._set_value(poly_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         labels = ["x", "y", "z"]
-        polygon = self.data.result
+        polygon = auto.data.result
 
         if polygon is None:
             poly_df = None
@@ -1230,95 +1175,95 @@ class PolygonData(GUIStructure, PolygonData):
 
             poly_df = pd.DataFrame(raw_dict)
 
-        widget = OutputDataTable(self.parent, labels)
+        widget = OutputDataTable(auto.parent, labels)
         widget._set_value(poly_df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class PolygonDataColumn(GUIStructure, PolygonDataColumn):
+class PolygonDataColumn(GUIStructure, definitions.PolygonDataColumn):
     """Overloading PolygonDataColumn class"""
 
     @staticmethod
-    def auto_input(self):
-        PolygonData.auto_input(self)
+    def auto_input(auto: WidgetMixin):
+        PolygonData.auto_input(auto)
 
     @staticmethod
-    def auto_output(self):
-        PolygonData.auto_output(self)
+    def auto_output(auto: WidgetMixin):
+        PolygonData.auto_output(auto)
 
 
-class PolygonList(GUIStructure, PolygonList):
+class PolygonList(GUIStructure, definitions.PolygonList):
     """Overloading PolygonList class"""
 
 
-class PolygonListColumn(GUIStructure, PolygonListColumn):
+class PolygonListColumn(GUIStructure, definitions.PolygonListColumn):
     """Overloading PolygonListColumn class"""
 
 
-class PolygonDict(GUIStructure, PolygonDict):
+class PolygonDict(GUIStructure, definitions.PolygonDict):
     """Overloading PolygonDict class"""
 
 
-class PolygonDictColumn(GUIStructure, PolygonDictColumn):
+class PolygonDictColumn(GUIStructure, definitions.PolygonDictColumn):
     """Overloading PolygonDictColumn class"""
 
 
-class XGrid2D(GUIStructure, XGrid2D):
+class XGrid2D(GUIStructure, definitions.XGrid2D):
     """Overloading XGrid2D class"""
 
 
-class XGrid3D(GUIStructure, XGrid3D):
+class XGrid3D(GUIStructure, definitions.XGrid3D):
     """Overloading XGrid3D class"""
 
 
-class XSet2D(GUIStructure, XSet2D):
+class XSet2D(GUIStructure, definitions.XSet2D):
     """Overloading XSet2D class"""
 
 
-class XSet3D(GUIStructure, XSet3D):
+class XSet3D(GUIStructure, definitions.XSet3D):
     """Overloading XSet3D class"""
 
 
-class Strata(GUIStructure, Strata):
+class Strata(GUIStructure, definitions.Strata):
     """Overloading Strata class"""
 
 
-class Network(GUIStructure, Network):
+class Network(GUIStructure, definitions.Network):
     """Overloading Network class"""
 
 
-class EIADict(GUIStructure, EIADict):
+class EIADict(GUIStructure, definitions.EIADict):
     """Overloading EIADict class"""
 
     @staticmethod
-    def auto_output(self):
+    def auto_output(auto: WidgetMixin):
         labels = ["Key", "Value"]
 
-        if self.meta.result.units is not None:
-            units = [None] + self.meta.result.units[:1]
+        if auto.meta.result.units is not None:
+            units = [None] + auto.meta.result.units[:1]
         else:
             units = None
 
-        widget = OutputDataTable(self.parent, labels, units)
+        widget = OutputDataTable(auto.parent, labels, units)
 
         raw_dict = {
-            "Key": self.data.result.keys(),
-            "Value": self.data.result.values(),
+            "Key": auto.data.result.keys(),
+            "Value": auto.data.result.values(),
         }
         df = pd.DataFrame(raw_dict)
 
         widget._set_value(df)
 
-        self.data.result = widget
+        auto.data.result = widget
 
 
-class RecommendationDict(GUIStructure, RecommendationDict):
+class RecommendationDict(GUIStructure, definitions.RecommendationDict):
     """Overloading RecommendationDict class"""
 
     @staticmethod
-    def auto_output(self):
-        rec = self.data.result
+    def auto_output(auto: WidgetMixin):
+        rec = auto.data.result
 
         env_impacts = [
             "Energy Modification",
@@ -1345,9 +1290,9 @@ class RecommendationDict(GUIStructure, RecommendationDict):
                 text = text + str(rec[key]["General Recommendation"]) + ", "
                 text = text + str(rec[key]["Detailed Recommendation"]) + ".\n\n"
 
-        widget = TextOutput(self.parent)
+        widget = TextOutput(auto.parent)
         widget._set_value(text)
 
-        self.data.result = widget
+        auto.data.result = widget
 
         return

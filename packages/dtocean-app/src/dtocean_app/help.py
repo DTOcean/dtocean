@@ -20,7 +20,7 @@
 Created on Sat Oct 15 12:14:30 2016
 
 .. moduleauthor:: Rui Duarte <rui.duarte@france-energies-marines.org>
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 import os

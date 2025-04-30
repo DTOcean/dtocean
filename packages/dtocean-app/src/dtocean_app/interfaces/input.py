@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 """
 Created on Wed Apr 06 15:59:04 2016
 
-.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
+.. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
 from ..core import InputWidgetInterface
@@ -104,7 +104,7 @@ class SiteSelectionWidget(InputWidgetInterface):
         return optional
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
@@ -217,7 +217,7 @@ class SystemSelectionWidget(InputWidgetInterface):
         return optional
 
     @classmethod
-    def declare_id_map(self):
+    def declare_id_map(cls):
         """Declare the mapping for variable identifiers in the data description
         to local names for use in the interface. This helps isolate changes in
         the data description or interface from effecting the other.
