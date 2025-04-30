@@ -21,7 +21,7 @@ Created on Mon Mar 20 11:21:12 2017
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-import Tkinter as tk
+import tkinter as tk
 
 
 def is_high_dpi(dpi_freshold=100.0):

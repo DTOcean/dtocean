@@ -16,11 +16,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
-from dtocean_core.tools.cable_constraints import (
+from dtocean_electrical.output import plot_devices
+from dtocean_plugins.tools.cable_constraints import (
     CableConstraintsTool,
     get_constraints,
 )
-from dtocean_electrical.output import plot_devices
 
 from ..widgets.display import MPLWidget
 from . import GUITool
