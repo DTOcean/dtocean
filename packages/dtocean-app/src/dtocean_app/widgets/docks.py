@@ -21,17 +21,18 @@ Created on Thu Apr 23 12:51:14 2015
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-from PySide6 import QtCore, QtGui
+from typing import TYPE_CHECKING
+
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from ..utils.display import is_high_dpi
 from ..utils.qtlog import XStream
 
-if is_high_dpi():
+if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.listdock import Ui_ListDock
     from ..designer.high.pipelinedock import Ui_PipeLineDock
     from ..designer.high.systemdock import Ui_SystemDock
     from ..designer.high.treedock import Ui_TreeDock
-
 else:
     from ..designer.low.listdock import Ui_ListDock
     from ..designer.low.pipelinedock import Ui_PipeLineDock
@@ -44,23 +45,23 @@ class DockShowCloseFilter(QtCore.QObject):
     _close = QtCore.Signal()
 
     def eventFilter(self, source, event):
-        if event.type() == QtCore.QEvent.Show and isinstance(
-            source, QtGui.QDockWidget
+        if event.type() == QtCore.QEvent.Type.Show and isinstance(
+            source, QtWidgets.QDockWidget
         ):
             self._show.emit()
 
-        if event.type() == QtCore.QEvent.Close and isinstance(
-            source, QtGui.QDockWidget
+        if event.type() == QtCore.QEvent.Type.Close and isinstance(
+            source, QtWidgets.QDockWidget
         ):
             self._close.emit()
 
         return False
 
 
-class PipeLineDock(QtGui.QDockWidget, Ui_PipeLineDock):
+class PipeLineDock(QtWidgets.QDockWidget, Ui_PipeLineDock):
     def __init__(self, parent):
-        QtGui.QDockWidget.__init__(self, "Dockable", parent)
-        Ui_TreeDock.__init__(self)
+        QtWidgets.QDockWidget.__init__(self, "Dockable", parent)
+        Ui_PipeLineDock.__init__(self)
         self.setupUi(self)
         self.treeView.setIconSize(QtCore.QSize(12, 12))
 
@@ -68,9 +69,9 @@ class PipeLineDock(QtGui.QDockWidget, Ui_PipeLineDock):
         self.installEventFilter(self._showclose_filter)
 
 
-class TreeDock(QtGui.QDockWidget, Ui_TreeDock):
+class TreeDock(QtWidgets.QDockWidget, Ui_TreeDock):
     def __init__(self, parent):
-        QtGui.QDockWidget.__init__(self, "Dockable", parent)
+        QtWidgets.QDockWidget.__init__(self, "Dockable", parent)
         Ui_TreeDock.__init__(self)
         self.setupUi(self)
         self.treeWidget.setIconSize(QtCore.QSize(12, 12))
@@ -79,9 +80,9 @@ class TreeDock(QtGui.QDockWidget, Ui_TreeDock):
         self.installEventFilter(self._showclose_filter)
 
 
-class ListDock(QtGui.QDockWidget, Ui_ListDock):
+class ListDock(QtWidgets.QDockWidget, Ui_ListDock):
     def __init__(self, parent):
-        QtGui.QDockWidget.__init__(self, "Dockable", parent)
+        QtWidgets.QDockWidget.__init__(self, "Dockable", parent)
         Ui_ListDock.__init__(self)
         self.setupUi(self)
 
@@ -91,7 +92,7 @@ class ListDock(QtGui.QDockWidget, Ui_ListDock):
     def _get_list_values(self):
         items = []
 
-        for index in xrange(self.listWidget.count()):
+        for index in range(self.listWidget.count()):
             items.append(self.listWidget.item(index))
 
         values = [str(i.text()) for i in items]
@@ -99,9 +100,9 @@ class ListDock(QtGui.QDockWidget, Ui_ListDock):
         return values
 
 
-class LogDock(QtGui.QDockWidget, Ui_SystemDock):
+class LogDock(QtWidgets.QDockWidget, Ui_SystemDock):
     def __init__(self, parent=None, max_lines=1e5 - 1):
-        QtGui.QDockWidget.__init__(self, "Dockable", parent)
+        QtWidgets.QDockWidget.__init__(self, "Dockable", parent)
         Ui_SystemDock.__init__(self)
 
         self._init_ui()
@@ -115,17 +116,17 @@ class LogDock(QtGui.QDockWidget, Ui_SystemDock):
 
         pal = QtGui.QPalette()
         bgc = QtGui.QColor(0, 0, 0)
-        pal.setColor(QtGui.QPalette.Base, bgc)
+        pal.setColor(QtGui.QPalette.ColorRole.Base, bgc)
         textc = QtGui.QColor(255, 255, 255)
-        pal.setColor(QtGui.QPalette.Text, textc)
+        pal.setColor(QtGui.QPalette.ColorRole.Text, textc)
 
-        self._console = QtGui.QPlainTextEdit(self)
+        self._console = QtWidgets.QPlainTextEdit(self)
         self._console.setPalette(pal)
         self._console.setReadOnly(True)
 
-        self._layout = QtGui.QVBoxLayout()
+        self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(2)
-        self._layout.setMargin(2)
+        self._layout.setContentsMargins(2, 2, 2, 2)
         self._layout.addWidget(self._console)
         self.verticalLayout.addLayout(self._layout)
 
@@ -138,4 +139,4 @@ class LogDock(QtGui.QDockWidget, Ui_SystemDock):
     @QtCore.Slot(str)
     def _add_text(self, arg1):
         self._console.appendPlainText(arg1)
-        self._console.moveCursor(QtGui.QTextCursor.End)
+        self._console.moveCursor(QtGui.QTextCursor.MoveOperation.End)

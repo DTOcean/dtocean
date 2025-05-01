@@ -26,8 +26,9 @@ from __future__ import unicode_literals
 import os
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from PySide6 import QtCore, QtGui
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import Qt
 
 plt.style.use("ggplot")
 plt.rcParams["svg.fonttype"] = "none"
@@ -36,10 +37,10 @@ module_path = os.path.realpath(__file__)
 test_image_path = os.path.join(module_path, "..", "test_images")
 
 
-class ImageLabel(QtGui.QLabel):
+class ImageLabel(QtWidgets.QLabel):
     def __init__(self, parent, img=None):
         super(ImageLabel, self).__init__(parent)
-        self.setFrameStyle(QtGui.QFrame.StyledPanel)
+        self.setFrameStyle(QtWidgets.QFrame.Shape.StyledPanel)
         self._pixmap = None
         self._display_window = parent
         self._img_path = None
@@ -48,9 +49,8 @@ class ImageLabel(QtGui.QLabel):
             self._img_path = img
             self._pixmap = QtGui.QPixmap(img)
 
-    def _init_ui(self, state=None):
+    def _init_ui(self):
         self._display_window._add_display(self)
-        self._set_state(state)
 
     def paintEvent(self, event):
         if self._pixmap is not None:
@@ -59,12 +59,12 @@ class ImageLabel(QtGui.QLabel):
             point = QtCore.QPoint(0, 0)
             scaledPix = self._pixmap.scaled(
                 size,
-                QtCore.Qt.KeepAspectRatio,
-                transformMode=QtCore.Qt.SmoothTransformation,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
             )
             # start painting the label from left upper corner
-            point.setX((size.width() - scaledPix.width()) / 2.0)
-            point.setY((size.height() - scaledPix.height()) / 2.0)
+            point.setX((size.width() - scaledPix.width()) // 2)
+            point.setY((size.height() - scaledPix.height()) // 2)
             painter.drawPixmap(point, scaledPix)
 
     def _update_display(self, img, *args, **kwargs):
@@ -105,7 +105,9 @@ class MPLWidget(FigureCanvas):
     def __init__(self, figure, parent=None):
         FigureCanvas.__init__(self, figure)
         FigureCanvas.setSizePolicy(
-            self, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+            self,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
         )
         FigureCanvas.updateGeometry(self)
 
