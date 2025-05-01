@@ -26,26 +26,20 @@ import os
 import platform
 from collections import OrderedDict
 from itertools import cycle
+from typing import TYPE_CHECKING, cast
 
 import pandas as pd
-import sip
 import yaml
-from PySide6 import QtCore, QtGui
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import QEasingCurve, QEvent, QPropertyAnimation, Qt
+from shiboken6 import Shiboken
 
 from ..utils.config import (
     get_software_version,  # pylint: disable=no-name-in-module
 )
 from ..utils.display import is_high_dpi
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
-
-
-if is_high_dpi():
+if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.about import Ui_AboutDialog
     from ..designer.high.datacheck import Ui_DataCheckDialog
     from ..designer.high.listframeeditor import Ui_ListFrameEditor
@@ -71,7 +65,7 @@ HOME = os.path.expanduser("~")
 DIR_PATH = os.path.dirname(__file__)
 
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
@@ -83,9 +77,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         new_action = QtGui.QAction(self)
         new_action.setCheckable(False)
         new_action.setEnabled(False)
-        new_action.setShortcutContext(QtCore.Qt.WindowShortcut)
-        new_action.setSoftKeyRole(QtGui.QAction.PositiveSoftKey)
-        new_action.setObjectName(_fromUtf8(action_id))
+        new_action.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        new_action.setObjectName(action_id)
         new_action.setText(action_name)
 
         menu = getattr(self, menu_name)
@@ -94,7 +87,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         return new_action
 
 
-class Shuttle(QtGui.QDialog, Ui_ShuttleDialog):
+class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
     list_updated = QtCore.Signal(list)
 
     def __init__(
@@ -167,9 +160,9 @@ class Shuttle(QtGui.QDialog, Ui_ShuttleDialog):
         self.addButton.clicked.connect(self.left_to_right)
         self.removeButton.clicked.connect(self.right_to_left)
 
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
-            self._update_list
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked.connect(self._update_list)
 
         self._init_lists()
 
@@ -236,7 +229,7 @@ class Shuttle(QtGui.QDialog, Ui_ShuttleDialog):
             self._left_model.appendRow(item)
 
 
-class DataCheck(QtGui.QDialog, Ui_DataCheckDialog):
+class DataCheck(QtWidgets.QDialog, Ui_DataCheckDialog):
     def __init__(self, parent=None):
         super(DataCheck, self).__init__(parent)
 
@@ -246,7 +239,9 @@ class DataCheck(QtGui.QDialog, Ui_DataCheckDialog):
         self.setupUi(self)
 
         self.provideLabel.hide()
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).setEnabled(False)
 
     def _set_passed(self, label="PASSED"):
         passStr = (
@@ -258,8 +253,12 @@ class DataCheck(QtGui.QDialog, Ui_DataCheckDialog):
         self.provideLabel.hide()
         self.tableWidget.setEnabled(False)
         self.tableWidget.setRowCount(0)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setDefault(True)
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).setEnabled(True)
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).setDefault(True)
 
     def _set_failed(self, address_df, label="FAILED"):
         passStr = (
@@ -278,25 +277,27 @@ class DataCheck(QtGui.QDialog, Ui_DataCheckDialog):
         self.tableWidget.setRowCount(len(address_df))
 
         for index, row in address_df.iterrows():
-            item = QtGui.QTableWidgetItem(row["Section"])
+            item = QtWidgets.QTableWidgetItem(row["Section"])
             item.setTextAlignment(
-                QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter
+                Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter
             )
             self.tableWidget.setItem(index, 0, item)
 
-            item = QtGui.QTableWidgetItem(row["Branch"])
+            item = QtWidgets.QTableWidgetItem(row["Branch"])
             item.setTextAlignment(
-                QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter
+                Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter
             )
             self.tableWidget.setItem(index, 1, item)
 
-            item = QtGui.QTableWidgetItem(row["Item"])
+            item = QtWidgets.QTableWidgetItem(row["Item"])
             item.setTextAlignment(
-                QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter
+                Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter
             )
             self.tableWidget.setItem(index, 2, item)
 
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).setEnabled(False)
 
     def show(self, address_df, title="Checking data requirements..."):
         self.setWindowTitle(title)
@@ -309,7 +310,7 @@ class DataCheck(QtGui.QDialog, Ui_DataCheckDialog):
         super(DataCheck, self).show()
 
 
-class ProjProperties(QtGui.QDialog, Ui_ProjectProperties):
+class ProjProperties(QtWidgets.QDialog, Ui_ProjectProperties):
     def __init__(self, parent=None):
         super(ProjProperties, self).__init__(parent)
 
@@ -319,7 +320,7 @@ class ProjProperties(QtGui.QDialog, Ui_ProjectProperties):
         self.setupUi(self)
 
 
-class TestDataPicker(QtGui.QDialog, Ui_TestDataPicker):
+class TestDataPicker(QtWidgets.QDialog, Ui_TestDataPicker):
     __test__ = False
     path_set = QtCore.Signal(str)
 
@@ -331,19 +332,23 @@ class TestDataPicker(QtGui.QDialog, Ui_TestDataPicker):
     def _init_ui(self):
         self.setupUi(self)
         self.browseButton = self.buttonBox.addButton(
-            "Browse...", QtGui.QDialogButtonBox.ActionRole
+            "Browse...",
+            QtWidgets.QDialogButtonBox.ButtonRole.ActionRole,
         )
         self.browseButton.clicked.connect(self._write_path)
 
     @QtCore.Slot()
     def _write_path(self):
-        test_file_path = QtGui.QFileDialog.getOpenFileName(self, directory=HOME)
+        test_file_path = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            dir=HOME,
+        )
         self.pathLineEdit.setText(test_file_path)
 
 
-class ListTableEditor(QtGui.QDialog, Ui_ListTableEditor):
+class ListTableEditor(QtWidgets.QDialog, Ui_ListTableEditor):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         Ui_ListTableEditor.__init__(self)
         self.setupUi(self)
 
@@ -352,7 +357,7 @@ class ListTableEditor(QtGui.QDialog, Ui_ListTableEditor):
         self.listWidget.addItems(names)
 
     def _add_item(self, name):
-        item = QtGui.QListWidgetItem(name)
+        item = QtWidgets.QListWidgetItem(name)
         self.listWidget.addItem(item)
 
         return item
@@ -375,10 +380,10 @@ class ListTableEditor(QtGui.QDialog, Ui_ListTableEditor):
             for i, value in enumerate(series):
                 if value is None:
                     value = ""
-                item = QtGui.QTableWidgetItem(value)
+                item = QtWidgets.QTableWidgetItem(value)
 
                 if freeze_cols is not None and column in freeze_cols:
-                    item.setFlags(QtCore.Qt.ItemIsEnabled)
+                    item.setFlags(Qt.ItemFlag.ItemIsEnabled)
 
                 self.tableWidget.setItem(i, j, item)
 
@@ -388,11 +393,11 @@ class ListTableEditor(QtGui.QDialog, Ui_ListTableEditor):
 
         frame_dict = {}
 
-        for j in xrange(n_cols):
+        for j in range(n_cols):
             header = str(self.tableWidget.horizontalHeaderItem(j).text())
             row_values = []
 
-            for i in xrange(n_rows):
+            for i in range(n_rows):
                 row_values.append(str(self.tableWidget.item(i, j).text()))
 
             frame_dict[header] = row_values
@@ -402,11 +407,11 @@ class ListTableEditor(QtGui.QDialog, Ui_ListTableEditor):
         return df
 
 
-class ListFrameEditor(QtGui.QDialog, Ui_ListFrameEditor):
+class ListFrameEditor(QtWidgets.QDialog, Ui_ListFrameEditor):
     """Dialog for selecting and configuring strategies."""
 
     def __init__(self, parent=None, title=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         Ui_ListFrameEditor.__init__(self)
 
         self._init_ui(title)
@@ -417,7 +422,7 @@ class ListFrameEditor(QtGui.QDialog, Ui_ListFrameEditor):
         if title is not None:
             self.setWindowTitle(title)
 
-        self.mainLayout = QtGui.QVBoxLayout()
+        self.mainLayout = QtWidgets.QVBoxLayout()
         self.mainFrame.setLayout(self.mainLayout)
         self.mainWidget = None
 
@@ -448,25 +453,26 @@ class ListFrameEditor(QtGui.QDialog, Ui_ListFrameEditor):
         if self.mainWidget is not None:
             self.mainLayout.removeWidget(self.mainWidget)
             self.mainWidget.deleteLater()
-            sip.delete(self.mainWidget)
+            Shiboken.delete(self.mainWidget)
             self.mainWidget = None
 
         self.mainWidget = widget
         self.mainLayout.addWidget(self.mainWidget)
 
 
-class ProgressBar(QtGui.QDialog, Ui_ProgressBar):
+class ProgressBar(QtWidgets.QDialog, Ui_ProgressBar):
     force_quit = QtCore.Signal()
 
     def __init__(self, parent=None, allow_close=False):
+        if not isinstance(parent, (QtWidgets.QMainWindow, QtWidgets.QWidget)):
+            raise ValueError("parent must derive from QMainWindow or QWidget")
+
         flags = (
-            QtCore.Qt.WindowMinimizeButtonHint
-            | QtCore.Qt.WindowMaximizeButtonHint
+            Qt.WindowType.WindowMinimizeButtonHint
+            | Qt.WindowType.WindowMaximizeButtonHint
         )
-
-        super(ProgressBar, self).__init__(parent, flags=flags)
+        super(ProgressBar, self).__init__(parent, f=flags)
         self.setupUi(self)
-
         self.allow_close = allow_close
 
     def set_pulsing(self):
@@ -480,20 +486,24 @@ class ProgressBar(QtGui.QDialog, Ui_ProgressBar):
             event.ignore()
 
     def changeEvent(self, event):
-        if event.type() == QtCore.QEvent.WindowStateChange:
-            if self.windowState() & QtCore.Qt.WindowMinimized:
-                self.parent().showMinimized()
+        if event.type() == QEvent.Type.WindowStateChange:
+            parent = self.parent()
+            assert isinstance(
+                parent, (QtWidgets.QMainWindow, QtWidgets.QWidget)
+            )
+            if self.windowState() & Qt.WindowState.WindowMinimized:
+                parent.showMinimized()
             else:
-                self.parent().showMaximized()
+                parent.showMaximized()
 
     def keyPressEvent(self, event):
-        if not event.key() == QtCore.Qt.Key_Escape:
+        if not event.key() == Qt.Key.Key_Escape:
             super(ProgressBar, self).keyPressEvent(event)
 
 
-class About(QtGui.QDialog, Ui_AboutDialog):
+class About(QtWidgets.QDialog, Ui_AboutDialog):
     def __init__(self, parent=None, image_delay=5000, fade_duration=2000):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         Ui_AboutDialog.__init__(self)
 
         self._delay = image_delay
@@ -508,6 +518,14 @@ class About(QtGui.QDialog, Ui_AboutDialog):
     def _init_ui(self, fade_duration):
         self.setupUi(self)
 
+        assert isinstance(self.frame, QtWidgets.QFrame)
+        assert isinstance(self.insitutionIntroLabel, QtWidgets.QLabel)
+        assert isinstance(self.institutionLabel, QtWidgets.QLabel)
+        assert isinstance(self.line, QtWidgets.QFrame)
+        assert isinstance(self.line_3, QtWidgets.QFrame)
+        assert isinstance(self.peopleIntroLabel, QtWidgets.QLabel)
+        assert isinstance(self.peopleLabel, QtWidgets.QLabel)
+
         software_version = get_software_version()
         arch_str = " ".join(platform.architecture())
         software_str = "{} ({})".format(software_version, arch_str)
@@ -518,7 +536,7 @@ class About(QtGui.QDialog, Ui_AboutDialog):
         names_path = os.path.join(resources_path, "people.yaml")
 
         with open(names_path, "r") as stream:
-            names = yaml.load(stream, Loader=yaml.FullLoader)  # nosec B506
+            names = yaml.load(stream, Loader=yaml.FullLoader)
 
         if names is None:
             self.verticalLayout_3.removeWidget(self.peopleIntroLabel)
@@ -560,17 +578,13 @@ class About(QtGui.QDialog, Ui_AboutDialog):
             self.frame.deleteLater()
             self.frame = None
 
-            self.verticalLayout_4.removeWidget(self.insitutionIntroLabel)
-            self.institutionLabel.deleteLater()
-            self.institutionLabel = None
-
             self.verticalLayout_3.removeWidget(self.line_3)
             self.line_3.deleteLater()
             self.line_3 = None
 
         if self._n_pix > 1:
             self._timer = QtCore.QTimer(self)
-            self._effect = QtGui.QGraphicsOpacityEffect()
+            self._effect = QtWidgets.QGraphicsOpacityEffect()
             self._fade_in = self._init_fade_in(fade_duration)
             self._fade_out = self._init_fade_out(fade_duration)
             self.institutionLabel.setGraphicsEffect(self._effect)
@@ -581,39 +595,61 @@ class About(QtGui.QDialog, Ui_AboutDialog):
                 self.institutionLabel.repaint
             )
 
+        else:
+            self.verticalLayout_4.removeWidget(self.insitutionIntroLabel)
+            self.institutionLabel.deleteLater()
+            self.institutionLabel = None
+
     def _init_fade_in(self, duration):
-        fade_in = QtCore.QPropertyAnimation(self._effect, "opacity")
+        assert self._effect is not None
+        fade_in = QPropertyAnimation(
+            self._effect,
+            QtCore.QByteArray(b"opacity"),
+        )
         fade_in.setDuration(duration)
         fade_in.setStartValue(0.0)
         fade_in.setEndValue(1.0)
-        fade_in.setEasingCurve(QtCore.QEasingCurve.OutQuad)
+        fade_in.setEasingCurve(QEasingCurve.Type.OutQuad)
 
         return fade_in
 
     def _init_fade_out(self, duration):
-        fade_out = QtCore.QPropertyAnimation(self._effect, "opacity")
+        assert self._effect is not None
+        fade_out = QPropertyAnimation(
+            self._effect,
+            QtCore.QByteArray(b"opacity"),
+        )
         fade_out.setDuration(duration)
         fade_out.setStartValue(1.0)
         fade_out.setEndValue(0.0)
-        fade_out.setEasingCurve(QtCore.QEasingCurve.OutQuad)
+        fade_out.setEasingCurve(QEasingCurve.Type.OutQuad)
 
         return fade_out
 
     @QtCore.Slot()
     def _start_image(self):
-        image_path = self._image_files.next()
+        assert self._image_files is not None
+        assert self._fade_in is not None
+
+        image_path = next(self._image_files)
         image = QtGui.QPixmap(image_path)
-        self.institutionLabel.setPixmap(image)
+
+        label = cast(QtWidgets.QLabel, self.institutionLabel)
+        label.setPixmap(image)
 
         if self._n_pix > 1:
             self._fade_in.start()
 
     @QtCore.Slot()
     def _start_timer(self):
+        assert self._timer is not None
         self._timer.start(self._delay)
 
     @QtCore.Slot()
     def _end_image(self):
+        assert self._timer is not None
+        assert self._fade_out is not None
+
         self._timer.stop()
         self._fade_out.start()
 
@@ -622,6 +658,8 @@ class About(QtGui.QDialog, Ui_AboutDialog):
         super(About, self).show()
 
         if self._n_pix > 1:
+            assert self._timer is not None
+            assert self._effect is not None
             self._timer.timeout.connect(self._end_image)
             self._effect.setOpacity(0.0)
 
@@ -632,14 +670,14 @@ class About(QtGui.QDialog, Ui_AboutDialog):
         super(About, self).closeEvent(evnt)
 
         if self._n_pix > 1:
+            assert self._timer is not None
             self._timer.timeout.disconnect()
             self._timer.stop()
 
 
-class Message(QtGui.QWidget):
+class Message(QtWidgets.QWidget):
     def __init__(self, parent, text):
         super(Message, self).__init__(parent)
-
         self.text = text
 
     def paintEvent(self, event):
@@ -651,4 +689,4 @@ class Message(QtGui.QWidget):
     def drawText(self, event, qp):
         qp.setPen(QtGui.QColor(25, 25, 25))
         qp.setFont(QtGui.QFont("Decorative", 10))
-        qp.drawText(event.rect(), QtCore.Qt.AlignCenter, self.text)
+        qp.drawText(event.rect(), Qt.AlignmentFlag.AlignCenter, self.text)

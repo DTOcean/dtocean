@@ -21,36 +21,39 @@ Created on Sun Nov 25 16:49:55 2018
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-from PySide6 import QtCore, QtGui
+from PySide6 import QtWidgets
+from PySide6.QtCore import QSortFilterProxyModel, Qt
 
 
-class ExtendedComboBox(QtGui.QComboBox):
+class ExtendedComboBox(QtWidgets.QComboBox):
     # https://stackoverflow.com/a/7693234/3215152
 
     def __init__(self, parent=None):
         super(ExtendedComboBox, self).__init__(parent)
 
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setEditable(True)
 
         # Add a filter model to filter matching items
-        self.pFilterModel = QtGui.QSortFilterProxyModel(self)
-        self.pFilterModel.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.pFilterModel = QSortFilterProxyModel(self)
+        self.pFilterModel.setFilterCaseSensitivity(
+            Qt.CaseSensitivity.CaseInsensitive
+        )
         self.pFilterModel.setSourceModel(self.model())
 
         # Add a completer, which uses the filter model
-        self.completer = QtGui.QCompleter(self.pFilterModel, self)
+        self.my_completer = QtWidgets.QCompleter(self.pFilterModel, self)
 
         # Always show all (filtered) completions
-        self.completer.setCompletionMode(
-            QtGui.QCompleter.UnfilteredPopupCompletion
+        self.my_completer.setCompletionMode(
+            QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion
         )
-        self.setCompleter(self.completer)
+        self.setCompleter(self.my_completer)
 
         # Connect signals
-        self.lineEdit().textEdited[str].connect(
-            self.pFilterModel.setFilterFixedString
-        )
+        line_edit = self.lineEdit()
+        assert line_edit is not None
+        line_edit.textEdited.connect(self.pFilterModel.setFilterFixedString)
         self.completer.activated.connect(self.on_completer_activated)
 
     # On selection of an item from the completer, select the corresponding item
