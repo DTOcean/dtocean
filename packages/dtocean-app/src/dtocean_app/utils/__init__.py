@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2019 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,11 +20,10 @@ import argparse
 
 
 class SmartFormatter(argparse.HelpFormatter):
-    
     # https://stackoverflow.com/a/22157136/3215152
 
     def _split_lines(self, text, width):
-        if text.startswith('R|'):
-            return text[2:].splitlines()  
+        if text.startswith("R|"):
+            return text[2:].splitlines()
         # this is the RawTextHelpFormatter._split_lines
         return argparse.HelpFormatter._split_lines(self, text, width)
