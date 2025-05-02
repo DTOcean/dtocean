@@ -169,7 +169,6 @@ class AdvancedPositionWidget(
     QtWidgets.QWidget,
     Ui_AdvancedPositionWidget,
     StrategyWidget,
-    metaclass=PyQtABCMeta,
 ):
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()

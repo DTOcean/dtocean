@@ -16,14 +16,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
-from abc import ABC
 
+from dtocean_plugins.strategies.base import Strategy
 from PySide6 import QtCore
 
 pyqtWrapperType = type(QtCore.QObject)
 
 
-class GUIStrategy(ABC):
+class PyQtABCMeta(abc.ABCMeta, pyqtWrapperType):
+    pass
+
+
+class GUIStrategy(Strategy):
     """The base abstract class for discovery of GUI supported strategy
     classes"""
 
@@ -49,7 +53,7 @@ class GUIStrategy(ABC):
         """
 
 
-class StrategyWidget(ABC):
+class StrategyWidget(metaclass=PyQtABCMeta):
     """The base abstract class for widgets used to configure the strategy
     classes"""
 
@@ -97,7 +101,3 @@ class StrategyWidget(ABC):
             params.append(param)
 
         return params
-
-
-class PyQtABCMeta(abc.ABCMeta, pyqtWrapperType):
-    pass

@@ -15,11 +15,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 from dtocean_plugins.strategies.basic import BasicStrategy
 from PySide6 import QtCore
 
 from ..widgets.dialogs import Message
-from . import GUIStrategy, PyQtABCMeta, StrategyWidget
+from . import GUIStrategy, StrategyWidget
 
 
 class GUIBasicStrategy(GUIStrategy, BasicStrategy):
@@ -48,7 +49,7 @@ class GUIBasicStrategy(GUIStrategy, BasicStrategy):
         return widget
 
 
-class BasicWidget(Message, StrategyWidget, metaclass=PyQtABCMeta):
+class BasicWidget(Message, StrategyWidget):
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()
     reset = QtCore.Signal()
