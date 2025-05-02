@@ -22,23 +22,16 @@ Created on Thu Apr 23 12:51:14 2015
 """
 
 import re
+from typing import TYPE_CHECKING
 
 import pandas as pd
-from dtocean_qt.models.DataFrameModel import DataFrameModel
-from PySide6 import QtCore, QtGui
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
-
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from PySide6 import QtCore, QtWidgets
 
 from ..utils.display import is_high_dpi
 from .datatable import DataTableWidget
 
-if is_high_dpi():
+if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.labeloutput import Ui_LabelOutput
     from ..designer.high.textoutput import Ui_TextOutput
 
@@ -50,11 +43,11 @@ else:
 # DOCK WINDOW OUTPUT WIDGETS
 
 
-class LabelOutput(QtGui.QWidget, Ui_LabelOutput):
+class LabelOutput(QtWidgets.QWidget, Ui_LabelOutput):
     null_signal = QtCore.Signal()
 
     def __init__(self, parent, units=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_LabelOutput.__init__(self)
 
         self.setupUi(self)
@@ -79,25 +72,26 @@ class LabelOutput(QtGui.QWidget, Ui_LabelOutput):
         return self.null_signal
 
 
-class OutputDataTable(QtGui.QWidget):
+class OutputDataTable(QtWidgets.QWidget):
     null_signal = QtCore.Signal()
 
     def __init__(self, parent, columns, units=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self._columns = columns
         self._units = units
 
         self._setup_ui()
 
     def _setup_ui(self):
-        self.setObjectName(_fromUtf8("dataTableObject"))
+        self.setObjectName("dataTableObject")
 
-        self.verticalLayout = QtGui.QVBoxLayout(self)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
 
         self.datatable = DataTableWidget(self, edit_rows=False, edit_cols=False)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
         )
         self.datatable.setSizePolicy(sizePolicy)
 
@@ -180,11 +174,11 @@ class OutputDataTable(QtGui.QWidget):
         return self.null_signal
 
 
-class TextOutput(QtGui.QWidget, Ui_TextOutput):
+class TextOutput(QtWidgets.QWidget, Ui_TextOutput):
     null_signal = QtCore.Signal()
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_TextOutput.__init__(self)
 
         self.setupUi(self)
@@ -198,23 +192,3 @@ class TextOutput(QtGui.QWidget, Ui_TextOutput):
 
     def _get_nullify_event(self):
         return self.null_signal
-
-
-def test():
-    import sys
-
-    from mainwidgets import InOutPane
-    from PySide6 import QtGui
-
-    app = QtGui.QApplication(sys.argv)
-    dialog = QtGui.QDialog()
-    dialog._pane = InOutPane(dialog)
-    dialog._output = LabelOutput(dialog._pane, "Hello", "20", "Cats")
-    dialog._output._init_ui()
-    dialog.resize(400, 275)
-    dialog.show()
-    sys.exit(app.exec_())
-
-
-if __name__ == "__main__":
-    test()

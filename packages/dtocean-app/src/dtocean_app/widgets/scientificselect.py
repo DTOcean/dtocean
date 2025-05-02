@@ -23,26 +23,8 @@ Created on Thu Apr 23 12:51:14 2015
 
 import re
 
-from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QDoubleSpinBox, QValidator
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
-
-
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtGui import QValidator
 
 # Fork of jdreaver/scientificspin.py
 # https://gist.github.com/jdreaver/0be2e44981159d0854f5
@@ -50,9 +32,9 @@ except AttributeError:
 _float_re = re.compile(r"(([+-]?\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)")
 
 
-class ScientificDoubleSpinBox(QDoubleSpinBox):
+class ScientificDoubleSpinBox(QtWidgets.QDoubleSpinBox):
     def __init__(self, *args, **kwargs):
-        super(QDoubleSpinBox, self).__init__(*args, **kwargs)
+        super(QtWidgets.QDoubleSpinBox, self).__init__(*args, **kwargs)
         self.setMinimum(-1.0e18)
         self.setMaximum(1.0e18)
         self.setDecimals(323)
@@ -61,11 +43,11 @@ class ScientificDoubleSpinBox(QDoubleSpinBox):
         string = str(text)
 
         if valid_float_string(string):
-            return (QValidator.Acceptable, position)
+            return (QValidator.State.Acceptable, position)
         if string == "" or string[position - 1] in "e.-+":
-            return (QValidator.Intermediate, position)
+            return (QValidator.State.Intermediate, position)
 
-        return (QValidator.Invalid, position)
+        return (QValidator.State.Invalid, position)
 
     def valueFromText(self, text):
         return float(text)
@@ -75,7 +57,11 @@ class ScientificDoubleSpinBox(QDoubleSpinBox):
 
     def stepBy(self, steps):
         text = self.cleanText()
-        groups = _float_re.search(text).groups()
+        search = _float_re.search(text)
+        if search is None:
+            return
+
+        groups = search.groups()
         decimal = float(groups[1])
         decimal += steps
         new_string = "{:g}".format(decimal) + (groups[3] if groups[3] else "")
@@ -84,15 +70,16 @@ class ScientificDoubleSpinBox(QDoubleSpinBox):
 
 class Ui_ScientificSelect:
     def setupUi(self, FloatSelect):
-        FloatSelect.setObjectName(_fromUtf8("FloatSelect"))
+        FloatSelect.setObjectName("FloatSelect")
         FloatSelect.resize(750, 200)
-        self.verticalLayout = QtGui.QVBoxLayout(FloatSelect)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.gridLayout = QtGui.QGridLayout()
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.staticLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        self.verticalLayout = QtWidgets.QVBoxLayout(FloatSelect)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.gridLayout = QtWidgets.QGridLayout()
+        self.gridLayout.setObjectName("gridLayout")
+        self.staticLabel = QtWidgets.QLabel(FloatSelect)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Preferred,
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -101,11 +88,12 @@ class Ui_ScientificSelect:
         )
         self.staticLabel.setSizePolicy(sizePolicy)
         self.staticLabel.setMinimumSize(QtCore.QSize(200, 0))
-        self.staticLabel.setObjectName(_fromUtf8("staticLabel"))
+        self.staticLabel.setObjectName("staticLabel")
         self.gridLayout.addWidget(self.staticLabel, 0, 0, 1, 1)
-        self.valueLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        self.valueLabel = QtWidgets.QLabel(FloatSelect)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -113,11 +101,12 @@ class Ui_ScientificSelect:
             self.valueLabel.sizePolicy().hasHeightForWidth()
         )
         self.valueLabel.setSizePolicy(sizePolicy)
-        self.valueLabel.setObjectName(_fromUtf8("valueLabel"))
+        self.valueLabel.setObjectName("valueLabel")
         self.gridLayout.addWidget(self.valueLabel, 0, 1, 1, 2)
-        self.questionLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        self.questionLabel = QtWidgets.QLabel(FloatSelect)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Preferred,
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -126,11 +115,12 @@ class Ui_ScientificSelect:
         )
         self.questionLabel.setSizePolicy(sizePolicy)
         self.questionLabel.setMinimumSize(QtCore.QSize(200, 0))
-        self.questionLabel.setObjectName(_fromUtf8("questionLabel"))
+        self.questionLabel.setObjectName("questionLabel")
         self.gridLayout.addWidget(self.questionLabel, 1, 0, 1, 1)
-        self.unitsLabel = QtGui.QLabel(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        self.unitsLabel = QtWidgets.QLabel(FloatSelect)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Preferred,
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -138,11 +128,12 @@ class Ui_ScientificSelect:
             self.unitsLabel.sizePolicy().hasHeightForWidth()
         )
         self.unitsLabel.setSizePolicy(sizePolicy)
-        self.unitsLabel.setObjectName(_fromUtf8("unitsLabel"))
+        self.unitsLabel.setObjectName("unitsLabel")
         self.gridLayout.addWidget(self.unitsLabel, 1, 2, 1, 1)
         self.doubleSpinBox = ScientificDoubleSpinBox(FloatSelect)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Preferred,
+            QtWidgets.QSizePolicy.Policy.Fixed,
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -152,19 +143,23 @@ class Ui_ScientificSelect:
         self.doubleSpinBox.setSizePolicy(sizePolicy)
         self.doubleSpinBox.setMinimumSize(QtCore.QSize(0, 0))
         self.doubleSpinBox.setKeyboardTracking(False)
-        self.doubleSpinBox.setObjectName(_fromUtf8("doubleSpinBox"))
+        self.doubleSpinBox.setObjectName("doubleSpinBox")
         self.gridLayout.addWidget(self.doubleSpinBox, 1, 1, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)
-        spacerItem = QtGui.QSpacerItem(
-            20, 86, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        spacerItem = QtWidgets.QSpacerItem(
+            20,
+            86,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
         )
         self.verticalLayout.addItem(spacerItem)
-        self.buttonBox = QtGui.QDialogButtonBox(FloatSelect)
+        self.buttonBox = QtWidgets.QDialogButtonBox(FloatSelect)
         self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+            | QtWidgets.QDialogButtonBox.StandardButton.Ok
         )
         self.buttonBox.setCenterButtons(False)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(FloatSelect)
@@ -190,5 +185,9 @@ def valid_float_string(string):
 def format_float(value):
     """Modified form of the 'g' format specifier."""
     string = "{:g}".format(value).replace("e+", "e")
-    string = re.sub("e(-?)0*(\d+)", r"e\1\2", string)
+    string = re.sub(r"e(-?)0*(\d+)", r"e\1\2", string)
     return string
+
+
+def _translate(context, text, disambig):
+    return QtWidgets.QApplication.translate(context, text, disambig)

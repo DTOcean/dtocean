@@ -25,7 +25,7 @@ from PySide6.QtCore import Qt
 
 from ..utils.display import is_high_dpi
 from ..widgets.extendedcombobox import ExtendedComboBox
-from . import GUIStrategy, PyQtABCMeta, StrategyWidget
+from . import GUIStrategy, StrategyWidget
 
 if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.unitsensitivity import Ui_UnitSensitivityWidget
@@ -64,7 +64,6 @@ class UnitSensitivityWidget(
     QtWidgets.QWidget,
     Ui_UnitSensitivityWidget,
     StrategyWidget,
-    metaclass=PyQtABCMeta,
 ):
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()

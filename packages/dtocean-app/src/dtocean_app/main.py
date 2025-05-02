@@ -52,6 +52,7 @@ from shiboken6 import Shiboken
 from win32event import CreateMutex
 
 from . import get_log_dir
+from .core import GUICore, GUIProject
 from .extensions import GUIStrategyManager, GUIToolManager
 from .help import HelpWidget
 from .menu import DBSelector
@@ -65,6 +66,7 @@ from .pipeline import (
     SectionControl,
 )
 from .simulation import SimulationDock
+from .strategies import GUIStrategy
 from .widgets.central import (
     ContextArea,
     DetailsWidget,
@@ -753,13 +755,13 @@ class Shell(QtCore.QObject):
     database_convert_active = QtCore.Signal()
     database_convert_complete = QtCore.Signal()
 
-    def __init__(self, core):
+    def __init__(self, core: GUICore):
         super(Shell, self).__init__()
 
-        self.project = None
-        self.project_path = None
-        self.project_unsaved = True
-        self.strategy = None
+        self.project: Optional[GUIProject] = None
+        self.project_path: Optional[str] = None
+        self.project_unsaved: bool = True
+        self.strategy: Optional[GUIStrategy] = None
         self.queued_interfaces: dict[str, Optional[list[Any]]] = {
             "modules": None,
             "themes": None,
@@ -1126,7 +1128,7 @@ class Shell(QtCore.QObject):
         self.queued_interfaces["themes"] = None
 
     @QtCore.Slot(object)
-    def select_strategy(self, strategy):
+    def select_strategy(self, strategy: Optional[GUIStrategy]):
         if self.project is None:
             return
 
@@ -1143,9 +1145,8 @@ class Shell(QtCore.QObject):
         self.strategy = strategy
         simulation = self.project.get_simulation()
 
-        if strategy is None:
+        if self.strategy is None:
             simulation.set_unavailable_variables(None)
-
         else:
             force_unavailable = self.strategy.get_variables()
             simulation.set_unavailable_variables(force_unavailable)
@@ -1279,6 +1280,7 @@ class Shell(QtCore.QObject):
             self._clear_active_thread()
             return
 
+        assert isinstance(self._active_thread._project, GUIProject)
         self.project = self._active_thread._project
         self.project_path = self._active_thread._project_path
         self.activated_interfaces = self._active_thread._activated_interfaces
@@ -1376,7 +1378,7 @@ class Shell(QtCore.QObject):
 
 
 class DTOceanWindow(MainWindow):
-    def __init__(self, shell, debug=False):
+    def __init__(self, shell: Shell, debug=False):
         super(DTOceanWindow, self).__init__()
 
         self._mutexname = None
@@ -1807,6 +1809,7 @@ class DTOceanWindow(MainWindow):
 
     @QtCore.Slot()
     def _set_project_properties(self):
+        assert self._shell.project is not None
         self._project_properties.lineEdit.setText(self._shell.project.title)
         self._project_properties.show()
 
@@ -1856,6 +1859,8 @@ class DTOceanWindow(MainWindow):
 
     @QtCore.Slot()
     def _active_project_ui_switch(self):
+        assert self._shell.project is not None
+
         # Disable Actions
         self.actionNew.setDisabled(True)
         self.actionOpen.setDisabled(True)
@@ -2889,6 +2894,7 @@ class DTOceanWindow(MainWindow):
     @QtCore.Slot(object)
     def _read_raw(self, variable, value):
         self._shell.read_raw(variable, value)
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
 
     @QtCore.Slot()
@@ -3020,11 +3026,13 @@ class DTOceanWindow(MainWindow):
     @QtCore.Slot(str, str, dict)
     def _dump_database(self, root_path, selected, credentials):
         self._shell.dump_database(root_path, selected, credentials)
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
 
     @QtCore.Slot(str, str, dict)
     def _load_database(self, root_path, selected, credentials):
         self._shell.load_database(root_path, selected, credentials)
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
 
     @QtCore.Slot()
@@ -3366,7 +3374,7 @@ class DTOceanWindow(MainWindow):
         )
 
         self._shell.open_project(file_path)
-
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
         self._shell._active_thread.finished.connect(self._open_project_finalize)
         self._shell._active_thread.finished.connect(self._reset_cursor)
@@ -3379,7 +3387,7 @@ class DTOceanWindow(MainWindow):
         )
 
         self._shell.save_project(file_path)
-
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
         self._shell._active_thread.finished.connect(self._reset_cursor)
 
@@ -3431,7 +3439,7 @@ class DTOceanWindow(MainWindow):
         self._progress.set_pulsing()
 
         self._shell.initiate_dataflow(self._pipeline_dock)
-
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
         self._shell._active_thread.finished.connect(self._close_progress)
 
@@ -3443,7 +3451,7 @@ class DTOceanWindow(MainWindow):
         self._progress.set_pulsing()
 
         self._shell.execute_current()
-
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
         self._shell._active_thread.finished.connect(self._close_progress)
 
@@ -3455,7 +3463,7 @@ class DTOceanWindow(MainWindow):
         self._progress.set_pulsing()
 
         self._shell.execute_themes()
-
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
         self._shell._active_thread.finished.connect(self._close_progress)
 
@@ -3470,7 +3478,7 @@ class DTOceanWindow(MainWindow):
         self._progress.set_pulsing()
 
         self._shell.execute_strategy()
-
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
         self._shell._active_thread.finished.connect(self._close_progress)
 
@@ -3484,7 +3492,7 @@ class DTOceanWindow(MainWindow):
         )
 
         self._shell.set_output_scope(scope)
-
+        assert self._shell._active_thread is not None
         self._shell._active_thread.error_detected.connect(self._display_error)
         self._shell._active_thread.finished.connect(self._reset_cursor)
 
@@ -3618,7 +3626,7 @@ class DTOceanWindow(MainWindow):
         context._bottom_contents.setParent(None)
 
         if isinstance(context._bottom_contents, MPLWidget):
-            fignum = context._bottom_contents.figure.number
+            fignum = context._bottom_contents.figure.number  # type: ignore
             n_figs = len(plt.get_fignums())
 
             log_msg = "Closing figure {} ({} open)".format(fignum, n_figs)

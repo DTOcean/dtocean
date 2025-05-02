@@ -23,26 +23,20 @@ Created on Thu Apr 23 12:51:14 2015
 
 import logging
 import os
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
-from dtocean_qt.models.DataFrameModel import DataFrameModel
-from PySide6 import QtCore, QtGui
+from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
 from shapely.geometry import Point
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
-
 
 from ..utils.display import is_high_dpi
 from .datatable import DataTableWidget
 from .scientificselect import Ui_ScientificSelect
 
-if is_high_dpi():
+if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.boolselect import Ui_BoolSelect
     from ..designer.high.dateselect import Ui_DateSelect
     from ..designer.high.intselect import Ui_IntSelect
@@ -69,7 +63,7 @@ HOME = os.path.expanduser("~")
 # DOCK WINDOW INPUT WIDGETS
 
 
-class CancelWidget(QtGui.QWidget):
+class CancelWidget(QtWidgets.QWidget):
     dummy_read = QtCore.Signal()
 
     def __init__(self, parent=None):
@@ -78,16 +72,21 @@ class CancelWidget(QtGui.QWidget):
         self._init_ui()
 
     def _init_ui(self):
-        self.verticalLayout = QtGui.QVBoxLayout(self)
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
 
-        spacerItem = QtGui.QSpacerItem(
-            20, 100, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        spacerItem = QtWidgets.QSpacerItem(
+            20,
+            100,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
         )
 
         self.verticalLayout.addItem(spacerItem)
 
-        self.buttonBox = QtGui.QDialogButtonBox(self)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel)
+        self.buttonBox = QtWidgets.QDialogButtonBox(self)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        )
         self.buttonBox.setCenterButtons(False)
 
         self.verticalLayout.addWidget(self.buttonBox)
@@ -102,14 +101,21 @@ class CancelWidget(QtGui.QWidget):
         return self.dummy_read
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
 
-class ListSelect(QtGui.QWidget, Ui_ListSelect):
+class ListSelect(QtWidgets.QWidget, Ui_ListSelect):
     def __init__(
-        self, parent, data, unit=None, question=None, experimental=None
+        self,
+        parent,
+        data,
+        unit=None,
+        question=None,
+        experimental=None,
     ):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_ListSelect.__init__(self)
         self._experimental = experimental
         self._experimental_str = " (Experimental)"
@@ -147,7 +153,7 @@ class ListSelect(QtGui.QWidget, Ui_ListSelect):
         current_index = self.comboBox.currentIndex()
 
         if current_index < 0:
-            result = None
+            result = ""
         else:
             result = str(self.comboBox.currentText())
 
@@ -157,13 +163,20 @@ class ListSelect(QtGui.QWidget, Ui_ListSelect):
             if test_experimental in self._experimental:
                 result = test_experimental
 
+        if not result:
+            result = None
+
         return result
 
     def _get_read_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     def _disable(self):
         self.buttonBox.setDisabled(True)
@@ -173,11 +186,11 @@ class ListSelect(QtGui.QWidget, Ui_ListSelect):
         self.unitsLabel.setDisabled(True)
 
 
-class FloatSelect(QtGui.QWidget, Ui_ScientificSelect):
+class FloatSelect(QtWidgets.QWidget, Ui_ScientificSelect):
     read_value = QtCore.Signal()
 
     def __init__(self, parent=None, units=None, minimum=None, maximum=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_ScientificSelect.__init__(self)
 
         self.setupUi(self)
@@ -198,9 +211,9 @@ class FloatSelect(QtGui.QWidget, Ui_ScientificSelect):
             self.doubleSpinBox.setMaximum(maximum)
 
         self.doubleSpinBox.valueChanged.connect(self._emit_read)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
-            self._emit_read
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked.connect(self._emit_read)
 
     def _set_value(self, value):
         valueStr = str(value)
@@ -218,18 +231,20 @@ class FloatSelect(QtGui.QWidget, Ui_ScientificSelect):
         return self.read_value
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
         self.read_value.emit()
 
 
-class IntSelect(QtGui.QWidget, Ui_IntSelect):
+class IntSelect(QtWidgets.QWidget, Ui_IntSelect):
     read_value = QtCore.Signal()
 
     def __init__(self, parent=None, units=None, minimum=None, maximum=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_IntSelect.__init__(self)
 
         self.setupUi(self)
@@ -250,9 +265,9 @@ class IntSelect(QtGui.QWidget, Ui_IntSelect):
             self.spinBox.setMaximum(maximum)
 
         self.spinBox.valueChanged.connect(self._emit_read)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
-            self._emit_read
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked.connect(self._emit_read)
 
     def _set_value(self, value):
         valueStr = str(value)
@@ -270,18 +285,20 @@ class IntSelect(QtGui.QWidget, Ui_IntSelect):
         return self.read_value
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
         self.read_value.emit()
 
 
-class StringSelect(QtGui.QWidget, Ui_StringSelect):
+class StringSelect(QtWidgets.QWidget, Ui_StringSelect):
     read_value = QtCore.Signal()
 
     def __init__(self, parent=None, units=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_StringSelect.__init__(self)
 
         self.setupUi(self)
@@ -296,9 +313,9 @@ class StringSelect(QtGui.QWidget, Ui_StringSelect):
         self.unitsLabel.setText(unitsStr)
 
         self.lineEdit.returnPressed.connect(self._emit_read)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
-            self._emit_read
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked.connect(self._emit_read)
 
     def _set_value(self, value):
         valueStr = str(value)
@@ -316,19 +333,21 @@ class StringSelect(QtGui.QWidget, Ui_StringSelect):
         return self.read_value
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
         self.read_value.emit()
 
 
-class DirectorySelect(QtGui.QWidget, Ui_PathSelect):
+class DirectorySelect(QtWidgets.QWidget, Ui_PathSelect):
     read_value = QtCore.Signal()
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
-        Ui_StringSelect.__init__(self)
+        QtWidgets.QWidget.__init__(self, parent)
+        Ui_PathSelect.__init__(self)
 
         self.setupUi(self)
         self._init_ui()
@@ -336,9 +355,9 @@ class DirectorySelect(QtGui.QWidget, Ui_PathSelect):
     def _init_ui(self):
         self.toolButton.clicked.connect(self._set_path)
         self.lineEdit.returnPressed.connect(self._emit_read)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
-            self._emit_read
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked.connect(self._emit_read)
 
     def _set_value(self, value):
         valueStr = str(value)
@@ -355,12 +374,14 @@ class DirectorySelect(QtGui.QWidget, Ui_PathSelect):
         return self.read_value
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     @QtCore.Slot()
     def _set_path(self):
         msg = "Select directory"
-        file_path = QtGui.QFileDialog.getExistingDirectory(self, msg, HOME)
+        file_path = QtWidgets.QFileDialog.getExistingDirectory(self, msg, HOME)
 
         self.lineEdit.setText(file_path)
 
@@ -369,12 +390,12 @@ class DirectorySelect(QtGui.QWidget, Ui_PathSelect):
         self.read_value.emit()
 
 
-class BoolSelect(QtGui.QWidget, Ui_BoolSelect):
+class BoolSelect(QtWidgets.QWidget, Ui_BoolSelect):
     read_value = QtCore.Signal()
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
-        Ui_StringSelect.__init__(self)
+        QtWidgets.QWidget.__init__(self, parent)
+        Ui_BoolSelect.__init__(self)
 
         self.setupUi(self)
         self._init_ui()
@@ -388,9 +409,9 @@ class BoolSelect(QtGui.QWidget, Ui_BoolSelect):
 
         if value is not None:
             if value:
-                state = QtCore.Qt.Checked
+                state = Qt.CheckState.Checked
             else:
-                state = QtCore.Qt.Unchecked
+                state = Qt.CheckState.Unchecked
 
             self.checkBox.setCheckState(state)
 
@@ -403,18 +424,20 @@ class BoolSelect(QtGui.QWidget, Ui_BoolSelect):
         return self.read_value
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
         self.read_value.emit()
 
 
-class DateSelect(QtGui.QWidget, Ui_DateSelect):
+class DateSelect(QtWidgets.QWidget, Ui_DateSelect):
     read_value = QtCore.Signal()
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_DateSelect.__init__(self)
 
         self.setupUi(self)
@@ -422,9 +445,9 @@ class DateSelect(QtGui.QWidget, Ui_DateSelect):
 
     def _init_ui(self):
         self.dateTimeEdit.dateTimeChanged.connect(self._emit_read)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
-            self._emit_read
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked.connect(self._emit_read)
 
     def _set_value(self, value):
         valueStr = str(value)
@@ -443,18 +466,20 @@ class DateSelect(QtGui.QWidget, Ui_DateSelect):
         return self.read_value
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
         self.read_value.emit()
 
 
-class CoordSelect(QtGui.QWidget, Ui_PointSelect):
+class CoordSelect(QtWidgets.QWidget, Ui_PointSelect):
     read_value = QtCore.Signal()
 
     def __init__(self, parent=None, units=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         Ui_PointSelect.__init__(self)
 
         self.setupUi(self)
@@ -473,9 +498,9 @@ class CoordSelect(QtGui.QWidget, Ui_PointSelect):
         self.doubleSpinBox_1.valueChanged.connect(self._emit_read)
         self.doubleSpinBox_2.valueChanged.connect(self._emit_read)
         self.doubleSpinBox_3.valueChanged.connect(self._emit_read)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked.connect(
-            self._emit_read
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked.connect(self._emit_read)
 
     def _set_value(self, value):
         if value is not None:
@@ -510,7 +535,9 @@ class CoordSelect(QtGui.QWidget, Ui_PointSelect):
         return self.read_value
 
     def _get_nullify_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
@@ -533,7 +560,7 @@ class PointSelect(CoordSelect):
         return result
 
 
-class InputDataTable(QtGui.QWidget):
+class InputDataTable(QtWidgets.QWidget):
     null_signal = QtCore.Signal()
 
     def __init__(
@@ -545,7 +572,7 @@ class InputDataTable(QtGui.QWidget):
         fixed_index_names=None,
         edit_cols=False,
     ):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self._columms = columns
         self._units = units
         self._fixed_index_col = fixed_index_col
@@ -556,14 +583,16 @@ class InputDataTable(QtGui.QWidget):
         self._init_ui()
 
     def _setup_ui(self):
-        spacerItem = QtGui.QSpacerItem(
-            20, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed
+        spacerItem = QtWidgets.QSpacerItem(
+            20,
+            20,
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Fixed,
         )
 
-        self.setObjectName(_fromUtf8("dataTableObject"))
-
-        self.verticalLayout = QtGui.QVBoxLayout(self)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.setObjectName("dataTableObject")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
 
         if (
             self._fixed_index_col is not None
@@ -578,17 +607,19 @@ class InputDataTable(QtGui.QWidget):
         else:
             self.datatable = DataTableWidget(self, edit_cols=self._edit_cols)
 
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
         )
         self.datatable.setSizePolicy(sizePolicy)
 
-        self.buttonBox = QtGui.QDialogButtonBox(self)
+        self.buttonBox = QtWidgets.QDialogButtonBox(self)
         self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+            | QtWidgets.QDialogButtonBox.StandardButton.Ok
         )
         self.buttonBox.setCenterButtons(False)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.buttonBox.setObjectName("buttonBox")
 
         self.verticalLayout.addWidget(self.datatable)
         self.verticalLayout.addItem(spacerItem)
@@ -599,9 +630,9 @@ class InputDataTable(QtGui.QWidget):
     def _init_ui(self):
         "Store the metadata for modifying the DataFrame which is displayed"
 
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(
-            self._emit_null
-        )
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+        ).clicked.connect(self._emit_null)
 
     def _set_value(self, value, dtypes=None):
         # setup a new model
@@ -647,7 +678,7 @@ class InputDataTable(QtGui.QWidget):
                 for index_name in self._fixed_index_names:
                     vals = [index_name] + [None] * (len(data.columns) - 1)
                     s1 = pd.Series(vals, index=data.columns)
-                    data = data.append(s1, ignore_index=True)
+                    data = pd.concat([data, s1], ignore_index=True)
 
             if dtypes is not None:
                 for column, dtype in zip(data.columns, dtypes):
@@ -674,6 +705,7 @@ class InputDataTable(QtGui.QWidget):
 
     def _get_result(self):
         model = self.datatable.model()
+        assert isinstance(model, DataFrameModel)
         df = model.dataFrame()
 
         # Nullify the variable if the dataframe is empty
@@ -690,7 +722,9 @@ class InputDataTable(QtGui.QWidget):
         return df
 
     def _get_read_event(self):
-        return self.buttonBox.button(QtGui.QDialogButtonBox.Ok).clicked
+        return self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok
+        ).clicked
 
     def _get_nullify_event(self):
         return self.null_signal
@@ -704,10 +738,10 @@ class InputDataTable(QtGui.QWidget):
         self.buttonBox.setDisabled(True)
 
         self.datatable.view().setSelectionMode(
-            QtGui.QAbstractItemView.NoSelection
+            QtWidgets.QAbstractItemView.SelectionMode.NoSelection
         )
-        self.datatable.view().setFocusPolicy(QtCore.Qt.NoFocus)
-
+        self.datatable.view().setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        assert self.datatable.buttonFrame is not None
         self.datatable.buttonFrame.setDisabled(True)
 
 
@@ -761,8 +795,7 @@ class InputTriStateTable(InputDataTable):
         if df is None:
             return
 
-        get_cols = range(1, len(df.columns))
-
+        get_cols = list(range(1, len(df.columns)))
         check_df = df.iloc[:, get_cols]
 
         if not np.all(check_df.isin(["True", "False", "None", "", None])):
@@ -824,7 +857,7 @@ class InputPointTable(InputDataTable):
         df = df.apply(pd.to_numeric)
 
         if df["z"].isnull().any():
-            df = df.drop("z", 1)
+            df = df.drop("z", axis=1)
 
         return df.values
 
@@ -861,7 +894,7 @@ class InputPointDictTable(InputDataTable):
         valsdf = valsdf.apply(pd.to_numeric)
 
         if valsdf["z"].isnull().any():
-            valsdf = valsdf.drop("z", 1)
+            valsdf = valsdf.drop("z", axis=1)
 
         point_dict = {k: v for k, v in zip(keyseries, valsdf.values)}
 
@@ -893,6 +926,9 @@ class InputTimeSeries(InputDataTable):
     null_signal = QtCore.Signal()
 
     def __init__(self, parent=None, labels=None, units=None):
+        if labels is None:
+            raise ValueError("Argument labels must be defined")
+
         columns = ["DateTime", labels[0]]
 
         if units is not None:

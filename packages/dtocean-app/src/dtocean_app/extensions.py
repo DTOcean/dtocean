@@ -21,9 +21,20 @@ from dtocean_core.extensions import StrategyManager, ToolManager
 from PySide6 import QtCore, QtWidgets
 
 from . import strategies, tools
+from .strategies.basic import BasicWidget
+from .strategies.multi import MultiSensitivityWidget
+from .strategies.position import AdvancedPositionWidget
+from .strategies.sensitivity import UnitSensitivityWidget
 from .widgets.dialogs import ListFrameEditor, Message
 from .widgets.display import MPLWidget
 from .widgets.output import OutputDataTable
+
+StrategyWidgets = (
+    BasicWidget
+    | UnitSensitivityWidget
+    | MultiSensitivityWidget
+    | AdvancedPositionWidget
+)
 
 module_logger = logging.getLogger(__name__)
 
@@ -236,6 +247,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         current_strategy = self.get_strategy(selected)
 
         self._strategy_widget = current_strategy.get_widget(self, self._shell)
+        assert isinstance(self._strategy_widget, StrategyWidgets)
         self._strategy_widget.config_set.connect(self._config_set_ui_switch)
         self._strategy_widget.config_null.connect(self._config_null_ui_switch)
         self._strategy_widget.reset.connect(self._reset_strategy)
@@ -256,6 +268,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         self._strategy = None
 
         if self._strategy_widget is not None:
+            assert isinstance(self._strategy_widget, StrategyWidgets)
             self._strategy_widget.reset.disconnect()
             self._strategy_widget.config_set.disconnect()
             self._strategy_widget.config_null.disconnect()
