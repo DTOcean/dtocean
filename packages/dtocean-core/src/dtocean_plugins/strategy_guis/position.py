@@ -523,9 +523,7 @@ class AdvancedPositionWidget(
 
         # Signals
 
-        self.simButtonGroup.buttonClicked["int"].connect(
-            self._select_sims_to_load
-        )
+        self.simButtonGroup.buttonClicked.connect(self._select_sims_to_load)
         self.simSelectEdit.textEdited.connect(self._update_custom_sims)
         self.simLoadButton.clicked.connect(self._progress_load_sims)
         self.dataExportButton.clicked.connect(self._export_data_table)
