@@ -16,27 +16,37 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from typing import Optional
 
+import pandas as pd
 from dtocean_core.extensions import StrategyManager, ToolManager
 from PySide6 import QtCore, QtWidgets
 
-from . import strategies, tools
-from .strategies.basic import BasicWidget
-from .strategies.multi import MultiSensitivityWidget
-from .strategies.position import AdvancedPositionWidget
-from .strategies.sensitivity import UnitSensitivityWidget
+import dtocean_plugins.strategy_guis as strategies
+import dtocean_plugins.tool_guis as tools
+from dtocean_plugins.strategy_guis.base import GUIStrategy, StrategyWidget
+
+from .main import Shell
 from .widgets.dialogs import ListFrameEditor, Message
 from .widgets.display import MPLWidget
 from .widgets.output import OutputDataTable
 
-StrategyWidgets = (
-    BasicWidget
-    | UnitSensitivityWidget
-    | MultiSensitivityWidget
-    | AdvancedPositionWidget
-)
-
 module_logger = logging.getLogger(__name__)
+
+
+class DummyWidget(QtWidgets.QWidget, StrategyWidget):
+    config_set = QtCore.Signal()
+    config_null = QtCore.Signal()
+    reset = QtCore.Signal()
+
+    def get_configuration(self):
+        return {}
+
+    def set_configuration(self, *args):
+        return
+
+    def paintEvent(self, event):
+        pass
 
 
 class GUIStrategyManager(ListFrameEditor, StrategyManager):
@@ -44,16 +54,14 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
 
     """Strategy discovery"""
 
-    def __init__(self, shell, parent=None):
+    def __init__(self, shell: Shell, parent=None):
         StrategyManager.__init__(self, strategies, "GUIStrategy")
         ListFrameEditor.__init__(self, parent, "Strategy Manager")
-        self._shell = shell
-        self._strategy = None
-        self._last_df = None
-        self._last_selected = None
-
-        # Store widget handles
-        self._strategy_widget = None
+        self._last_selected: Optional[str] = None
+        self._shell: Shell = shell
+        self._strategy: Optional[GUIStrategy] = None
+        self._strategy_widget: Optional[DummyWidget | Message] = None
+        self._last_df: pd.DataFrame
 
     def _init_ui(self, title=None):
         super(GUIStrategyManager, self)._init_ui(title)
@@ -247,7 +255,8 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         current_strategy = self.get_strategy(selected)
 
         self._strategy_widget = current_strategy.get_widget(self, self._shell)
-        assert isinstance(self._strategy_widget, StrategyWidgets)
+        assert isinstance(self._strategy_widget, DummyWidget)
+
         self._strategy_widget.config_set.connect(self._config_set_ui_switch)
         self._strategy_widget.config_null.connect(self._config_null_ui_switch)
         self._strategy_widget.reset.connect(self._reset_strategy)
@@ -268,7 +277,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         self._strategy = None
 
         if self._strategy_widget is not None:
-            assert isinstance(self._strategy_widget, StrategyWidgets)
+            assert isinstance(self._strategy_widget, DummyWidget)
             self._strategy_widget.reset.disconnect()
             self._strategy_widget.config_set.disconnect()
             self._strategy_widget.config_null.disconnect()
@@ -282,9 +291,11 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
 
     @QtCore.Slot(object)
     def _configure_strategy(self):
-        self._strategy = self.get_strategy(self._last_selected)
-
         assert self.mainWidget is not None
+
+        self._strategy = self.get_strategy(self._last_selected)
+        assert self._strategy is not None
+
         config = self.mainWidget.get_configuration()
         self._strategy.configure(**config)
 

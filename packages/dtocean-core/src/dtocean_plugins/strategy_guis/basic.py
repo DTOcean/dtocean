@@ -15,18 +15,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtocean_core.tools.external import WECSimulatorTool
 
-from . import GUITool
+from dtocean_app.widgets.dialogs import Message
+from PySide6 import QtCore
+
+from dtocean_plugins.strategies.basic import BasicStrategy
+from dtocean_plugins.strategy_guis.base import GUIStrategy, StrategyWidget
 
 
-class GUIWECSimulatorTool(GUITool, WECSimulatorTool):
+class GUIBasicStrategy(GUIStrategy, BasicStrategy):
     """A basic strategy which will run all selected modules and themes in
     sequence."""
 
     def __init__(self):
-        WECSimulatorTool.__init__(self)
-        GUITool.__init__(self)
+        BasicStrategy.__init__(self)
+        GUIStrategy.__init__(self)
+
+    def allow_run(self, core, project):
+        return True
 
     def get_weight(self):
         """A method for getting the order of priority of the strategy.
@@ -37,5 +43,26 @@ class GUIWECSimulatorTool(GUITool, WECSimulatorTool):
 
         return 1
 
-    def has_widget(self):
-        return False
+    def get_widget(self, parent, shell):
+        widget = BasicWidget(parent, "No Configuration Required")
+
+        return widget
+
+
+class BasicWidget(Message, StrategyWidget):
+    config_set = QtCore.Signal()
+    config_null = QtCore.Signal()
+    reset = QtCore.Signal()
+
+    def __init__(self, parent, text):
+        super(BasicWidget, self).__init__(parent, text)
+
+    def get_configuration(self):
+        return {}
+
+    def set_configuration(self, *args):
+        return
+
+    def paintEvent(self, event):
+        super(BasicWidget, self).paintEvent(event)
+        self.config_set.emit()

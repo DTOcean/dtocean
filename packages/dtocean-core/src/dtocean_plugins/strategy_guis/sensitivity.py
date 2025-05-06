@@ -17,20 +17,24 @@
 
 from typing import TYPE_CHECKING
 
-from dtocean_core.pipeline import Tree
-from dtocean_plugins.strategies.sensitivity import UnitSensitivity
+from dtocean_app.utils.display import is_high_dpi
+from dtocean_app.widgets.extendedcombobox import ExtendedComboBox
 from mdo_engine.utilities.misc import OrderedSet
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 
-from ..utils.display import is_high_dpi
-from ..widgets.extendedcombobox import ExtendedComboBox
-from . import GUIStrategy, StrategyWidget
+from dtocean_core.pipeline import Tree
+from dtocean_plugins.strategies.sensitivity import UnitSensitivity
+from dtocean_plugins.strategy_guis.base import GUIStrategy, StrategyWidget
 
 if is_high_dpi() or TYPE_CHECKING:
-    from ..designer.high.unitsensitivity import Ui_UnitSensitivityWidget
+    from dtocean_app.designer.high.unitsensitivity import (
+        Ui_UnitSensitivityWidget,
+    )
 else:
-    from ..designer.low.unitsensitivity import Ui_UnitSensitivityWidget
+    from dtocean_app.designer.low.unitsensitivity import (
+        Ui_UnitSensitivityWidget,
+    )
 
 
 class GUIUnitSensitivity(GUIStrategy, UnitSensitivity):

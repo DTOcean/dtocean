@@ -17,8 +17,9 @@
 
 import abc
 
-from dtocean_plugins.strategies.base import Strategy
 from PySide6 import QtCore
+
+from dtocean_plugins.strategies.base import Strategy
 
 pyqtWrapperType = type(QtCore.QObject)
 
