@@ -223,23 +223,32 @@ class MultiSensitivityWidget(
 
     @QtCore.Slot()
     def _add_row(self):
-        last_row = self.tableView.model().rowCount()
+        model = self.tableView.model()
+        assert isinstance(model, SimTableModel)
+
+        last_row = model.rowCount()
         conf_record = self._get_conf_record()
-        self.tableView.model().insertRows(last_row, [conf_record])
+        model.insertRows(last_row, [conf_record])
 
         self._emit_config_signal()
         self._clear_selections()
 
     @QtCore.Slot()
     def _remove_row(self):
+        model = self.tableView.model()
+        assert isinstance(model, SimTableModel)
+
         selected_row = self._get_selected_rows()[0]
-        self.tableView.model().removeRows(selected_row.row())
+        model.removeRows(selected_row.row())
 
         self._table_clicked_ui_switch()
         self._emit_config_signal()
 
     def _emit_config_signal(self):
-        df = self.tableView.model().array_df
+        model = self.tableView.model()
+        assert isinstance(model, SimTableModel)
+
+        df = model.array_df
 
         if not df.empty:
             self.config_set.emit()
@@ -281,7 +290,10 @@ class MultiSensitivityWidget(
         return var_values_str
 
     def get_configuration(self):
-        df = self.tableView.model().array_df.copy()
+        model = self.tableView.model()
+        assert isinstance(model, SimTableModel)
+
+        df = model.array_df.copy()
         df["Variable"] = df["Variable"].apply(self._get_var_id)
         df["Values"] = df["Values"].apply(lambda x: self.string2types(x))
 
@@ -300,6 +312,9 @@ class MultiSensitivityWidget(
         if config_dict is None:
             return
 
+        model = self.tableView.model()
+        assert isinstance(model, SimTableModel)
+
         df = config_dict["inputs_df"]
         subsp_ratio = config_dict["subsp_ratio"]
         nsims = MultiSensitivity.count_selections(df, subsp_ratio)
@@ -307,7 +322,7 @@ class MultiSensitivityWidget(
         df["Variable"] = df["Variable"].apply(lambda x: self._get_var_title(x))
         df["Values"] = df["Values"].apply(lambda x: self._list2string(x))
 
-        self.tableView.model().array_df = df
+        model.array_df = df
         self.subsetSpinBox.setValue(subsp_ratio * 100.0)
 
         info_str = self._sim_info_str.format(nsims)
