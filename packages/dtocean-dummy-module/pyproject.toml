@@ -6,7 +6,10 @@ authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 packages = [{include = "dtocean_dummy", from="src"}]
-include = ['*.ini', 'config/*.ini', 'config/*.yaml']
+include = [
+  { path = 'config/*.ini', format = ["sdist", "wheel"] },
+  { path = 'config/*.yaml', format = ["sdist", "wheel"] },
+]
 
 [tool.poetry.scripts]
 dtocean-dummy = 'dtocean_dummy.command:module_interface'
