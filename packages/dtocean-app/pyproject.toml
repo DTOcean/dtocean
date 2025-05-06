@@ -6,7 +6,12 @@ authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
 readme = "README.md"
 packages = [
   {include = "dtocean_app", from="src"}
-  ]
+]
+include = [
+  { path = "src/dtocean_app/resources", format = ["sdist", "wheel"] },
+  { path = 'src/dtocean_core/config/*.ini', format = ["sdist", "wheel"] },
+  { path = 'src/dtocean_core/config/*.yaml', format = ["sdist", "wheel"] },
+]
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
