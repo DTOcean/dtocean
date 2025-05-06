@@ -16,10 +16,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
-from abc import ABC
+
+from dtocean_plugins.tools.base import Tool
 
 
-class GUITool(ABC):
+class GUITool(Tool):
     """Plugin Discovery"""
 
     def __init__(self):

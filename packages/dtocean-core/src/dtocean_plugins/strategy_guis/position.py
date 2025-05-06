@@ -34,12 +34,16 @@ import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from dtocean_core.pipeline import Tree
-from dtocean_plugins.strategies.position import AdvancedPosition
-from dtocean_plugins.strategies.position_optimiser import (
-    _load_config_template,
-    dump_config,
+from dtocean_app.utils.display import is_high_dpi
+from dtocean_app.widgets.datatable import DataTableWidget
+from dtocean_app.widgets.dialogs import ProgressBar
+from dtocean_app.widgets.display import (
+    MPLWidget,
+    get_current_figure_size,
+    get_current_filetypes,
 )
+from dtocean_app.widgets.extendedcombobox import ExtendedComboBox
+from dtocean_app.widgets.scientificselect import ScientificDoubleSpinBox
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 from mdo_engine.utilities.misc import OrderedSet
 from PIL import Image
@@ -47,22 +51,26 @@ from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 from shiboken6 import Shiboken
 
-from ..utils.display import is_high_dpi
-from ..widgets.datatable import DataTableWidget
-from ..widgets.dialogs import ProgressBar
-from ..widgets.display import (
-    MPLWidget,
-    get_current_figure_size,
-    get_current_filetypes,
+from dtocean_core.pipeline import Tree
+from dtocean_plugins.strategies.position import AdvancedPosition
+from dtocean_plugins.strategies.position_optimiser import (
+    _load_config_template,
+    dump_config,
 )
-from ..widgets.extendedcombobox import ExtendedComboBox
-from ..widgets.scientificselect import ScientificDoubleSpinBox
-from . import GUIStrategy, PyQtABCMeta, StrategyWidget
+from dtocean_plugins.strategy_guis.base import (
+    GUIStrategy,
+    PyQtABCMeta,
+    StrategyWidget,
+)
 
 if is_high_dpi() or TYPE_CHECKING:
-    from ..designer.high.advancedposition import Ui_AdvancedPositionWidget
+    from dtocean_app.designer.high.advancedposition import (
+        Ui_AdvancedPositionWidget,
+    )
 else:
-    from ..designer.low.advancedposition import Ui_AdvancedPositionWidget
+    from dtocean_app.designer.low.advancedposition import (
+        Ui_AdvancedPositionWidget,
+    )
 
 
 # Set up logging
