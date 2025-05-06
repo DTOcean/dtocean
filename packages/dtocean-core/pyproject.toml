@@ -64,6 +64,7 @@ pytz = "^2025.2"
 optional = true
 
 [tool.poetry.group.test-extras.dependencies]
+dtocean-app = {path = "../dtocean-app", develop = true}
 dtocean-hydrodynamics = {path = "../dtocean-hydrodynamics", develop = true}
 
 [tool.poetry.group.audit]
