@@ -16,12 +16,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
-import os
 import sys
 import time
 import traceback
 import warnings
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 from polite_config.configuration import Logger
 from polite_config.paths import ModPath, UserDataPath
@@ -30,7 +30,7 @@ from PySide6.QtCore import Qt
 
 from .utils.qtlog import QtHandler
 
-module_path = os.path.realpath(__file__)
+PARENT_PATH = Path(__file__).parent
 
 
 def warn_with_traceback(
@@ -113,7 +113,7 @@ def main_(debug=False, trace_warnings=False, force_quit=False):
     app = QtWidgets.QApplication(sys.argv)
 
     # Create and display the splash screen
-    splash_path = os.path.join(module_path, "..", "dtocean2plus_splash.png")
+    splash_path = PARENT_PATH / "resources" / "main" / "dtocean2plus_splash.png"
     splash_pix = QtGui.QPixmap(splash_path)
     splash = QtWidgets.QSplashScreen(
         splash_pix,

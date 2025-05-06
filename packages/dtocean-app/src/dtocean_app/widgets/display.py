@@ -23,8 +23,6 @@ Created on Thu Apr 23 12:51:14 2015
 
 from __future__ import unicode_literals
 
-import os
-
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -32,9 +30,6 @@ from PySide6.QtCore import Qt
 
 plt.style.use("ggplot")
 plt.rcParams["svg.fonttype"] = "none"
-
-module_path = os.path.realpath(__file__)
-test_image_path = os.path.join(module_path, "..", "test_images")
 
 
 class ImageLabel(QtWidgets.QLabel):
@@ -90,8 +85,7 @@ class ImageDictLabel(ImageLabel):
     def _update_display(self, result, *args, **kwargs):
         key = result.values()[0]
         img = self._image_dict[key]
-        abs_path = os.path.join(test_image_path, img)
-        super(ImageDictLabel, self)._update_display(abs_path)
+        super(ImageDictLabel, self)._update_display(img)
 
     def _clear_display(self):
         super(ImageDictLabel, self)._update_display(None)

@@ -26,6 +26,7 @@ import os
 import platform
 from collections import OrderedDict
 from itertools import cycle
+from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import pandas as pd
@@ -62,7 +63,7 @@ else:
     from ..designer.low.testdatapicker import Ui_TestDataPicker
 
 HOME = os.path.expanduser("~")
-DIR_PATH = os.path.dirname(__file__)
+PARENT_PATH = Path(__file__).parent
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -532,8 +533,8 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
 
         self.versionLabel.setText(software_str)
 
-        resources_path = os.path.join(DIR_PATH, "..", "resources")
-        names_path = os.path.join(resources_path, "people.yaml")
+        resources_path = PARENT_PATH.parent / "resources" / "about"
+        names_path = resources_path / "people.yaml"
 
         with open(names_path, "r") as stream:
             names = yaml.load(stream, Loader=yaml.FullLoader)
@@ -561,7 +562,7 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
 
             self.peopleLabel.setText(names_str)
 
-        pix_search_str = os.path.join(resources_path, "beneficiary*.png")
+        pix_search_str = str(resources_path / "beneficiary*.png")
         pix_list = glob.glob(pix_search_str)
 
         self._n_pix = len(pix_list)
