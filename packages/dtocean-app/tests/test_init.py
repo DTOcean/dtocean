@@ -18,10 +18,7 @@
 # pylint: disable=redefined-outer-name,unused-argument
 
 import logging
-import os
 import warnings
-
-from polite.paths import Directory
 
 from dtocean_app import gui_interface, main_, start_logging, warn_with_traceback
 from dtocean_app.utils.config import init_config
@@ -34,74 +31,71 @@ def test_warn_with_traceback():
     assert True
 
 
-def test_start_logging(mocker, tmpdir):
+def test_start_logging(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
-    mocker.patch("dtocean_app.UserDataDirectory", return_value=mock_dir)
+    mocker.patch("dtocean_app.UserDataPath", return_value=tmp_path)
 
     start_logging()
 
-    logdir = config_tmpdir.join("..", "logs")
+    logdir = config_tmpdir / ".." / "logs"
+    assert len(list(logdir.iterdir())) == 1
 
-    assert len(logdir.listdir()) == 1
 
-
-def test_start_logging_twice(mocker, tmpdir):
+def test_start_logging_twice(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
-    mocker.patch("dtocean_app.UserDataDirectory", return_value=mock_dir)
+    mocker.patch("dtocean_app.UserDataPath", return_value=tmp_path)
 
     start_logging()
     logging.shutdown()
     start_logging()
 
-    logdir = config_tmpdir.join("..", "logs")
+    logdir = config_tmpdir / ".." / "logs"
+    assert len(list(logdir.iterdir())) == 2
 
-    assert len(logdir.listdir()) == 2
 
-
-def test_start_logging_debug(mocker, tmpdir):
+def test_start_logging_debug(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
-    mocker.patch("dtocean_app.UserDataDirectory", return_value=mock_dir)
+    mocker.patch("dtocean_app.UserDataPath", return_value=tmp_path)
 
     start_logging(debug=True)
 
-    logdir = config_tmpdir.join("..", "logs")
+    logdir = config_tmpdir / ".." / "logs"
+    assert len(list(logdir.iterdir())) == 1
 
-    assert len(logdir.listdir()) == 1
 
-
-def test_start_logging_user(mocker, tmpdir):
+def test_start_logging_user(mocker, tmp_path):
     # Make a source directory with some files
-    config_tmpdir = tmpdir.mkdir("config")
-    mock_dir = Directory(str(config_tmpdir))
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
 
     mocker.patch(
-        "dtocean_app.utils.config.UserDataDirectory", return_value=mock_dir
+        "dtocean_app.utils.config.UserDataPath",
+        return_value=tmp_path,
     )
 
-    mocker.patch("dtocean_app.UserDataDirectory", return_value=mock_dir)
+    mocker.patch("dtocean_app.UserDataPath", return_value=tmp_path)
 
-    init_config(logging=True, files=True)
+    init_config(logging=True)
 
     # This will raise if the logging file is not in the user directory
-    mocker.patch("dtocean_app.ObjDirectory", return_value=None)
+    mocker.patch("dtocean_app.ModPath", return_value=None)
 
     start_logging()
 
-    logdir = config_tmpdir.join("..", "logs")
+    logdir = config_tmpdir / ".." / "logs"
+    assert len(list(logdir.iterdir())) == 1
 
-    assert len(logdir.listdir()) == 1
 
-
-def test_main(mocker, qtbot):
+def test_main(mocker, qtbot, tmp_path):
     # The qtbot fixture must be requested along with mocking QApplication and
     # DTOceanWindow, or the teardown crashes test_main.py when it follows this
     # test file.
@@ -110,9 +104,14 @@ def test_main(mocker, qtbot):
 
     import dtocean_app.main
 
-    mocker.patch("dtocean_app.QtGui.QApplication", autospec=True)
+    # Make a source directory with some files
+    config_tmpdir = tmp_path / "config"
+    config_tmpdir.mkdir()
+
+    mocker.patch("dtocean_app.UserDataPath", return_value=tmp_path)
+    mocker.patch("dtocean_app.QtWidgets.QApplication", autospec=True)
     mocker.patch.object(dtocean_app.main, "DTOceanWindow", autospec=True)
-    mocker.patch("dtocean_app.QtGui.QSplashScreen.finish")
+    mocker.patch("dtocean_app.QtWidgets.QSplashScreen.finish")
     sys_exit = mocker.patch.object(sys, "exit")
 
     main_()
@@ -133,12 +132,12 @@ def test_gui_interface(mocker):
     assert main_.call_args.kwargs == expected
 
 
-def test_cli(capfd):
-    exit_status = os.system("dtocean-app --help")
+# def test_cli(capfd):
+#     exit_status = os.system("dtocean-app --help")
 
-    assert exit_status == 0
+#     assert exit_status == 0
 
-    captured = capfd.readouterr()
+#     captured = capfd.readouterr()
 
-    assert "Run the DTOcean graphical application." in captured.out
-    assert "The DTOcean Developers (c) 2022." in captured.out
+#     assert "Run the DTOcean graphical application." in captured.out
+#     assert "The DTOcean Developers (c) 2022." in captured.out

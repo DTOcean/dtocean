@@ -51,6 +51,8 @@ from PySide6.QtCore import Qt
 from shiboken6 import Shiboken
 from win32event import CreateMutex
 
+from dtocean_plugins.strategy_guis.base import GUIStrategy
+
 from . import get_log_dir
 from .core import GUICore, GUIProject
 from .extensions import GUIStrategyManager, GUIToolManager
@@ -66,7 +68,6 @@ from .pipeline import (
     SectionControl,
 )
 from .simulation import SimulationDock
-from .strategies import GUIStrategy
 from .widgets.central import (
     ContextArea,
     DetailsWidget,
@@ -1478,10 +1479,14 @@ class DTOceanWindow(MainWindow):
         shell.module_executed.connect(self._run_action_ui_switch)
         shell.themes_executed.connect(self._run_action_ui_switch)
         shell.strategy_executed.connect(self._run_action_ui_switch)
-        shell.strategy_executed.connect(
-            lambda: self.stackedWidget.setCurrentIndex(self._last_stack_index)
-        )
         shell.update_scope.connect(self._current_scope_ui_switch)
+
+        def _set_stack_index():
+            if self._last_stack_index is None:
+                return
+            self.stackedWidget.setCurrentIndex(self._last_stack_index)
+
+        shell.strategy_executed.connect(_set_stack_index)
 
         # Collect all saved and unsaved signals
         shell.project_title_change.connect(self._set_project_unsaved)
