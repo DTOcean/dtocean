@@ -31,6 +31,25 @@ shiboken6 = "^6.9.0"
 pyside6 = "^6.9.0"
 pillow = "^11.2.1"
 
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+mock = "^5.1.0"
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
+pytest-qt = "^4.4.0"
+pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.396"
+deptry = "^0.21.1"
+pandas-stubs = "^2.2.3.241126"
+
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"

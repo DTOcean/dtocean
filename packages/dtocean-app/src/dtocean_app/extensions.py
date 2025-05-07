@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import pandas as pd
 from dtocean_core.extensions import StrategyManager, ToolManager
@@ -26,10 +26,12 @@ import dtocean_plugins.strategy_guis as strategies
 import dtocean_plugins.tool_guis as tools
 from dtocean_plugins.strategy_guis.base import GUIStrategy, StrategyWidget
 
-from .main import Shell
 from .widgets.dialogs import ListFrameEditor, Message
 from .widgets.display import MPLWidget
 from .widgets.output import OutputDataTable
+
+if TYPE_CHECKING:
+    from .main import Shell
 
 module_logger = logging.getLogger(__name__)
 
@@ -54,11 +56,11 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
 
     """Strategy discovery"""
 
-    def __init__(self, shell: Shell, parent=None):
+    def __init__(self, shell: Optional["Shell"], parent=None):
         StrategyManager.__init__(self, strategies, "GUIStrategy")
         ListFrameEditor.__init__(self, parent, "Strategy Manager")
         self._last_selected: Optional[str] = None
-        self._shell: Shell = shell
+        self._shell: Optional["Shell"] = shell
         self._strategy: Optional[GUIStrategy] = None
         self._strategy_widget: Optional[DummyWidget | Message] = None
         self._last_df: pd.DataFrame
@@ -206,6 +208,9 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
 
     @QtCore.Slot(object)
     def _load_strategy(self, strategy):
+        if self._shell is None:
+            return
+
         strategy_name = strategy.get_name()
 
         self._strategy = strategy
@@ -291,6 +296,9 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
 
     @QtCore.Slot(object)
     def _configure_strategy(self):
+        if self._shell is None:
+            return
+
         assert self.mainWidget is not None
 
         self._strategy = self.get_strategy(self._last_selected)

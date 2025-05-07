@@ -74,10 +74,10 @@ def get_distribution_names():
     return names
 
 
-def init_config(logging=False, files=False, install=False, overwrite=False):
+def init_config(logging=False, install=False, overwrite=False):
     """Copy config files to user data directory"""
 
-    if not any([logging, files, install]):
+    if not any([logging, install]):
         return
 
     objdir = ModPath(__name__, "..", "config")
@@ -86,8 +86,6 @@ def init_config(logging=False, files=False, install=False, overwrite=False):
 
     if logging:
         dirmap.copy_file("logging.yaml", overwrite=overwrite)
-    if files:
-        dirmap.copy_file("files.ini", overwrite=overwrite)
     if install:
         dirmap.copy_file("install.ini", overwrite=overwrite)
 
@@ -119,10 +117,9 @@ def init_config_parser(args):
 
     parser.add_argument(
         "action",
-        choices=["logging", "files", "install"],
+        choices=["logging", "install"],
         help="R|Select an action, where\n"
         " logging = copy logging configuration\n"
-        " files = copy file location configuration\n"
         " install = copy manuals installation path "
         "configuration",
     )
@@ -148,7 +145,6 @@ def init_config_interface():
 
     kwargs = {
         "logging": False,
-        "files": False,
         "install": False,
         "overwrite": overwrite,
     }

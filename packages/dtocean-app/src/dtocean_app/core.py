@@ -17,7 +17,6 @@
 
 import logging
 
-import dtocean_plugins.core as core_interfaces
 from dtocean_core.core import (
     AutoFileInput,
     AutoFileOutput,
@@ -32,6 +31,8 @@ from mdo_engine.control.data import DataStorage
 from mdo_engine.control.pipeline import Sequencer
 from mdo_engine.control.simulation import Controller, Loader
 from PySide6 import QtCore
+
+import dtocean_plugins.core as core_interfaces
 
 # from dtocean_core.menu import ConnectorMenu
 from . import data as gui_data
@@ -77,7 +78,6 @@ class AutoOutput(AutoInterface, OutputWidgetInterface):
 
 
 class GUIProject(QtCore.QObject, Project):
-    # PyQt signals
     sims_updated = QtCore.Signal()
     active_index_changed = QtCore.Signal()
     active_title_changed = QtCore.Signal(str)
@@ -113,7 +113,7 @@ class GUIProject(QtCore.QObject, Project):
         self._db_cred = project._db_cred
 
 
-class GUICore(QtCore.QObject, Core):
+class GUICore(Core, QtCore.QObject):
     """Class to initiate and manipulate projects with a GUI environment."""
 
     # PyQt signals
