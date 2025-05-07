@@ -67,7 +67,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWebEngineView" name="ww_wec" native="true"/>
+    <widget class="QWebEngineView" name="ww_wec"/>
    </item>
   </layout>
  </widget>
@@ -75,7 +75,7 @@
   <customwidget>
    <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QWebEngineView</header>
+   <header location="global">QtWebEngineWidgets/QWebEngineView</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

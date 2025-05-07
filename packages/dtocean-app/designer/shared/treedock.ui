@@ -17,10 +17,10 @@
    </size>
   </property>
   <property name="features">
-   <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable</set>
+   <set>QDockWidget::DockWidgetFeature::DockWidgetClosable|QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
   </property>
   <property name="allowedAreas">
-   <set>Qt::LeftDockWidgetArea</set>
+   <set>Qt::DockWidgetArea::LeftDockWidgetArea</set>
   </property>
   <property name="windowTitle">
    <string>Tree</string>
@@ -54,7 +54,7 @@
     <item>
      <widget class="QTreeWidget" name="treeWidget">
       <property name="contextMenuPolicy">
-       <enum>Qt::CustomContextMenu</enum>
+       <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
       </property>
       <column>
        <property name="text">
