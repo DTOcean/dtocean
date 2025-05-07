@@ -118,7 +118,7 @@
    <item row="0" column="0" colspan="6">
     <layout class="QGridLayout" name="gridLayout_2">
      <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
+      <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
      </property>
      <property name="bottomMargin">
       <number>10</number>
@@ -270,7 +270,7 @@ The full yaw is twice the given value</string>
    <item row="1" column="0" colspan="6">
     <widget class="Line" name="line">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
    </item>
