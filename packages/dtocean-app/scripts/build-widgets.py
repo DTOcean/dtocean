@@ -33,16 +33,18 @@ def build():
         dst_dir: Path,
         suffix: str,
         command: Callable,
+        *args,
     ):
         dst_dir.mkdir(parents=True, exist_ok=True)
 
         for ui_path in search_path.glob(search_pattern):
             file_root = Path(ui_path).stem
             dst_str = str(dst_dir / file_root) + suffix
+            command_args = [str(ui_path), "-o", str(dst_str)] + list(args)
 
             # Convert the files
             print("create file: {}".format(dst_str))
-            command(str(ui_path), "-o", str(dst_str))
+            command(*command_args)
 
     _cleanup()
 
@@ -53,16 +55,44 @@ def build():
     dst_dir = GENERATED_DIR / "low"
     ui_search_path = ROOT_DIR / "designer" / "low"
 
-    _build_pyside6(ui_search_path, "*.ui", dst_dir, ".py", _pyside6_uic)
-    _build_pyside6(shared_ui_search_path, "*.ui", dst_dir, ".py", _pyside6_uic)
+    _build_pyside6(
+        ui_search_path,
+        "*.ui",
+        dst_dir,
+        ".py",
+        _pyside6_uic,
+        "--from-imports",
+    )
+    _build_pyside6(
+        shared_ui_search_path,
+        "*.ui",
+        dst_dir,
+        ".py",
+        _pyside6_uic,
+        "--from-imports",
+    )
     _build_pyside6(qrc_search_path, "*.qrc", dst_dir, "_rc.py", _pyside6_rcc)
 
     # High DPI
     dst_dir = GENERATED_DIR / "high"
     ui_search_path = ROOT_DIR / "designer" / "high"
 
-    _build_pyside6(ui_search_path, "*.ui", dst_dir, ".py", _pyside6_uic)
-    _build_pyside6(shared_ui_search_path, "*.ui", dst_dir, ".py", _pyside6_uic)
+    _build_pyside6(
+        ui_search_path,
+        "*.ui",
+        dst_dir,
+        ".py",
+        _pyside6_uic,
+        "--from-imports",
+    )
+    _build_pyside6(
+        shared_ui_search_path,
+        "*.ui",
+        dst_dir,
+        ".py",
+        _pyside6_uic,
+        "--from-imports",
+    )
     _build_pyside6(qrc_search_path, "*.qrc", dst_dir, "_rc.py", _pyside6_rcc)
 
 
