@@ -59,7 +59,7 @@
          <family>Segoe UI Semibold</family>
          <pointsize>10</pointsize>
          <italic>false</italic>
-         <fontweight></fontweight>
+         <kerning>true</kerning>
         </font>
        </property>
        <property name="styleSheet">

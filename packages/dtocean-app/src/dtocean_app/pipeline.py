@@ -698,7 +698,7 @@ class InputBranchControl(BaseControl):
                 current_proxy_index,
                 Qt.ItemDataRole.UserRole,
             )
-            test_item_address = str(data_variant.toString())
+            test_item_address = data_variant
             has_address = [
                 control._address == test_item_address
                 for control in self._controls
