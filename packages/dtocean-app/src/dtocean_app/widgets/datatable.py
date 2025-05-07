@@ -309,7 +309,7 @@ class DataTableWidget(QtWidgets.QWidget):
             for index in selection:
                 row = index.row() - rows[0]
                 column = index.column() - columns[0]
-                table[row][column] = index.data().toPyObject()
+                table[row][column] = index.data()
 
             stream = io.StringIO()
             csv.writer(stream).writerows(table)
@@ -458,9 +458,7 @@ class DataTableWidget(QtWidgets.QWidget):
 
         if model is not None:
             assert isinstance(model, DataFrameModel)
-            sane_names = [
-                (pos, str(name.toPyObject())) for pos, name in columnNames
-            ]
+            sane_names = [(pos, str(name)) for pos, name in columnNames]
             model.removeDataFrameColumns(sane_names)
 
         self.removeColumnButton.setChecked(False)

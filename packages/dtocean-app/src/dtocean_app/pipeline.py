@@ -70,7 +70,7 @@ class PipelineFilterProxyModel(QtCore.QSortFilterProxyModel):
         source_index = model.index(row_num, 0, parent)
 
         source_user_data = model.data(source_index, 33)
-        source_user_dict = source_user_data.toPyObject()[0]
+        source_user_dict = source_user_data[0]
 
         # If the row is a section title then allow
         if source_user_dict["section"] == "section":
@@ -909,7 +909,7 @@ class VarControl(BaseControl):
             item = self._model.itemFromIndex(index)
 
         if item_user_dict is None:
-            item_user_dict = item.data(33).toPyObject()[0]
+            item_user_dict = item.data(33)[0]
             item_user_dict["status"] = status
 
         if status == "satisfied":
@@ -1037,7 +1037,7 @@ class InputVarControl(VarControl):
             item = self._model.itemFromIndex(index)
 
         if item_user_dict is None:
-            item_user_dict = item.data(33).toPyObject()[0]
+            item_user_dict = item.data(33)[0]
             item_user_dict["status"] = status
 
         if "unavailable" in status:
@@ -1084,7 +1084,7 @@ class OutputVarControl(VarControl):
             item = self._model.itemFromIndex(index)
 
         if item_user_dict is None:
-            item_user_dict = item.data(33).toPyObject()[0]
+            item_user_dict = item.data(33)[0]
             item_user_dict["status"] = status
 
         if "unavailable" in status or "overwritten" in status:
