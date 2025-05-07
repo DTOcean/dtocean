@@ -283,9 +283,6 @@
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
    </property>
-   <property name="softKeyRole">
-    <enum>QAction::PositiveSoftKey</enum>
-   </property>
   </action>
   <action name="actionSave">
    <property name="enabled">
@@ -656,7 +653,7 @@
  <connections>
   <connection>
    <sender>actionExit</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
    <hints>

@@ -1938,11 +1938,11 @@ class DTOceanWindow(MainWindow):
         self._plot_manager.setDisabled(True)
 
         # Set up the level comparison in the comparison context area
-        self._level_comparison = LevelComparison(self)
+        self._level_comparison = LevelComparison(self)  # type: ignore
         self._comp_context._top_left_box.addWidget(self._level_comparison)
 
         # Set up the simulation comparison in the comparison context area
-        self._sim_comparison = SimulationComparison(self)
+        self._sim_comparison = SimulationComparison(self)  # type: ignore
         self._comp_context._top_right_box.addWidget(self._sim_comparison)
 
         # Set up level comparison signals
@@ -3556,7 +3556,7 @@ class DTOceanWindow(MainWindow):
         else:
             article = "A"
 
-        errMsg = "{} {} occurred: {:s}".format(article, sane_type_str, evalue)
+        errMsg = "{} {} occurred: {}".format(article, sane_type_str, evalue)
 
         module_logger.critical(errMsg)
         module_logger.critical("".join(traceback.format_tb(etraceback)))

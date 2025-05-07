@@ -22,7 +22,7 @@ Created on Thu Apr 23 12:51:14 2015
 """
 
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Protocol
 
 from dtocean_core.pipeline import Tree
 from mdo_engine.utilities.misc import OrderedSet
@@ -543,7 +543,29 @@ class PlotManagerWidget(
         self.pathEdit.clear()
 
 
-class ComparisonWidget(Ui_LevelComparisonWidget or Ui_SimComparisonWidget):
+if TYPE_CHECKING:
+
+    class ComparisonProtocol(Protocol):
+        @property
+        def bottomHorizontalLayout(self) -> QtWidgets.QHBoxLayout: ...
+
+        @property
+        def buttonBox(self) -> QtWidgets.QDialogButtonBox: ...
+
+        @property
+        def dataButton(self) -> QtWidgets.QRadioButton: ...
+
+        @property
+        def plotButton(self) -> QtWidgets.QRadioButton: ...
+
+        def setupUi(self, v): ...
+
+else:
+
+    class ComparisonProtocol: ...
+
+
+class ComparisonWidget(ComparisonProtocol):
     def __init__(self):
         self._var_ids = None
         self._mod_names = None
@@ -654,9 +676,9 @@ class ComparisonWidget(Ui_LevelComparisonWidget or Ui_SimComparisonWidget):
 
 
 class LevelComparison(
-    QtWidgets.QWidget,
     ComparisonWidget,
     Ui_LevelComparisonWidget,
+    QtWidgets.QWidget,
 ):
     plot_levels = QtCore.Signal(str, bool)
     tab_levels = QtCore.Signal(str, bool)
@@ -716,9 +738,9 @@ class LevelComparison(
 
 
 class SimulationComparison(
-    QtWidgets.QWidget,
-    Ui_SimComparisonWidget,
     ComparisonWidget,
+    Ui_SimComparisonWidget,
+    QtWidgets.QWidget,
 ):
     plot_levels = QtCore.Signal(str, str, bool)
     tab_levels = QtCore.Signal(str, str, bool)

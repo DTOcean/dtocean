@@ -77,7 +77,7 @@ class AutoOutput(AutoInterface, OutputWidgetInterface):
         return "auto_output"
 
 
-class GUIProject(QtCore.QObject, Project):
+class GUIProject(Project, QtCore.QObject):
     sims_updated = QtCore.Signal()
     active_index_changed = QtCore.Signal()
     active_title_changed = QtCore.Signal(str)
@@ -85,8 +85,8 @@ class GUIProject(QtCore.QObject, Project):
     """Project class with signals"""
 
     def __init__(self, title):
-        QtCore.QObject.__init__(self)
         Project.__init__(self, title)
+        QtCore.QObject.__init__(self)
 
     def add_simulation(self, simulation, set_active=False):
         super(GUIProject, self).add_simulation(simulation, set_active)
@@ -144,10 +144,6 @@ class GUICore(Core, QtCore.QObject):
 
     def __init__(self):
         QtCore.QObject.__init__(self)
-        self.data_catalog = None
-        self.loader = None
-        self.control = None
-        self.socket_map = None
         self._input_parent = None
 
     def _create_data_catalog(self):
