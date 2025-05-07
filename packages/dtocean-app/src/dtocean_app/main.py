@@ -2402,7 +2402,7 @@ class DTOceanWindow(MainWindow):
             )
 
             if interface_dict:
-                for interface_name, ext_list in interface_dict.iteritems():
+                for interface_name, ext_list in interface_dict.items():
                     repeated_exts = set(ext_list).intersection(
                         load_ext_dict.keys()
                     )
@@ -2429,7 +2429,7 @@ class DTOceanWindow(MainWindow):
             )
 
             if interface_dict:
-                for interface_name, ext_list in interface_dict.iteritems():
+                for interface_name, ext_list in interface_dict.items():
                     repeated_exts = set(ext_list).intersection(
                         save_ext_dict.keys()
                     )

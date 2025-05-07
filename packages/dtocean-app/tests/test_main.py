@@ -197,7 +197,7 @@ class MockTool(GUITool, Tool):
     def get_widget(self):
         # Data for plotting
         t = np.arange(0.0, 2.0, 0.01)
-        s = 1 + np.sin(2 * np.pi * t)
+        s = 1 + np.sin(2.0 * np.pi * t)
 
         fig, ax = plt.subplots()
         ax.plot(t, s)
@@ -705,8 +705,8 @@ def test_dump_load_database(
         return_value=str(tmpdir),
     )
 
+    mocker.patch("dtocean_app.main.get_database", autospec=True)
     mocker.patch("dtocean_app.main.database_to_files", autospec=True)
-
     mocker.patch("dtocean_app.main.database_from_files", autospec=True)
 
     mocker.patch.object(
@@ -717,7 +717,6 @@ def test_dump_load_database(
 
     # Select the first in the list and apply
     db_selector.listWidget.setCurrentRow(0)
-
     item = db_selector.listWidget.item(0)
     rect = db_selector.listWidget.visualItemRect(item)
     qtbot.mouseClick(
@@ -725,7 +724,6 @@ def test_dump_load_database(
         Qt.MouseButton.LeftButton,
         pos=rect.center(),
     )
-
     qtbot.mouseClick(
         db_selector.buttonBox.button(
             QtWidgets.QDialogButtonBox.StandardButton.Apply
@@ -742,25 +740,22 @@ def test_dump_load_database(
     qtbot.waitUntil(has_credentials)
 
     # Activate dump
-    qtbot.mouseClick(db_selector.dumpButton, Qt.MouseButton.LeftButton)
-
-    qtbot.waitSignal(shell.database_convert_complete)
+    with qtbot.waitSignal(shell.database_convert_complete):
+        qtbot.mouseClick(db_selector.dumpButton, Qt.MouseButton.LeftButton)
 
     def dump_enabled():
         assert db_selector.dumpButton.isEnabled()
 
-    qtbot.waitUntil(dump_enabled)
+    qtbot.waitUntil(dump_enabled, timeout=10000)
 
     # Activate load
-    qtbot.mouseClick(db_selector.loadButton, Qt.MouseButton.LeftButton)
-
-    qtbot.waitSignal(shell.database_convert_complete)
+    with qtbot.waitSignal(shell.database_convert_complete):
+        qtbot.mouseClick(db_selector.loadButton, Qt.MouseButton.LeftButton)
 
     def load_enabled():
         assert db_selector.loadButton.isEnabled()
 
     qtbot.waitUntil(load_enabled)
-
     db_selector.close()
 
 
@@ -1592,7 +1587,10 @@ def test_simulation_clone_again(qtbot, window_two_simulations):
 
 
 def test_simulation_active_mods_warn(
-    caplog, mocker, qtbot, window_two_simulations
+    caplog,
+    mocker,
+    qtbot,
+    window_two_simulations,
 ):
     mocker.patch(
         "dtocean_app.main.ModuleMenu.get_active",
@@ -1982,16 +1980,20 @@ def test_strategy_reload(
     assert str(strategy_manager_basic.topDynamicLabel.text()) == "Basic"
 
 
-def menu_click(qtbot, main_window, menu, action_name):
+def menu_click(qtbot, main_window, menu: QtWidgets.QMenu, action_name):
     qtbot.keyClick(
         main_window,
-        menu.title()[0],
+        menu.title()[1],
         Qt.KeyboardModifier.AltModifier,
     )
 
+    true_actions = 0
     for action in menu.actions():
-        if not action.objectName():
-            continue
+        if action.objectName():
+            true_actions += 1
+
+    for _ in range(true_actions):
+        action = menu.activeAction()
 
         if action.objectName() and action.objectName() == action_name:
             qtbot.keyClick(menu, Qt.Key.Key_Enter)

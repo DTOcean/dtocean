@@ -295,6 +295,9 @@ class DBSelector(ListTableEditor):
 
     @QtCore.Slot(object, object)
     def _rename_database(self, editor, hint):
+        if self._selected is None:
+            return
+
         new_name = str(editor.text())
 
         if new_name == self._selected:
@@ -304,7 +307,6 @@ class DBSelector(ListTableEditor):
         if new_name in self._data_menu.get_available_databases():
             item = self.listWidget.currentItem()
             item.setText(self._selected)
-
             return
 
         db_dict = self._get_db_dict()

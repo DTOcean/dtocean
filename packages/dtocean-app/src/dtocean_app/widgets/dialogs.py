@@ -142,7 +142,7 @@ class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
             index = self._right_model.index(row, 0)
 
             # We suppose data are strings
-            data.append(str(self._right_model.data(index).toString()))
+            data.append(self._right_model.data(index))
 
         return data
 
@@ -179,7 +179,7 @@ class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
     def _make_left_items(self, item_dict):
         self._left_model.clear()
 
-        for item_text, icon in item_dict.iteritems():
+        for item_text, icon in item_dict.items():
             item = QtGui.QStandardItem(item_text)
 
             if icon is not None:
@@ -190,7 +190,7 @@ class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
     def _make_right_items(self, item_dict):
         self._right_model.clear()
 
-        for item_text, icon in item_dict.iteritems():
+        for item_text, icon in item_dict.items():
             item = QtGui.QStandardItem(item_text)
 
             if icon is not None:
@@ -340,7 +340,7 @@ class TestDataPicker(QtWidgets.QDialog, Ui_TestDataPicker):
 
     @QtCore.Slot()
     def _write_path(self):
-        test_file_path = QtWidgets.QFileDialog.getOpenFileName(
+        test_file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,
             dir=HOME,
         )
@@ -395,11 +395,15 @@ class ListTableEditor(QtWidgets.QDialog, Ui_ListTableEditor):
         frame_dict = {}
 
         for j in range(n_cols):
-            header = str(self.tableWidget.horizontalHeaderItem(j).text())
+            j_item = self.tableWidget.horizontalHeaderItem(j)
+            assert j_item is not None
+            header = j_item.text()
             row_values = []
 
             for i in range(n_rows):
-                row_values.append(str(self.tableWidget.item(i, j).text()))
+                i_item = self.tableWidget.item(i, j)
+                assert i_item is not None
+                row_values.append(i_item.text())
 
             frame_dict[header] = row_values
 
@@ -569,7 +573,6 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
 
         if self._n_pix > 0:
             self._image_files = cycle(pix_list)
-
         else:
             self.verticalLayout_3.removeWidget(self.insitutionIntroLabel)
             self.insitutionIntroLabel.deleteLater()
@@ -595,9 +598,9 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
             self.scrollArea.verticalScrollBar().valueChanged.connect(
                 self.institutionLabel.repaint
             )
-
         else:
-            self.verticalLayout_4.removeWidget(self.insitutionIntroLabel)
+            assert self.insitutionIntroLabel is not None
+            self.verticalLayout_3.removeWidget(self.insitutionIntroLabel)
             self.institutionLabel.deleteLater()
             self.institutionLabel = None
 
