@@ -18,7 +18,7 @@
 import argparse
 import datetime
 import sys
-from importlib.metadata import distribution, packages_distributions
+from importlib.metadata import distribution
 
 from polite_config.configuration import ReadINI
 from polite_config.paths import (
@@ -51,10 +51,13 @@ def get_install_paths():
     else:
         return None
 
-    path_dict = {
-        "man_user_path": config["man"]["user_path"],  # type: ignore
-        "man_technical_path": config["man"]["technical_path"],  # type: ignore
-    }  # type: ignore
+    man = config["man"]
+    assert isinstance(man, dict)
+
+    path_dict: dict[str, str] = {
+        "man_user_path": man["user_path"],
+        "man_technical_path": man["technical_path"],
+    }
 
     return path_dict
 
@@ -64,14 +67,6 @@ def get_software_version():
     dist = distribution(package)
     version = dist.version
     return "{} {}".format(package, version)
-
-
-def get_distribution_names():
-    names = []
-    for _, packages in packages_distributions():
-        names.extend(packages)
-
-    return names
 
 
 def init_config(logging=False, install=False, overwrite=False):
