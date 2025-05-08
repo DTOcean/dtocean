@@ -17,21 +17,49 @@
 
 
 import pytest
-from attrdict import AttrDict
 from dtocean_core.data import CoreMetaData
+from mdo_engine.boundary.interface import Box
 
 from dtocean_app.data.definitions import SimpleData
 
 
+class DummyMixin:
+    def __init__(self):
+        self._data = Box()
+        self._meta = Box()
+
+    @property
+    def data(self) -> Box:
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+    @property
+    def meta(self) -> Box:
+        return self._meta
+
+    @meta.setter
+    def meta(self, value):
+        self._meta = value
+
+    @property
+    def parent(self):
+        return None
+
+
 @pytest.fixture
 def structure():
-    structure = SimpleData()
-    structure.parent = None
-
-    return structure
+    return SimpleData()
 
 
-def test_SimpleData_input_valid_values(mocker, qtbot, structure):
+@pytest.fixture
+def mixin():
+    return DummyMixin()
+
+
+def test_SimpleData_input_valid_values(mocker, structure, mixin):
     meta = CoreMetaData(
         {
             "identifier": "test",
@@ -41,15 +69,16 @@ def test_SimpleData_input_valid_values(mocker, qtbot, structure):
             "units": ["kg"],
         }
     )
+    assert meta.units is not None
 
     test_data = "a"
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": test_data})
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": test_data})
 
     widget = mocker.patch("dtocean_app.data.definitions.ListSelect")
-    structure.auto_input(structure)
+    structure.auto_input(mixin)
 
-    assert widget.call_args.args == (structure.parent, meta.valid_values)
+    assert widget.call_args.args == (mixin.parent, meta.valid_values)
     assert widget.call_args.kwargs == {
         "unit": meta.units[0],
         "experimental": None,
@@ -57,23 +86,27 @@ def test_SimpleData_input_valid_values(mocker, qtbot, structure):
     assert widget.return_value._set_value.call_args.args == (test_data,)
 
 
-def test_SimpleData_input_no_type(qtbot, structure):
+def test_SimpleData_input_no_type(structure, mixin):
     meta = CoreMetaData(
         {"identifier": "test", "structure": "test", "title": "test"}
     )
 
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": "a"})
-    structure.auto_input(structure)
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": "a"})
+    structure.auto_input(mixin)
 
-    assert structure.data.result is None
+    assert mixin.data.result is None
 
 
 @pytest.mark.parametrize(
     "ttype, input_widget", [("float", "FloatSelect"), ("int", "IntSelect")]
 )
 def test_SimpleData_input_number_closed(
-    mocker, qtbot, structure, ttype, input_widget
+    mocker,
+    structure,
+    ttype,
+    input_widget,
+    mixin,
 ):
     minimum = -10.0
     maximum = 10.0
@@ -88,16 +121,17 @@ def test_SimpleData_input_number_closed(
             "maximums": [maximum],
         }
     )
+    assert meta.units is not None
 
     test_data = 1.0
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": test_data})
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": test_data})
 
     patch = "dtocean_app.data.definitions.{}".format(input_widget)
     widget = mocker.patch(patch)
-    structure.auto_input(structure)
+    structure.auto_input(mixin)
 
-    assert widget.call_args.args[:2] == (structure.parent, meta.units[0])
+    assert widget.call_args.args[:2] == (mixin.parent, meta.units[0])
     assert widget.call_args.args[2] > minimum
     assert widget.call_args.args[3] < maximum
     assert widget.return_value._set_value.call_args.args == (test_data,)
@@ -107,7 +141,11 @@ def test_SimpleData_input_number_closed(
     "ttype, input_widget", [("float", "FloatSelect"), ("int", "IntSelect")]
 )
 def test_SimpleData_input_number_open(
-    mocker, qtbot, structure, ttype, input_widget
+    mocker,
+    structure,
+    ttype,
+    input_widget,
+    mixin,
 ):
     minimum = -10.0
     maximum = 10.0
@@ -122,17 +160,18 @@ def test_SimpleData_input_number_open(
             "maximum_equals": [maximum],
         }
     )
+    assert meta.units is not None
 
     test_data = 1.0
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": test_data})
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": test_data})
 
     patch = "dtocean_app.data.definitions.{}".format(input_widget)
     widget = mocker.patch(patch)
-    structure.auto_input(structure)
+    structure.auto_input(mixin)
 
     assert widget.call_args.args == (
-        structure.parent,
+        mixin.parent,
         meta.units[0],
         minimum,
         maximum,
@@ -140,7 +179,7 @@ def test_SimpleData_input_number_open(
     assert widget.return_value._set_value.call_args.args == (test_data,)
 
 
-def test_SimpleData_input_str(mocker, qtbot, structure):
+def test_SimpleData_input_str(mocker, structure, mixin):
     meta = CoreMetaData(
         {
             "identifier": "test",
@@ -150,19 +189,20 @@ def test_SimpleData_input_str(mocker, qtbot, structure):
             "units": ["kg"],
         }
     )
+    assert meta.units is not None
 
     test_data = "a"
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": test_data})
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": test_data})
 
     widget = mocker.patch("dtocean_app.data.definitions.StringSelect")
-    structure.auto_input(structure)
+    structure.auto_input(mixin)
 
-    assert widget.call_args.args == (structure.parent, meta.units[0])
+    assert widget.call_args.args == (mixin.parent, meta.units[0])
     assert widget.return_value._set_value.call_args.args == (test_data,)
 
 
-def test_SimpleData_input_bool(mocker, qtbot, structure):
+def test_SimpleData_input_bool(mocker, structure, mixin):
     meta = CoreMetaData(
         {
             "identifier": "test",
@@ -173,17 +213,17 @@ def test_SimpleData_input_bool(mocker, qtbot, structure):
     )
 
     test_data = False
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": test_data})
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": test_data})
 
     widget = mocker.patch("dtocean_app.data.definitions.BoolSelect")
-    structure.auto_input(structure)
+    structure.auto_input(mixin)
 
-    assert widget.call_args.args == (structure.parent,)
+    assert widget.call_args.args == (mixin.parent,)
     assert widget.return_value._set_value.call_args.args == (test_data,)
 
 
-def test_SimpleData_input_unknown(qtbot, structure):
+def test_SimpleData_input_unknown(structure, mixin):
     meta = CoreMetaData(
         {
             "identifier": "test",
@@ -193,11 +233,11 @@ def test_SimpleData_input_unknown(qtbot, structure):
         }
     )
 
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": "a"})
-    structure.auto_input(structure)
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": "a"})
+    structure.auto_input(mixin)
 
-    assert structure.data.result is None
+    assert mixin.data.result is None
 
 
 @pytest.mark.parametrize(
@@ -209,7 +249,13 @@ def test_SimpleData_input_unknown(qtbot, structure):
     ],
 )
 def test_SimpleData_output(
-    mocker, qtbot, structure, ttype, units, test_data, expected
+    mocker,
+    structure,
+    ttype,
+    units,
+    test_data,
+    expected,
+    mixin,
 ):
     meta = CoreMetaData(
         {
@@ -221,11 +267,11 @@ def test_SimpleData_output(
         }
     )
 
-    structure.meta = AttrDict({"result": meta})
-    structure.data = AttrDict({"result": test_data})
+    mixin.meta = Box({"result": meta})
+    mixin.data = Box({"result": test_data})
 
     widget = mocker.patch("dtocean_app.data.definitions.LabelOutput")
-    structure.auto_output(structure)
+    structure.auto_output(mixin)
 
-    assert widget.call_args.args == (structure.parent, expected)
+    assert widget.call_args.args == (mixin.parent, expected)
     assert widget.return_value._set_value.call_args.args == (test_data,)

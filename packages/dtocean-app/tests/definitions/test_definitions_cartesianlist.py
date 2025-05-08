@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2018 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ class DummyMixin:
 
 
 def setup_none(structure):
-    structure.parent = None
     structure.meta = Box(
         {"result": {"identifier": "test", "structure": "test", "title": "test"}}
     )
@@ -61,7 +60,6 @@ def setup_none(structure):
 
 
 def setup_data(structure):
-    structure.parent = None
     structure.meta = Box(
         {"result": {"identifier": "test", "structure": "test", "title": "test"}}
     )
