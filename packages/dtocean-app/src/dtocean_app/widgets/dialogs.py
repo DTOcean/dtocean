@@ -36,7 +36,7 @@ from PySide6.QtCore import QEasingCurve, QEvent, QPropertyAnimation, Qt
 from shiboken6 import Shiboken
 
 from ..utils.config import (
-    get_software_version,  # pylint: disable=no-name-in-module
+    get_software_version,
 )
 from ..utils.display import is_high_dpi
 
