@@ -80,9 +80,7 @@ class PipelineFilterProxyModel(QtCore.QSortFilterProxyModel):
         if not source_user_dict["visible"]:
             return False
 
-        return super(PipelineFilterProxyModel, self).filterAcceptsRow(
-            row_num, parent
-        )
+        return super().filterAcceptsRow(row_num, parent)
 
     def has_accepted_children(self, row_num, parent):
         """Starting from the current node as root, traverse all
@@ -102,7 +100,7 @@ class PipeLine(PipeLineDock):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, parent):
-        super(PipeLine, self).__init__(parent)
+        super().__init__(parent)
         self._tree = Tree()
         self._model: QtGui.QStandardItemModel
         self._proxy: PipelineFilterProxyModel
@@ -458,7 +456,7 @@ class HubControl(BaseControl):
         active=True,
         branch_order=None,
     ):
-        super(HubControl, self).__init__(address, title, view, model, proxy)
+        super().__init__(address, title, view, model, proxy)
         self._tree = Tree()
         self._hub_name = hub_name
         self._BranchCls = branch_cls
@@ -546,7 +544,7 @@ class InputBranchControl(BaseControl):
         ignore_str="hidden",
         sort=True,
     ):
-        super(InputBranchControl, self).__init__(
+        super().__init__(
             address,
             title,
             view,
@@ -759,9 +757,7 @@ class OutputBranchControl(BaseControl):
         branch,
         ignore_str="hidden",
     ):
-        super(OutputBranchControl, self).__init__(
-            address, title, view, model, proxy
-        )
+        super().__init__(address, title, view, model, proxy)
         self._branch = branch
         self._hub_title = hub_title
         self._ignore_str = ignore_str
@@ -855,7 +851,7 @@ class OutputBranchControl(BaseControl):
 
 class VarControl(BaseControl):
     def __init__(self, address, title, view, model, proxy, variable):
-        super(VarControl, self).__init__(address, title, view, model, proxy)
+        super().__init__(address, title, view, model, proxy)
         self._variable = variable
         self._id = variable._id
 
@@ -1049,9 +1045,7 @@ class InputVarControl(VarControl):
         elif "overwritten" in status:
             item_user_dict["visible"] = False
 
-        super(InputVarControl, self)._update_status(
-            status, item, item_user_dict
-        )
+        super()._update_status(status, item, item_user_dict)
 
     def _get_data_widget(self, shell):
         interface = self._variable._find_providing_interface(
@@ -1063,7 +1057,7 @@ class InputVarControl(VarControl):
                 shell.core, "AutoInput", allow_missing=True
             )
 
-        widget = super(InputVarControl, self)._get_data_widget(shell, interface)
+        widget = super()._get_data_widget(shell, interface)
 
         # Provide the cancel widget if no other can be found
         if widget is None:
@@ -1090,9 +1084,7 @@ class OutputVarControl(VarControl):
         if "unavailable" in status or "overwritten" in status:
             item_user_dict["visible"] = False
 
-        super(OutputVarControl, self)._update_status(
-            status, item, item_user_dict
-        )
+        super()._update_status(status, item, item_user_dict)
 
     def _get_data_widget(self, shell):
         interface = self._variable._find_providing_interface(
@@ -1104,8 +1096,6 @@ class OutputVarControl(VarControl):
                 shell.core, "AutoOutput", allow_missing=True
             )
 
-        widget = super(OutputVarControl, self)._get_data_widget(
-            shell, interface
-        )
+        widget = super()._get_data_widget(shell, interface)
 
         return widget

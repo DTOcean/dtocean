@@ -45,7 +45,7 @@ class WidgetInterface(MetaInterface):
     """Interface with a widget"""
 
     def __init__(self):
-        super(WidgetInterface, self).__init__()
+        super().__init__()
         self.parent = None
 
 
@@ -84,20 +84,20 @@ class GUIProject(Project, QtCore.QObject):
 
     """Project class with signals"""
 
-    def __init__(self, title):
+    def __init__(self, title: str):
         Project.__init__(self, title)
         QtCore.QObject.__init__(self)
 
     def add_simulation(self, simulation, set_active=False):
-        super(GUIProject, self).add_simulation(simulation, set_active)
+        super().add_simulation(simulation, set_active)
         self.sims_updated.emit()
 
     def set_simulation_title(self, new_title, index=None, title=None):
-        super(GUIProject, self).set_simulation_title(new_title, index, title)
+        super().set_simulation_title(new_title, index, title)
         self.sims_updated.emit()
 
     def _set_active_index(self, index):
-        super(GUIProject, self)._set_active_index(index)
+        super()._set_active_index(index)
         self.active_index_changed.emit()
 
         active_sim_title = self.get_simulation_title()
@@ -147,7 +147,7 @@ class GUICore(Core, QtCore.QObject):
         self._input_parent = None
 
     def _create_data_catalog(self):
-        catalog = super(GUICore, self)._create_data_catalog()
+        catalog = super()._create_data_catalog()
         self.data_catalog = catalog
 
     def _create_control(self):
@@ -167,7 +167,7 @@ class GUICore(Core, QtCore.QObject):
         self.control = control
 
     def _create_sockets(self):
-        socket_map = super(GUICore, self)._create_sockets()
+        socket_map = super()._create_sockets()
         self.socket_map = socket_map
 
     def new_project(self, project_title, simulation_title="Default"):
@@ -177,7 +177,7 @@ class GUICore(Core, QtCore.QObject):
         return new_project
 
     def load_project(self, load_path):
-        core_project = super(GUICore, self).load_project(load_path)
+        core_project = super().load_project(load_path)
 
         gui_project = GUIProject("temp")
         gui_project._load(core_project)
@@ -197,8 +197,12 @@ class GUICore(Core, QtCore.QObject):
     ):
         """Prepare the simulation for re-execution at the given level"""
 
-        super(GUICore, self).reset_level(
-            project, level, preserve_level, force_scheduled, skip_missing
+        super().reset_level(
+            project,
+            level,
+            preserve_level,
+            force_scheduled,
+            skip_missing,
         )
 
         self.pipeline_reset.emit()
@@ -206,7 +210,7 @@ class GUICore(Core, QtCore.QObject):
     def set_interface_status(self, project, simulation=None):
         """Emit a signal on status update"""
 
-        super(GUICore, self).set_interface_status(project, simulation)
+        super().set_interface_status(project, simulation)
         self.status_updated.emit()
 
     def connect_interface(self, project, interface):
@@ -218,12 +222,12 @@ class GUICore(Core, QtCore.QObject):
         ):
             interface.parent = self._input_parent
 
-        interface = super(GUICore, self).connect_interface(project, interface)
+        interface = super().connect_interface(project, interface)
 
         return interface
 
     def _build_named_socket(self, socket_str):
-        socket = super(GUICore, self)._build_named_socket(socket_str)
+        socket = super()._build_named_socket(socket_str)
         socket.discover_interfaces(gui_interfaces)
 
         return socket

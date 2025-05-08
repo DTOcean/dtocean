@@ -21,7 +21,7 @@ import shutil
 import tempfile
 from copy import deepcopy
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 import matplotlib.pyplot as plt
 from mdo_engine.boundary.data import SerialBox
@@ -298,12 +298,12 @@ class OrderedSim(Simulation):
 class Project:
     """Class to store simulations, data pool and other project related data."""
 
-    def __init__(self, title):
+    def __init__(self, title: str):
         self.title = title
         self._pool = DataPool()
-        self._simulations = []
-        self._active_index = None
-        self._db_cred = None
+        self._simulations: list[OrderedSim] = []
+        self._active_index: Optional[int] = None
+        self._db_cred: Optional[dict[str, str]] = None
 
     def is_active(self):
         result = False
@@ -371,13 +371,13 @@ class Project:
             return None
 
         if indexes is None:
-            sim_titles = [
-                x.get_title()
-                for x in self._simulations
-                if x.get_title() is not None
-            ]
+            sim_titles = [x.get_title() for x in self._simulations]
         else:
             sim_titles = [self.get_simulation_title(index=x) for x in indexes]
+
+        sim_titles = [
+            title if title is not None else "" for title in sim_titles
+        ]
 
         if not sim_titles:
             sim_titles = None

@@ -66,7 +66,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         self._last_df: pd.DataFrame
 
     def _init_ui(self, title=None):
-        super(GUIStrategyManager, self)._init_ui(title)
+        super()._init_ui(title)
 
         self._init_labels(
             "Current Strategy:", "Available strategies:", "Configuration:"
@@ -82,7 +82,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
 
     def _init_list(self):
         available_strategies = self.get_available()
-        super(GUIStrategyManager, self)._update_list(available_strategies)
+        super()._update_list(available_strategies)
 
     @QtCore.Slot()
     def _config_set_ui_switch(self):
@@ -93,7 +93,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         self.applyButton.setDisabled(True)
 
     def get_available(self):
-        strategy_names = super(GUIStrategyManager, self).get_available()
+        strategy_names = super().get_available()
 
         strategy_weights = []
 
@@ -131,7 +131,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
             strategy = shell.strategy
 
         # Get the table widget
-        df = super(GUIStrategyManager, self).get_level_values_df(
+        df = super().get_level_values_df(
             shell.core, shell.project, var_id, strategy, scope=scope
         )
         widget = OutputDataTable(shell.core._input_parent, df.columns)
@@ -151,8 +151,13 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
             strategy = shell.strategy
             sim_titles = None
 
-        fig_handle = super(GUIStrategyManager, self).get_level_values_plot(
-            shell.core, shell.project, var_id, strategy, sim_titles, scope
+        fig_handle = super().get_level_values_plot(
+            shell.core,
+            shell.project,
+            var_id,
+            strategy,
+            sim_titles,
+            scope,
         )
 
         widget = MPLWidget(fig_handle, shell.core._input_parent)
@@ -167,7 +172,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         else:
             strategy = shell.strategy
 
-        df = super(GUIStrategyManager, self).get_comparison_values_df(
+        df = super().get_comparison_values_df(
             shell.core,
             shell.project,
             var_one_id,
@@ -192,7 +197,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         else:
             strategy = shell.strategy
 
-        fig_handle = super(GUIStrategyManager, self).get_comparison_values_plot(
+        fig_handle = super().get_comparison_values_plot(
             shell.core,
             shell.project,
             var_one_id,
@@ -260,7 +265,8 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         current_strategy = self.get_strategy(selected)
 
         self._strategy_widget = current_strategy.get_widget(self, self._shell)
-        assert isinstance(self._strategy_widget, DummyWidget)
+        if TYPE_CHECKING:
+            assert isinstance(self._strategy_widget, DummyWidget)
 
         self._strategy_widget.config_set.connect(self._config_set_ui_switch)
         self._strategy_widget.config_null.connect(self._config_null_ui_switch)
@@ -282,7 +288,9 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
         self._strategy = None
 
         if self._strategy_widget is not None:
-            assert isinstance(self._strategy_widget, DummyWidget)
+            if TYPE_CHECKING:
+                assert isinstance(self._strategy_widget, DummyWidget)
+
             self._strategy_widget.reset.disconnect()
             self._strategy_widget.config_set.disconnect()
             self._strategy_widget.config_null.disconnect()
@@ -317,7 +325,7 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
     @QtCore.Slot(object)
     def show(self):
         self._update_configuration()
-        super(GUIStrategyManager, self).show()
+        super().show()
 
 
 class GUIToolManager(ToolManager):
@@ -327,7 +335,7 @@ class GUIToolManager(ToolManager):
         ToolManager.__init__(self, tools, "GUITool")
 
     def get_available(self):
-        tool_names = super(GUIToolManager, self).get_available()
+        tool_names = super().get_available()
 
         tool_weights = []
 

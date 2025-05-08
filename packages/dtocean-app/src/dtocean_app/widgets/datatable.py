@@ -68,7 +68,7 @@ class DataTableWidget(QtWidgets.QWidget):
             iconSize (QSize, optional): Size of edit buttons. Defaults to QSize(36, 36).
 
         """
-        super(DataTableWidget, self).__init__(parent)
+        super().__init__(parent)
         self._iconSize = iconSize
         self.initUi(edit_rows, edit_cols, edit_cells)
 
@@ -277,7 +277,7 @@ class DataTableWidget(QtWidgets.QWidget):
         assert isinstance(model, DataFrameModel)
 
         for index, _ in enumerate(model.dataFrame().columns):
-            dtype = model.dataFrame().dtypes[index]
+            dtype = model.dataFrame().dtypes.iloc[index]
             self.updateDelegate(index, dtype)
 
         self.tableView.resizeColumnsToContents()
@@ -294,7 +294,7 @@ class DataTableWidget(QtWidgets.QWidget):
 
             return True
 
-        return super(DataTableWidget, self).eventFilter(source, event)
+        return super().eventFilter(source, event)
 
     def copySelection(self):
         selection = self.tableView.selectedIndexes()

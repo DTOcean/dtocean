@@ -37,7 +37,7 @@ class HelpWidget(QtWidgets.QDialog):
     force_quit = QtCore.Signal()
 
     def __init__(self, parent=None):
-        super(HelpWidget, self).__init__(parent)
+        super().__init__(parent)
         self._msg_widget = None
         self._url_widget = None
 

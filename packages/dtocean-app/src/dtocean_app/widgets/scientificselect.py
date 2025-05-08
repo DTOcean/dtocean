@@ -34,7 +34,7 @@ _float_re = re.compile(r"(([+-]?\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)")
 
 class ScientificDoubleSpinBox(QtWidgets.QDoubleSpinBox):
     def __init__(self, *args, **kwargs):
-        super(QtWidgets.QDoubleSpinBox, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.setMinimum(-1.0e18)
         self.setMaximum(1.0e18)
         self.setDecimals(323)
