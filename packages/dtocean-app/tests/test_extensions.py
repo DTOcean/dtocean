@@ -15,20 +15,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable=redefined-outer-name,protected-access,no-self-use,unused-argument
 
 import pytest
-from dtocean_core.interfaces import ModuleInterface
 from dtocean_core.menu import ModuleMenu, ProjectMenu
 from dtocean_core.pipeline import Tree
-from dtocean_core.strategies import Strategy
 from PySide6 import QtCore
 
 from dtocean_app.core import GUICore
 from dtocean_app.extensions import GUIStrategyManager
-from dtocean_app.main import Shell
-from dtocean_app.strategies import GUIStrategy
-from dtocean_app.strategies.basic import BasicWidget
+from dtocean_app.shell import Shell
+from dtocean_app.widgets.dialogs import Message
+from dtocean_plugins.modules.base import ModuleInterface
+from dtocean_plugins.strategies.base import Strategy
+from dtocean_plugins.strategy_guis.base import GUIStrategy, StrategyWidget
 
 
 class MockModule(ModuleInterface):
@@ -74,6 +73,25 @@ class MockModule(ModuleInterface):
         return
 
 
+class MockWidget(Message, StrategyWidget):
+    config_set = QtCore.Signal()
+    config_null = QtCore.Signal()
+    reset = QtCore.Signal()
+
+    def __init__(self, parent):
+        super().__init__(parent, "Mock")
+
+    def get_configuration(self):
+        return {}
+
+    def set_configuration(self, *args):
+        pass
+
+    def paintEvent(self, event):
+        super(MockWidget, self).paintEvent(event)
+        self.config_set.emit()
+
+
 class MockStrategy(GUIStrategy, Strategy):
     @classmethod
     def get_name(cls):
@@ -92,15 +110,21 @@ class MockStrategy(GUIStrategy, Strategy):
         return True
 
     def get_widget(self, parent, shell):
-        widget = BasicWidget(parent, "Mock")
+        widget = MockWidget(parent)
         return widget
 
     def get_weight(self):
         return -1
 
 
-@pytest.fixture(scope="module")
-def core():
+@pytest.fixture
+def core(mocker):
+    mocker.patch(
+        "dtocean_core.extensions.StrategyManager._discover_classes",
+        return_value={"MockStrategy": MockStrategy},
+        autospec=True,
+    )
+
     core = GUICore()
     core._create_data_catalog()
     core._create_control()
@@ -124,8 +148,12 @@ def project(core):
 
     options_branch = var_tree.get_branch(core, project, "System Type Selection")
     device_type = options_branch.get_input_variable(
-        core, project, "device.system_type"
+        core,
+        project,
+        "device.system_type",
     )
+    assert device_type is not None
+
     device_type.set_raw_interface(core, "Tidal Fixed")
     device_type.read(core, project)
 
@@ -161,12 +189,12 @@ def test_strategy_select(qtbot, mock_shell):
     widget_id = id(window.mainWidget)
 
     # Click on all strategies
-    for idx in xrange(window.listWidget.count()):  # pylint: disable=undefined-variable
+    for idx in range(window.listWidget.count()):
         item = window.listWidget.item(idx)
         rect = window.listWidget.visualItemRect(item)
         qtbot.mouseClick(
             window.listWidget.viewport(),
-            QtCore.Qt.LeftButton,
+            QtCore.Qt.MouseButton.LeftButton,
             pos=rect.center(),
         )
 
@@ -174,146 +202,10 @@ def test_strategy_select(qtbot, mock_shell):
             assert id(window.mainWidget) != widget_id
 
         qtbot.waitUntil(widget_changed)
-
         widget_id = id(window.mainWidget)
 
 
-@pytest.fixture
-def strategy_basic(mocker, qtbot, mock_shell):
-    mocker.patch.object(
-        GUIStrategyManager,
-        "get_available",
-        return_value=["Basic"],
-        autospec=True,
-    )
-
-    window = GUIStrategyManager(mock_shell)
-    window.show()
-    qtbot.addWidget(window)
-
-    if "Basic" not in window._plugin_names.keys():
-        pytest.skip("Test requires Basic strategy")
-
-    # Click on first strategy and apply
-    item = window.listWidget.item(0)
-    rect = window.listWidget.visualItemRect(item)
-    qtbot.mouseClick(
-        window.listWidget.viewport(), QtCore.Qt.LeftButton, pos=rect.center()
-    )
-
-    def apply_enabled():
-        assert window.applyButton.isEnabled()
-
-    qtbot.waitUntil(apply_enabled)
-
-    qtbot.mouseClick(window.applyButton, QtCore.Qt.LeftButton)
-
-    def strategy_set():
-        assert str(window.topDynamicLabel.text()) == str(item.text())
-
-    qtbot.waitUntil(strategy_set)
-
-    return window
-
-
-def test_strategy_basic_apply(strategy_basic):
-    assert str(strategy_basic.topDynamicLabel.text()) == "Basic"
-
-
-def test_strategy_basic_reset(qtbot, strategy_basic):
-    # Reset the strategy
-    qtbot.mouseClick(strategy_basic.resetButton, QtCore.Qt.LeftButton)
-
-    assert str(strategy_basic.topDynamicLabel.text()) == "None"
-
-
-@pytest.fixture
-def strategy_sensitivity(mocker, qtbot, mock_shell):
-    mocker.patch.object(
-        GUIStrategyManager,
-        "get_available",
-        return_value=["Unit Sensitivity"],
-        autospec=True,
-    )
-
-    window = GUIStrategyManager(mock_shell)
-    window.show()
-    qtbot.addWidget(window)
-
-    if "Unit Sensitivity" not in window._plugin_names.keys():
-        pytest.skip("Test requires Unit Sensitivity strategy")
-
-    widget_id = id(window.mainWidget)
-
-    # Click on first strategy and apply
-    item = window.listWidget.item(0)
-    rect = window.listWidget.visualItemRect(item)
-    qtbot.mouseClick(
-        window.listWidget.viewport(), QtCore.Qt.LeftButton, pos=rect.center()
-    )
-
-    def widget_changed():
-        assert id(window.mainWidget) != widget_id
-
-    qtbot.waitUntil(widget_changed)
-
-    return window
-
-
-def test_strategy_sensitivity_apply_null(strategy_sensitivity):
-    assert not strategy_sensitivity.applyButton.isEnabled()
-
-
-@pytest.fixture
-def strategy_sensitivity_variable(qtbot, strategy_sensitivity):
-    sensitivity = strategy_sensitivity.mainWidget
-
-    # Select module
-    idx = sensitivity.modBox.findText("Mock Module", QtCore.Qt.MatchFixedString)
-    sensitivity.modBox.setCurrentIndex(idx)
-
-    def varBox_not_empty():
-        assert int(sensitivity.varBox.count()) > 0
-
-    qtbot.waitUntil(varBox_not_empty)
-
-    # Select variable
-    idx = sensitivity.varBox.findText(
-        "Tidal Turbine Cut-In Velocity (m/s)", QtCore.Qt.MatchFixedString
-    )
-    sensitivity.varBox.setCurrentIndex(idx)
-
-    def lineEdit_enabled():
-        assert sensitivity.lineEdit.isEnabled()
-
-    qtbot.waitUntil(lineEdit_enabled)
-
-    return strategy_sensitivity
-
-
-def test_strategy_sensitivity_lineEdit_enabled(strategy_sensitivity_variable):
-    assert strategy_sensitivity_variable.mainWidget.lineEdit.isEnabled()
-
-
-def test_strategy_sensitivity_apply(strategy_sensitivity_variable):
-    line = strategy_sensitivity_variable.mainWidget.lineEdit
-    line.setText("1")
-
-    assert strategy_sensitivity_variable.applyButton.isEnabled()
-
-
-def test_strategy_sensitivity_apply_disable(strategy_sensitivity_variable):
-    line = strategy_sensitivity_variable.mainWidget.lineEdit
-    line.setText("1")
-
-    assert strategy_sensitivity_variable.applyButton.isEnabled()
-
-    line.setText("")
-
-    assert not strategy_sensitivity_variable.applyButton.isEnabled()
-
-
-def test_GUIStrategyManager_load_strategy(mocker, qtbot, mock_shell):
+def test_GUIStrategyManager_load_strategy(qtbot, mock_shell):
     window = GUIStrategyManager(mock_shell)
     window.show()
     qtbot.addWidget(window)
@@ -325,11 +217,16 @@ def test_GUIStrategyManager_load_strategy(mocker, qtbot, mock_shell):
 
 
 def test_GUIStrategyManager_load_strategy_unavailable(
-    mocker, qtbot, mock_shell
+    mocker,
+    qtbot,
+    mock_shell,
 ):
     mock_strategy = MockStrategy()
     mocker.patch.object(
-        mock_strategy, "allow_run", return_value=False, autospec=True
+        mock_strategy,
+        "allow_run",
+        return_value=False,
+        autospec=True,
     )
 
     window = GUIStrategyManager(mock_shell)
@@ -346,7 +243,10 @@ def test_GUIStrategyManager_configure_strategy(mocker, qtbot, mock_shell):
     window = GUIStrategyManager(mock_shell)
     window._load_strategy(mock_strategy)
     mocker.patch.object(
-        window, "get_strategy", return_value=mock_strategy, autospec=True
+        window,
+        "get_strategy",
+        return_value=mock_strategy,
+        autospec=True,
     )
 
     window.show()
@@ -358,17 +258,25 @@ def test_GUIStrategyManager_configure_strategy(mocker, qtbot, mock_shell):
 
 
 def test_GUIStrategyManager_configure_strategy_unavailable(
-    mocker, qtbot, mock_shell
+    mocker,
+    qtbot,
+    mock_shell,
 ):
     mock_strategy = MockStrategy()
     mocker.patch.object(
-        mock_strategy, "allow_run", return_value=False, autospec=True
+        mock_strategy,
+        "allow_run",
+        return_value=False,
+        autospec=True,
     )
 
     window = GUIStrategyManager(mock_shell)
     window._load_strategy(mock_strategy)
     mocker.patch.object(
-        window, "get_strategy", return_value=mock_strategy, autospec=True
+        window,
+        "get_strategy",
+        return_value=mock_strategy,
+        autospec=True,
     )
 
     window.show()
