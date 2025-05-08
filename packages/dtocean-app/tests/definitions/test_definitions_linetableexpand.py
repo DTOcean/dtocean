@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2018 Mathew Topper
+#    Copyright (C) 2016-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,45 +16,66 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pandas as pd
-from attrdict import AttrDict
+import pytest
+from mdo_engine.boundary.interface import Box
 
 from dtocean_app.data.definitions import LineTableExpand
 
 
+class DummyMixin:
+    def __init__(self):
+        self._data = Box()
+        self._meta = Box()
+
+    @property
+    def data(self) -> Box:
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+    @property
+    def meta(self) -> Box:
+        return self._meta
+
+    @meta.setter
+    def meta(self, value):
+        self._meta = value
+
+    @property
+    def parent(self):
+        return None
+
+
 def setup_none(structure):
-    structure.parent = None
-    structure.meta = AttrDict(
+    structure.meta = Box(
         {
-            "result": AttrDict(
-                {
-                    "identifier": "test",
-                    "structure": "test",
-                    "title": "test",
-                    "labels": ["Velocity", "Drag 1"],
-                    "units": ["a", "b"],
-                    "valid_values": None,
-                }
-            )
+            "result": {
+                "identifier": "test",
+                "structure": "test",
+                "title": "test",
+                "labels": ["Velocity", "Drag 1"],
+                "units": ["a", "b"],
+                "valid_values": None,
+            }
         }
     )
 
-    structure.data = AttrDict({"result": None})
+    structure.data = Box({"result": None})
 
 
 def setup_data(structure):
-    structure.parent = None
-    structure.meta = AttrDict(
+    structure.meta = Box(
         {
-            "result": AttrDict(
-                {
-                    "identifier": "test",
-                    "structure": "test",
-                    "title": "test",
-                    "labels": ["Velocity", "Drag"],
-                    "units": ["a", "b"],
-                    "valid_values": None,
-                }
-            )
+            "result": {
+                "identifier": "test",
+                "structure": "test",
+                "title": "test",
+                "labels": ["Velocity", "Drag"],
+                "units": ["a", "b"],
+                "valid_values": None,
+            }
         }
     )
 
@@ -65,14 +86,13 @@ def setup_data(structure):
     raw = {"Velocity": velocity, "Drag 1": drag1, "Drag 2": drag2}
     df = pd.DataFrame(raw)
 
-    structure.data = AttrDict({"result": df})
+    structure.data = Box({"result": df})
 
 
 def setup_data_one_unit(structure):
-    structure.parent = None
-    structure.meta = AttrDict(
+    structure.meta = Box(
         {
-            "result": AttrDict(
+            "result": Box(
                 {
                     "identifier": "test",
                     "structure": "test",
@@ -92,14 +112,13 @@ def setup_data_one_unit(structure):
     raw = {"Velocity": velocity, "Drag 1": drag1, "Drag 2": drag2}
     df = pd.DataFrame(raw)
 
-    structure.data = AttrDict({"result": df})
+    structure.data = Box({"result": df})
 
 
 def setup_data_no_unit(structure):
-    structure.parent = None
-    structure.meta = AttrDict(
+    structure.meta = Box(
         {
-            "result": AttrDict(
+            "result": Box(
                 {
                     "identifier": "test",
                     "structure": "test",
@@ -119,108 +138,104 @@ def setup_data_no_unit(structure):
     raw = {"Velocity": velocity, "Drag 1": drag1, "Drag 2": drag2}
     df = pd.DataFrame(raw)
 
-    structure.data = AttrDict({"result": df})
+    structure.data = Box({"result": df})
 
 
-def test_LineTableExpand_input(qtbot):
+@pytest.fixture
+def none_mixin():
+    mixin = DummyMixin()
+    setup_none(mixin)
+    return mixin
+
+
+@pytest.fixture
+def data_mixin():
+    mixin = DummyMixin()
+    setup_data(mixin)
+    return mixin
+
+
+@pytest.fixture
+def data_one_unit_mixin():
+    mixin = DummyMixin()
+    setup_data_one_unit(mixin)
+    return mixin
+
+
+@pytest.fixture
+def data_no_unit_mixin():
+    mixin = DummyMixin()
+    setup_data_one_unit(mixin)
+    return mixin
+
+
+def test_LineTableExpand_input(qtbot, data_mixin):
     test = LineTableExpand()
-    setup_data(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(data_mixin)
+    widget = data_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_LineTableExpand_input_none(qtbot):
+def test_LineTableExpand_input_none(qtbot, none_mixin):
     test = LineTableExpand()
-    setup_none(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(none_mixin)
+    widget = none_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_LineTableExpand_input_one_unit(qtbot):
+def test_LineTableExpand_input_one_unit(qtbot, data_one_unit_mixin):
     test = LineTableExpand()
-    setup_data_one_unit(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(data_one_unit_mixin)
+    widget = data_one_unit_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_LineTableExpand_input_no_unit(qtbot):
+def test_LineTableExpand_input_no_unit(qtbot, data_no_unit_mixin):
     test = LineTableExpand()
-    setup_data_no_unit(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(data_no_unit_mixin)
+    widget = data_no_unit_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_LineTableExpand_output(qtbot):
+def test_LineTableExpand_output(qtbot, data_mixin):
     test = LineTableExpand()
-    setup_data(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(data_mixin)
+    widget = data_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_LineTableExpand_output_none(qtbot):
+def test_LineTableExpand_output_none(qtbot, none_mixin):
     test = LineTableExpand()
-    setup_none(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(none_mixin)
+    widget = none_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_LineTableExpand_output_one_unit(qtbot):
+def test_LineTableExpand_output_one_unit(qtbot, data_one_unit_mixin):
     test = LineTableExpand()
-    setup_data_one_unit(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(data_one_unit_mixin)
+    widget = data_one_unit_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_LineTableExpand_output_no_unit(qtbot):
+def test_LineTableExpand_output_no_unit(qtbot, data_no_unit_mixin):
     test = LineTableExpand()
-    setup_data_no_unit(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(data_no_unit_mixin)
+    widget = data_no_unit_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
-
-    assert True

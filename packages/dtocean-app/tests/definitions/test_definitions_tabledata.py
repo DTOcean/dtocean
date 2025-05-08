@@ -18,10 +18,36 @@
 
 import numpy as np
 import pytest
-from attrdict import AttrDict
 from dtocean_core.data import CoreMetaData
+from mdo_engine.boundary.interface import Box
 
 from dtocean_app.data.definitions import TableData
+
+
+class DummyMixin:
+    def __init__(self):
+        self._data = Box()
+        self._meta = Box()
+
+    @property
+    def data(self) -> Box:
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+    @property
+    def meta(self) -> Box:
+        return self._meta
+
+    @meta.setter
+    def meta(self, value):
+        self._meta = value
+
+    @property
+    def parent(self):
+        return None
 
 
 @pytest.fixture
@@ -39,17 +65,12 @@ def meta():
 
 
 @pytest.fixture
-def structure_empty(meta):
-    structure = TableData()
-    structure.data = AttrDict({"result": None})
-    structure.meta = AttrDict({"result": meta})
-    structure.parent = None
-
-    return structure
+def structure():
+    return TableData()
 
 
 @pytest.fixture
-def test_data(structure_empty):
+def test_data(meta, structure):
     import random
     import string
 
@@ -60,21 +81,23 @@ def test_data(structure_empty):
     b = [random.choice(letters) + random.choice(letters) for _ in idx]
     raw = {"index": idx, "a": a, "b": b}
 
-    return structure_empty.get_data(raw, structure_empty.meta.result)
+    return structure.get_data(raw, meta)
 
 
 @pytest.fixture
-def structure_data(structure_empty, test_data):
-    structure_empty.data = AttrDict({"result": test_data})
-    return structure_empty
+def mixin_data(meta, test_data):
+    mixin = DummyMixin()
+    mixin.data = Box({"result": test_data})
+    mixin.meta = Box({"result": meta})
+    return mixin
 
 
-def test_TableData_input(mocker, qtbot, meta, test_data, structure_data):
+def test_TableData_input(mocker, meta, test_data, structure, mixin_data):
     widget = mocker.patch("dtocean_app.data.definitions.InputDataTable")
-    structure_data.auto_input(structure_data)
+    structure.auto_input(mixin_data)
 
     assert widget.call_args.args == (
-        structure_data.parent,
+        mixin_data.parent,
         meta.labels,
         meta.units,
     )
@@ -84,12 +107,12 @@ def test_TableData_input(mocker, qtbot, meta, test_data, structure_data):
     )
 
 
-def test_TableData_output(mocker, qtbot, meta, test_data, structure_data):
+def test_TableData_output(mocker, meta, test_data, structure, mixin_data):
     widget = mocker.patch("dtocean_app.data.definitions.OutputDataTable")
-    structure_data.auto_output(structure_data)
+    structure.auto_output(mixin_data)
 
     assert widget.call_args.args == (
-        structure_data.parent,
+        mixin_data.parent,
         meta.labels,
         meta.units,
     )

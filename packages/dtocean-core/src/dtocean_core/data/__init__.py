@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from typing import Optional
+
 from mdo_engine.boundary import DataDefinition
 from mdo_engine.entity.data import MetaData
 
@@ -30,7 +32,7 @@ class CoreMetaData(MetaData):
         self._auto_only = None
         self._types = None
         self._tables = None
-        self._units = None
+        self._units: Optional[list[str]] = None
         self._labels = None
         self._valid_values = None
         self._minimums = None
