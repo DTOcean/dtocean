@@ -16,137 +16,141 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy as np
-from attrdict import AttrDict
+import pytest
+from mdo_engine.boundary.interface import Box
 
-from dtocean_app.data.definitions import CartesianList, CartesianListColumn
+from dtocean_app.data.definitions import (
+    CartesianList,
+    CartesianListColumn,
+)
+
+
+class DummyMixin:
+    def __init__(self):
+        self._data = Box()
+        self._meta = Box()
+
+    @property
+    def data(self) -> Box:
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+    @property
+    def meta(self) -> Box:
+        return self._meta
+
+    @meta.setter
+    def meta(self, value):
+        self._meta = value
+
+    @property
+    def parent(self):
+        return None
 
 
 def setup_none(structure):
     structure.parent = None
-    structure.meta = AttrDict(
-        {
-            "result": AttrDict(
-                {"identifier": "test", "structure": "test", "title": "test"}
-            )
-        }
+    structure.meta = Box(
+        {"result": {"identifier": "test", "structure": "test", "title": "test"}}
     )
 
-    structure.data = AttrDict({"result": None})
+    structure.data = Box({"result": None})
 
 
 def setup_data(structure):
     structure.parent = None
-    structure.meta = AttrDict(
-        {
-            "result": AttrDict(
-                {"identifier": "test", "structure": "test", "title": "test"}
-            )
-        }
+    structure.meta = Box(
+        {"result": {"identifier": "test", "structure": "test", "title": "test"}}
     )
 
     test_data = np.array([(0, 1), (1, 2)])
-    structure.data = AttrDict({"result": test_data})
+    structure.data = Box({"result": test_data})
 
 
-def test_CartesianList_input(qtbot):
+@pytest.fixture
+def none_mixin():
+    mixin = DummyMixin()
+    setup_none(mixin)
+    return mixin
+
+
+@pytest.fixture
+def data_mixin():
+    mixin = DummyMixin()
+    setup_data(mixin)
+    return mixin
+
+
+def test_CartesianList_input(qtbot, data_mixin):
     test = CartesianList()
-    setup_data(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(data_mixin)
+    widget = data_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_CartesianList_input_none(qtbot):
+def test_CartesianList_input_none(qtbot, none_mixin):
     test = CartesianList()
-    setup_none(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(none_mixin)
+    widget = none_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_CartesianList_output(qtbot):
+def test_CartesianList_output(qtbot, data_mixin):
     test = CartesianList()
-    setup_data(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(data_mixin)
+    widget = data_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_CartesianList_output_none(qtbot):
+def test_CartesianList_output_none(qtbot, none_mixin):
     test = CartesianList()
-    setup_none(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(none_mixin)
+    widget = none_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_CartesianListColumn_input(qtbot):
+def test_CartesianListColumn_input(qtbot, data_mixin):
     test = CartesianListColumn()
-    setup_data(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(data_mixin)
+    widget = data_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_CartesianListColumn_input_none(qtbot):
+def test_CartesianListColumn_input_none(qtbot, none_mixin):
     test = CartesianListColumn()
-    setup_none(test)
-
-    test.auto_input(test)
-    widget = test.data.result
+    test.auto_input(none_mixin)
+    widget = none_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_CartesianListColumn_output(qtbot):
+def test_CartesianListColumn_output(qtbot, data_mixin):
     test = CartesianListColumn()
-    setup_data(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(data_mixin)
+    widget = data_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
 
-    assert True
 
-
-def test_CartesianListColumn_output_none(qtbot):
+def test_CartesianListColumn_output_none(qtbot, none_mixin):
     test = CartesianListColumn()
-    setup_none(test)
-
-    test.auto_output(test)
-    widget = test.data.result
+    test.auto_output(none_mixin)
+    widget = none_mixin.data.result
 
     widget.show()
     qtbot.addWidget(widget)
-
-    assert True
