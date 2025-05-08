@@ -17,12 +17,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from typing import Optional
+from typing import Optional, Protocol
 
 import dtocean_core.data.definitions as definitions
 import numpy as np
 import pandas as pd
-from dtocean_core.data.definitions import BaseMixin
+from mdo_engine.boundary.interface import Box
 from PySide6.QtWidgets import QWidget
 
 from ..widgets.input import (
@@ -48,9 +48,15 @@ from ..widgets.input import (
 from ..widgets.output import LabelOutput, OutputDataTable, TextOutput
 
 
-class WidgetMixin(BaseMixin):
+class WidgetMixin(Protocol):
     @property
-    def parent(auto) -> Optional[QWidget]: ...
+    def data(self) -> Box: ...
+
+    @property
+    def meta(self) -> Box: ...
+
+    @property
+    def parent(self) -> Optional[QWidget]: ...
 
 
 class GUIStructure:
@@ -1084,7 +1090,7 @@ class PointDict(GUIStructure, definitions.PointDict):
 
         if auto.data.result is not None:
             point_array = np.array(
-                [np.array(el) for el in auto.data.result.values()]
+                [np.array(el.coords[0]) for el in auto.data.result.values()]
             )
 
             data = {
