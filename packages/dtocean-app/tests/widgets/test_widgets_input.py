@@ -18,7 +18,8 @@
 
 import numpy as np
 import pandas as pd
-from PySide6 import QtCore, QtGui
+from PySide6 import QtWidgets
+from PySide6.QtCore import Qt
 
 from dtocean_app.widgets.input import (
     CoordSelect,
@@ -62,12 +63,16 @@ def test_FloatSelect_exponent(qtbot):
     qtbot.addWidget(window)
 
     window.doubleSpinBox.lineEdit().setText("1e3")
+    window.doubleSpinBox.lineEdit().repaint()
 
     qtbot.mouseClick(
-        window.buttonBox.button(QtGui.QDialogButtonBox.Ok), QtCore.Qt.LeftButton
+        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
+        Qt.MouseButton.LeftButton,
     )
+    qtbot.wait(1000)
 
     test = window._get_result()
+    qtbot.wait(1000)
 
     assert test == 1000.0
 
@@ -80,7 +85,8 @@ def test_FloatSelect_bad_input(qtbot):
     window.doubleSpinBox.lineEdit().setText("eeeeee")
 
     qtbot.mouseClick(
-        window.buttonBox.button(QtGui.QDialogButtonBox.Ok), QtCore.Qt.LeftButton
+        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
+        Qt.MouseButton.LeftButton,
     )
 
     test = window._get_result()
@@ -96,7 +102,8 @@ def test_FloatSelect_min(qtbot):
     window.doubleSpinBox.lineEdit().setText("-1")
 
     qtbot.mouseClick(
-        window.buttonBox.button(QtGui.QDialogButtonBox.Ok), QtCore.Qt.LeftButton
+        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
+        Qt.MouseButton.LeftButton,
     )
 
     test = window._get_result()
@@ -112,7 +119,8 @@ def test_FloatSelect_max(qtbot):
     window.doubleSpinBox.lineEdit().setText("2e3")
 
     qtbot.mouseClick(
-        window.buttonBox.button(QtGui.QDialogButtonBox.Ok), QtCore.Qt.LeftButton
+        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
+        Qt.MouseButton.LeftButton,
     )
 
     test = window._get_result()
@@ -147,7 +155,8 @@ def test_IntSelect_min(qtbot):
     window.spinBox.setValue(-1)
 
     qtbot.mouseClick(
-        window.buttonBox.button(QtGui.QDialogButtonBox.Ok), QtCore.Qt.LeftButton
+        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
+        Qt.MouseButton.LeftButton,
     )
 
     test = window._get_result()
@@ -163,7 +172,8 @@ def test_IntSelect_max(qtbot):
     window.spinBox.setValue(3)
 
     qtbot.mouseClick(
-        window.buttonBox.button(QtGui.QDialogButtonBox.Ok), QtCore.Qt.LeftButton
+        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
+        Qt.MouseButton.LeftButton,
     )
 
     test = window._get_result()
@@ -195,8 +205,6 @@ def test_DirectorySelect(qtbot):
     window.show()
     qtbot.addWidget(window)
 
-    assert True
-
 
 def test_DirectorySelect_get_result(qtbot):
     window = DirectorySelect()
@@ -211,7 +219,8 @@ def test_DirectorySelect_get_result(qtbot):
 
 def test_DirectorySelect_toolButton(mocker, qtbot, tmp_path):
     mocker.patch(
-        "dtocean_app.widgets.input." "QtGui.QFileDialog.getExistingDirectory",
+        "dtocean_app.widgets.input."
+        "QtWidgets.QFileDialog.getExistingDirectory",
         return_value=str(tmp_path),
     )
 
@@ -219,7 +228,7 @@ def test_DirectorySelect_toolButton(mocker, qtbot, tmp_path):
     window.show()
     qtbot.addWidget(window)
 
-    qtbot.mouseClick(window.toolButton, QtCore.Qt.LeftButton)
+    qtbot.mouseClick(window.toolButton, Qt.MouseButton.LeftButton)
     test = window._get_result()
 
     assert test == str(tmp_path)
@@ -285,8 +294,6 @@ def test_InputDataTable_edit_cols(qtbot):
     window.show()
     qtbot.addWidget(window)
 
-    assert True
-
 
 def test_InputDataTable_edit_cols_get_result(qtbot):
     raw_dict = {"val1": [0, 1, 2, 3], "val2": [0, 1, 4, 9]}
@@ -305,6 +312,7 @@ def test_InputDataTable_edit_cols_get_result(qtbot):
 
     test = window._get_result()
 
+    assert test is not None
     assert (test.columns.values == ["Test", "Test"]).all()
 
 
@@ -326,8 +334,6 @@ def test_InputLineTable(qtbot):
     window.show()
     qtbot.addWidget(window)
 
-    assert True
-
 
 def test_InputLineTable_get_result(qtbot):
     raw_dict = {"val1": [0, 1, 2, 3], "val2": [0, 1, 4, 9]}
@@ -341,6 +347,7 @@ def test_InputLineTable_get_result(qtbot):
 
     test = window._get_result()
 
+    assert test is not None
     assert np.isclose(test, vals_df.values).all()
 
 
@@ -351,6 +358,7 @@ def test_InputLineTable_disable(qtbot):
     window._disable()
 
     assert not window.buttonBox.isEnabled()
+    assert window.datatable.buttonFrame is not None
     assert not window.datatable.buttonFrame.isEnabled()
 
 
@@ -358,8 +366,6 @@ def test_InputTriStateTable(qtbot):
     window = InputTriStateTable(None, ["test1", "test2"])
     window.show()
     qtbot.addWidget(window)
-
-    assert True
 
 
 def test_InputTriStateTable_get_result(qtbot):
@@ -377,6 +383,7 @@ def test_InputTriStateTable_get_result(qtbot):
 
     test = window._get_result()
 
+    assert test is not None
     assert set(test["test1"]) == set(["true", "false", "unknown"])
 
 
@@ -386,8 +393,6 @@ def test_InputDictTable(qtbot):
     )
     window.show()
     qtbot.addWidget(window)
-
-    assert True
 
 
 def test_InputDictTable_get_result(qtbot):
@@ -431,8 +436,6 @@ def test_InputPointTable(qtbot):
     window.show()
     qtbot.addWidget(window)
 
-    assert True
-
 
 def test_InputPointTable_get_result(qtbot):
     raw_dict = {"x": [1, 2, 3], "y": [1, 2, 3], "z": [1, 2, 3]}
@@ -446,6 +449,7 @@ def test_InputPointTable_get_result(qtbot):
 
     test = window._get_result()
 
+    assert test is not None
     assert np.array_equal(test, point_df.values)
 
 
@@ -461,6 +465,7 @@ def test_InputPointTable_get_result_znone(qtbot):
 
     test = window._get_result()
 
+    assert test is not None
     assert np.array_equal(test, point_df[["x", "y"]].values)
 
 
@@ -468,8 +473,6 @@ def test_InputPointDictTable(qtbot):
     window = InputPointDictTable(fixed_index_names=["a", "b", "c"])
     window.show()
     qtbot.addWidget(window)
-
-    assert True
 
 
 def test_InputPointDictTable_get_result(qtbot):
@@ -490,6 +493,7 @@ def test_InputPointDictTable_get_result(qtbot):
     test = window._get_result()
     point_df = point_df.set_index("Key")
 
+    assert test is not None
     assert set(test.keys()) == set(raw_dict["Key"])
 
     for test_key, test_row in test.items():
@@ -516,6 +520,7 @@ def test_InputPointDictTable_get_result_znone(qtbot):
     point_df = point_df.set_index("Key")
     point_df = point_df.drop("z", axis=1)
 
+    assert test is not None
     assert set(test.keys()) == set(raw_dict["Key"])
 
     for test_key, test_row in test.items():
@@ -548,8 +553,6 @@ def test_InputHistogram(qtbot):
     window.show()
     qtbot.addWidget(window)
 
-    assert True
-
 
 def test_InputHistogram_get_result(qtbot):
     bins = [0, 1, 2, 3, 4, 5]
@@ -569,16 +572,15 @@ def test_InputHistogram_get_result(qtbot):
 
     test = window._get_result()
 
-    assert np.isclose(test[0], bins).all()
-    assert np.isclose(test[1], values).all()
+    assert test is not None
+    assert np.isclose(test[0], bins).all()  # type: ignore
+    assert np.isclose(test[1], values).all()  # type: ignore
 
 
 def test_InputTimeSeries(qtbot):
     window = InputTimeSeries(labels=["Data"], units=["test"])
     window.show()
     qtbot.addWidget(window)
-
-    assert True
 
 
 def test_InputTimeSeries_get_result(qtbot):
@@ -592,4 +594,5 @@ def test_InputTimeSeries_get_result(qtbot):
 
     test = window._get_result()
 
+    assert test is not None
     assert test.equals(ts)
