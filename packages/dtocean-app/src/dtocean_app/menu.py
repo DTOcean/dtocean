@@ -34,7 +34,7 @@ class DBSelector(ListTableEditor):
     database_selected = QtCore.Signal(str, dict)
 
     def __init__(self, parent, data_menu):
-        super(DBSelector, self).__init__(parent)
+        super().__init__(parent)
         self._data_menu = data_menu
         self._selected = None
         self._unsaved = False
@@ -180,7 +180,7 @@ class DBSelector(ListTableEditor):
 
     def _update_list(self):
         db_names = self._data_menu.get_available_databases()
-        super(DBSelector, self)._update_list(db_names)
+        super()._update_list(db_names)
 
         # Make them editable
         for index in range(self.listWidget.count()):
@@ -249,7 +249,7 @@ class DBSelector(ListTableEditor):
         frame_dict = {"Key": self._valid_cred_keys, "Value": value_order}
         df = pd.DataFrame(frame_dict)
 
-        super(DBSelector, self)._update_table(df, ["Key"])
+        super()._update_table(df, ["Key"])
 
         # Record the selected database
         self._selected = selected

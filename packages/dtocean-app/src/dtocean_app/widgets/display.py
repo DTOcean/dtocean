@@ -34,7 +34,7 @@ plt.rcParams["svg.fonttype"] = "none"
 
 class ImageLabel(QtWidgets.QLabel):
     def __init__(self, parent, img=None):
-        super(ImageLabel, self).__init__(parent)
+        super().__init__(parent)
         self.setFrameStyle(QtWidgets.QFrame.Shape.StyledPanel)
         self._pixmap = None
         self._display_window = parent
@@ -79,16 +79,16 @@ class ImageLabel(QtWidgets.QLabel):
 
 class ImageDictLabel(ImageLabel):
     def __init__(self, parent, image_dict):
-        super(ImageDictLabel, self).__init__(parent)
+        super().__init__(parent)
         self._image_dict = image_dict
 
     def _update_display(self, result, *args, **kwargs):
         key = result.values()[0]
         img = self._image_dict[key]
-        super(ImageDictLabel, self)._update_display(img)
+        super()._update_display(img)
 
     def _clear_display(self):
-        super(ImageDictLabel, self)._update_display(None)
+        super()._update_display(None)
 
 
 class MPLWidget(FigureCanvas):

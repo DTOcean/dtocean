@@ -36,9 +36,6 @@ from PySide6 import QtCore
 class QtHandler(logging.Handler):
     debug = False
 
-    def __init__(self):
-        super(QtHandler, self).__init__()
-
     def emit(self, record):
         if self.debug:
             return

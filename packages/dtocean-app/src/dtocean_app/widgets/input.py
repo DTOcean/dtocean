@@ -67,7 +67,7 @@ class CancelWidget(QtWidgets.QWidget):
     dummy_read = QtCore.Signal()
 
     def __init__(self, parent=None):
-        super(CancelWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self._init_ui()
 
@@ -458,9 +458,7 @@ class DateSelect(QtWidgets.QWidget, Ui_DateSelect):
 
     def _get_result(self):
         qtdt = self.dateTimeEdit.dateTime()
-        result = qtdt.toPyDateTime()
-
-        return result
+        return qtdt.toPython()
 
     def _get_read_event(self):
         return self.read_value
@@ -553,11 +551,8 @@ class CoordSelect(QtWidgets.QWidget, Ui_PointSelect):
 
 class PointSelect(CoordSelect):
     def _get_result(self):
-        coords = super(PointSelect, self)._get_result()
-
-        result = Point(*coords)
-
-        return result
+        coords = super()._get_result()
+        return Point(*coords)
 
 
 class InputDataTable(QtWidgets.QWidget):
@@ -753,10 +748,10 @@ class InputTimeTable(InputDataTable):
         if units is not None:
             units = [None] + units
 
-        InputDataTable.__init__(self, parent, columns, units)
+        super().__init__(parent, columns, units)
 
     def _get_dataframe(self, value, dtype=None):
-        data = super(InputTimeTable, self)._get_dataframe(value, dtype)
+        data = super()._get_dataframe(value, dtype)
         data["DateTime"] = pd.to_datetime(data["DateTime"])
 
         return data
@@ -767,10 +762,10 @@ class InputLineTable(InputDataTable):
 
     def __init__(self, parent=None, units=None):
         columns = ["val1", "val2"]
-        InputDataTable.__init__(self, parent, columns, units=units)
+        super().__init__(parent, columns, units=units)
 
     def _get_result(self):
-        df = super(InputLineTable, self)._get_result()
+        df = super()._get_result()
         if df is None:
             return
 
@@ -783,7 +778,7 @@ class InputTriStateTable(InputDataTable):
     null_signal = QtCore.Signal()
 
     def _get_dataframe(self, value, dtype=None):
-        data = super(InputTriStateTable, self)._get_dataframe(value, dtype)
+        data = super()._get_dataframe(value, dtype)
         data = data.replace(
             ["true", "false", "unknown"], ["True", "False", None]
         )
@@ -791,7 +786,7 @@ class InputTriStateTable(InputDataTable):
         return data
 
     def _get_result(self):
-        df = super(InputTriStateTable, self)._get_result()
+        df = super()._get_result()
         if df is None:
             return
 
@@ -821,12 +816,16 @@ class InputDictTable(InputDataTable):
         if units is not None:
             units = [None, units[0]]
 
-        InputDataTable.__init__(
-            self, parent, columns, units, "Key", fixed_index_names
+        super().__init__(
+            parent,
+            columns,
+            units,
+            "Key",
+            fixed_index_names,
         )
 
     def _get_result(self):
-        df = super(InputDictTable, self)._get_result()
+        df = super()._get_result()
         if df is None:
             return
 
@@ -847,10 +846,10 @@ class InputPointTable(InputDataTable):
 
     def __init__(self, parent=None):
         columns = ["x", "y", "z"]
-        InputDataTable.__init__(self, parent, columns)
+        super().__init__(parent, columns)
 
     def _get_result(self):
-        df = super(InputPointTable, self)._get_result()
+        df = super()._get_result()
         if df is None:
             return
 
@@ -867,8 +866,7 @@ class InputPointDictTable(InputDataTable):
 
     def __init__(self, parent=None, fixed_index_names=None):
         columns = ["Key", "x", "y", "z"]
-        InputDataTable.__init__(
-            self,
+        super().__init__(
             parent,
             columns,
             fixed_index_col="Key",
@@ -876,7 +874,7 @@ class InputPointDictTable(InputDataTable):
         )
 
     def _get_result(self):
-        df = super(InputPointDictTable, self)._get_result()
+        df = super()._get_result()
         if df is None:
             return
 
@@ -904,10 +902,10 @@ class InputPointDictTable(InputDataTable):
 class InputHistogram(InputDataTable):
     def __init__(self, parent=None):
         columns = ["Bin Separators", "Values"]
-        InputDataTable.__init__(self, parent, columns)
+        super().__init__(parent, columns)
 
     def _get_result(self):
-        df = super(InputHistogram, self)._get_result()
+        df = super()._get_result()
         if df is None:
             return
 
@@ -934,7 +932,7 @@ class InputTimeSeries(InputDataTable):
         if units is not None:
             units = [None, units[0]]
 
-        InputDataTable.__init__(self, parent, columns, units)
+        super().__init__(parent, columns, units)
 
     def _get_dataframe(self, value, dtype=None):
         if value is not None:
@@ -942,13 +940,13 @@ class InputTimeSeries(InputDataTable):
             value = value.to_frame()
             value = value.reset_index()
 
-        data = super(InputTimeSeries, self)._get_dataframe(value, dtype)
+        data = super()._get_dataframe(value, dtype)
         data["DateTime"] = pd.to_datetime(data["DateTime"])
 
         return data
 
     def _get_result(self):
-        df = super(InputTimeSeries, self)._get_result()
+        df = super()._get_result()
         if df is None:
             return
 

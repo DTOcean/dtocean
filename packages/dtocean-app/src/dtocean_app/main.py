@@ -108,7 +108,7 @@ class ThreadReadRaw(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, shell, variable, value):
-        super(ThreadReadRaw, self).__init__()
+        super().__init__()
         self._shell = shell
         self._variable = variable
         self._value = value
@@ -137,7 +137,7 @@ class ThreadReadTest(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, shell, control, path, overwrite):
-        super(ThreadReadTest, self).__init__()
+        super().__init__()
         self.shell = shell
         self.control = control
         self.path = path
@@ -166,7 +166,7 @@ class ThreadOpen(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, core, file_path):
-        super(ThreadOpen, self).__init__()
+        super().__init__()
         self._core = core
         self._file_path = file_path
         self._project = None
@@ -194,7 +194,7 @@ class ThreadOpen(QtCore.QThread):
             if os.path.splitext(load_path)[1] == ".dto":
                 dto_dir_path = tempfile.mkdtemp()
                 tar = tarfile.open(load_path)
-                tar.extractall(dto_dir_path)
+                tar.extractall(dto_dir_path, filter="data")
 
                 prj_file_path = os.path.join(dto_dir_path, "project.prj")
                 sco_file_path = os.path.join(dto_dir_path, "scope.json")
@@ -277,7 +277,7 @@ class ThreadSave(QtCore.QThread):
         activated_interfaces,
         strategy,
     ):
-        super(ThreadSave, self).__init__()
+        super().__init__()
         self._core = core
         self._project = project
         self._save_path = save_path
@@ -382,7 +382,7 @@ class ThreadDataFlow(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, pipeline, shell):
-        super(ThreadDataFlow, self).__init__()
+        super().__init__()
         self.pipeline = pipeline
         self.shell = shell
 
@@ -445,7 +445,7 @@ class ThreadCurrent(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, core, project):
-        super(ThreadCurrent, self).__init__()
+        super().__init__()
         self._core = core
         self._project = project
 
@@ -487,7 +487,7 @@ class ThreadThemes(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, core, project):
-        super(ThreadThemes, self).__init__()
+        super().__init__()
         self._core = core
         self._project = project
 
@@ -529,7 +529,7 @@ class ThreadStrategy(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, core, project, strategy):
-        super(ThreadStrategy, self).__init__()
+        super().__init__()
         self._core = core
         self._project = project
         self._strategy = strategy
@@ -569,7 +569,7 @@ class ThreadTool(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, core, project, tool):
-        super(ThreadTool, self).__init__()
+        super().__init__()
         self._tool = tool
         self._core = core
         self._project = project
@@ -600,7 +600,7 @@ class ThreadDump(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, credentials, root_path, selected):
-        super(ThreadDump, self).__init__()
+        super().__init__()
         self._credentials = credentials
         self._root_path = root_path
         self._selected = selected
@@ -648,7 +648,7 @@ class ThreadLoad(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, credentials, root_path, selected):
-        super(ThreadLoad, self).__init__()
+        super().__init__()
         self._credentials = credentials
         self._root_path = root_path
         self._selected = selected
@@ -693,7 +693,7 @@ class ThreadScope(QtCore.QThread):
     error_detected = QtCore.Signal(object, object, object)
 
     def __init__(self, core, project, scope):
-        super(ThreadScope, self).__init__()
+        super().__init__()
         self._core = core
         self._project = project
         self._scope = scope
@@ -757,7 +757,7 @@ class Shell(QtCore.QObject):
     database_convert_complete = QtCore.Signal()
 
     def __init__(self, core: GUICore):
-        super(Shell, self).__init__()
+        super().__init__()
 
         self.project: Optional[GUIProject] = None
         self.project_path: Optional[str] = None
@@ -1380,7 +1380,7 @@ class Shell(QtCore.QObject):
 
 class DTOceanWindow(MainWindow):
     def __init__(self, shell: Shell, debug=False):
-        super(DTOceanWindow, self).__init__()
+        super().__init__()
 
         self._mutexname = None
         self._mutex = None

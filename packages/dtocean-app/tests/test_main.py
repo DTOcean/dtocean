@@ -746,7 +746,7 @@ def test_dump_load_database(
     def dump_enabled():
         assert db_selector.dumpButton.isEnabled()
 
-    qtbot.waitUntil(dump_enabled, timeout=10000)
+    qtbot.waitUntil(dump_enabled)
 
     # Activate load
     with qtbot.waitSignal(shell.database_convert_complete):
@@ -1252,6 +1252,7 @@ def test_pipeline_context_menu(mocker, qtbot, window_dataflow_module):
     event = QtGui.QContextMenuEvent(
         QtGui.QContextMenuEvent.Reason.Mouse,
         rect.center(),
+        rect.center(),
     )
     QtWidgets.QApplication.postEvent(pipeline_dock.treeView.viewport(), event)
 
@@ -1312,6 +1313,7 @@ def test_simulation_context_menu(mocker, qtbot, window_dataflow_module):
     rect = simulation_dock.listWidget.visualItemRect(default_sim)
     event = QtGui.QContextMenuEvent(
         QtGui.QContextMenuEvent.Reason.Mouse,
+        rect.center(),
         rect.center(),
     )
     QtWidgets.QApplication.postEvent(

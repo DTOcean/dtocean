@@ -5,6 +5,7 @@ Entity class(es) relating to the simulation
 
 import logging
 from copy import deepcopy
+from typing import Optional
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ class Simulation:
     """The main class is the simulation which holds all of the information
     about the system."""
 
-    def __init__(self, title=None):
+    def __init__(self, title: Optional[str] = None):
         self._title = title
         self._hubs = {}
         self._active_states = []
@@ -26,7 +27,7 @@ class Simulation:
             log_msg += ' with title "{}"'.format(title)
         module_logger.info(log_msg)
 
-    def set_title(self, title):
+    def set_title(self, title: str):
         self._title = title
 
     def get_title(self):

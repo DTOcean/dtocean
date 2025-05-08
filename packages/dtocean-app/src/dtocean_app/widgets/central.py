@@ -52,7 +52,7 @@ HOME = os.path.expanduser("~")
 
 class SelectForSaveFileDialog(QtWidgets.QFileDialog):
     def __init__(self, *args, **kwargs):
-        super(SelectForSaveFileDialog, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
         self.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave)
         self.setLabelText(QtWidgets.QFileDialog.DialogLabel.Accept, "Select")
@@ -101,7 +101,7 @@ class SelectForSaveFileDialog(QtWidgets.QFileDialog):
 
 class ContextArea(QtWidgets.QWidget):
     def __init__(self, parent=None):
-        super(ContextArea, self).__init__(parent)
+        super().__init__(parent)
         self._init_ui()
 
     def _init_ui(self):
@@ -691,7 +691,7 @@ class LevelComparison(
         ComparisonWidget.__init__(self)
 
     def _init_ui(self):
-        super(LevelComparison, self)._init_ui()
+        super()._init_ui()
         self.buttonBox.button(
             QtWidgets.QDialogButtonBox.StandardButton.Ok
         ).clicked.connect(self._emit_widget_request)
@@ -753,7 +753,7 @@ class SimulationComparison(
         ComparisonWidget.__init__(self)
 
     def _init_ui(self):
-        super(SimulationComparison, self)._init_ui()
+        super()._init_ui()
         self.buttonBox.button(
             QtWidgets.QDialogButtonBox.StandardButton.Ok
         ).clicked.connect(self._emit_widget_request)

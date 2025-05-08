@@ -68,7 +68,7 @@ PARENT_PATH = Path(__file__).parent
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
         self.setupUi(self)
         self._dynamic_actions = {}
 
@@ -101,7 +101,7 @@ class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
         right_item_dict=None,
         item_icon=None,
     ):
-        super(Shuttle, self).__init__(parent)
+        super().__init__(parent)
         self._left_model = QtGui.QStandardItemModel(self)
         self._right_model = QtGui.QStandardItemModel(self)
         self._left_index = None
@@ -232,7 +232,7 @@ class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
 
 class DataCheck(QtWidgets.QDialog, Ui_DataCheckDialog):
     def __init__(self, parent=None):
-        super(DataCheck, self).__init__(parent)
+        super().__init__(parent)
 
         self._init_ui()
 
@@ -308,12 +308,12 @@ class DataCheck(QtWidgets.QDialog, Ui_DataCheckDialog):
         else:
             self._set_failed(address_df)
 
-        super(DataCheck, self).show()
+        super().show()
 
 
 class ProjProperties(QtWidgets.QDialog, Ui_ProjectProperties):
     def __init__(self, parent=None):
-        super(ProjProperties, self).__init__(parent)
+        super().__init__(parent)
 
         self._init_ui()
 
@@ -326,7 +326,7 @@ class TestDataPicker(QtWidgets.QDialog, Ui_TestDataPicker):
     path_set = QtCore.Signal(str)
 
     def __init__(self, parent=None):
-        super(TestDataPicker, self).__init__(parent)
+        super().__init__(parent)
         self.browseButton = None
         self._init_ui()
 
@@ -476,7 +476,7 @@ class ProgressBar(QtWidgets.QDialog, Ui_ProgressBar):
             Qt.WindowType.WindowMinimizeButtonHint
             | Qt.WindowType.WindowMaximizeButtonHint
         )
-        super(ProgressBar, self).__init__(parent, f=flags)
+        super().__init__(parent, f=flags)
         self.setupUi(self)
         self.allow_close = allow_close
 
@@ -503,7 +503,7 @@ class ProgressBar(QtWidgets.QDialog, Ui_ProgressBar):
 
     def keyPressEvent(self, event):
         if not event.key() == Qt.Key.Key_Escape:
-            super(ProgressBar, self).keyPressEvent(event)
+            super().keyPressEvent(event)
 
 
 class About(QtWidgets.QDialog, Ui_AboutDialog):
@@ -659,7 +659,7 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
 
     @QtCore.Slot()
     def show(self):
-        super(About, self).show()
+        super().show()
 
         if self._n_pix > 1:
             assert self._timer is not None
@@ -671,7 +671,7 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
             self._start_image()
 
     def closeEvent(self, evnt):
-        super(About, self).closeEvent(evnt)
+        super().closeEvent(evnt)
 
         if self._n_pix > 1:
             assert self._timer is not None
@@ -681,7 +681,7 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
 
 class Message(QtWidgets.QWidget):
     def __init__(self, parent, text):
-        super(Message, self).__init__(parent)
+        super().__init__(parent)
         self.text = text
 
     def paintEvent(self, event):
