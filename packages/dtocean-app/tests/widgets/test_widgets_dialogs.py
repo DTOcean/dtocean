@@ -17,7 +17,8 @@
 
 
 import pytest
-from PySide6 import QtCore, QtGui
+from PySide6 import QtWidgets
+from PySide6.QtCore import Qt
 
 from dtocean_app.widgets.dialogs import About, TestDataPicker
 
@@ -38,10 +39,12 @@ def test_TestDataPicker_init(picker_widget):
 def test_TestDataPicker_write_path(mocker, qtbot, picker_widget):
     expected = "mock.pkl"
     mocker.patch.object(
-        QtGui.QFileDialog, "getOpenFileName", return_value=expected
+        QtWidgets.QFileDialog,
+        "getOpenFileName",
+        return_value=(expected, None),
     )
 
-    qtbot.mouseClick(picker_widget.browseButton, QtCore.Qt.LeftButton)
+    qtbot.mouseClick(picker_widget.browseButton, Qt.MouseButton.LeftButton)
 
     def has_path():
         assert str(picker_widget.pathLineEdit.text())
@@ -92,6 +95,7 @@ def test_About_names(qtbot, mocker, names, expected):
 
     assert widget.peopleIntroLabel is not None
     assert widget.line is not None
+    assert widget.peopleLabel is not None
     assert str(widget.peopleLabel.text()) == expected
 
 

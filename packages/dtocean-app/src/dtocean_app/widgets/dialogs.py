@@ -27,7 +27,7 @@ import platform
 from collections import OrderedDict
 from itertools import cycle
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Optional
 
 import pandas as pd
 import yaml
@@ -518,6 +518,9 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
         self._fade_out = None
         self._effect = None
 
+        self.institutionLabel: Optional[QtWidgets.QLabel]
+        self.peopleLabel: Optional[QtWidgets.QLabel]
+
         self._init_ui(fade_duration)
 
     def _init_ui(self, fade_duration):
@@ -582,11 +585,17 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
             self.frame.deleteLater()
             self.frame = None
 
+            self.verticalLayout_4.removeWidget(self.institutionLabel)
+            self.institutionLabel.deleteLater()
+            self.institutionLabel = None
+
             self.verticalLayout_3.removeWidget(self.line_3)
             self.line_3.deleteLater()
             self.line_3 = None
 
         if self._n_pix > 1:
+            assert self.institutionLabel is not None
+
             self._timer = QtCore.QTimer(self)
             self._effect = QtWidgets.QGraphicsOpacityEffect()
             self._fade_in = self._init_fade_in(fade_duration)
@@ -598,11 +607,6 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
             self.scrollArea.verticalScrollBar().valueChanged.connect(
                 self.institutionLabel.repaint
             )
-        else:
-            assert self.insitutionIntroLabel is not None
-            self.verticalLayout_3.removeWidget(self.insitutionIntroLabel)
-            self.institutionLabel.deleteLater()
-            self.institutionLabel = None
 
     def _init_fade_in(self, duration):
         assert self._effect is not None
@@ -633,15 +637,16 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
     @QtCore.Slot()
     def _start_image(self):
         assert self._image_files is not None
-        assert self._fade_in is not None
 
         image_path = next(self._image_files)
         image = QtGui.QPixmap(image_path)
 
-        label = cast(QtWidgets.QLabel, self.institutionLabel)
+        label = self.institutionLabel
+        assert label is not None
         label.setPixmap(image)
 
         if self._n_pix > 1:
+            assert self._fade_in is not None
             self._fade_in.start()
 
     @QtCore.Slot()

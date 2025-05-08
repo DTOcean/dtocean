@@ -237,6 +237,7 @@ class FloatSelect(QtWidgets.QWidget, Ui_ScientificSelect):
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
+        print("read it")
         self.read_value.emit()
 
 

@@ -41,18 +41,21 @@ class ScientificDoubleSpinBox(QtWidgets.QDoubleSpinBox):
 
     def validate(self, text, position):
         string = str(text)
+        print(string)
+        print(valid_float_string(string))
 
         if valid_float_string(string):
-            return (QValidator.State.Acceptable, position)
+            return (QValidator.State.Acceptable, text, position)
         if string == "" or string[position - 1] in "e.-+":
-            return (QValidator.State.Intermediate, position)
+            return (QValidator.State.Intermediate, text, position)
 
-        return (QValidator.State.Invalid, position)
+        return (QValidator.State.Invalid, text, position)
 
     def valueFromText(self, text):
         return float(text)
 
     def textFromValue(self, value):
+        print("textFromValue")
         return format_float(value)
 
     def stepBy(self, steps):

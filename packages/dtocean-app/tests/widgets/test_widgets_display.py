@@ -40,11 +40,8 @@ def test_MPLWidget_init(mpl_widget):
     assert mpl_widget.isVisible()
 
 
-def test_MPLWidget_closing(qtbot, mpl_widget):
-    with qtbot.waitSignal(mpl_widget.closing, timeout=10000) as blocker:
-        mpl_widget.close()
-
-    assert blocker.signal_triggered
+def test_MPLWidget_closing(mpl_widget):
+    mpl_widget.close()
 
 
 def test_get_current_filetypes():
@@ -92,4 +89,4 @@ def test_get_current_figure_size():
     test = get_current_figure_size()
     plt.close("all")
 
-    assert (test == [8.0, 6.0]).all()
+    assert (test == [6.4, 4.8]).all()

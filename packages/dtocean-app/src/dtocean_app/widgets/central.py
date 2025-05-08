@@ -50,55 +50,6 @@ else:
 HOME = os.path.expanduser("~")
 
 
-class SelectForSaveFileDialog(QtWidgets.QFileDialog):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
-        self.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave)
-        self.setLabelText(QtWidgets.QFileDialog.DialogLabel.Accept, "Select")
-
-        fileNameEdit = self.findChild(QtWidgets.QLineEdit, "fileNameEdit")
-        assert fileNameEdit is not None
-        fileNameEdit.textChanged.connect(self._check_exts)
-
-    def _get_valid_exts(self):
-        filter_str = str(self.selectedNameFilter())
-
-        if "(" in filter_str:
-            idx_after_open_par = filter_str.find("(") + 1
-            idx_before_close_par = filter_str.find(")")
-            star_ext_str = filter_str[idx_after_open_par:idx_before_close_par]
-        else:
-            star_ext_str = filter_str
-
-        star_exts = star_ext_str.split()
-
-        # Check for "all files" wildcards
-        if any(x in star_exts for x in ["*", "*.*"]):
-            return None
-
-        valid_exts = [x.replace("*", "") for x in star_exts]
-
-        return valid_exts
-
-    @QtCore.Slot(str)
-    def _check_exts(self, file_path):
-        valid_exts = self._get_valid_exts()
-
-        if valid_exts is None:
-            return
-
-        _, file_ext = os.path.splitext(str(file_path))
-
-        if file_ext not in valid_exts:
-            button_box = self.findChild(QtWidgets.QDialogButtonBox)
-            assert button_box is not None
-            save_button = button_box.button(
-                QtWidgets.QDialogButtonBox.StandardButton.Save
-            )
-            save_button.setEnabled(False)
-
-
 class ContextArea(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -301,7 +252,7 @@ class FileManagerWidget(
 
         elif self._file_mode == "save":
             msg = "Select path for save"
-            dialog = SelectForSaveFileDialog(self, msg, HOME)
+            dialog = QtWidgets.QFileDialog(self, msg, HOME)
             dialog.setNameFilter(name_filter)
             dialog.selectFile(self.pathEdit.text())
 
@@ -477,7 +428,7 @@ class PlotManagerWidget(
         file_path = ""
 
         msg = "Select path for save"
-        dialog = SelectForSaveFileDialog(self, msg, HOME)
+        dialog = QtWidgets.QFileDialog(self, msg, HOME)
         dialog.setNameFilter(name_filter)
         dialog.selectFile(self.pathEdit.text())
 
