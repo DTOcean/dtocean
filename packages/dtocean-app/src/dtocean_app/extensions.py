@@ -31,7 +31,7 @@ from .widgets.display import MPLWidget
 from .widgets.output import OutputDataTable
 
 if TYPE_CHECKING:
-    from .main import Shell
+    from .shell import Shell
 
 module_logger = logging.getLogger(__name__)
 

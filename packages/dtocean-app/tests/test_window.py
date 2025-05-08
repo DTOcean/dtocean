@@ -28,7 +28,6 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 
 from dtocean_app.core import GUICore
-from dtocean_app.main import DTOceanWindow, Shell
 from dtocean_app.pipeline import (
     InputBranchControl,
     InputVarControl,
@@ -36,6 +35,7 @@ from dtocean_app.pipeline import (
 )
 from dtocean_app.widgets.display import MPLWidget
 from dtocean_app.widgets.input import FloatSelect, ListSelect
+from dtocean_app.window import DTOceanWindow, Shell
 from dtocean_plugins.modules.base import ModuleInterface
 from dtocean_plugins.themes.base import ThemeInterface
 from dtocean_plugins.tool_guis.base import GUITool
@@ -258,19 +258,19 @@ def window(mocker, qtbot, tmp_path, core):
     )
 
     mocker.patch(
-        "dtocean_app.main.Shell.get_available_modules",
+        "dtocean_app.shell.Shell.get_available_modules",
         return_value=["Mock Module"],
         autospec=True,
     )
 
     mocker.patch(
-        "dtocean_app.main.Shell.get_available_themes",
+        "dtocean_app.shell.Shell.get_available_themes",
         return_value=["Mock Theme"],
         autospec=True,
     )
 
     mocker.patch(
-        "dtocean_app.main.DTOceanWindow._project_close_warning",
+        "dtocean_app.window.DTOceanWindow._project_close_warning",
         return_value=QtWidgets.QMessageBox.StandardButton.Discard,
         autospec=True,
     )
@@ -328,19 +328,19 @@ def window_debug(mocker, qtbot, tmp_path, core):
     )
 
     mocker.patch(
-        "dtocean_app.main.Shell.get_available_modules",
+        "dtocean_app.shell.Shell.get_available_modules",
         return_value=["Mock Module"],
         autospec=True,
     )
 
     mocker.patch(
-        "dtocean_app.main.Shell.get_available_themes",
+        "dtocean_app.shell.Shell.get_available_themes",
         return_value=["Mock Theme"],
         autospec=True,
     )
 
     mocker.patch(
-        "dtocean_app.main.DTOceanWindow._project_close_warning",
+        "dtocean_app.window.DTOceanWindow._project_close_warning",
         return_value=QtWidgets.QMessageBox.StandardButton.Discard,
         autospec=True,
     )
@@ -523,7 +523,7 @@ def test_credentials_add_delete(qtbot, mocker, db_selector):
 
 
 def test_select_database(qtbot, mocker, db_selector):
-    mocker.patch("dtocean_app.main.DataMenu.select_database", autospec=True)
+    mocker.patch("dtocean_app.shell.DataMenu.select_database", autospec=True)
 
     # Select the first in the list and apply
     db_selector.listWidget.setCurrentRow(0)
@@ -553,7 +553,7 @@ def test_select_database(qtbot, mocker, db_selector):
 
 
 def test_deselect_database(qtbot, mocker, db_selector):
-    mocker.patch("dtocean_app.main.DataMenu.select_database", autospec=True)
+    mocker.patch("dtocean_app.shell.DataMenu.select_database", autospec=True)
 
     # Select the first in the list and apply
     db_selector.listWidget.setCurrentRow(0)
@@ -705,9 +705,9 @@ def test_dump_load_database(
         return_value=str(tmpdir),
     )
 
-    mocker.patch("dtocean_app.main.get_database", autospec=True)
-    mocker.patch("dtocean_app.main.database_to_files", autospec=True)
-    mocker.patch("dtocean_app.main.database_from_files", autospec=True)
+    mocker.patch("dtocean_app.shell.get_database", autospec=True)
+    mocker.patch("dtocean_app.shell.database_to_files", autospec=True)
+    mocker.patch("dtocean_app.shell.database_from_files", autospec=True)
 
     mocker.patch.object(
         QtWidgets.QMessageBox,
@@ -1595,7 +1595,7 @@ def test_simulation_active_mods_warn(
     window_two_simulations,
 ):
     mocker.patch(
-        "dtocean_app.main.ModuleMenu.get_active",
+        "dtocean_app.shell.ModuleMenu.get_active",
         return_value=["mock"],
         autospec=True,
     )
@@ -1672,7 +1672,7 @@ def test_simulation_active_themes_warn(
     caplog, mocker, qtbot, window_two_theme_simulations
 ):
     mocker.patch(
-        "dtocean_app.main.ThemeMenu.get_active",
+        "dtocean_app.shell.ThemeMenu.get_active",
         return_value=["mock"],
         autospec=True,
     )

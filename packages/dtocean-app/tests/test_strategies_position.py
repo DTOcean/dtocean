@@ -31,7 +31,7 @@ from PIL import Image
 from PySide6 import QtCore, QtGui
 
 from dtocean_app.core import GUICore
-from dtocean_app.main import Shell
+from dtocean_app.shell import Shell
 from dtocean_app.strategies.position import AdvancedPositionWidget
 from dtocean_core.interfaces import ModuleInterface
 from dtocean_core.menu import ModuleMenu, ProjectMenu

@@ -155,7 +155,8 @@ def main_(debug=False, trace_warnings=False, force_quit=False):
         "Loading DTOcean interface", message_allignment, message_color
     )
 
-    from .main import DTOceanWindow, Shell
+    from .shell import Shell
+    from .window import DTOceanWindow
 
     splash.showMessage(
         "Preparing data catalogue", message_allignment, message_color

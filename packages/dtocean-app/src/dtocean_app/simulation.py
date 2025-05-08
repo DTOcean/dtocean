@@ -32,7 +32,7 @@ from .widgets.docks import ListDock
 
 if TYPE_CHECKING:
     from .core import GUIProject
-    from .main import Shell
+    from .shell import Shell
 
 module_logger = logging.getLogger(__name__)
 

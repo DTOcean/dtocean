@@ -102,7 +102,7 @@ def test_main(mocker, qtbot, tmp_path):
 
     import sys
 
-    import dtocean_app.main
+    import dtocean_app.window
 
     # Make a source directory with some files
     config_tmpdir = tmp_path / "config"
@@ -110,7 +110,7 @@ def test_main(mocker, qtbot, tmp_path):
 
     mocker.patch("dtocean_app.UserDataPath", return_value=tmp_path)
     mocker.patch("dtocean_app.QtWidgets.QApplication", autospec=True)
-    mocker.patch.object(dtocean_app.main, "DTOceanWindow", autospec=True)
+    mocker.patch.object(dtocean_app.window, "DTOceanWindow", autospec=True)
     mocker.patch("dtocean_app.QtWidgets.QSplashScreen.finish")
     sys_exit = mocker.patch.object(sys, "exit")
 
