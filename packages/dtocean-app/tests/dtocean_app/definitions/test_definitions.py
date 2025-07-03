@@ -66,7 +66,7 @@ def test_TimeSeries_input(qtbot):
     test = TimeSeries()
     mixin = DummyMixin()
 
-    rng = pd.date_range("1/1/2011", periods=72, freq="H")
+    rng = pd.date_range("1/1/2011", periods=72, freq="h")
     ts = pd.Series(np.random.randn(len(rng)), index=rng)
     mixin.data = Box({"result": ts})
     mixin.meta = Box({"result": {"labels": None, "units": None}})
