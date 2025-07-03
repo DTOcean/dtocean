@@ -224,7 +224,6 @@ class FloatSelect(QtWidgets.QWidget, Ui_ScientificSelect):
 
     def _get_result(self):
         result = self.doubleSpinBox.value()
-
         return result
 
     def _get_read_event(self):
@@ -237,7 +236,6 @@ class FloatSelect(QtWidgets.QWidget, Ui_ScientificSelect):
 
     @QtCore.Slot(object)
     def _emit_read(self, *args):
-        print("read it")
         self.read_value.emit()
 
 
@@ -833,8 +831,8 @@ class InputDictTable(InputDataTable):
         # Nullify the variable if all values are None
         df = df.replace(["None", ""], [None, None])
 
-        unique_values = np.unique(df["Value"])
-        if len(unique_values) == 1 and unique_values[0] is None:
+        unique_values = pd.unique(df["Value"])
+        if len(unique_values) == 1 and pd.isna(unique_values[0]):
             return None
 
         var_dict = {k: v for k, v in zip(df["Key"], df["Value"])}
@@ -881,9 +879,10 @@ class InputPointDictTable(InputDataTable):
 
         # Nullify the variable if all values are None
         df = df.replace(["None", ""], [None, None])
+        df_xyz = df[["x", "y", "z"]].to_numpy().astype(float)
 
-        unique_values = np.unique(df[["x", "y", "z"]])
-        if len(unique_values) == 1 and unique_values[0] is None:
+        unique_values = np.unique(df_xyz)
+        if len(unique_values) == 1 and np.isnan(unique_values[0]):
             return None
 
         # Split off the keys and the values
@@ -952,6 +951,6 @@ class InputTimeSeries(InputDataTable):
             return
 
         df = df.set_index("DateTime")
-        series = df.ix[:, 0]
+        series = df.iloc[:, 0]
 
         return series

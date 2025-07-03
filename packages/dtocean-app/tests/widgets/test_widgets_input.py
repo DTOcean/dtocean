@@ -63,17 +63,16 @@ def test_FloatSelect_exponent(qtbot):
     qtbot.addWidget(window)
 
     window.doubleSpinBox.lineEdit().setText("1e3")
-    window.doubleSpinBox.lineEdit().repaint()
 
-    qtbot.mouseClick(
-        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
-        Qt.MouseButton.LeftButton,
+    button = window.buttonBox.button(
+        QtWidgets.QDialogButtonBox.StandardButton.Ok
     )
-    qtbot.wait(1000)
+    qtbot.mouseMove(button)
+    qtbot.mouseClick(
+        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
+    )
 
     test = window._get_result()
-    qtbot.wait(1000)
-
     assert test == 1000.0
 
 
@@ -84,13 +83,15 @@ def test_FloatSelect_bad_input(qtbot):
 
     window.doubleSpinBox.lineEdit().setText("eeeeee")
 
+    button = window.buttonBox.button(
+        QtWidgets.QDialogButtonBox.StandardButton.Ok
+    )
+    qtbot.mouseMove(button)
     qtbot.mouseClick(
-        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
-        Qt.MouseButton.LeftButton,
+        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
     )
 
     test = window._get_result()
-
     assert test == 0.0
 
 
@@ -101,13 +102,15 @@ def test_FloatSelect_min(qtbot):
 
     window.doubleSpinBox.lineEdit().setText("-1")
 
+    button = window.buttonBox.button(
+        QtWidgets.QDialogButtonBox.StandardButton.Ok
+    )
+    qtbot.mouseMove(button)
     qtbot.mouseClick(
-        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
-        Qt.MouseButton.LeftButton,
+        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
     )
 
     test = window._get_result()
-
     assert test == 0.0
 
 
@@ -118,13 +121,15 @@ def test_FloatSelect_max(qtbot):
 
     window.doubleSpinBox.lineEdit().setText("2e3")
 
+    button = window.buttonBox.button(
+        QtWidgets.QDialogButtonBox.StandardButton.Ok
+    )
+    qtbot.mouseMove(button)
     qtbot.mouseClick(
-        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
-        Qt.MouseButton.LeftButton,
+        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
     )
 
     test = window._get_result()
-
     assert test == 1e3
 
 
@@ -584,7 +589,7 @@ def test_InputTimeSeries(qtbot):
 
 
 def test_InputTimeSeries_get_result(qtbot):
-    rng = pd.date_range("1/1/2011", periods=72, freq="H")
+    rng = pd.date_range("1/1/2011", periods=72, freq="h")
     ts = pd.Series(np.random.randn(len(rng)), index=rng)
 
     window = InputTimeSeries(labels=["Data"], units=["test"])

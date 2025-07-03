@@ -55,7 +55,6 @@ class ScientificDoubleSpinBox(QtWidgets.QDoubleSpinBox):
         return float(text)
 
     def textFromValue(self, value):
-        print("textFromValue")
         return format_float(value)
 
     def stepBy(self, steps):
