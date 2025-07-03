@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2024 Mathew Topper
+#    Copyright (C) 2019-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,13 +27,13 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 import yaml
-from natsort import natsorted
-
 from dtocean_core.menu import ModuleMenu
 from dtocean_core.pipeline import Tree
 from dtocean_core.utils.maths import radians_to_bearing
+from natsort import natsorted
 
-from .base import Strategy
+from dtocean_plugins.strategies.base import Strategy
+
 from .position_optimiser import PositionOptimiser, dump_config, load_config
 from .position_optimiser.iterator import (
     get_positioner,

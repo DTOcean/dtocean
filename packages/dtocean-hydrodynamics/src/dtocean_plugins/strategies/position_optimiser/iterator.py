@@ -24,22 +24,12 @@ import os
 
 import numpy as np
 import yaml
-
 from dtocean_core.core import Core
 from dtocean_core.extensions import StrategyManager
 from dtocean_core.menu import ModuleMenu
 from dtocean_core.pipeline import Tree
 
 from .positioner import ParaPositioner
-
-try:
-    import dtocean_hydro  # type: ignore # pylint: disable=unused-import  # noqa: F401
-except ImportError:
-    err_msg = (
-        "The DTOcean hydrodynamics module must be installed in order "
-        "to use this module"
-    )
-    raise ImportError(err_msg)
 
 
 def main(

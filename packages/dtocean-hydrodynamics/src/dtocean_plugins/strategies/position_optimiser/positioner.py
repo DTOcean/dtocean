@@ -27,14 +27,7 @@ import numpy as np
 from shapely.geometry import LineString, MultiPoint, Point, Polygon, box
 from shapely.ops import nearest_points, polylabel
 
-try:
-    import dtocean_hydro.utils.bathymetry_utility as bathymetry_utility  # type:ignore
-except ImportError:
-    err_msg = (
-        "The DTOcean hydrodynamics module must be installed in order "
-        "to use this module"
-    )
-    raise ImportError(err_msg)
+import dtocean_hydro.utils.bathymetry_utility as bathymetry_utility
 
 
 class DevicePositioner:
