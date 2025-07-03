@@ -1816,23 +1816,24 @@ pytest = ">=6.2"
 
 [[package]]
 name = "pytest-qt"
-version = "4.4.0"
+version = "4.5.0"
 description = "pytest support for PyQt and PySide applications"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["test"]
 files = [
-    {file = "pytest-qt-4.4.0.tar.gz", hash = "sha256:76896142a940a4285339008d6928a36d4be74afec7e634577e842c9cc5c56844"},
-    {file = "pytest_qt-4.4.0-py3-none-any.whl", hash = "sha256:001ed2f8641764b394cf286dc8a4203e40eaf9fff75bf0bfe5103f7f8d0c591d"},
+    {file = "pytest_qt-4.5.0-py3-none-any.whl", hash = "sha256:ed21ea9b861247f7d18090a26bfbda8fb51d7a8a7b6f776157426ff2ccf26eff"},
+    {file = "pytest_qt-4.5.0.tar.gz", hash = "sha256:51620e01c488f065d2036425cbc1cbcf8a6972295105fd285321eb47e66a319f"},
 ]
 
 [package.dependencies]
 pluggy = ">=1.1"
 pytest = "*"
+typing_extensions = "*"
 
 [package.extras]
 dev = ["pre-commit", "tox"]
-doc = ["sphinx", "sphinx-rtd-theme"]
+doc = ["sphinx", "sphinx_rtd_theme"]
 
 [[package]]
 name = "python-box"
@@ -2533,4 +2534,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "936229eb80a0e5d5828eb6c043215bc2b2b00a5d69304ef98191c564fcc04212"
+content-hash = "2ea627c3db01c5bed731daaaf15a79bdf976a65e9c0421f3f9b4ec880193c1a5"

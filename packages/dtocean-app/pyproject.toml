@@ -38,7 +38,7 @@ optional = true
 mock = "^5.1.0"
 pytest = "^8.3.4"
 pytest-mock = "^3.14.0"
-pytest-qt = "^4.4.0"
+pytest-qt = "^4.5.0"
 pytest-cov = "^6.0.0"
 
 [tool.poetry.group.audit]

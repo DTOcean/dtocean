@@ -24,7 +24,7 @@ pytest-cov = "^6.0.0"
 pytest-env = "^1.1.5"
 pytest-mock = "^3.14.0"
 pytest-postgresql = "^7.0.1"
-pytest-qt = "^4.4.0"
+pytest-qt = "^4.5.0"
 pytz = "^2025.2"
 
 [tool.poetry.group.audit]
