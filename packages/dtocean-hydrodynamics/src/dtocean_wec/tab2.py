@@ -37,8 +37,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from .designer.ui_run_nemoh_form import Ui_Form as Ui_T2
 from .form_utils import clean_prj_folder, send_data_to_bem_interface
-from .generated.ui_run_nemoh_form import Ui_Form as Ui_T2
 from .utils import data_check as dck
 from .utils.file_utilities import split_string, split_string_multilist
 

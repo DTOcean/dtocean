@@ -28,8 +28,8 @@ from PySide6.QtWidgets import QWidget
 
 import dtocean_wave.utils.hdf5_interface as h5i
 
+from .designer.ui_read_db_form import Ui_Form as Ui_T1
 from .form_utils import check_wec_db_data
-from .generated.ui_read_db_form import Ui_Form as Ui_T1
 
 
 class ReadDb(QWidget, Ui_T1):

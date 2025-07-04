@@ -34,8 +34,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from .designer.ui_read_nemoh_form import Ui_Form as Ui_T3
 from .form_utils import raise_error, send_data_to_bem_interface
-from .generated.ui_read_nemoh_form import Ui_Form as Ui_T3
 from .submodule.utils import input_control as in_ck
 from .utils import data_check as dck
 from .utils.file_utilities import split_string, split_string_multilist

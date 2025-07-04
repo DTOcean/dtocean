@@ -26,8 +26,8 @@ import os
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QFileDialog, QWidget
 
+from .designer.ui_read_wamit_form import Ui_Form as Ui_T4
 from .form_utils import send_data_to_bem_interface
-from .generated.ui_read_wamit_form import Ui_Form as Ui_T4
 from .submodule.utils import input_control as in_ck
 from .utils import data_check as dck
 from .utils.file_utilities import split_string

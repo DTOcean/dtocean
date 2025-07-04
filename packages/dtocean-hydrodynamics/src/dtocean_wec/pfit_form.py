@@ -37,7 +37,7 @@ from PySide6.QtWidgets import QFileDialog, QMessageBox, QRadioButton, QWidget
 
 import dtocean_wave.utils.hdf5_interface as h5i
 
-from .generated.ui_performance_fit import Ui_Form as Ui_Fit
+from .designer.ui_performance_fit import Ui_Form as Ui_Fit
 from .plot_performance_fit import VisualisePerformanceFit
 from .submodule.power_matrix_fitting import PowerMatrixFit
 

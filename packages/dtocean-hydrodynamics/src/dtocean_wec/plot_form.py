@@ -31,7 +31,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QRadioButton, QToolTip, QWidget
 
-from .generated.ui_plotter import Ui_Form as Ui_Plot
+from .designer.ui_plotter import Ui_Form as Ui_Plot
 from .submodule.utils.conversion_utils import angle_wrap
 from .submodule.visualise_motion import Visualiser
 

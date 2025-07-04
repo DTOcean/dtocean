@@ -40,10 +40,10 @@ from PySide6.QtWidgets import (
 import dtocean_wave.utils.hdf5_interface as h5i
 from dtocean_hydro.configure import get_install_paths
 
+from .designer.ui_load_new import Ui_Form as Ui_LN
+from .designer.ui_mdi_layout import Ui_MainWindow
+from .designer.ui_new_selection import Ui_Form as Ui_NP
 from .form_utils import clean_prj_folder, final_data_check
-from .generated.ui_load_new import Ui_Form as Ui_LN
-from .generated.ui_mdi_layout import Ui_MainWindow
-from .generated.ui_new_selection import Ui_Form as Ui_NP
 from .pfit_form import PowerPerformance
 from .plot_form import Plotter
 from .tab1 import ReadDb
