@@ -1011,7 +1011,7 @@ class AdvancedPositionWidget(
         msg = "Import Configuration"
         valid_exts = "Configuration files (*.yaml *.yml)"
 
-        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        file_path = QtWidgets.QFileDialog.getOpenFileName(
             self,
             msg,
             HOME,
@@ -1031,7 +1031,7 @@ class AdvancedPositionWidget(
         msg = "Export Configuration"
         valid_exts = "Configuration files (*.yaml *.yml)"
 
-        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+        file_path = QtWidgets.QFileDialog.getSaveFileName(
             self,
             msg,
             HOME,
@@ -1376,7 +1376,7 @@ class AdvancedPositionWidget(
 
         fdialog_msg = "Save data"
 
-        save_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+        save_path = QtWidgets.QFileDialog.getSaveFileName(
             self,
             fdialog_msg,
             HOME,
@@ -1587,7 +1587,7 @@ class AdvancedPositionWidget(
         extlist = ["{} (*.{})".format(v, k) for k, v in plot_ext_types.items()]
         extStr = ";;".join(extlist)
 
-        save_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+        save_path = QtWidgets.QFileDialog.getSaveFileName(
             self,
             msg,
             HOME,
@@ -1633,7 +1633,7 @@ class AdvancedPositionWidget(
         msg = "Import Simulation"
         valid_exts = "Output files (*.yaml)"
 
-        yaml_file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        yaml_file_path = QtWidgets.QFileDialog.getOpenFileName(
             self,
             msg,
             HOME,

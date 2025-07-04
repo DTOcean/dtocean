@@ -1096,6 +1096,8 @@ def test_get_unfeasible_regions(xyz):
         xyz, (-49.71, -33.21)
     )
 
+    assert result_polys is not None
+
     X, Y, Z = get_bathymetry_grid(xyz)
     x = np.logical_and(np.isnan(Z), unfeasible_mask)
     n_over = np.sum(xyz[:, 2] > -33.21)

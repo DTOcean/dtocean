@@ -51,7 +51,12 @@ LineReturn_ChunkCombinedOffset: TypeAlias = tuple[
 
 
 def get_unfeasible_regions(
-    xyz, z_bounds, area_thr=100, g_fil=0.1, debug=False, debug_plot=False
+    xyz,
+    z_bounds,
+    area_thr=100,
+    g_fil=0.1,
+    debug=False,
+    debug_plot=False,
 ):
     xyz, z_bounds, stat = check_bathymetry_format(xyz, z_bounds)
 

@@ -7,6 +7,8 @@ import os
 import os.path as path
 import pickle
 import time
+from typing import cast
+from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -19,6 +21,7 @@ except ImportError:
 
 from dtocean_core.core import Core, OrderedSim, Project
 from dtocean_core.menu import ModuleMenu
+
 from dtocean_plugins.strategies.position import (
     AdvancedPosition,
     PositionOptimiser,
@@ -1304,14 +1307,13 @@ def test_advanced_import_simulation_file(mocker, advanced, results_dict):
     mocker.patch(
         "dtocean_plugins.strategies.position.get_positioner", autospec=True
     )
-
     mocker.patch("dtocean_plugins.strategies.position.prepare", autospec=True)
-
     mocker.patch.object(mock_core, "import_simulation", autospec=True)
 
     advanced.import_simulation_file(mock_core, mock_project, yaml_file_path)
 
-    import_simulation_args = mock_core.import_simulation.call_args.args
+    import_simulation = cast(MagicMock, mock_core.import_simulation)
+    import_simulation_args = import_simulation.call_args.args
 
     assert isinstance(import_simulation_args[0], Project)
     assert import_simulation_args[0] != mock_project
@@ -1363,7 +1365,9 @@ def test_advanced_load_simulation_ids(mocker, tmpdir, advanced, results_dict):
 
     advanced.load_simulation_ids(mock_core, mock_project, sim_ids)
 
-    test_project = mock_core.import_simulation.call_args_list[0].args[0]
+    import_simulation = cast(MagicMock, mock_core.import_simulation)
+    import_simulation_args = import_simulation.call_args_list
+    test_project = import_simulation_args[0].args[0]
 
     assert test_project.title == "load"
     assert advanced.get_simulation_record() == [

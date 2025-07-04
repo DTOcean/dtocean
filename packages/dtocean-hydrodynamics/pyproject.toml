@@ -83,7 +83,10 @@ filterwarnings = [
 
 [tool.pyright]
 typeCheckingMode = "basic"
-exclude = ["src/dtocean_wec/generated/**"]
+exclude = [
+  "src/dtocean_wec/designer/ui_*.py",
+  "src/dtocean_plugins/strategy_guis/ui_*.py"
+]
 
 [tool.ruff]
 line-length = 80
