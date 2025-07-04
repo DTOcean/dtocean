@@ -12,22 +12,16 @@ BUILD_ENV = {
     "FC": "gfortran",
     "CC": "gcc",
 }
-GENERATED_DIR = ROOT_DIR.joinpath(
-    "src",
-    "dtocean_wec",
-    "generated",
-)
 LIB_DIR = ROOT_DIR.joinpath(
     "src",
     "dtocean_tidal",
     "submodel",
     "ParametricWake",
 )
-UI_DIR = ROOT_DIR.joinpath(
-    "src",
-    "dtocean_wec",
-    "designer",
-)
+UI_DIRS = [
+    ROOT_DIR.joinpath("src", "dtocean_wec", "designer"),
+    ROOT_DIR.joinpath("src", "dtocean_plugins", "strategy_guis"),
+]
 WINDOWS_DLLS = [
     "libquadmath-*.dll",
     "libwinpthread-*.dll",
@@ -56,8 +50,11 @@ def _cleanup():
     if BUILD_DIR.exists():
         shutil.rmtree(BUILD_DIR)
 
+    files = []
+
     # qt widgets
-    files = list(GENERATED_DIR.glob("ui_*.py"))
+    for ui_dir in UI_DIRS:
+        files += list(ui_dir.glob("ui_*.py"))
 
     # fortran module
     if _is_windows():
@@ -78,9 +75,10 @@ def build():
     _cleanup()
 
     # qt widgets
-    for ui_path in UI_DIR.glob("*.ui"):
-        dst = GENERATED_DIR / f"ui_{ui_path.stem}.py"
-        _pyside6_uic(str(ui_path), "-o", str(dst))
+    for ui_dir in UI_DIRS:
+        for ui_path in ui_dir.glob("*.ui"):
+            dst = ui_dir / f"ui_{ui_path.stem}.py"
+            _pyside6_uic(str(ui_path), "-o", str(dst))
 
     # fortran module
     _meson("setup", BUILD_DIR.as_posix())

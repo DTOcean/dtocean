@@ -21,7 +21,6 @@ from dtocean_app.widgets.dialogs import Message
 from dtocean_plugins.strategies.basic import BasicStrategy
 from dtocean_plugins.strategy_guis.base import (
     GUIStrategy,
-    PyQtABCMeta,
     StrategyWidget,
 )
 
@@ -53,8 +52,6 @@ class GUIBasicStrategy(GUIStrategy, BasicStrategy):
 
 
 class BasicWidget(Message, StrategyWidget):
-    __metaclass__ = PyQtABCMeta
-
     config_set = QtCore.Signal()
     config_null = QtCore.Signal()
     reset = QtCore.Signal()

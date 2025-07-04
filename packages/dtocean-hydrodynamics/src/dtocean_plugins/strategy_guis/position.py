@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #    Copyright (C) 2019-2025 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -15,8 +13,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable=protected-access
-
 import logging
 import multiprocessing
 import os
@@ -25,16 +21,15 @@ import sys
 import threading
 import traceback
 import types
+import warnings
 from copy import deepcopy
 from functools import partial
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any, Optional
 
 import matplotlib as mpl
-import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from dtocean_app.utils.display import is_high_dpi
 from dtocean_app.widgets.datatable import DataTableWidget
 from dtocean_app.widgets.dialogs import ProgressBar
 from dtocean_app.widgets.display import (
@@ -44,14 +39,15 @@ from dtocean_app.widgets.display import (
 )
 from dtocean_app.widgets.extendedcombobox import ExtendedComboBox
 from dtocean_app.widgets.scientificselect import ScientificDoubleSpinBox
+from dtocean_core.pipeline import Tree
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
+from matplotlib.colors import BoundaryNorm
 from mdo_engine.utilities.misc import OrderedSet
 from PIL import Image
-from PySide6 import QtCore, QtWidgets
-from PySide6.QtCore import Qt
+from PySide6 import QtWidgets
+from PySide6.QtCore import QCoreApplication, QSize, Qt, QThread, Signal, Slot
 from shiboken6 import Shiboken
 
-from dtocean_core.pipeline import Tree
 from dtocean_plugins.strategies.position import AdvancedPosition
 from dtocean_plugins.strategies.position_optimiser import (
     _load_config_template,
@@ -59,19 +55,10 @@ from dtocean_plugins.strategies.position_optimiser import (
 )
 from dtocean_plugins.strategy_guis.base import (
     GUIStrategy,
-    PyQtABCMeta,
     StrategyWidget,
 )
 
-if is_high_dpi() or TYPE_CHECKING:
-    from dtocean_app.designer.high.advancedposition import (
-        Ui_AdvancedPositionWidget,
-    )
-else:
-    from dtocean_app.designer.low.advancedposition import (
-        Ui_AdvancedPositionWidget,
-    )
-
+from .ui_advancedposition import Ui_AdvancedPositionWidget
 
 # Set up logging
 module_logger = logging.getLogger(__name__)
@@ -99,11 +86,11 @@ UNIT_MAP = {
 }
 
 
-class ThreadLoadSimulations(QtCore.QThread):
+class ThreadLoadSimulations(QThread):
     """QThread for loading simulations"""
 
-    taskFinished = QtCore.Signal()
-    error_detected = QtCore.Signal(object, object, object)
+    taskFinished = Signal()
+    error_detected = Signal(object, object, object)
 
     def __init__(self, shell, sim_numbers, remove_simulations, exclude_default):
         super(ThreadLoadSimulations, self).__init__()
@@ -115,7 +102,6 @@ class ThreadLoadSimulations(QtCore.QThread):
     def run(self):  # pragma: no cover
         if RUNNING_COVERAGE:
             sys.settrace(threading.gettrace())
-
         self._run()
 
     def _run(self):
@@ -138,6 +124,7 @@ class ThreadLoadSimulations(QtCore.QThread):
         except Exception:
             etype, evalue, etraceback = sys.exc_info()
             self.error_detected.emit(etype, evalue, etraceback)
+
         finally:
             # Reinstate signals and emit
             self._shell.core.blockSignals(False)
@@ -145,7 +132,7 @@ class ThreadLoadSimulations(QtCore.QThread):
             self.taskFinished.emit()
 
 
-class GUIAdvancedPosition(GUIStrategy, AdvancedPosition, metaclass=PyQtABCMeta):
+class GUIAdvancedPosition(GUIStrategy, AdvancedPosition):
     """GUI for AdvancedPosition strategy."""
 
     def __init__(self):
@@ -178,9 +165,9 @@ class AdvancedPositionWidget(
     Ui_AdvancedPositionWidget,
     StrategyWidget,
 ):
-    config_set = QtCore.Signal()
-    config_null = QtCore.Signal()
-    reset = QtCore.Signal()
+    config_set = Signal()
+    config_null = Signal()
+    reset = Signal()
 
     def __init__(self, parent, shell, config: dict[str, Any]):
         QtWidgets.QWidget.__init__(self, parent)
@@ -340,8 +327,9 @@ class AdvancedPositionWidget(
             )
             self.paramsFrameLayout.addWidget(var_box["root"])
 
-            box_minimum = -sys.maxsize
-            box_maximum = sys.maxsize
+            max_int = 2147483647
+            box_minimum = -1 * max_int
+            box_maximum = max_int
             set_box_min = False
             set_box_max = False
             param_limits = None
@@ -412,7 +400,7 @@ class AdvancedPositionWidget(
             attr_name = "range_type_slot_{}".format(i)
             setattr(self, attr_name, range_type_slot)
 
-            var_box["range.box.type"].currentIndexChanged[str].connect(
+            var_box["range.box.type"].currentTextChanged.connect(
                 getattr(self, attr_name)
             )
 
@@ -474,7 +462,7 @@ class AdvancedPositionWidget(
             QtWidgets.QSizePolicy.Policy.Preferred,
         )
         self.dataTableWidget.setSizePolicy(sizePolicy)
-        self.dataTableWidget.setMinimumSize(QtCore.QSize(0, 0))
+        self.dataTableWidget.setMinimumSize(QSize(0, 0))
         self.dataTableLayout.addWidget(self.dataTableWidget)
 
         # Signals
@@ -523,7 +511,7 @@ class AdvancedPositionWidget(
 
         # Signals
 
-        self.simButtonGroup.buttonClicked.connect(self._select_sims_to_load)
+        self.simButtonGroup.idClicked.connect(self._select_sims_to_load)
         self.simSelectEdit.textEdited.connect(self._update_custom_sims)
         self.simLoadButton.clicked.connect(self._progress_load_sims)
         self.dataExportButton.clicked.connect(self._export_data_table)
@@ -539,7 +527,7 @@ class AdvancedPositionWidget(
         ## GLOBAL
 
         # Set up progress bar
-        self._progress = ProgressBar(parent)
+        self._progress = ProgressBar(self)
         self._progress.setModal(True)
 
         # Signals
@@ -576,6 +564,9 @@ class AdvancedPositionWidget(
             var_id_to_cost_var_box_map = self._var_id_to_cost_var_box_map
             var_id_to_title_map = self._var_id_to_title_map
             var_id_to_unit_map = self._var_id_to_unit_map
+
+        assert var_id_to_cost_var_box_map is not None
+        assert var_id_to_unit_map is not None
 
         var_names = []
         tree = Tree()
@@ -800,7 +791,7 @@ class AdvancedPositionWidget(
                 var_box["range.box.min"].setValue(min_range)
                 var_box["range.box.max"].setValue(max_range)
 
-    @QtCore.Slot()
+    @Slot()
     def _update_status(self, init=False, update_results=True):
         # Pick up the current tab to reload after update
         current_tab_idx = self.tabWidget.currentIndex()
@@ -1015,7 +1006,7 @@ class AdvancedPositionWidget(
 
         return init
 
-    @QtCore.Slot()
+    @Slot()
     def _import_config(self):
         msg = "Import Configuration"
         valid_exts = "Configuration files (*.yaml *.yml)"
@@ -1035,7 +1026,7 @@ class AdvancedPositionWidget(
 
         self._update_status(init=True)
 
-    @QtCore.Slot()
+    @Slot()
     def _export_config(self):
         msg = "Export Configuration"
         valid_exts = "Configuration files (*.yaml *.yml)"
@@ -1052,7 +1043,7 @@ class AdvancedPositionWidget(
 
         dump_config(file_path, self._config)
 
-    @QtCore.Slot()
+    @Slot()
     def _update_worker_dir(self):
         worker_dir = str(self.workDirLineEdit.text())
         if not worker_dir:
@@ -1062,7 +1053,7 @@ class AdvancedPositionWidget(
         self.workDirLineEdit.clearFocus()
         self._update_status()
 
-    @QtCore.Slot()
+    @Slot()
     def _reset_worker_dir(self):
         worker_dir = self._config["worker_dir"]
 
@@ -1072,7 +1063,7 @@ class AdvancedPositionWidget(
 
         self.workDirLineEdit.setText(worker_dir)
 
-    @QtCore.Slot()
+    @Slot()
     def _select_worker_dir(self):
         if self._config["worker_dir"]:
             start_dir = self._config["worker_dir"]
@@ -1092,15 +1083,14 @@ class AdvancedPositionWidget(
             self.workDirLineEdit.setText(worker_dir)
             self._update_status(update_results=False)
 
-    @QtCore.Slot(object)
+    @Slot(int)
     def _update_clean_existing_dir(self, checked_state):
-        self._config["clean_existing_dir"] = bool(
-            checked_state == Qt.CheckState.Checked
+        self._config["clean_existing_dir"] = (
+            checked_state == Qt.CheckState.Checked.value
         )
         self._update_status()
-        return
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_objective(self, box_number):
         if box_number < 0:
             return
@@ -1121,44 +1111,41 @@ class AdvancedPositionWidget(
         self.penaltyUnitsLabel.setText(unit)
         self.toleranceUnitsLabel.setText(unit)
 
-    @QtCore.Slot(object)
+    @Slot(int)
     def _update_maximise(self, checked_state):
-        self._config["maximise"] = bool(checked_state == Qt.CheckState.Checked)
+        self._config["maximise"] = checked_state == Qt.CheckState.Checked.value
 
-    @QtCore.Slot(float)
+    @Slot(float)
     def _update_base_penalty(self, value):
         self._config["base_penalty"] = value
         self._update_status(update_results=False)
-        return
 
-    @QtCore.Slot(float)
+    @Slot(float)
     def _update_tolerance(self, value):
         self._config["tolfun"] = value
-        return
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_n_threads(self, n_threads):
         self._config["n_threads"] = n_threads
         self._update_status(update_results=False)
-        return
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_max_simulations(self, max_simulations):
         if max_simulations > 0:
             self._config["max_simulations"] = max_simulations
         else:
             self._config["max_simulations"] = None
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_max_time(self, timeout):
         if timeout > 0:
             self._config["timeout"] = timeout
         else:
             self._config["timeout"] = None
 
-    @QtCore.Slot(object)
+    @Slot(object)
     def _update_min_noise_auto(self, checked_state):
-        if checked_state == Qt.CheckState.Checked:
+        if checked_state == Qt.CheckState.Checked.value:
             self._config["min_evals"] = None
             self.minNoiseSpinBox.setValue(self._default_min_evals)
             self.minNoiseSpinBox.setEnabled(False)
@@ -1168,20 +1155,18 @@ class AdvancedPositionWidget(
             self._config["min_evals"] = value
             self.minNoiseSpinBox.setEnabled(True)
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_min_noise(self, value):
         self._config["min_evals"] = value
         self.maxNoiseSpinBox.setMinimum(value)
-        return
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_max_noise(self, value):
         self._config["max_evals"] = value
-        return
 
-    @QtCore.Slot(object)
+    @Slot(object)
     def _update_population_auto(self, checked_state):
-        if checked_state == Qt.CheckState.Checked:
+        if checked_state == Qt.CheckState.Checked.value:
             self._config["popsize"] = None
             self.populationSpinBox.setValue(self._default_popsize)
             self.populationSpinBox.setEnabled(False)
@@ -1190,12 +1175,11 @@ class AdvancedPositionWidget(
             self._config["popsize"] = value
             self.populationSpinBox.setEnabled(True)
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_population(self, value):
         self._config["popsize"] = value
-        return
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_max_resamples_algorithm(self, box_number):
         if box_number < 0:
             return
@@ -1209,7 +1193,7 @@ class AdvancedPositionWidget(
 
         self._config["max_resample_factor"] = value
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def _update_max_resamples(self, value):
         algorithm = int(self.maxResamplesComboBox.currentIndex())
 
@@ -1266,22 +1250,23 @@ class AdvancedPositionWidget(
         self._update_plot_comboboxes(new_columns)
         self._clear_plot_widget()
 
-    @QtCore.Slot(object)
+    @Slot(object)
     def _update_delete_sims(self, checked_state):
-        if checked_state == Qt.CheckState.Checked:
+        if checked_state == Qt.CheckState.Checked.value:
             self._delete_sims = True
             self.protectDefaultBox.setEnabled(True)
         else:
             self._delete_sims = False
             self.protectDefaultBox.setEnabled(False)
 
-    @QtCore.Slot(object)
+    @Slot(object)
     def _update_protect_default(self, checked_state):
-        self._protect_default = bool(checked_state == Qt.CheckState.Checked)
+        self._protect_default = checked_state == Qt.CheckState.Checked.value
 
-    @QtCore.Slot(int)
-    def _select_sims_to_load(self, button_id):
-        assert isinstance(self._results_df, pd.DataFrame)
+    @Slot(int)
+    def _select_sims_to_load(self, button_id: int):
+        if self._results_df is None:
+            return
 
         objective = self._results_df.columns[1]
         ascending = True
@@ -1316,15 +1301,15 @@ class AdvancedPositionWidget(
         else:
             self._update_custom_sims()
 
-        custom_enabled = bool(button_id == 5)
+        custom_enabled = button_id == 5
         self.simsLabel.setEnabled(custom_enabled)
         self.simSelectEdit.setEnabled(custom_enabled)
         self.simHelpLabel.setEnabled(custom_enabled)
 
         self._update_status()
 
-    @QtCore.Slot()
-    def _update_custom_sims(self, update_status=True):
+    @Slot()
+    def _update_custom_sims(self, text="", update_status=True):
         sims_to_load_str = str(self.simSelectEdit.text())
         sims_to_load = None
 
@@ -1343,7 +1328,7 @@ class AdvancedPositionWidget(
         if update_status:
             self._update_status(update_status)
 
-    @QtCore.Slot()
+    @Slot()
     def _progress_load_sims(self):
         self._progress.allow_close = False
         self._progress.set_pulsing()
@@ -1364,7 +1349,7 @@ class AdvancedPositionWidget(
 
         self._progress.show()
 
-    @QtCore.Slot()
+    @Slot()
     def _finish_load_sims(self):
         assert isinstance(self._load_sims_thread, ThreadLoadSimulations)
         self._load_sims_thread.error_detected.disconnect()
@@ -1381,21 +1366,26 @@ class AdvancedPositionWidget(
         self._progress.allow_close = True
         self._progress.close()
 
-    @QtCore.Slot()
+    @Slot()
     def _export_data_table(self):
+        if self._results_df is None:
+            return
+
         extlist = ["comma-separated values (*.csv)"]
         extStr = ";;".join(extlist)
 
         fdialog_msg = "Save data"
 
-        save_path = QtWidgets.QFileDialog.getSaveFileName(
-            self, fdialog_msg, HOME, extStr
+        save_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            fdialog_msg,
+            HOME,
+            extStr,
         )
 
         if not save_path:
             return
 
-        assert self._results_df is not None
         self._results_df.to_csv(str(save_path), index=False)
 
     def _update_status_plots(self):
@@ -1412,9 +1402,10 @@ class AdvancedPositionWidget(
         self.colorAxisVarBox.addItems(plot_columns)
         self.filterVarBox.addItems(plot_columns)
 
-    @QtCore.Slot()
-    def _set_plot(self, set_widget=True):
-        assert self._results_df is not None
+    @Slot()
+    def _set_plot(self, value=None, set_widget=True):
+        if self._results_df is None:
+            return
 
         x_axis_str = str(self.xAxisVarBox.currentText())
         y_axis_str = str(self.yAxisVarBox.currentText())
@@ -1502,22 +1493,19 @@ class AdvancedPositionWidget(
             else:
                 # define the bins and normalize
                 n_vals = color_axis_max - color_axis_min + 2
-
                 bounds = np.linspace(color_axis_min, color_axis_max + 1, n_vals)
-
-                norm = colors.BoundaryNorm(bounds, cmap.N)
+                norm = BoundaryNorm(bounds, cmap.N)
 
         fig, ax = plt.subplots()
 
-        im = ax.scatter(
-            x_axis_data,
-            y_axis_data,
-            c=color_axis_data,
-            cmap=cmap,
-            norm=norm,
-            vmin=vmin,
-            vmax=vmax,
-        )
+        with warnings.catch_warnings(action="ignore"):
+            im = ax.scatter(
+                x_axis_data,
+                y_axis_data,
+                c=color_axis_data,
+                cmap=cmap,
+                norm=norm,
+            )
 
         ax.set_xlim([xmin, xmax])
         ax.set_ylim([ymin, ymax])
@@ -1541,9 +1529,9 @@ class AdvancedPositionWidget(
             if color_axis_data.dtype == np.int64:
                 # Relabel to centre of intervals
                 labels = np.arange(color_axis_min, color_axis_max + 1, 1)
-                loc = labels + 0.5
-                cb.set_ticks(loc.tolist())
-                cb.set_ticklabels(labels.tolist())
+                loc = (labels + 0.5).tolist()
+                cb.set_ticks(loc)
+                cb.set_ticklabels([str(label) for label in labels])
 
         fig.subplots_adjust(0.2, 0.2, 0.8, 0.8)
 
@@ -1557,7 +1545,7 @@ class AdvancedPositionWidget(
         self._clear_plot_widget()
 
         widget = MPLWidget(fig, self)
-        widget.setMinimumSize(QtCore.QSize(0, 250))
+        widget.setMinimumSize(QSize(0, 250))
 
         self.plotWidget = widget
         self.plotLayout.addWidget(widget)
@@ -1588,7 +1576,7 @@ class AdvancedPositionWidget(
 
         self.plotWidget = None
 
-    @QtCore.Slot()
+    @Slot()
     def _get_export_details(self):
         if self.plotWidget is None:
             return
@@ -1640,7 +1628,7 @@ class AdvancedPositionWidget(
         except IOError:
             pass
 
-    @QtCore.Slot()
+    @Slot()
     def _import_yaml(self):
         msg = "Import Simulation"
         valid_exts = "Output files (*.yaml)"
@@ -1661,18 +1649,16 @@ class AdvancedPositionWidget(
 
         self.reset.emit()
 
-    @QtCore.Slot(object, object, object)
+    @Slot(object, object, object)
     def _display_error(self, etype, evalue, etraceback):
-        type_str = str(etype)
-        type_strs = type_str.split(".")
-        sane_type_str = type_strs[-1].replace("'>", "")
+        type_str = etype.__name__
 
-        if sane_type_str[0].lower() in "aeiou":
+        if type_str[0].lower() in "aeiou":
             article = "An"
         else:
             article = "A"
 
-        errMsg = "{} {} occurred: {!s}".format(article, sane_type_str, evalue)
+        errMsg = "{} {} occurred: {!s}".format(article, type_str, evalue)
 
         module_logger.critical(errMsg)
         module_logger.critical("".join(traceback.format_tb(etraceback)))
@@ -1726,7 +1712,13 @@ def _init_config(config: dict[str, Any]):
     return new_config
 
 
-def _make_var_box(widget, parent, object_name, group_title, box_class):
+def _make_var_box(
+    widget,
+    parent: QtWidgets.QWidget,
+    object_name,
+    group_title,
+    box_class,
+):
     var_box_dict = {}
 
     var_box_dict["root"] = QtWidgets.QGroupBox(parent)
@@ -1736,8 +1728,8 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     root_name = _get_obj_name(object_name, "root")
     var_box_dict["root"].setObjectName(root_name)
 
-    root_style = "#{}".format(root_name) + " " + "{font-weight: bold;}" + "\n"
-    new_style_sheet = parent.styleSheet().append(root_style)
+    root_style = "\n" + "#{}".format(root_name) + " " + "{font-weight: bold;}"
+    new_style_sheet = parent.styleSheet() + root_style
     parent.setStyleSheet(new_style_sheet)
 
     var_box_dict["root.layout"] = QtWidgets.QVBoxLayout(var_box_dict["root"])
@@ -1769,7 +1761,7 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
 
     var_box_dict["fixed.box"].setSizePolicy(sizePolicy)
-    var_box_dict["fixed.box"].setMinimumSize(QtCore.QSize(75, 0))
+    var_box_dict["fixed.box"].setMinimumSize(QSize(75, 0))
     var_box_dict["fixed.box"].setObjectName(
         _get_obj_name(object_name, "fixed.box")
     )
@@ -1955,7 +1947,7 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
 
     var_box_dict["range.box.min"].setSizePolicy(sizePolicy)
-    var_box_dict["range.box.min"].setMinimumSize(QtCore.QSize(75, 0))
+    var_box_dict["range.box.min"].setMinimumSize(QSize(75, 0))
     var_box_dict["range.box.min"].setObjectName(
         _get_obj_name(object_name, "range.box.min")
     )
@@ -1998,8 +1990,7 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     var_box_dict["range.box.max"] = box_class(var_box_dict["range.group"])
 
     sizePolicy = QtWidgets.QSizePolicy(
-        QtWidgets.QSizePolicy.Policy.Fixed,
-        QtWidgets.QSizePolicy.Policy.Fixed,
+        QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed
     )
     sizePolicy.setHorizontalStretch(0)
     sizePolicy.setVerticalStretch(0)
@@ -2008,7 +1999,7 @@ def _make_var_box(widget, parent, object_name, group_title, box_class):
     )
 
     var_box_dict["range.box.max"].setSizePolicy(sizePolicy)
-    var_box_dict["range.box.max"].setMinimumSize(QtCore.QSize(75, 0))
+    var_box_dict["range.box.max"].setMinimumSize(QSize(75, 0))
     var_box_dict["range.box.max"].setObjectName(
         _get_obj_name(object_name, "range.box.max")
     )
@@ -2050,7 +2041,7 @@ def _get_obj_name(name, key):
 
 
 def _get_translation(widget_name, text):
-    return QtWidgets.QApplication.translate(widget_name, text, None)
+    return QCoreApplication.translate(widget_name, text, None)
 
 
 def _init_sci_spin_box(parent, name):
@@ -2063,7 +2054,7 @@ def _init_sci_spin_box(parent, name):
 
     sciSpinBox = ScientificDoubleSpinBox(parent)
     sciSpinBox.setSizePolicy(sizePolicy)
-    sciSpinBox.setMinimumSize(QtCore.QSize(0, 0))
+    sciSpinBox.setMinimumSize(QSize(0, 0))
     sciSpinBox.setKeyboardTracking(False)
     sciSpinBox.setObjectName(name)
 
@@ -2080,18 +2071,18 @@ def _init_extended_combo_box(parent, name):
 
     eComboBox = ExtendedComboBox(parent)
     eComboBox.setSizePolicy(sizePolicy)
-    eComboBox.setMinimumSize(QtCore.QSize(0, 0))
+    eComboBox.setMinimumSize(QSize(0, 0))
     eComboBox.setObjectName(name)
 
     return eComboBox
 
 
 def _make_fixed_combo_slot(that, param_name, param_type, name_map):
-    @QtCore.Slot(object)
+    @Slot(object)
     def slot_function(that, checked_state):
         range_group = that._param_boxes[param_name]["range.group"]
 
-        if checked_state == Qt.CheckState.Checked:
+        if checked_state == Qt.CheckState.Checked.value:
             enabled = False
         else:
             enabled = True
@@ -2100,7 +2091,7 @@ def _make_fixed_combo_slot(that, param_name, param_type, name_map):
         param_dict = {}
         var_box_dict = that._param_boxes[param_name]
 
-        if checked_state == Qt.CheckState.Checked:
+        if checked_state == Qt.CheckState.Checked.value:
             value = param_type(var_box_dict["fixed.box"].value())
             param_dict["fixed"] = value
 
@@ -2114,10 +2105,12 @@ def _make_fixed_combo_slot(that, param_name, param_type, name_map):
 
 
 def _make_fixed_value_slot(that, param_name, param_type):
-    @QtCore.Slot(object)
+    @Slot(object)
     def slot_function(that, value):
-        fixed_check_box = that._param_boxes[param_name]["fixed.check"]
-        use_fixed = bool(fixed_check_box.isChecked())
+        fixed_check_box: QtWidgets.QCheckBox = that._param_boxes[param_name][
+            "fixed.check"
+        ]
+        use_fixed = fixed_check_box.isChecked()
 
         if not use_fixed:
             return
@@ -2128,9 +2121,8 @@ def _make_fixed_value_slot(that, param_name, param_type):
 
 
 def _make_range_type_slot(that, param_name, param_type, name_map):
-    @QtCore.Slot(object)
+    @Slot(str)
     def slot_function(that, current_str):
-        current_str = str(current_str)
         range_var_box = that._param_boxes[param_name]["range.box.var"]
 
         if current_str == "Fixed":
@@ -2153,7 +2145,7 @@ def _make_range_type_slot(that, param_name, param_type, name_map):
 
 
 def _make_generic_range_slot(that, param_name, param_type, name_map):
-    @QtCore.Slot(object)
+    @Slot(object)
     def slot_function(that, *args):  # pylint: disable=unused-argument
         var_box_dict = that._param_boxes[param_name]
         var_box_values = _read_var_box_values(var_box_dict, param_type)

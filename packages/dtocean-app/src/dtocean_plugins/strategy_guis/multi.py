@@ -28,7 +28,6 @@ from dtocean_app.widgets.extendedcombobox import ExtendedComboBox
 from dtocean_plugins.strategies.multi import MultiSensitivity
 from dtocean_plugins.strategy_guis.base import (
     GUIStrategy,
-    PyQtABCMeta,
     StrategyWidget,
 )
 
@@ -76,8 +75,6 @@ class MultiSensitivityWidget(
     Ui_MultiSensitivityWidget,
     StrategyWidget,
 ):
-    __metaclass__ = PyQtABCMeta
-
     config_set = Signal()
     config_null = Signal()
     reset = Signal()

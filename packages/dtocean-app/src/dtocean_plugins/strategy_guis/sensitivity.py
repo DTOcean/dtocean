@@ -28,7 +28,6 @@ from dtocean_app.widgets.extendedcombobox import ExtendedComboBox
 from dtocean_plugins.strategies.sensitivity import UnitSensitivity
 from dtocean_plugins.strategy_guis.base import (
     GUIStrategy,
-    PyQtABCMeta,
     StrategyWidget,
 )
 
@@ -78,8 +77,6 @@ class UnitSensitivityWidget(
     Ui_UnitSensitivityWidget,
     StrategyWidget,
 ):
-    __metaclass__ = PyQtABCMeta
-
     config_set = Signal()
     config_null = Signal()
     reset = Signal()

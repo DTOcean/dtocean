@@ -33,12 +33,21 @@ from mdo_engine.control.simulation import Controller, Loader
 from PySide6 import QtCore
 
 import dtocean_plugins.core as core_interfaces
+import dtocean_plugins.modules as module_interfaces
+import dtocean_plugins.plots as plot_interfaces
+import dtocean_plugins.themes as theme_interfaces
 
 # from dtocean_core.menu import ConnectorMenu
 from . import data as gui_data
 from . import interfaces as gui_interfaces
 
-module_logger = logging.getLogger(__name__)
+INTERFACE_MODULES = [
+    core_interfaces,
+    module_interfaces,
+    plot_interfaces,
+    theme_interfaces,
+]
+MODULE_LOGGER = logging.getLogger(__name__)
 
 
 class WidgetInterface(MetaInterface):
@@ -156,7 +165,7 @@ class GUICore(Core, QtCore.QObject):
         data_store = DataStorage(gui_data, super_cls="GUIStructure")
         sequencer = Sequencer(
             self._hub_sockets,
-            [core_interfaces],
+            INTERFACE_MODULES,
             warn_import=True,
         )
 

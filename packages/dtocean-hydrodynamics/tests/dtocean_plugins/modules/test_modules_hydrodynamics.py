@@ -2,12 +2,9 @@ from copy import deepcopy
 from pprint import pprint
 
 import pytest
-
-pytest.importorskip("dtocean_core")
-
-from dtocean_core.core import Core  # noqa: E402
-from dtocean_core.menu import ModuleMenu, ProjectMenu  # noqa: E402
-from dtocean_core.pipeline import Tree, _get_connector  # noqa: E402
+from dtocean_core.core import Core
+from dtocean_core.menu import ModuleMenu, ProjectMenu
+from dtocean_core.pipeline import Tree, _get_connector
 
 
 @pytest.fixture(scope="module")

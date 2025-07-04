@@ -41,8 +41,6 @@ class ScientificDoubleSpinBox(QtWidgets.QDoubleSpinBox):
 
     def validate(self, text, position):
         string = str(text)
-        print(string)
-        print(valid_float_string(string))
 
         if valid_float_string(string):
             return (QValidator.State.Acceptable, text, position)

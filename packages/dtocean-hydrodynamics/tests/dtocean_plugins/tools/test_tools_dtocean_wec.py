@@ -3,13 +3,10 @@
 from unittest.mock import MagicMock
 
 import pytest
-
-pytest.importorskip("dtocean_core")
-
-from dtocean_core.core import Core  # noqa: E402
-from dtocean_core.extensions import ToolManager  # noqa: E402
-from dtocean_core.menu import ModuleMenu, ProjectMenu  # noqa: E402
-from dtocean_core.pipeline import InputVariable, Tree  # noqa: E402
+from dtocean_core.core import Core
+from dtocean_core.extensions import ToolManager
+from dtocean_core.menu import ModuleMenu, ProjectMenu
+from dtocean_core.pipeline import InputVariable, Tree
 
 
 @pytest.fixture(scope="module")
