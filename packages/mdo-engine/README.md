@@ -152,22 +152,6 @@ catalogue:
 pandas.core.series.Series
 ```
 
-### Command Line Tools
-
-A utility is provided to convert DTOcean data description specifications (DDS)
-files saved in MS Excel format to native yaml format. To get help:
-
-```
-$ bootstrap-dds -h
-```
-
-A seconds utility is provided to merge two DDS files in Excel format. This can
-be useful when merging files in a version-control system. To get help:
-
-```
-$ xl_merge -h
-```
-
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to
