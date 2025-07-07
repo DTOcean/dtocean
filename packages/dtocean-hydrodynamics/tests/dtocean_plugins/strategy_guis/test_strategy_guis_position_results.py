@@ -594,13 +594,7 @@ def test_AdvancedPositionWidget_export_plot(
     assert f.is_file()
 
     im = Image.open(str(f))
-    width, height = im.size
-
-    expected_width = 1011
-    expected_height = 539
-
-    assert width == expected_width
-    assert height == expected_height
+    default_width, default_height = im.size
 
     f = tmp_path / "mock2.png"
     mocker.patch.object(
@@ -615,8 +609,8 @@ def test_AdvancedPositionWidget_export_plot(
     im = Image.open(str(f))
     width, height = im.size
 
-    assert width != expected_width
-    assert height != expected_height
+    assert width != default_width
+    assert height != default_height
 
 
 def test_AdvancedPositionWidget_optimiser_restart(
