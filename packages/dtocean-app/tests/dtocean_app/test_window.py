@@ -23,7 +23,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtGui, QtWidgets
 from PySide6.QtCore import Qt
 
 from dtocean_app.core import GUICore
@@ -998,21 +998,22 @@ def test_import_data_skip(qtbot, mocker, tmpdir, window_floating_wave):
 
 def test_tool_connect(mocker, qtbot, window_floating_wave):
     spy = mocker.spy(MockTool, "destroy_widget")
-
-    def handle_dialog():
-        window_floating_wave._tool_widget.close()
-
     action = window_floating_wave.menuTools.actions()[1]
     assert str(action.text()) == "Mock Tool"
     assert action.isEnabled()
 
-    QtCore.QTimer.singleShot(500, handle_dialog)
     menu_click(
         qtbot,
         window_floating_wave,
         window_floating_wave.menuTools,
         action.objectName(),
     )
+
+    def has_widget():
+        assert window_floating_wave._tool_widget is not None
+
+    qtbot.waitUntil(has_widget)
+    window_floating_wave._tool_widget.close()
 
     def no_thread_tool():
         assert window_floating_wave._thread_tool is None
@@ -1496,8 +1497,13 @@ def window_two_simulations(qtbot, window_dataflow_module):
 
     qtbot.waitUntil(pipeline_not_visible)
 
-    # Fake clone the simulation
     simulation_dock = window_dataflow_module._simulation_dock
+
+    # Force the current item
+    default_sim = simulation_dock.listWidget.item(0)
+    simulation_dock.listWidget.setCurrentItem(default_sim)
+
+    # Clone the simulation
     simulation_dock._clone_current(window_dataflow_module._shell)
 
     def has_two_simulations():
@@ -1632,8 +1638,13 @@ def window_two_theme_simulations(qtbot, window_dataflow_theme):
 
     qtbot.waitUntil(pipeline_not_visible)
 
-    # Fake clone the simulation
     simulation_dock = window_dataflow_theme._simulation_dock
+
+    # Force the current item
+    default_sim = simulation_dock.listWidget.item(0)
+    simulation_dock.listWidget.setCurrentItem(default_sim)
+
+    # Clone the simulation
     simulation_dock._clone_current(window_dataflow_theme._shell)
 
     def has_two_simulations():
@@ -1987,6 +1998,10 @@ def menu_click(qtbot, main_window, menu: QtWidgets.QMenu, action_name):
         menu.title()[1],
         Qt.KeyboardModifier.AltModifier,
     )
+
+    if menu.activeAction() is None:
+        qtbot.wait(200)
+        qtbot.keyClick(menu, Qt.Key.Key_Down)
 
     true_actions = 0
     for action in menu.actions():

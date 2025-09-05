@@ -394,7 +394,7 @@ class DataFrameModel(QAbstractTableModel):
 
             elif columnDtype in self._boolDtypes:
                 if isinstance(value, Enum):
-                    value = numpy.bool_(value.value)
+                    value = bool(value.value)
 
             elif columnDtype in self._dateDtypes:
                 # convert the given value to a compatible datetime object.

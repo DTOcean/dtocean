@@ -20,58 +20,27 @@ import pytest
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
-from dtocean_plugins.strategy_guis.position import AdvancedPositionWidget
+from dtocean_plugins.strategy_guis.position import (
+    AdvancedPositionWidget,
+    GUIAdvancedPosition,
+)
 
 
-@pytest.fixture()
-def config_alt():
-    return {
-        "base_penalty": 2.0,
-        "clean_existing_dir": True,
-        "max_evals": 3,
-        "max_resample_factor": "auto2",
-        "max_simulations": 1,
-        "maximise": False,
-        "min_evals": None,
-        "n_threads": 9,
-        "objective": "project.annual_energy",
-        "parameters": {
-            "delta_col": {"fixed": 1},
-            "delta_row": {
-                "range": {
-                    "max_multiplier": 2.0,
-                    "min_multiplier": 1.0,
-                    "type": "multiplier",
-                    "variable": "device.minimum_distance_x",
-                }
-            },
-            "grid_orientation": {
-                "range": {"max": 90.0, "min": -90.0, "type": "fixed"}
-            },
-            "n_nodes": {
-                "range": {"max": 20, "min": 1, "type": "fixed"},
-                "x0": 15,
-            },
-            "t1": {"range": {"max": 1.0, "min": 0.0, "type": "fixed"}},
-            "t2": {"range": {"max": 1.0, "min": 0.0, "type": "fixed"}},
-        },
-        "popsize": None,
-        "results_params": [
-            "project.number_of_devices",
-            "project.annual_energy",
-            "project.q_factor",
-            "project.capex_total",
-            "project.capex_breakdown",
-            "project.lifetime_opex_mean",
-            "project.lifetime_cost_mean",
-            "project.lifetime_energy_mean",
-            "project.lcoe_mean",
-        ],
-        "root_project_path": None,
-        "timeout": 1,
-        "tolfun": 1,
-        "worker_dir": "mock",
-    }
+def test_GUIAdvancedPosition_allow_run_no_config():
+    test = GUIAdvancedPosition()
+    assert test.allow_run("mock", "mock") is False
+
+
+def test_GUIAdvancedPosition_allow_run(mocker):
+    mocker.patch(
+        "dtocean_plugins.strategy_guis.position.AdvancedPosition.allow_run",
+        return_value=True,
+    )
+
+    test = GUIAdvancedPosition()
+    test._config = "mock"
+
+    assert test.allow_run("mock", "mock") is True
 
 
 def test_AdvancedPositionWidget_bad_status(qtbot, mock_shell):
@@ -143,6 +112,57 @@ def test_AdvancedPositionWidget_with_config(mocker, qtbot, hydro_shell, config):
     assert int(window.abortTimeSpinBox.value()) == config["timeout"]
     assert float(window.toleranceSpinBox.value()) == config["tolfun"]
     assert str(window.workDirLineEdit.text()) == config["worker_dir"]
+
+
+@pytest.fixture()
+def config_alt():
+    return {
+        "base_penalty": 2.0,
+        "clean_existing_dir": True,
+        "max_evals": 3,
+        "max_resample_factor": "auto2",
+        "max_simulations": 1,
+        "maximise": False,
+        "min_evals": None,
+        "n_threads": 9,
+        "objective": "project.annual_energy",
+        "parameters": {
+            "delta_col": {"fixed": 1},
+            "delta_row": {
+                "range": {
+                    "max_multiplier": 2.0,
+                    "min_multiplier": 1.0,
+                    "type": "multiplier",
+                    "variable": "device.minimum_distance_x",
+                }
+            },
+            "grid_orientation": {
+                "range": {"max": 90.0, "min": -90.0, "type": "fixed"}
+            },
+            "n_nodes": {
+                "range": {"max": 20, "min": 1, "type": "fixed"},
+                "x0": 15,
+            },
+            "t1": {"range": {"max": 1.0, "min": 0.0, "type": "fixed"}},
+            "t2": {"range": {"max": 1.0, "min": 0.0, "type": "fixed"}},
+        },
+        "popsize": None,
+        "results_params": [
+            "project.number_of_devices",
+            "project.annual_energy",
+            "project.q_factor",
+            "project.capex_total",
+            "project.capex_breakdown",
+            "project.lifetime_opex_mean",
+            "project.lifetime_cost_mean",
+            "project.lifetime_energy_mean",
+            "project.lcoe_mean",
+        ],
+        "root_project_path": None,
+        "timeout": 1,
+        "tolfun": 1,
+        "worker_dir": "mock",
+    }
 
 
 def test_AdvancedPositionWidget_with_config_alt(

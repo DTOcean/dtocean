@@ -29,6 +29,8 @@ from mdo_engine.utilities.misc import OrderedSet
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 
+from dtocean_app.shell import Shell
+
 from ..utils.display import is_high_dpi
 from .display import get_current_figure_size, get_current_filetypes
 from .extendedcombobox import ExtendedComboBox
@@ -554,13 +556,10 @@ class ComparisonWidget(ComparisonProtocol):
             return var_name
         return self._var_ids[var_name]
 
-    def _set_interfaces(self, shell, include_str=False):
+    def _set_interfaces(self, shell: Shell, include_str=False):
         self.varBox.clear()
-
         active_modules = shell.module_menu.get_active(shell.core, shell.project)
-
         active_themes = shell.theme_menu.get_active(shell.core, shell.project)
-
         active_interfaces = active_modules + active_themes
 
         self._mod_names = active_modules
@@ -736,6 +735,7 @@ class SimulationComparison(
         self.modBox.clear()
 
         if box_number != -1:
+            assert self._mod_names is not None
             self.modBox.addItems(self._mod_names)
 
         self.modBox.setCurrentIndex(-1)

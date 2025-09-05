@@ -78,7 +78,7 @@ def start_logging(debug=False):
         if isinstance(handler, RotatingFileHandler):
             try:
                 handler.doRollover()
-            except WindowsError:
+            except OSError:
                 pass
 
     logger.info("Welcome to DTOcean")

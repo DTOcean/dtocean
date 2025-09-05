@@ -1667,15 +1667,13 @@ class Connector:
     def get_available_interfaces(self, core, project):
         simulation = project.get_simulation()
         names = core.control.get_available_interfaces(simulation, self._hub)
-
         return names
 
-    def get_active_interface_names(self, core, project):
+    def get_active_interface_names(self, core: Core, project: Project):
         simulation = project.get_simulation()
         interface_names = core.control.get_sequenced_interfaces(
             simulation, self._hub
         )
-
         return interface_names
 
     def has_interface(self, core, project, interface_name):

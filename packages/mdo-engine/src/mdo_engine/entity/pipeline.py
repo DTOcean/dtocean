@@ -9,6 +9,8 @@ from collections import OrderedDict
 from copy import deepcopy
 
 
+from ..boundary.interface import Interface
+
 class Hub:
     """A Hub groups a particular class of interfaces and calculates the
     data requirements of each interface considering all the input and outputs
@@ -26,10 +28,10 @@ class Hub:
         self.force_completed = False
         self._no_complete = no_complete
         self._id = None
-        self._scheduled_interface_map = OrderedDict()
-        self._completed_interface_map = OrderedDict()
+        self._scheduled_interface_map: OrderedDict[str, Interface] = OrderedDict()
+        self._completed_interface_map: OrderedDict[str, Interface] = OrderedDict()
 
-    def add_interface(self, interface_cls_name, interface_obj):
+    def add_interface(self, interface_cls_name: str, interface_obj):
         """Assosiate an interface object to the Hub
 
         Args:
@@ -245,10 +247,9 @@ class Hub:
         return all_names
 
     def get_sequenced_cls_names(self):
-        all_names = []
+        all_names: list[str] = []
         all_names.extend(self.get_scheduled_cls_names())
         all_names.extend(self.get_completed_cls_names())
-
         return all_names
 
     def set_completed(self, interface_cls_name):

@@ -67,11 +67,17 @@ class ExtendedComboBox(QtWidgets.QComboBox):
     def setModel(self, model):
         super().setModel(model)
         self.pFilterModel.setSourceModel(model)
-        self.completer.setModel(self.pFilterModel)
+
+        completer = self.completer()
+        assert completer is not None
+        completer.setModel(self.pFilterModel)
 
     # On model column change, update the model column of the filter and
     # completer as well
     def setModelColumn(self, column):
-        self.completer.setCompletionColumn(column)
+        completer = self.completer()
+        assert completer is not None
+        completer.setCompletionColumn(column)
+
         self.pFilterModel.setFilterKeyColumn(column)
         super().setModelColumn(column)

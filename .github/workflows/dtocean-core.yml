@@ -4,10 +4,9 @@ on:
     branches: [ next ]
     paths:
       - '.codecov.yml'
-      - '.github/actions/poetry-install/action.yml'
       - '.github/workflows/dtocean-core.yml'
+      - 'packages/dtocean-app/**'
       - 'packages/dtocean-core/**'
-      - 'packages/dtocean-hydrodynamics/**'
       - 'packages/mdo-engine/**'
       - 'packages/polite-config/**'
   pull_request:
@@ -15,8 +14,8 @@ on:
     paths:
       - '.codecov.yml'
       - '.github/workflows/dtocean-core.yml'
+      - 'packages/dtocean-app/**'
       - 'packages/dtocean-core/**'
-      - 'packages/dtocean-hydrodynamics/**'
       - 'packages/mdo-engine/**'
       - 'packages/polite-config/**'
 jobs:
@@ -33,8 +32,16 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
+      # https://github.com/actions/runner-images/issues/7048
+      - name: Change Mirror Priorities (Linux)
+        run: |
+          sudo sed -i '/archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:2/priority:0/' /etc/apt/apt-mirrors.txt
+          sudo sed -i '/azure.archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:0/priority:1/' /etc/apt/apt-mirrors.txt
+          sudo sed -i '/security.ubuntu.com\/ubuntu\/\tpriority/ s/priority:3/priority:2/' /etc/apt/apt-mirrors.txt
+          sudo cat /etc/apt/apt-mirrors.txt
+        if: runner.os == 'Linux'
       - name: Install system dependencies (GUI)
-        run: sudo apt update && sudo apt install -y libegl1-mesa-dev
+        run: sudo apt update && sudo apt-get install -y libegl1-mesa-dev
       - name: Set database root password
         run: |
           echo "POSTGRES_PASSWORD=$(uuidgen)" >> $GITHUB_ENV
@@ -64,7 +71,7 @@ jobs:
         uses: ./.github/actions/poetry-install
         with: 
           root-directory: ${{ github.workspace }}/packages/dtocean-core
-          groups: '["test"]'
+          groups: '["test", "test-extras"]'
       - name: Run tests
         run: |
           poetry run pytest --cov=src --cov-report=xml --postgresql-password="${POSTGRES_PASSWORD}" --postgresql-path=${GITHUB_WORKSPACE}/database tests
@@ -89,7 +96,7 @@ jobs:
         uses: ./.github/actions/poetry-install
         with: 
           root-directory: ${{ github.workspace }}/packages/dtocean-core
-          groups: '["test"]'
+          groups: '["test", "test-extras"]'
       - name: Run tests
         run: |
           poetry run pytest --cov=src --cov-report=xml tests

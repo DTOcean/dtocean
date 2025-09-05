@@ -779,7 +779,8 @@ class InputTriStateTable(InputDataTable):
     def _get_dataframe(self, value, dtype=None):
         data = super()._get_dataframe(value, dtype)
         data = data.replace(
-            ["true", "false", "unknown"], ["True", "False", None]
+            ["true", "false", "unknown"],
+            ["True", "False", None],  # type: ignore
         )
 
         return data
@@ -800,7 +801,7 @@ class InputTriStateTable(InputDataTable):
             raise ValueError(errStr)
 
         df = df.replace(
-            ["True", "False", "None", "", None],
+            ["True", "False", "None", "", None],  # type: ignore
             ["true", "false", "unknown", "unknown", "unknown"],
         )
 
@@ -829,7 +830,7 @@ class InputDictTable(InputDataTable):
             return
 
         # Nullify the variable if all values are None
-        df = df.replace(["None", ""], [None, None])
+        df = df.replace(["None", ""], [None, None])  # type: ignore
 
         unique_values = pd.unique(df["Value"])
         if len(unique_values) == 1 and pd.isna(unique_values[0]):
@@ -878,7 +879,7 @@ class InputPointDictTable(InputDataTable):
             return
 
         # Nullify the variable if all values are None
-        df = df.replace(["None", ""], [None, None])
+        df = df.replace(["None", ""], [None, None])  # type: ignore
         df_xyz = df[["x", "y", "z"]].to_numpy().astype(float)
 
         unique_values = np.unique(df_xyz)

@@ -1,17 +1,25 @@
-name: dtocean-qt actions
+name: dtocean-app actions
 on:
   push:
     branches: [ next ]
     paths:
       - '.codecov.yml'
-      - '.github/workflows/dtocean-qt.yml'
+      - '.github/workflows/dtocean-app.yml'
+      - 'packages/dtocean-app/**'
+      - 'packages/dtocean-core/**'
       - 'packages/dtocean-qt/**'
+      - 'packages/mdo-engine/**'
+      - 'packages/polite-config/**'
   pull_request:
     branches: [ next ]
     paths:
       - '.codecov.yml'
-      - '.github/workflows/dtocean-qt.yml'
+      - '.github/workflows/dtocean-app.yml'
+      - 'packages/dtocean-app/**'
+      - 'packages/dtocean-core/**'
       - 'packages/dtocean-qt/**'
+      - 'packages/mdo-engine/**'
+      - 'packages/polite-config/**'
 jobs:
   pytest:
     name: Unit tests
@@ -22,7 +30,7 @@ jobs:
         os: [windows-latest, ubuntu-latest]
     defaults:
       run:
-        working-directory: packages/dtocean-qt
+        working-directory: packages/dtocean-app
     env:
       DISPLAY: ':99.0'
     steps:
@@ -30,11 +38,6 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       # https://github.com/actions/runner-images/issues/7048
       - name: Change Mirror Priorities (Linux)
         run: |
@@ -49,23 +52,24 @@ jobs:
           sudo apt-get install libegl1 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 x11-utils
           /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
         if: runner.os == 'Linux'
-      - name: Install package
-        run: |
-          poetry install --with test
+      - name: Install dtocean-app
+        uses: ./.github/actions/poetry-install
+        with: 
+          root-directory: ${{ github.workspace }}/packages/dtocean-app
+          groups: '["test"]'
       - name: Run tests
         run: |
-          poetry run pytest --doctest-glob=README.md README.md
-          poetry run pytest --cov src --cov-report=xml tests
+          poetry run pytest -x -s -v --cov=src --cov-report=xml tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          flags: dtocean-qt
+          flags: dtocean-app
   audit:
     name: Code audit
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/dtocean-qt
+        working-directory: packages/dtocean-app
     steps:
       - uses: actions/checkout@v4
         with:

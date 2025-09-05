@@ -554,10 +554,9 @@ class Controller(Loader):
 
         return names
 
-    def get_sequenced_interfaces(self, simulation: Simulation, hub_id):
+    def get_sequenced_interfaces(self, simulation: Simulation, hub_id) -> list[str]:
         hub = simulation.get_hub(hub_id)
         names = self._sequencer.get_sequenced_names(hub)
-
         return names
 
     def get_scheduled_interfaces(self, simulation: Simulation, hub_id):

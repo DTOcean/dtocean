@@ -1136,11 +1136,18 @@ def check_dict(table_dict):
     return full_dict
 
 
-def get_offset_map(df: pd.DataFrame, column: str, first: int) -> dict[int, int]:
+def get_offset_map(
+    df: pd.DataFrame,
+    column_name: str,
+    first: int,
+) -> dict[int, int]:
     ordered_df = df.reset_index(drop=True)
-    offset = first - ordered_df.at[0, column]
-    new = df[column] + offset
-    offset_map = pd.Series(new.values, index=df[column]).to_dict()
+    value = pd.to_numeric(ordered_df.at[0, column_name], downcast="integer")
+    column: pd.Series[int] = df[column_name]
+    offset = first - value
+    new = column + offset
+    offset_map = pd.Series(new.values, index=column).to_dict()
+
     return offset_map
 
 

@@ -171,6 +171,7 @@ class SimulationDock(ListDock):
     @QtCore.Slot(object)
     def _clone_current(self, shell: "Shell"):
         currentItem = self.listWidget.currentItem()
+        print(currentItem)
         assert isinstance(currentItem, SimulationItem)
         title = currentItem._get_title()
 

@@ -227,9 +227,9 @@ class CSVImportDialog(QtWidgets.QDialog):
 
         self._encodingLabel = QtWidgets.QLabel("File Encoding", self)
 
-        encoding_names = map(
+        encoding_names = list(map(
             lambda x: x.upper(), sorted(list(set(_encodings.values())))
-        )
+        ))
         self._encodingComboBox = QtWidgets.QComboBox(self)
         self._encodingComboBox.addItems(encoding_names)
         self._encodingComboBox.activated.connect(self._updateEncoding)

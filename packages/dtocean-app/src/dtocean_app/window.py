@@ -24,6 +24,7 @@ Created on Thu Apr 23 12:51:14 2015
 
 import logging
 import os
+import subprocess
 import sys
 import threading
 import traceback
@@ -34,7 +35,9 @@ import pandas as pd
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 from shiboken6 import Shiboken
-from win32event import CreateMutex
+
+if sys.platform == "win32":
+    from win32event import CreateMutex
 
 from . import get_log_dir
 from .extensions import GUIStrategyManager, GUIToolManager
@@ -532,12 +535,19 @@ class DTOceanWindow(MainWindow):
             self._dynamic_actions[tool_name] = new_action
 
     def _init_help_menu(self):
+        def open_file(filename):
+            if sys.platform == "win32":
+                os.startfile(filename)
+            else:
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, filename])
+
         self.actionHelp_Index.triggered.connect(self._help.show)
         self.actionAbout.triggered.connect(self._about.show)
 
         # Open the logs folder
         log_dir = get_log_dir()
-        self.actionView_Logs.triggered.connect(lambda: os.startfile(log_dir))
+        self.actionView_Logs.triggered.connect(lambda: open_file(log_dir))
 
     @QtCore.Slot(str)
     def _set_window_title(self, title):

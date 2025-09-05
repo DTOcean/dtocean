@@ -15,22 +15,25 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable=protected-access
-
 import pytest
 
-from dtocean_plugins.strategy_guis.base import StrategyWidget
+from dtocean_plugins.strategy_guis.multi import GUIMultiSensitivity
+from dtocean_plugins.strategy_guis.sensitivity import GUIUnitSensitivity
 
 
 @pytest.mark.parametrize(
-    "raw_string_input, expected",
-    [
-        ("None", [None]),
-        ("True, False", [True, False]),
-        ("1, 1.", [1, 1.0]),
-        ("one, 2, 3.", ["one", 2, 3.0]),
-    ],
+    "project, expected",
+    [(["a"], True), (["a", "b"], False)],
 )
-def test_StrategyWidget_string2types(raw_string_input, expected):
-    results = StrategyWidget.string2types(raw_string_input)
-    assert results == expected
+def test_GUIUnitSensitivity_allow_run(project, expected):
+    test = GUIUnitSensitivity()
+    assert test.allow_run("mock", project) is expected
+
+
+@pytest.mark.parametrize(
+    "project, expected",
+    [(["a"], True), (["a", "b"], False)],
+)
+def test_GUIMultiSensitivity_allow_run(project, expected):
+    test = GUIMultiSensitivity()
+    assert test.allow_run("mock", project) is expected

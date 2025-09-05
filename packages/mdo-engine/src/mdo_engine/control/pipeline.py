@@ -7,7 +7,7 @@ Created on Tue Mar 31 10:53:17 2015
 
 import logging
 from types import ModuleType
-from typing import Sequence
+from typing import OrderedDict, Sequence
 
 from ..boundary.interface import WeightedInterface
 from ..control.sockets import Socket
@@ -57,7 +57,7 @@ class Sequencer:
         return sockets
 
     @property
-    def _names(self):
+    def _names(self) -> dict[str, OrderedDict | dict]:
         """Create a socket classes to locate and communicate with the chosen
         interface class. Store name mappings.
         """
@@ -144,10 +144,9 @@ class Sequencer:
 
         return completed_names
 
-    def get_sequenced_names(self, hub):
+    def get_sequenced_names(self, hub: Hub) -> list[str]:
         cls_names = hub.get_sequenced_cls_names()
         sequenced_names = self._filter_names(hub, cls_names)
-
         return sequenced_names
 
     def get_next_name(self, hub):

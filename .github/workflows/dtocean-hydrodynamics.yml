@@ -5,6 +5,7 @@ on:
     paths:
       - '.codecov.yml'
       - '.github/workflows/dtocean-hydrodynamics.yml'
+      - 'packages/dtocean-app/**'
       - 'packages/dtocean-core/**'
       - 'packages/dtocean-hydrodynamics/**'
       - 'packages/polite-config/**'
@@ -13,6 +14,7 @@ on:
     paths:
       - '.codecov.yml'
       - '.github/workflows/dtocean-hydrodynamics.yml'
+      - 'packages/dtocean-app/**'
       - 'packages/dtocean-core/**'
       - 'packages/dtocean-hydrodynamics/**'
       - 'packages/polite-config/**'
@@ -39,9 +41,18 @@ jobs:
           python-version: 3.12
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
+      # https://github.com/actions/runner-images/issues/7048
+      - name: Change Mirror Priorities (Linux)
+        run: |
+          sudo sed -i '/archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:2/priority:0/' /etc/apt/apt-mirrors.txt
+          sudo sed -i '/azure.archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:0/priority:1/' /etc/apt/apt-mirrors.txt
+          sudo sed -i '/security.ubuntu.com\/ubuntu\/\tpriority/ s/priority:3/priority:2/' /etc/apt/apt-mirrors.txt
+          sudo cat /etc/apt/apt-mirrors.txt
+        if: runner.os == 'Linux'
       - name: Install additional libraries (Linux)
         run: |
-          sudo apt install libgl1 libegl1 libdbus-1-3 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils 
+          sudo apt-get update
+          sudo apt-get install libegl1 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 x11-utils
           /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
         if: runner.os == 'Linux'
       - name: Install package
@@ -73,9 +84,18 @@ jobs:
           python-version: 3.12
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
+      # https://github.com/actions/runner-images/issues/7048
+      - name: Change Mirror Priorities (Linux)
+        run: |
+          sudo sed -i '/archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:2/priority:0/' /etc/apt/apt-mirrors.txt
+          sudo sed -i '/azure.archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:0/priority:1/' /etc/apt/apt-mirrors.txt
+          sudo sed -i '/security.ubuntu.com\/ubuntu\/\tpriority/ s/priority:3/priority:2/' /etc/apt/apt-mirrors.txt
+          sudo cat /etc/apt/apt-mirrors.txt
+        if: runner.os == 'Linux'
       - name: Install additional libraries (Linux)
         run: |
-          sudo apt install libgl1 libegl1 libdbus-1-3 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils 
+          sudo apt-get update
+          sudo apt-get install libegl1 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 x11-utils
           /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
         if: runner.os == 'Linux'
       - name: Install package
