@@ -1,2 +1,5 @@
 # Ignore Poetry lock files for packages
 packages/**/poetry.lock
+
+# Global pyenv config
+.python-version
