@@ -72,6 +72,11 @@ def test_FloatSelect_exponent(qtbot):
         button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
     )
 
+    def is_non_zero():
+        assert window._get_result() > 0
+
+    qtbot.waitUntil(is_non_zero)
+
     test = window._get_result()
     assert test == 1000.0
 
@@ -128,6 +133,11 @@ def test_FloatSelect_max(qtbot):
     qtbot.mouseClick(
         button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
     )
+
+    def is_non_zero():
+        assert window._get_result() > 0
+
+    qtbot.waitUntil(is_non_zero)
 
     test = window._get_result()
     assert test == 1e3
