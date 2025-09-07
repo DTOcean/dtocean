@@ -48,7 +48,7 @@ class ExtendedComboBox(QtWidgets.QComboBox):
         self.my_completer.setCompletionMode(
             QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion
         )
-        self.my_completer.activated.connect(self.on_completer_activated)
+        self.my_completer.activated.connect(self.completer_activated)
         self.setCompleter(self.my_completer)
 
         # Connect signals
@@ -58,7 +58,7 @@ class ExtendedComboBox(QtWidgets.QComboBox):
 
     # On selection of an item from the completer, select the corresponding item
     # from combobox
-    def on_completer_activated(self, text):
+    def completer_activated(self, text):
         if text:
             index = self.findText(text)
             self.setCurrentIndex(index)

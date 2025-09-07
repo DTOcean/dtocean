@@ -169,11 +169,11 @@ class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
 
     def _init_lists(self):
         self.leftListView.setModel(self._left_model)
-        self.leftListView.clicked.connect(self.on_leftView_clicked)
+        self.leftListView.clicked.connect(self.leftView_clicked)
         self.leftListView.show()
 
         self.rightListView.setModel(self._right_model)
-        self.rightListView.clicked.connect(self.on_rightView_clicked)
+        self.rightListView.clicked.connect(self.rightView_clicked)
         self.rightListView.show()
 
     def _make_left_items(self, item_dict):
@@ -204,11 +204,11 @@ class Shuttle(QtWidgets.QDialog, Ui_ShuttleDialog):
         self.list_updated.emit(updated_list)
 
     @QtCore.Slot(QtCore.QModelIndex)
-    def on_leftView_clicked(self, index):
+    def leftView_clicked(self, index):
         self._left_index = index.row()
 
     @QtCore.Slot(QtCore.QModelIndex)
-    def on_rightView_clicked(self, index):
+    def rightView_clicked(self, index):
         self._right_index = index.row()
 
     @QtCore.Slot()
