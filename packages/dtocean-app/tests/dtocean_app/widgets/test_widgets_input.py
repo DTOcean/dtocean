@@ -18,7 +18,6 @@
 
 import numpy as np
 import pandas as pd
-from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
 from dtocean_app.widgets.input import (
@@ -51,10 +50,7 @@ def test_FloatSelect_get_result(qtbot):
     window._set_value(1.0)
     window.show()
     qtbot.addWidget(window)
-
-    test = window._get_result()
-
-    assert test == 1.0
+    assert window._get_result() == 1.0
 
 
 def test_FloatSelect_exponent(qtbot):
@@ -63,22 +59,9 @@ def test_FloatSelect_exponent(qtbot):
     qtbot.addWidget(window)
 
     window.doubleSpinBox.lineEdit().setText("1e3")
+    window.doubleSpinBox.interpretText()
 
-    button = window.buttonBox.button(
-        QtWidgets.QDialogButtonBox.StandardButton.Ok
-    )
-    qtbot.mouseMove(button)
-    qtbot.mouseClick(
-        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
-    )
-
-    def is_non_zero():
-        assert window._get_result() > 0
-
-    qtbot.waitUntil(is_non_zero)
-
-    test = window._get_result()
-    assert test == 1000.0
+    assert window._get_result() == 1000.0
 
 
 def test_FloatSelect_bad_input(qtbot):
@@ -87,17 +70,9 @@ def test_FloatSelect_bad_input(qtbot):
     qtbot.addWidget(window)
 
     window.doubleSpinBox.lineEdit().setText("eeeeee")
+    window.doubleSpinBox.interpretText()
 
-    button = window.buttonBox.button(
-        QtWidgets.QDialogButtonBox.StandardButton.Ok
-    )
-    qtbot.mouseMove(button)
-    qtbot.mouseClick(
-        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
-    )
-
-    test = window._get_result()
-    assert test == 0.0
+    assert window._get_result() == 0.0
 
 
 def test_FloatSelect_min(qtbot):
@@ -106,17 +81,9 @@ def test_FloatSelect_min(qtbot):
     qtbot.addWidget(window)
 
     window.doubleSpinBox.lineEdit().setText("-1")
+    window.doubleSpinBox.interpretText()
 
-    button = window.buttonBox.button(
-        QtWidgets.QDialogButtonBox.StandardButton.Ok
-    )
-    qtbot.mouseMove(button)
-    qtbot.mouseClick(
-        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
-    )
-
-    test = window._get_result()
-    assert test == 0.0
+    assert window._get_result() == 0.0
 
 
 def test_FloatSelect_max(qtbot):
@@ -125,22 +92,9 @@ def test_FloatSelect_max(qtbot):
     qtbot.addWidget(window)
 
     window.doubleSpinBox.lineEdit().setText("2e3")
+    window.doubleSpinBox.interpretText()
 
-    button = window.buttonBox.button(
-        QtWidgets.QDialogButtonBox.StandardButton.Ok
-    )
-    qtbot.mouseMove(button)
-    qtbot.mouseClick(
-        button, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
-    )
-
-    def is_non_zero():
-        assert window._get_result() > 0
-
-    qtbot.waitUntil(is_non_zero)
-
-    test = window._get_result()
-    assert test == 1e3
+    assert window._get_result() == 1e3
 
 
 def test_IntSelect(qtbot):
@@ -156,10 +110,7 @@ def test_IntSelect_get_result(qtbot):
     window._set_value(1)
     window.show()
     qtbot.addWidget(window)
-
-    test = window._get_result()
-
-    assert test == 1
+    assert window._get_result() == 1
 
 
 def test_IntSelect_min(qtbot):
@@ -168,15 +119,9 @@ def test_IntSelect_min(qtbot):
     qtbot.addWidget(window)
 
     window.spinBox.setValue(-1)
+    window.spinBox.interpretText()
 
-    qtbot.mouseClick(
-        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
-        Qt.MouseButton.LeftButton,
-    )
-
-    test = window._get_result()
-
-    assert test == 0
+    assert window._get_result() == 0
 
 
 def test_IntSelect_max(qtbot):
@@ -185,15 +130,9 @@ def test_IntSelect_max(qtbot):
     qtbot.addWidget(window)
 
     window.spinBox.setValue(3)
+    window.spinBox.interpretText()
 
-    qtbot.mouseClick(
-        window.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok),
-        Qt.MouseButton.LeftButton,
-    )
-
-    test = window._get_result()
-
-    assert test == 2
+    assert window._get_result() == 2
 
 
 def test_StringSelect(qtbot):
@@ -209,10 +148,7 @@ def test_StringSelect_get_result(qtbot):
     window._set_value("Bob")
     window.show()
     qtbot.addWidget(window)
-
-    test = window._get_result()
-
-    assert test == "Bob"
+    assert window._get_result() == "Bob"
 
 
 def test_DirectorySelect(qtbot):
@@ -226,10 +162,7 @@ def test_DirectorySelect_get_result(qtbot):
     window._set_value("Bob")
     window.show()
     qtbot.addWidget(window)
-
-    test = window._get_result()
-
-    assert test == "Bob"
+    assert window._get_result() == "Bob"
 
 
 def test_DirectorySelect_toolButton(mocker, qtbot, tmp_path):
@@ -266,9 +199,8 @@ def test_CoordSelect_get_result_2D(qtbot):
 
     window.show()
     qtbot.addWidget(window)
-    test = window._get_result()
 
-    assert test == [1.0, 2.0]
+    assert window._get_result() == [1.0, 2.0]
 
 
 def test_CoordSelect_get_result_3D(qtbot):
@@ -280,9 +212,8 @@ def test_CoordSelect_get_result_3D(qtbot):
 
     window.show()
     qtbot.addWidget(window)
-    test = window._get_result()
 
-    assert test == [1.0, 2.0, 3.0]
+    assert window._get_result() == [1.0, 2.0, 3.0]
 
 
 def test_CoordSelect_get_result_None(qtbot):
@@ -294,9 +225,8 @@ def test_CoordSelect_get_result_None(qtbot):
 
     window.show()
     qtbot.addWidget(window)
-    test = window._get_result()
 
-    assert test == [0.0, 0.0]
+    assert window._get_result() == [0.0, 0.0]
 
 
 def test_InputDataTable_edit_cols(qtbot):
