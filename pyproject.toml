@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dtocean"
-version = "2.0.0"
+version = "2025.09.12.0"
 package-mode = false
 
 [tool.poetry.dependencies]
@@ -12,6 +12,13 @@ dtocean-hydrodynamics = { path = "packages/dtocean-hydrodynamics", develop = tru
 dtocean-qt = { path = "packages/dtocean-qt", develop = true }
 mdo-engine = { path = "packages/mdo-engine", develop = true }
 polite-config = { path = "packages/polite-config", develop = true }
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+sphinx-multiversion = "^0.2.4"
+sphinx-rtd-theme = "^3.0.2"
 
 [tool.poetry.group.test]
 optional = true

@@ -3,3 +3,6 @@ packages/**/poetry.lock
 
 # Global pyenv config
 .python-version
+
+# Docs build
+_build
