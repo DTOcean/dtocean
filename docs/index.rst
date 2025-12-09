@@ -4,17 +4,46 @@
      DTOcean
     #########
 
-**Disclaimer**
+    **Optimal Design Tools for Ocean Energy Arrays**
 
-THIS SOFTWARE AVAILABLE ON THE SITE IS PROVIDED "AS IS" AND ANY EXPRESSED OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-EVENT SHALL THE DTOCEAN PROJECT OR ANY OF THEIR PARNTERS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    Release v\ |version|. (:ref:`Installation <install>`)
+
+    .. image:: /images/dtocean.svg
+        :target: https://github.com/DTOcean/dtocean
+
+
+    **DTOcean** is the only open source fully parametric design tool for arrays 
+    of ocean energy converters.
+
+    -------------------
+
+    **DTOcean** automates the design of an array of ocean energy converters 
+    (OECs). Automated design helps catch errors early, reduce financial risk 
+    and encourage innovation in array design and the supply chain. 
+
+    Key Features
+    ============
+
+    **DTOcean** is accelerating tomorrow's energy generation technology with 
+    advanced array design:
+
+    - Optimal ocean energy converter (OEC) positioning
+    - Cost-effective energy export
+    - Station keeping designed for device and site conditions
+    - Installation planning with weather effects
+    - Maintenance needs and OEC downtime
+    - A unique statistical approach to LCOE
+    - Influence reliability at component level
+    - Environmental impact assessment*
+    - Graphical user interface
+    - Persistent database
+    - Wizard based installation
+
+    \* experimental feature
 
 .. include:: contents.rst
+
+.. only:: html
+
+    Loved and maintained by `Mathew Topper <mathew.topper@dataonlygreater.com>`_
+    \@ `Data Only Greater <http://www.dataonlygreater.com>`_

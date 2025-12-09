@@ -1,0 +1,7 @@
+Name,Purpose,Icon
+Add Modules...,Open the module selection shuttle,|icon_modules|
+Add Assessment...,Open the assessment selection shuttle,|icon_assessment|
+Select Strategy...,Open the strategy selection dialogue,|icon_strategy|
+Run Current Module,Execute the next module in the sequence,|icon_run_module|
+Run Assessments,Execute all assessments for the last executed module,|icon_run_assessments|
+Run Strategy,Execute the selected strategy,|icon_run_strategy|

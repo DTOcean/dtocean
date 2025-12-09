@@ -1,0 +1,5 @@
+Name,Purpose
+DATETIME,The date and time of the message
+LEVEL,"The logging level of the message. Can be DEBUG, INFO, WARNING, ERROR, or CRITICAL"
+ADDRESS,The package and (python) module that generated the message
+MESSAGE,The contents of the message itself

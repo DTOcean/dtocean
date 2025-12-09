@@ -119,26 +119,10 @@ language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = [
-    "_build",
-    "contents.rst",
-    "technical/hydrodynamics.rst",
-    "technical/electrical.rst",
-    "technical/moorings.rst",
-    "technical/instalation.rst",
-    "technical/operations.rst",
-    "technical/economics.rst",
-    "technical/reliability.rst",
-    "technical/environment.rst",
-    "user/hydrodynamics.rst",
-    "user/electrical.rst",
-    "user/moorings.rst",
-    "user/installation.rst",
-    "user/operations.rst",
-    "user/economics.rst",
-    "user/reliability.rst",
-    "user/environment.rst",
-]
+exclude_patterns = ['_build',
+                    'data',
+                    'contents.rst',
+                    'user/database_tables.rst']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -280,20 +264,22 @@ htmlhelp_basename = "DTOcean User Manual"
 
 ADDITIONAL_PREAMBLE = r"""
 \setcounter{tocdepth}{4}
+\DeclareUnicodeCharacter{3003}{---"---}
 """
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    "papersize": "a4paper",
+    'papersize': 'a4paper',
+
     # The font size ('10pt', '11pt' or '12pt').
     #'pointsize': '10pt',
+
     # Additional stuff for the LaTeX preamble.
-    "preamble": ADDITIONAL_PREAMBLE,
+    'preamble': ADDITIONAL_PREAMBLE,
+
     # Latex figure (float) alignment
     #'figure_align': 'htbp',
-    # Use extended UTF8 character set
-    "inputenc": "\\usepackage[utf8x]{inputenc}",
-}
+    }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,

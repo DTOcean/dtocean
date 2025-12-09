@@ -1,0 +1,5 @@
+Section,Description
+All,Every table in the database
+Device,Only tables specific to devices
+Site,Only tables specific to sites
+Other,Only tables specific to reference data

@@ -1,0 +1,14 @@
+Branch,Variable,Value
+Hydrodynamics,Array Rated Power,4.8
+Hydrodynamics,Tidal Probability Bins,12
+Hydrodynamics,Lease Area Boundary Padding,100
+Hydrodynamics,Minimum Q-Factor,0.9
+Hydrodynamics,Power Histogram Bin Width,0.04
+Hydrodynamics,User Option for Array Layout,Staggered
+Electrical Sub-Systems,Network Configuration,Radial
+Electrical Sub-Systems,Maximum Seabed Gradient,14
+Mooring and Foundations,Foundation Safety Factor,1
+Mooring and Foundations,Grout Strength Safety Factor,1
+Mooring and Foundations,Concrete Cost per kg,0.05
+Mooring and Foundations,Grout Cost per kg,0.05
+Mooring and Foundations,Steel Cost per kg,5

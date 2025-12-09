@@ -1,0 +1,9 @@
+Name,Purpose,Icon
+Select Database...,Open the select database dialogue,|icon_select_db|
+Initiate Pipeline,Confirm chosen technology type and collect top level  information from the database (if selected),|icon_pipeline|
+Initiate Bathymetry,Allow selection of bathymetry from a site chosen from the database (if selected),|icon_bathymetry|
+Initiate Dataflow,Calculate required variables for technology and module selection and collect available data from database (if selected),|icon_dataflow|
+Export...,Export satisfied data to a datastate file,
+Export (mask outputs)...,Export satisfied data (excluding output variables) to a datastate file,
+Import...,Import a datastate file,
+Import (skip satisfied)...,Import a datastate file but do not overwrite satisfied variables,

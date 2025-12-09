@@ -5,6 +5,11 @@ viewed online at [dtocean.github.io](https://dtocean.github.io/), read as pdf
 documentation or installed for offline use with the DTOcean graphical interface
 (see [dtocean](https://github.com/DTOcean/dtocean)).
 
+**Version 2.0.0 of the manuals is a rewrite of the original release, focussed 
+on the current version of the software, rather than the goals the original EU
+DTOcean project. This process is not not yet fully complete, so please refer to 
+version 1.0.0 when additional detail is required.**
+
 ## Offline Manuals 
 
 The DTOcean Manuals installation wizard can be downloaded from the [Releases](
@@ -40,6 +45,9 @@ and packaged by:
 
 It is now maintained by Mathew Topper at [Data Only Greater](
 https://www.dataonlygreater.com/).
+
+Gratitude is given to [Sandia Nation Labs](https://www.sandia.gov) for 
+supporting the ongoing rewrite of this documentation.
 
 ## License
 

@@ -1,0 +1,5 @@
+Icon,Status,Meaning
+|icon_green|,Satisfied,Data for the variable has been entered / outputted
+|icon_red|,Required,Data for the variable has not been entered and is required to execute the module or assessment
+|icon_blue|,Optional,Data for the variable has not been entered but is not required to execute the module or assessment
+|icon_grey|,Unavailable,The module has already been executed and data may not be entered for the variable (but can still be viewed)

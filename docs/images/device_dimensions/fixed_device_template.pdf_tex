@@ -1,0 +1,66 @@
+%% Creator: Inkscape inkscape 0.92.2, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'fixed_device_template.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{409.58630371bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.81787728)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{fixed_device_template.pdf}}%
+    \put(0.462918,0.15516281){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\textbf{\textit{0}}}}}%
+    \put(0.50863646,0.18138408){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\textit{y}}}}%
+    \put(0.50653835,0.13445916){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\textit{x}}}}%
+    \put(0.46786578,0.20424159){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\textit{z}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{fixed_device_template.pdf}}%
+    \put(0.49616636,0.36867558){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{\VAR{mass}}}}%
+    \put(0.34913119,0.70407264){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{\VAR{width}}}}%
+    \put(0.67385154,0.40112654){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{\VAR{hubheight}}}}%
+    \put(0.45797058,0.07361502){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\VAR{length}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{fixed_device_template.pdf}}%
+    \put(0.54570979,0.10764071){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{\VAR{foundation.one}}}}%
+    \put(0.31940667,0.41438417){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{\VAR{height}}}}%
+  \end{picture}%
+\endgroup%

@@ -1,0 +1,4 @@
+Icon,Purpose
+|icon_table_edit|,Toggle the editing mode of the table
+|icon_add_row|,Appends a new row to the bottom of the table
+|icon_remove_row|,Removes the row containing the selected cell

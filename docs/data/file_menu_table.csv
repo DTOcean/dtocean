@@ -1,0 +1,8 @@
+Name,Purpose,Icon
+New,Create a new project from scratch,|icon_new|
+Open...,Open an existing project file,|icon_open|
+Save,Save the current project to file,|icon_save|
+Save As...,Save the current project using a different file name,
+Properties...,Open the project properties dialogue,
+Close,Close the current project,|icon_close|
+Exit,Leave DTOcean,

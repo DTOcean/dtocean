@@ -1,0 +1,7 @@
+Name,Purpose,Icon
+Show Pipeline,Show the pipeline dock,
+Show Simulations,Show the simulations dock,
+Show System,Show the system dock,
+Data,Switch the context area to the data context,|icon_context_data|
+Plots,Switch the context area to the plots context,|icon_context_plots|
+Comparisons,Switch the context area to the comparisons context,|icon_context_comparisons|

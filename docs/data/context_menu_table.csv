@@ -1,0 +1,4 @@
+Name,Sections,Branches,Purpose
+Inspect,"Configuration, Results",Modules,Update the output variable values to the state following execution of the selected module
+Reset,Configuration,Modules,"Reset modules and variables to the state prior to execution of the selected module. Note, this action is destructive and cannot be undone."
+Load test data...,Configuration,"Modules, Assessment",Load data from a specifically formatted python file into the variables of the selected branch
