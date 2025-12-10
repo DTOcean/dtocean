@@ -13,6 +13,7 @@
 # serve to show the default.
 
 import datetime
+import os
 from pathlib import Path
 
 import tomllib
@@ -119,10 +120,32 @@ language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build',
-                    'data',
-                    'contents.rst',
-                    'user/database_tables.rst']
+smv_version = os.environ.get("SPHINX_MULTIVERSION_RELEASE")
+
+# Adjust for version 1 layout
+if smv_version is not None and smv_version == "1.0.0":
+    exclude_patterns = [
+        "_build",
+        "contents.rst",
+        "technical/hydrodynamics.rst",
+        "technical/electrical.rst",
+        "technical/moorings.rst",
+        "technical/instalation.rst",
+        "technical/operations.rst",
+        "technical/economics.rst",
+        "technical/reliability.rst",
+        "technical/environment.rst",
+        "user/hydrodynamics.rst",
+        "user/electrical.rst",
+        "user/moorings.rst",
+        "user/installation.rst",
+        "user/operations.rst",
+        "user/economics.rst",
+        "user/reliability.rst",
+        "user/environment.rst",
+    ]
+else:
+    exclude_patterns = ["_build", "data", "contents.rst", "user/database_tables.rst"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -207,11 +230,7 @@ html_static_path = ["_static"]
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-html_sidebars = {
-    "**": [
-        "versioning.html",
-    ],
-}
+# html_sidebars = {}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -269,17 +288,14 @@ ADDITIONAL_PREAMBLE = r"""
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    'papersize': 'a4paper',
-
+    "papersize": "a4paper",
     # The font size ('10pt', '11pt' or '12pt').
     #'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
-    'preamble': ADDITIONAL_PREAMBLE,
-
+    "preamble": ADDITIONAL_PREAMBLE,
     # Latex figure (float) alignment
     #'figure_align': 'htbp',
-    }
+}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,

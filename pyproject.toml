@@ -17,8 +17,8 @@ polite-config = { path = "packages/polite-config", develop = true }
 optional = true
 
 [tool.poetry.group.docs.dependencies]
-sphinx-multiversion = "^0.2.4"
 sphinx-rtd-theme = "^3.0.2"
+sphinx-multiversion = {git = "https://github.com/sphinx-contrib/multiversion.git"}
 
 [tool.poetry.group.test]
 optional = true
