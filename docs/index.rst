@@ -6,7 +6,7 @@
 
     **Optimal Design Tools for Ocean Energy Arrays**
 
-    Release v\ |version|. (:ref:`Installation <install>`)
+    Release v\ |release| (:ref:`Installation <install>`)
 
     .. image:: /images/dtocean.svg
         :target: https://github.com/DTOcean/dtocean
