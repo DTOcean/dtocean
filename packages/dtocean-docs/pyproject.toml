@@ -13,6 +13,13 @@ include = [
     { path = "src/dtocean_docs/html", format = ["sdist", "wheel"] }
 ]
 
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+
 [tool.poetry.build]
 script = "scripts/build-docs.py"
 
