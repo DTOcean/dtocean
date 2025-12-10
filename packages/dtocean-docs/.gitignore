@@ -106,3 +106,6 @@ ENV/
 
 # ruff
 .ruff_cache/
+
+# docs build
+src/dtocean_docs/html

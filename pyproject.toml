@@ -7,6 +7,7 @@ package-mode = false
 python = ">=3.12,<3.13"
 dtocean-app = { path = "packages/dtocean-app", develop = true }
 dtocean-core = { path = "packages/dtocean-core", develop = true }
+dtocean-docs = { path = "packages/dtocean-docs", develop = true }
 dtocean-dummy-module = { path = "packages/dtocean-dummy-module", develop = true }
 dtocean-hydrodynamics = { path = "packages/dtocean-hydrodynamics", develop = true }
 dtocean-qt = { path = "packages/dtocean-qt", develop = true }

@@ -2,18 +2,29 @@
 name = "dtocean-docs"
 version = "0.1.0"
 description = "Offline DTOcean documentation for dtocean-app"
-authors = [
-    {name = "Mathew Topper",email = "damm_horse@yahoo.co.uk"}
-]
+authors = [{ name = "Mathew Topper", email = "damm_horse@yahoo.co.uk" }]
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
-dependencies = [
-]
+dependencies = []
 
 [tool.poetry]
-packages = [{include = "dtocean_docs", from = "src"}]
+packages = [{ include = "dtocean_docs", from = "src" }]
+include = [
+    { path = "src/dtocean_docs/html", format = ["sdist", "wheel"] }
+]
 
+[tool.poetry.build]
+script = "scripts/build-docs.py"
+
+[tool.poetry-monoranger-plugin]
+enabled = true
+monorepo-root = "../../"
+version-pinning-rule = '=='
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = [
+    "poetry-core>=2.0.0,<3.0.0",
+    "sphinx-multiversion @ git+ssh://git@github.com/sphinx-contrib/multiversion",
+    "sphinx-rtd-theme",
+]
 build-backend = "poetry.core.masonry.api"
