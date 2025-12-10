@@ -1,0 +1,4 @@
+[tool.poetry]
+name = "dtocean"
+version = "1.0.0"
+package-mode = false
