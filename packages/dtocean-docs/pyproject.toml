@@ -1,0 +1,19 @@
+[project]
+name = "dtocean-docs"
+version = "0.1.0"
+description = "Offline DTOcean documentation for dtocean-app"
+authors = [
+    {name = "Mathew Topper",email = "damm_horse@yahoo.co.uk"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "dtocean_docs", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
