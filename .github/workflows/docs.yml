@@ -16,9 +16,6 @@ jobs:
   test:
     name: Test the current branch
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,13 +31,10 @@ jobs:
           poetry install --only docs
       - name: Build docs
         run: |
-          sphinx-build -W --keep-going -b html docs ${{ runner.temp }}
+          poetry run sphinx-build -W --keep-going -b html docs ${{ runner.temp }}
   build:
     name: Build all branches
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
     steps:
       - name: Get branch name
         run: |
@@ -63,7 +57,7 @@ jobs:
         run: echo "BUILD_DIR=$(mktemp -d -t pages-XXXXXXXXXX)" >> $GITHUB_ENV
       - name: Build docs
         run: |
-          sphinx-multiversion docs ${{ env.BUILD_DIR }}
+          poetry run sphinx-multiversion docs ${{ env.BUILD_DIR }}
           touch ${{ env.BUILD_DIR }}/.nojekyll
           cp docs/_assets/gh-pages.gitignore ${{ env.BUILD_DIR }}/.gitignore
           cp docs/_assets/gh-pages-readme.md ${{ env.BUILD_DIR }}/README.md
