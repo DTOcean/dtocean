@@ -16,6 +16,9 @@ jobs:
   test:
     name: Test the current branch
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,6 +38,9 @@ jobs:
   build:
     name: Build all branches
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - name: Get branch name
         run: |
