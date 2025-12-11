@@ -74,7 +74,7 @@ script = "scripts/build-extension.py"
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
-version-pinning-rule = '=='
+version-pinning-rule = '~'
 
 [tool.pytest.ini_options]
 filterwarnings = [

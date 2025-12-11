@@ -33,7 +33,7 @@ script = "scripts/build-docs.py"
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
-version-pinning-rule = '=='
+version-pinning-rule = '~'
 
 [tool.pyright]
 typeCheckingMode = "basic"

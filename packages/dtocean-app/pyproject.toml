@@ -54,7 +54,7 @@ pandas-stubs = "^2.2.3.241126"
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
-version-pinning-rule = '=='
+version-pinning-rule = '~'
 
 [tool.pyright]
 typeCheckingMode = "basic"
