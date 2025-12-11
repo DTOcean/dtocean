@@ -60,6 +60,7 @@ jobs:
           poetry run sphinx-multiversion docs ${{ env.BUILD_DIR }}
           touch ${{ env.BUILD_DIR }}/.nojekyll
           cp docs/_assets/gh-pages.gitignore ${{ env.BUILD_DIR }}/.gitignore
+          cp docs/_assets/gh-pages-redirect.html ${{ env.BUILD_DIR }}/index.html
           cp docs/_assets/gh-pages-readme.md ${{ env.BUILD_DIR }}/README.md
       - name: Deploy
         if: ${{ github.event_name == 'push' && env.BRANCH == 'next' }}
