@@ -44,7 +44,7 @@ line-length = 80
 [build-system]
 requires = [
     "poetry-core>=2.0.0,<3.0.0",
-    "sphinx-multiversion @ git+ssh://git@github.com/sphinx-contrib/multiversion",
+    "sphinx-multiversion @ git+https://github.com/sphinx-contrib/multiversion.git",
     "sphinx-rtd-theme",
 ]
 build-backend = "poetry.core.masonry.api"
