@@ -1,53 +1,45 @@
 # DTOcean Documentation
 
-The DTOcean documentation is maintained in this repository. It can either be
-viewed online at [dtocean.github.io](https://dtocean.github.io/), read as pdf
-documentation or installed for offline use with the DTOcean graphical interface
-(see [dtocean](https://github.com/DTOcean/dtocean)).
+## Compile Instructions
 
-**Version 2.0.0 of the manuals is a rewrite of the original release, focussed 
-on the current version of the software, rather than the goals the original EU
-DTOcean project. This process is not not yet fully complete, so please refer to 
-version 1.0.0 when additional detail is required.**
+The docs are written using the [Sphinx](https://www.sphinx-doc.org/en/master/)
+documentation generator. The [Poetry](https://python-poetry.org/)
+dependency manager is used to install Sphinx and additional plugins. Poetry
+must be installed and available on the command line.
 
-## Offline Manuals 
+To install Sphinx run the following from the root directory:
 
-The DTOcean Manuals installation wizard can be downloaded from the [Releases](
-https://github.com/DTOcean/dtocean.github.io/releases) page.
+```console
+poetry install --only docs
+```
 
-Once downloaded, simply double-click the file and follow the instructions.
+### Testing the Current Branch
 
-This provides offline access to the manuals when using the DTOcean graphical 
-interface, which should be installed alongside the manuals. 
+The documentation for the current branch can be built locally for inspection
+prior to publishing. They are built in the `docs/_build` directory. Note,
+unlike the final documentation, version tags and other branches will not be
+available.
 
-## PDFs 
+To test the current branch from the root directory:
 
-PDF versions of the DTOcean documentation can be downloaded from the 
-[Releases](https://github.com/DTOcean/dtocean.github.io/releases) page.
+```console
+poetry run sphinx-build -a -W --keep-going -b html docs _build/html
+```
 
-## Contributing
+The front page of the docs can be accessed at `_build/html/index.html`.
 
-Pull requests are welcome. For major changes, please open an issue first to
-discuss what you would like to change.
+### Building Final Version Locally
 
-See [this blog post](
-https://www.dataonlygreater.com/latest/professional/2017/03/09/dtocean-development-change-management/)
-for information regarding development of the DTOcean ecosystem.
+The final documentation can be built locally for inspection prior to
+publishing. They are built in the `docs/_build` directory. Note, docs are built
+from the remote so only pushed changes on branches will be shown. To build the
+docs use the following command from the root directory:
 
-## Credits
+```console
+poetry run sphinx-multiversion -a -W --keep-going docs _build/html
+```
 
-This documentation was initially created by the consortium members of the 
-[EU DTOcean project](https://www.dtoceanplus.eu/About-DTOceanPlus/History) 
-and packaged by:
-
- * Rui Duarte at [France Energies Marines](https://www.france-energies-marines.org/)
- * Mathew Topper at [TECNALIA](https://www.tecnalia.com)
-
-It is now maintained by Mathew Topper at [Data Only Greater](
-https://www.dataonlygreater.com/).
-
-Gratitude is given to [Sandia Nation Labs](https://www.sandia.gov) for 
-supporting the ongoing rewrite of this documentation.
+The front page of the docs can be accessed at `_build/html/next/index.html`.
 
 ## License
 
