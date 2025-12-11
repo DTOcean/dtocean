@@ -145,7 +145,13 @@ if smv_version is not None and smv_version == "1.0.0":
         "user/environment.rst",
     ]
 else:
-    exclude_patterns = ["_build", "data", "contents.rst", "user/database_tables.rst"]
+    exclude_patterns = [
+        "_assets",
+        "_build",
+        "data",
+        "contents.rst",
+        "user/database_tables.rst",
+    ]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
