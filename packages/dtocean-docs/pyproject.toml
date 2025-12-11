@@ -20,6 +20,13 @@ optional = true
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.396"
+
 [tool.poetry.build]
 script = "scripts/build-docs.py"
 
@@ -27,6 +34,12 @@ script = "scripts/build-docs.py"
 enabled = true
 monorepo-root = "../../"
 version-pinning-rule = '=='
+
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
 
 [build-system]
 requires = [
