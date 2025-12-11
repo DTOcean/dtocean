@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "dtocean"
 version = "2025.09.12.0"
 package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
+dtocean = { path = "packages/dtocean", develop = true }
 dtocean-app = { path = "packages/dtocean-app", develop = true }
 dtocean-core = { path = "packages/dtocean-core", develop = true }
 dtocean-docs = { path = "packages/dtocean-docs", develop = true }

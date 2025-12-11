@@ -638,6 +638,25 @@ files = [
 ]
 
 [[package]]
+name = "dtocean"
+version = "0.0.0"
+description = "Design and techno-economic assessment of marine renewable energy arrays."
+optional = false
+python-versions = ">=3.12,<3.13"
+groups = ["main"]
+files = []
+develop = true
+
+[package.dependencies]
+dtocean-app = {path = "../dtocean-app", develop = true}
+dtocean-docs = {path = "../dtocean-docs", develop = true}
+dtocean-hydrodynamics = {path = "../dtocean-hydrodynamics", develop = true}
+
+[package.source]
+type = "directory"
+url = "packages/dtocean"
+
+[[package]]
 name = "dtocean-app"
 version = "2.1.1"
 description = "Main graphical application for the DTOcean tools"
@@ -3204,4 +3223,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "0835f7ff23c4644882e947e567e2839b2b80959a7fca99e32f5b82e19ef160d3"
+content-hash = "cdd91184ad5d096404cf40a447422957c5be72e3f789420e5141dd75ff66a84d"

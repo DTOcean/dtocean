@@ -1,0 +1,44 @@
+[project]
+name = "dtocean"
+description = "Design and techno-economic assessment of marine renewable energy arrays."
+license = "GPL-3.0-or-later"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+authors = [
+    { name = "The DTOcean Developers"},
+]
+maintainers = [
+    { name = "Mathew Topper", email = "damm_horse@yahoo.co.uk" },
+]
+dynamic = ["version"]
+
+[tool.poetry]
+packages = [{include = "dtocean", from = "src"}]
+version = "0.0.0"
+
+[tool.poetry.dependencies]
+dtocean-app = { path = "../dtocean-app", develop = true }
+dtocean-docs = { path = "../dtocean-docs", develop = true }
+dtocean-hydrodynamics = { path = "../dtocean-hydrodynamics", develop = true }
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[tool.poetry-dynamic-versioning.from-file]
+source = "../../pyproject.toml"
+pattern = 'version.*=.*"([\d.]+)"'
+
+[tool.poetry-monoranger-plugin]
+enabled = true
+monorepo-root = "../../"
+version-pinning-rule = '~'
+
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry.core.masonry.api"
