@@ -21,6 +21,20 @@ dtocean-app = { path = "../dtocean-app", develop = true }
 dtocean-docs = { path = "../dtocean-docs", develop = true }
 dtocean-hydrodynamics = { path = "../dtocean-hydrodynamics", develop = true }
 
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+ruff = "^0.8.3"
+pyright = "^1.1.396"
+
 [tool.poetry-dynamic-versioning]
 enable = true
 
@@ -41,4 +55,4 @@ line-length = 80
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry.core.masonry.api"
+build-backend = "poetry_dynamic_versioning.backend"
