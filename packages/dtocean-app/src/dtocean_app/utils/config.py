@@ -17,44 +17,20 @@
 
 from importlib.metadata import distribution
 
-from polite_config.configuration import ReadINI
 from polite_config.paths import (
     DirectoryMap,
     ModPath,
-    SiteDataPath,
     UserDataPath,
 )
 
 
-def get_install_paths():
-    """Pick the necessary paths to configure the external files for the
-    manuals."""
-
-    install_config_name = "install.ini"
-
-    user_data = UserDataPath("dtocean_doc", "DTOcean", "config")
-    user_ini_reader = ReadINI(user_data, install_config_name)
-
-    # Get the root path from the site data path.
-    site_data = SiteDataPath("DTOcean Manuals", "DTOcean")
-    site_ini_reader = ReadINI(site_data, install_config_name)
-
-    if user_ini_reader.config_exists():
-        config = user_ini_reader.get_config()
-    elif site_ini_reader.config_exists():
-        config = site_ini_reader.get_config()
-    else:
+def get_docs_index():
+    try:
+        from dtocean_docs import get_index
+    except ImportError:
         return None
 
-    man = config["man"]
-    assert isinstance(man, dict)
-
-    path_dict: dict[str, str] = {
-        "man_user_path": man["user_path"],
-        "man_technical_path": man["technical_path"],
-    }
-
-    return path_dict
+    return get_index()
 
 
 def get_software_version():

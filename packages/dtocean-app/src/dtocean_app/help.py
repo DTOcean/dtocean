@@ -23,13 +23,11 @@ Created on Sat Oct 15 12:14:30 2016
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-import os
-
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import QUrl
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
-from .utils.config import get_install_paths
+from .utils.config import get_docs_index
 from .widgets.dialogs import Message
 
 
@@ -46,12 +44,12 @@ class HelpWidget(QtWidgets.QDialog):
     def _init_ui(self):
         self._layout = QtWidgets.QVBoxLayout(self)
 
-        man_paths = self._get_man_paths()
+        docs_index = get_docs_index()
 
-        if man_paths is None:
+        if docs_index is None:
             self._init_message()
         else:
-            self._init_help(man_paths)
+            self._init_help(docs_index)
 
         self.setLayout(self._layout)
 
@@ -64,8 +62,7 @@ class HelpWidget(QtWidgets.QDialog):
 
         self._layout.addWidget(self._msg_widget)
 
-    def _init_help(self, path_dict):
-        index_path = os.path.join(path_dict["man_user_path"], "index.html")
+    def _init_help(self, index_path):
         url = QUrl.fromLocalFile(index_path)
 
         self._url_widget = QWebEngineView(self)
@@ -73,8 +70,3 @@ class HelpWidget(QtWidgets.QDialog):
         self._url_widget.show()
 
         self._layout.addWidget(self._url_widget)
-
-    def _get_man_paths(self):
-        path_dict = get_install_paths()
-
-        return path_dict
