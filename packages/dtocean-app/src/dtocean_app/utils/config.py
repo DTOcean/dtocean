@@ -15,9 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import argparse
-import datetime
-import sys
 from importlib.metadata import distribution
 
 from polite_config.configuration import ReadINI
@@ -27,8 +24,6 @@ from polite_config.paths import (
     SiteDataPath,
     UserDataPath,
 )
-
-from . import SmartFormatter
 
 
 def get_install_paths():
@@ -69,10 +64,10 @@ def get_software_version():
     return "{} {}".format(package, version)
 
 
-def init_config(logging=False, install=False, overwrite=False):
+def init_config(logging=False, overwrite=False):
     """Copy config files to user data directory"""
 
-    if not any([logging, install]):
+    if not any([logging]):
         return
 
     objdir = ModPath(__name__, "..", "config")
@@ -81,72 +76,5 @@ def init_config(logging=False, install=False, overwrite=False):
 
     if logging:
         dirmap.copy_file("logging.yaml", overwrite=overwrite)
-    if install:
-        dirmap.copy_file("install.ini", overwrite=overwrite)
 
     return datadir
-
-
-def init_config_parser(args):
-    """Command line parser for init_config.
-
-    Example:
-
-        To get help::
-
-            $ dtocean-core-config -h
-
-    """
-
-    now = datetime.datetime.now()
-    epiStr = "The DTOcean Developers (c) {}.".format(now.year)
-
-    desStr = (
-        "Copy user modifiable configuration files to "
-        r"<UserName>\AppData\Roaming\DTOcean\dtocean-app\config"
-    )
-
-    parser = argparse.ArgumentParser(
-        description=desStr, epilog=epiStr, formatter_class=SmartFormatter
-    )
-
-    parser.add_argument(
-        "action",
-        choices=["logging", "install"],
-        help="R|Select an action, where\n"
-        " logging = copy logging configuration\n"
-        " install = copy manuals installation path "
-        "configuration",
-    )
-
-    parser.add_argument(
-        "--overwrite",
-        help=("overwrite any existing configuration files"),
-        action="store_true",
-    )
-
-    args = parser.parse_args(args)
-
-    action = args.action
-    overwrite = args.overwrite
-
-    return action, overwrite
-
-
-def init_config_interface():
-    """Command line interface for init_config."""
-
-    action, overwrite = init_config_parser(sys.argv[1:])
-
-    kwargs = {
-        "logging": False,
-        "install": False,
-        "overwrite": overwrite,
-    }
-
-    kwargs[action] = True
-
-    dir_path = init_config(**kwargs)
-
-    if dir_path is not None:
-        print("Copying configuration files to {}".format(dir_path))

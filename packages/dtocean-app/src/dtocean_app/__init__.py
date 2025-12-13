@@ -15,7 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import argparse
 import sys
 import time
 import traceback
@@ -188,42 +187,3 @@ def main_(debug=False, trace_warnings=False, force_quit=False):
 
     if not force_quit:
         sys.exit(app.exec())
-
-
-def gui_interface():
-    """Command line interface for dtocean-app.
-
-    Example:
-
-        For help::
-
-            $ dtocean-app --help
-
-    """
-
-    epiStr = """The DTOcean Developers (c) 2022."""
-
-    desStr = "Run the DTOcean graphical application."
-
-    parser = argparse.ArgumentParser(description=desStr, epilog=epiStr)
-
-    parser.add_argument(
-        "--debug", help=("disable stream redirection"), action="store_true"
-    )
-
-    parser.add_argument(
-        "--trace-warnings",
-        help=("add stack trace to warnings"),
-        action="store_true",
-    )
-
-    parser.add_argument(
-        "--quit", help=("quit before interface opens"), action="store_true"
-    )
-
-    args = parser.parse_args()
-    debug = args.debug
-    trace_warnings = args.trace_warnings
-    force_quit = args.quit
-
-    main_(debug=debug, trace_warnings=trace_warnings, force_quit=force_quit)
