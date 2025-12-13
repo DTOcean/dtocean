@@ -19,7 +19,7 @@
 import logging
 import warnings
 
-from dtocean_app import gui_interface, main_, start_logging, warn_with_traceback
+from dtocean_app import main_, start_logging, warn_with_traceback
 from dtocean_app.utils.config import init_config
 
 
@@ -116,27 +116,3 @@ def test_main(mocker, qtbot, tmp_path):
     main_()
 
     assert sys_exit.call_count == 1
-
-
-def test_gui_interface(mocker):
-    import sys
-
-    testargs = ["dtocean-app", "--debug", "--trace-warnings", "--quit"]
-    mocker.patch.object(sys, "argv", testargs)
-    main_ = mocker.patch("dtocean_app.main_")
-
-    gui_interface()
-
-    expected = {"debug": True, "trace_warnings": True, "force_quit": True}
-    assert main_.call_args.kwargs == expected
-
-
-# def test_cli(capfd):
-#     exit_status = os.system("dtocean-app --help")
-
-#     assert exit_status == 0
-
-#     captured = capfd.readouterr()
-
-#     assert "Run the DTOcean graphical application." in captured.out
-#     assert "The DTOcean Developers (c) 2022." in captured.out
