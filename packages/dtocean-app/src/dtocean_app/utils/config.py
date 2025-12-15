@@ -26,7 +26,7 @@ from polite_config.paths import (
 
 def get_docs_index():
     try:
-        from dtocean_docs import (  # pyright: ignore[reportMissingImport]
+        from dtocean_docs import (  # pyright: ignore[reportMissingImports]
             get_index,
         )
     except ImportError:
