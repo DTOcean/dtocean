@@ -272,7 +272,6 @@ class PowerMatrixFit:
                             approx_grad=1,
                             bounds=my_bounds,
                             pgtol=1e-12,
-                            iprint=int(self.debug),
                         )
                         Cfit_sm[t_ind, h_ind, d_ind] = np.diag(
                             lin_fit_b[0][:ndof]

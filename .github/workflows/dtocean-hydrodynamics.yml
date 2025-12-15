@@ -104,7 +104,7 @@ jobs:
           poetry run dtocean-hydro init
       - name: Run tests
         run: |
-          poetry run pytest --cov src --cov-report=xml --no-gpu tests
+          poetry run pytest -v --cov src --cov-report=xml --no-gpu tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
