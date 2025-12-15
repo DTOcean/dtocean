@@ -10,13 +10,13 @@ def subcommand(subparser):
         description=description,
         help="run or configure the DTOcean graphical application",
     )
-    _setup_ap(parser)
+    _setup_app(parser)
 
     sp = parser.add_subparsers()
     _setup_config(sp)
 
 
-def _setup_ap(subparser):
+def _setup_app(subparser):
     """Command line interface for dtocean-app.
 
     Example:
