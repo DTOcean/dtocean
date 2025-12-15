@@ -41,7 +41,6 @@ if sys.platform == "win32":
 
 from . import get_log_dir
 from .extensions import GUIStrategyManager, GUIToolManager
-from .help import HelpWidget
 from .menu import DBSelector
 from .pipeline import (
     HubControl,
@@ -65,6 +64,7 @@ from .widgets.central import (
 from .widgets.dialogs import (
     About,
     DataCheck,
+    Help,
     MainWindow,
     ProgressBar,
     ProjProperties,
@@ -141,7 +141,7 @@ class DTOceanWindow(MainWindow):
         self._assessment_shuttle: Shuttle
         self._db_selector: DBSelector
         self._strategy_manager: GUIStrategyManager
-        self._help: HelpWidget
+        self._help: Help
         self._progress: ProgressBar
         self._about: About
 
@@ -326,7 +326,7 @@ class DTOceanWindow(MainWindow):
         self._progress.force_quit.connect(self.close)
 
         # Set up the help dialog
-        self._help = HelpWidget(self)
+        self._help = Help(self)
 
         # Set up the about dialog (actionAbout)
         self._about = About(self)

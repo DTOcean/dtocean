@@ -1,9 +1,21 @@
+from pathlib import Path
+
+import pytest
 from mdo_engine.boundary.interface import Box
 
 from dtocean_app.utils.config import (
+    get_docs_index,
     get_software_version,
     init_config,
 )
+
+
+def test_get_docs_index():
+    pytest.importorskip("dtocean_docs")
+    test = get_docs_index()
+
+    assert test is not None
+    assert Path(test).is_file()
 
 
 def test_get_software_version(mocker):

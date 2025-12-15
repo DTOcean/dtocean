@@ -18,6 +18,7 @@
 """
 Created on Thu Apr 23 12:51:14 2015
 
+.. moduleauthor:: Rui Duarte <rui.duarte@france-energies-marines.org>
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
@@ -32,10 +33,12 @@ from typing import TYPE_CHECKING, Optional
 import pandas as pd
 import yaml
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import QEasingCurve, QEvent, QPropertyAnimation, Qt
+from PySide6.QtCore import QEasingCurve, QEvent, QPropertyAnimation, Qt, QUrl
+from PySide6.QtWebEngineWidgets import QWebEngineView
 from shiboken6 import Shiboken
 
 from ..utils.config import (
+    get_docs_index,
     get_software_version,
 )
 from ..utils.display import is_high_dpi
@@ -699,3 +702,44 @@ class Message(QtWidgets.QWidget):
         qp.setPen(QtGui.QColor(25, 25, 25))
         qp.setFont(QtGui.QFont("Decorative", 10))
         qp.drawText(event.rect(), Qt.AlignmentFlag.AlignCenter, self.text)
+
+
+class Help(QtWidgets.QDialog):
+    force_quit = QtCore.Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._msg_widget = None
+        self._url_widget = None
+
+        self._init_ui()
+
+    def _init_ui(self):
+        self._layout = QtWidgets.QVBoxLayout(self)
+
+        docs_index = get_docs_index()
+
+        if docs_index is None:
+            self._init_message()
+        else:
+            self._init_help(docs_index)
+
+        self.setLayout(self._layout)
+
+        self.resize(900, 800)
+        self.setWindowTitle("DTOcean User Manual")
+
+    def _init_message(self):
+        text = "No manuals installated"
+        self._msg_widget = Message(self, text)
+
+        self._layout.addWidget(self._msg_widget)
+
+    def _init_help(self, index_path):
+        url = QUrl.fromLocalFile(index_path)
+
+        self._url_widget = QWebEngineView(self)
+        self._url_widget.load(url)
+        self._url_widget.show()
+
+        self._layout.addWidget(self._url_widget)

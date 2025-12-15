@@ -56,7 +56,7 @@ jobs:
         uses: ./.github/actions/poetry-install
         with: 
           root-directory: ${{ github.workspace }}/packages/dtocean-app
-          groups: '["test"]'
+          groups: '["test", "test-extras"]'
       - name: Run tests
         run: |
           poetry run pytest -v --cov=src --cov-report=xml tests

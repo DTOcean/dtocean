@@ -20,7 +20,7 @@ import pytest
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
-from dtocean_app.widgets.dialogs import About, TestDataPicker
+from dtocean_app.widgets.dialogs import About, Help, TestDataPicker
 
 
 @pytest.fixture
@@ -156,3 +156,40 @@ def test_About_pix_many(qtbot, mocker, picture):
     assert widget._effect is not None
     assert widget._fade_in is not None
     assert widget._fade_out is not None
+
+
+def test_Help_init(qtbot):
+    widget = Help()
+    widget.show()
+    qtbot.addWidget(widget)
+
+    assert widget.isVisible()
+
+
+def test_Help_docs(qtbot, mocker):
+    expected = "dummy.html"
+
+    mocker.patch(
+        "dtocean_app.widgets.dialogs.get_docs_index",
+        return_value=expected,
+    )
+
+    widget = Help()
+    widget.show()
+    qtbot.addWidget(widget)
+
+    assert widget._url_widget is not None
+
+
+def test_Help_no_docs(qtbot, mocker):
+    mocker.patch(
+        "dtocean_app.widgets.dialogs.get_docs_index",
+        return_value=None,
+    )
+
+    widget = Help()
+    widget.show()
+    qtbot.addWidget(widget)
+
+    assert widget._msg_widget is not None
+    assert widget._msg_widget.text == "No manuals installated"

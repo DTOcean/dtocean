@@ -42,6 +42,12 @@ pytest-mock = "^3.14.0"
 pytest-qt = "^4.5.0"
 pytest-cov = "^6.0.0"
 
+[tool.poetry.group.test-extras]
+optional = true
+
+[tool.poetry.group.test-extras.dependencies]
+dtocean-docs = {path = "../dtocean-docs", develop = true}
+
 [tool.poetry.group.audit]
 optional = true
 
