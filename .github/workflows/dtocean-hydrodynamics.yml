@@ -105,8 +105,6 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest -v --cov src --cov-report=xml --no-gpu tests
-        env:
-          QT_DEBUG_PLUGINS: 1
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:

@@ -346,7 +346,7 @@ def window_results(mocker, qtbot, tmp_path, hydro_shell, config, results_df):
     yield window
 
     def no_load_sims_thread():
-        assert window._load_sims_thread is None
+        return window._load_sims_thread is None
 
     qtbot.waitUntil(no_load_sims_thread)
 
@@ -465,7 +465,7 @@ def test_AdvancedPositionWidget_load_sims(qtbot, mocker, window_results):
     qtbot.mouseClick(window_results.simLoadButton, Qt.MouseButton.LeftButton)
 
     def progress_closed():
-        assert spy.close.call_count == 1
+        return spy.close.call_count == 1
 
     qtbot.waitUntil(progress_closed, timeout=1500)
 
@@ -564,7 +564,10 @@ def test_AdvancedPositionWidget_set_plot(qtbot, window_results):
 
 
 def test_AdvancedPositionWidget_export_plot(
-    mocker, qtbot, tmp_path, window_results
+    mocker,
+    qtbot,
+    tmp_path,
+    window_results,
 ):
     f = tmp_path / "mock.png"
     mocker.patch.object(

@@ -1550,9 +1550,6 @@ class AdvancedPositionWidget(
         self.plotWidget = widget
         self.plotLayout.addWidget(widget)
 
-        # Draw the widget
-        widget.draw_idle()
-
         if len(plt.get_fignums()) > 3:
             num_strs = ["{}".format(x) for x in plt.get_fignums()]
             num_str = ", ".join(num_strs)
@@ -2213,6 +2210,7 @@ def _close_plot(plot_widget):
     n_figs = len(plt.get_fignums())
 
     log_msg = "Closing figure {} ({} open)".format(fignum, n_figs)
+    print(log_msg)
     module_logger.debug(log_msg)
 
     plt.close(fignum)
