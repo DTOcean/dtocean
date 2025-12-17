@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from importlib.metadata import distribution
+from importlib.metadata import PackageNotFoundError, distribution
 
 from polite_config.paths import (
     DirectoryMap,
@@ -35,11 +35,13 @@ def get_docs_index():
     return get_index()
 
 
-def get_software_version():
-    package = "dtocean-app"
-    dist = distribution(package)
-    version = dist.version
-    return "{} {}".format(package, version)
+def get_dtocean_version():
+    try:
+        dist = distribution("dtocean")
+        version = dist.version
+        return version
+    except PackageNotFoundError:
+        return None
 
 
 def init_config(logging=False, overwrite=False):

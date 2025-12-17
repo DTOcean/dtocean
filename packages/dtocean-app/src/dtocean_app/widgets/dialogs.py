@@ -22,24 +22,21 @@ Created on Thu Apr 23 12:51:14 2015
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
-import glob
 import os
 import platform
 from collections import OrderedDict
-from itertools import cycle
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import pandas as pd
-import yaml
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import QEasingCurve, QEvent, QPropertyAnimation, Qt, QUrl
+from PySide6.QtCore import QEvent, Qt, QUrl
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from shiboken6 import Shiboken
 
 from ..utils.config import (
     get_docs_index,
-    get_software_version,
+    get_dtocean_version,
 )
 from ..utils.display import is_high_dpi
 
@@ -53,7 +50,6 @@ if is_high_dpi() or TYPE_CHECKING:
     from ..designer.high.projectproperties import Ui_ProjectProperties
     from ..designer.high.shuttle import Ui_ShuttleDialog
     from ..designer.high.testdatapicker import Ui_TestDataPicker
-
 else:
     from ..designer.low.about import Ui_AboutDialog
     from ..designer.low.datacheck import Ui_DataCheckDialog
@@ -510,181 +506,24 @@ class ProgressBar(QtWidgets.QDialog, Ui_ProgressBar):
 
 
 class About(QtWidgets.QDialog, Ui_AboutDialog):
-    def __init__(self, parent=None, image_delay=5000, fade_duration=2000):
+    def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         Ui_AboutDialog.__init__(self)
+        self._init_ui()
 
-        self._delay = image_delay
-        self._image_files = None
-        self._timer = None
-        self._fade_in = None
-        self._fade_out = None
-        self._effect = None
-
-        self.institutionLabel: Optional[QtWidgets.QLabel]
-        self.peopleLabel: Optional[QtWidgets.QLabel]
-
-        self._init_ui(fade_duration)
-
-    def _init_ui(self, fade_duration):
+    def _init_ui(self):
         self.setupUi(self)
 
-        assert isinstance(self.frame, QtWidgets.QFrame)
-        assert isinstance(self.insitutionIntroLabel, QtWidgets.QLabel)
-        assert isinstance(self.institutionLabel, QtWidgets.QLabel)
-        assert isinstance(self.line, QtWidgets.QFrame)
-        assert isinstance(self.line_3, QtWidgets.QFrame)
-        assert isinstance(self.peopleIntroLabel, QtWidgets.QLabel)
-        assert isinstance(self.peopleLabel, QtWidgets.QLabel)
+        dtocean_str = "DTOcean"
+        dtocean_version = get_dtocean_version()
 
-        software_version = get_software_version()
+        if dtocean_version is not None:
+            dtocean_str += f" {dtocean_version}"
+
         arch_str = " ".join(platform.architecture())
-        software_str = "{} ({})".format(software_version, arch_str)
+        software_str = "{} ({})".format(dtocean_str, arch_str)
 
         self.versionLabel.setText(software_str)
-
-        resources_path = PARENT_PATH.parent / "resources" / "about"
-        names_path = resources_path / "people.yaml"
-
-        with open(names_path, "r") as stream:
-            names = yaml.load(stream, Loader=yaml.FullLoader)
-
-        if names is None:
-            self.verticalLayout_3.removeWidget(self.peopleIntroLabel)
-            self.peopleIntroLabel.deleteLater()
-            self.peopleIntroLabel = None
-
-            self.verticalLayout_3.removeWidget(self.peopleLabel)
-            self.peopleLabel.deleteLater()
-            self.peopleLabel = None
-
-            self.verticalLayout_3.removeWidget(self.line)
-            self.line.deleteLater()
-            self.line = None
-
-        elif len(names) == 1:
-            names_str = names[0]
-            self.peopleLabel.setText(names_str)
-
-        else:
-            names_str = ", ".join(names[:-1])
-            names_str += " and {}".format(names[-1])
-
-            self.peopleLabel.setText(names_str)
-
-        pix_search_str = str(resources_path / "beneficiary*.png")
-        pix_list = glob.glob(pix_search_str)
-
-        self._n_pix = len(pix_list)
-
-        if self._n_pix > 0:
-            self._image_files = cycle(pix_list)
-        else:
-            self.verticalLayout_3.removeWidget(self.insitutionIntroLabel)
-            self.insitutionIntroLabel.deleteLater()
-            self.insitutionIntroLabel = None
-
-            self.horizontalLayout.removeWidget(self.frame)
-            self.frame.deleteLater()
-            self.frame = None
-
-            self.verticalLayout_4.removeWidget(self.institutionLabel)
-            self.institutionLabel.deleteLater()
-            self.institutionLabel = None
-
-            self.verticalLayout_3.removeWidget(self.line_3)
-            self.line_3.deleteLater()
-            self.line_3 = None
-
-        if self._n_pix > 1:
-            assert self.institutionLabel is not None
-
-            self._timer = QtCore.QTimer(self)
-            self._effect = QtWidgets.QGraphicsOpacityEffect()
-            self._fade_in = self._init_fade_in(fade_duration)
-            self._fade_out = self._init_fade_out(fade_duration)
-            self.institutionLabel.setGraphicsEffect(self._effect)
-
-            self._fade_in.finished.connect(self._start_timer)
-            self._fade_out.finished.connect(self._start_image)
-            self.scrollArea.verticalScrollBar().valueChanged.connect(
-                self.institutionLabel.repaint
-            )
-
-    def _init_fade_in(self, duration):
-        assert self._effect is not None
-        fade_in = QPropertyAnimation(
-            self._effect,
-            QtCore.QByteArray(b"opacity"),
-        )
-        fade_in.setDuration(duration)
-        fade_in.setStartValue(0.0)
-        fade_in.setEndValue(1.0)
-        fade_in.setEasingCurve(QEasingCurve.Type.OutQuad)
-
-        return fade_in
-
-    def _init_fade_out(self, duration):
-        assert self._effect is not None
-        fade_out = QPropertyAnimation(
-            self._effect,
-            QtCore.QByteArray(b"opacity"),
-        )
-        fade_out.setDuration(duration)
-        fade_out.setStartValue(1.0)
-        fade_out.setEndValue(0.0)
-        fade_out.setEasingCurve(QEasingCurve.Type.OutQuad)
-
-        return fade_out
-
-    @QtCore.Slot()
-    def _start_image(self):
-        assert self._image_files is not None
-
-        image_path = next(self._image_files)
-        image = QtGui.QPixmap(image_path)
-
-        label = self.institutionLabel
-        assert label is not None
-        label.setPixmap(image)
-
-        if self._n_pix > 1:
-            assert self._fade_in is not None
-            self._fade_in.start()
-
-    @QtCore.Slot()
-    def _start_timer(self):
-        assert self._timer is not None
-        self._timer.start(self._delay)
-
-    @QtCore.Slot()
-    def _end_image(self):
-        assert self._timer is not None
-        assert self._fade_out is not None
-
-        self._timer.stop()
-        self._fade_out.start()
-
-    @QtCore.Slot()
-    def show(self):
-        super().show()
-
-        if self._n_pix > 1:
-            assert self._timer is not None
-            assert self._effect is not None
-            self._timer.timeout.connect(self._end_image)
-            self._effect.setOpacity(0.0)
-
-        if self._n_pix > 0:
-            self._start_image()
-
-    def closeEvent(self, evnt):
-        super().closeEvent(evnt)
-
-        if self._n_pix > 1:
-            assert self._timer is not None
-            self._timer.timeout.disconnect()
-            self._timer.stop()
 
 
 class Message(QtWidgets.QWidget):

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>500</height>
+    <height>671</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -57,8 +57,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>436</width>
-        <height>1018</height>
+        <width>448</width>
+        <height>669</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -90,7 +90,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="../resources_about.qrc">:/logos/dtocean2plus._padded.png</pixmap>
+          <pixmap resource="../resources_about.qrc">:/logos/dtocean_padded_20251712.png</pixmap>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -231,198 +231,6 @@ QMenu::item:selected{
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>2</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="Line" name="line_2">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="peopleIntroLabel">
-         <property name="text">
-          <string>Thanks are given to the following people for their help with this release:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <property name="indent">
-          <number>-1</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="peopleLabel">
-         <property name="styleSheet">
-          <string notr="true">padding: 10px</string>
-         </property>
-         <property name="text">
-          <string>People Label</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>2</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="insitutionIntroLabel">
-         <property name="text">
-          <string>The following insitutions support the development of DTOcean:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_8">
-         <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>2</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="margin" stdset="0">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QFrame" name="frame">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>300</width>
-             <height>150</height>
-            </size>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::Shape::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Shadow::Raised</enum>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="margin" stdset="0">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="institutionLabel">
-              <property name="minimumSize">
-               <size>
-                <width>300</width>
-                <height>150</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>2</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="Line" name="line_3">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="DTOceanPlusLabel">
-         <property name="styleSheet">
-          <string notr="true">QMenu::item{
-  background-color: rgb(255, 255, 255);
-  color:  rgb(0, 0, 0);
- }
-QMenu::item:selected{
-  background-color: rgb(252, 124, 1);
-  color:  rgb(0, 0, 0);
-}</string>
-         </property>
-         <property name="text">
-          <string>&lt;p&gt;The DTOceanPlus project aims to expand and improve the capabilities of DTOcean&lt;p&gt;
-&lt;p&gt; For further details and latest news see &lt;a href='https://www.dtoceanplus.eu'&gt;www.dtoceanplus.eu&lt;/a&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <spacer name="verticalSpacer_9">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -436,7 +244,7 @@ QMenu::item:selected{
         </spacer>
        </item>
        <item>
-        <widget class="Line" name="line_4">
+        <widget class="Line" name="line_3">
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>
          </property>
@@ -462,7 +270,7 @@ QMenu::item:selected{
        <item>
         <widget class="QLabel" name="copyrightLabel">
          <property name="text">
-          <string>Copyright &amp;copy; The DTOcean Developers</string>
+          <string>Copyright Statement</string>
          </property>
          <property name="textFormat">
           <enum>Qt::TextFormat::RichText</enum>
@@ -520,7 +328,7 @@ QMenu::item:selected{
         </widget>
        </item>
        <item>
-        <widget class="Line" name="line_5">
+        <widget class="Line" name="line_4">
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>
          </property>
@@ -529,7 +337,7 @@ QMenu::item:selected{
        <item>
         <widget class="QLabel" name="softwareLabel">
          <property name="text">
-          <string>Python 2.7, Qt 4.8.7, PyQt 4.11.4</string>
+          <string>Packages Versions</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -553,33 +361,22 @@ QMenu::item:selected{
       <zorder>logoLabel</zorder>
       <zorder>versionLabel</zorder>
       <zorder>DOGIntroLabel</zorder>
-      <zorder>line_4</zorder>
-      <zorder>line_2</zorder>
-      <zorder>peopleIntroLabel</zorder>
+      <zorder>line_3</zorder>
       <zorder>freeSoftwareLabel</zorder>
-      <zorder>peopleLabel</zorder>
       <zorder>GPLLabel</zorder>
       <zorder>line_1</zorder>
       <zorder>verticalSpacer_2</zorder>
       <zorder>verticalSpacer_3</zorder>
       <zorder>copyrightLabel</zorder>
-      <zorder>line_5</zorder>
+      <zorder>line_4</zorder>
       <zorder>softwareLabel</zorder>
       <zorder>packagesLabel</zorder>
       <zorder>iconsLabel</zorder>
       <zorder>verticalSpacer_4</zorder>
-      <zorder>verticalSpacer_5</zorder>
       <zorder>DOGlogoLabel</zorder>
       <zorder>supportLabel</zorder>
-      <zorder>verticalSpacer</zorder>
-      <zorder>insitutionIntroLabel</zorder>
-      <zorder>line</zorder>
-      <zorder>verticalSpacer_6</zorder>
       <zorder>verticalSpacer_7</zorder>
-      <zorder>verticalSpacer_8</zorder>
       <zorder>longLabel</zorder>
-      <zorder>DTOceanPlusLabel</zorder>
-      <zorder>line_3</zorder>
       <zorder>verticalSpacer_9</zorder>
      </widget>
     </widget>
