@@ -35,13 +35,17 @@ def get_docs_index():
     return get_index()
 
 
-def get_dtocean_version():
-    try:
-        dist = distribution("dtocean")
-        version = dist.version
-        return version
-    except PackageNotFoundError:
-        return None
+def get_package_versions(*names: str) -> dict[str, str]:
+    result = {}
+
+    for name in names:
+        try:
+            dist = distribution(name)
+            result[name] = dist.version
+        except PackageNotFoundError:
+            pass
+
+    return result
 
 
 def init_config(logging=False, overwrite=False):

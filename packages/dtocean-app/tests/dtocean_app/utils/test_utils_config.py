@@ -5,7 +5,7 @@ from mdo_engine.boundary.interface import Box
 
 from dtocean_app.utils.config import (
     get_docs_index,
-    get_dtocean_version,
+    get_package_versions,
     init_config,
 )
 
@@ -18,10 +18,10 @@ def test_get_docs_index():
     assert Path(test).is_file()
 
 
-def test_get_dtocean_version(mocker):
+def test_get_package_versions(mocker):
     dist = Box({"version": "mock"})
     mocker.patch("dtocean_app.utils.config.distribution", return_value=dist)
-    assert get_dtocean_version() == "mock"
+    assert get_package_versions("package") == {"package": "mock"}
 
 
 def test_init_config(mocker, tmp_path):

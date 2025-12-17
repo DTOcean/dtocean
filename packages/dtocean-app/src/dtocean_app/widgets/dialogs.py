@@ -24,7 +24,9 @@ Created on Thu Apr 23 12:51:14 2015
 
 import os
 import platform
+import sys
 from collections import OrderedDict
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -36,7 +38,7 @@ from shiboken6 import Shiboken
 
 from ..utils.config import (
     get_docs_index,
-    get_dtocean_version,
+    get_package_versions,
 )
 from ..utils.display import is_high_dpi
 
@@ -514,16 +516,41 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
     def _init_ui(self):
         self.setupUi(self)
 
-        dtocean_str = "DTOcean"
-        dtocean_version = get_dtocean_version()
+        version_label = _get_version_label()
+        self.versionLabel.setText(version_label)
 
-        if dtocean_version is not None:
-            dtocean_str += f" {dtocean_version}"
+        copyright_label = _get_copyright_label()
+        self.copyrightLabel.setText(copyright_label)
 
-        arch_str = " ".join(platform.architecture())
-        software_str = "{} ({})".format(dtocean_str, arch_str)
+        software_label = _get_software_label()
+        self.softwareLabel.setText(software_label)
 
-        self.versionLabel.setText(software_str)
+
+def _get_version_label():
+    dtocean_str = "DTOcean"
+    dtocean_version = get_package_versions("dtocean")["dtocean"]
+
+    if dtocean_version is not None:
+        dtocean_str += f" {dtocean_version}"
+
+    arch_str = " ".join(platform.architecture())
+    return "{} ({})".format(dtocean_str, arch_str)
+
+
+def _get_copyright_label():
+    now = datetime.now()
+    return f"© Copyright The DTOcean Developers 2016–{now.year}"
+
+
+def _get_software_label():
+    python_version = sys.version_info
+    package_versions = get_package_versions("dtocean-app", "PySide6")
+
+    return (
+        f"Python {python_version[0]}.{python_version[1]}, "
+        f"PySide6 {package_versions["PySide6"]}, "
+        f"dtocean-app {package_versions["dtocean-app"]}"
+    )
 
 
 class Message(QtWidgets.QWidget):
