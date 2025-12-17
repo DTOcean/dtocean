@@ -112,7 +112,7 @@ def main_(debug=False, trace_warnings=False, force_quit=False):
     app = QtWidgets.QApplication(sys.argv)
 
     # Create and display the splash screen
-    splash_path = PARENT_PATH / "resources" / "main" / "dtocean2plus_splash.png"
+    splash_path = PARENT_PATH / "resources" / "main" / "dtocean_splash_20251712.png"
     splash_pix = QtGui.QPixmap(splash_path)
     splash = QtWidgets.QSplashScreen(
         splash_pix,
