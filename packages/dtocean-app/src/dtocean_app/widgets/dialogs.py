@@ -528,10 +528,10 @@ class About(QtWidgets.QDialog, Ui_AboutDialog):
 
 def _get_version_label():
     dtocean_str = "DTOcean"
-    dtocean_version = get_package_versions("dtocean")["dtocean"]
+    package_versions = get_package_versions("dtocean")
 
-    if dtocean_version is not None:
-        dtocean_str += f" {dtocean_version}"
+    if "dtocean" in package_versions:
+        dtocean_str += f" {package_versions["dtocean"]}"
 
     arch_str = " ".join(platform.architecture())
     return "{} ({})".format(dtocean_str, arch_str)

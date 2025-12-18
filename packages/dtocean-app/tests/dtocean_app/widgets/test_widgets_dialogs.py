@@ -20,7 +20,14 @@ import pytest
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
-from dtocean_app.widgets.dialogs import About, Help, TestDataPicker
+from dtocean_app.widgets.dialogs import (
+    About,
+    Help,
+    TestDataPicker,
+    _get_copyright_label,
+    _get_software_label,
+    _get_version_label,
+)
 
 
 @pytest.fixture
@@ -60,6 +67,27 @@ def test_About_init(qtbot):
     qtbot.addWidget(widget)
 
     assert widget.isVisible()
+
+
+def test_get_version_label_dtocean():
+    test = _get_version_label()
+    assert len(test.split()) >= 3
+
+
+def test_get_version_label_dtocean_full():
+    pytest.importorskip("dtocean")
+    test = _get_version_label()
+    assert len(test.split()) == 4
+
+
+def test_get_copyright_label():
+    test = _get_copyright_label()[-4:]
+    assert test.isnumeric()
+
+
+def test_get_software_label():
+    test = _get_software_label()
+    assert len(test.split()) == 6
 
 
 def test_Help_init(qtbot):
