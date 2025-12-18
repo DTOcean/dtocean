@@ -59,7 +59,7 @@ jobs:
           groups: '["test", "test-extras"]'
       - name: Run tests
         run: |
-          poetry run pytest -v --cov=src --cov-report=xml tests
+          poetry run pytest -v --cov=src --cov-report=xml -o faulthandler_timeout=30 tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
