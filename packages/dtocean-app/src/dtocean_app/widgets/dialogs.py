@@ -32,8 +32,7 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import QEvent, Qt, QUrl
-from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtCore import QEvent, Qt
 from shiboken6 import Shiboken
 
 from ..utils.config import (
@@ -602,10 +601,11 @@ class Help(QtWidgets.QDialog):
         self._layout.addWidget(self._msg_widget)
 
     def _init_help(self, index_path):
-        url = QUrl.fromLocalFile(index_path)
+        pass
+        # url = QUrl.fromLocalFile(index_path)
 
-        self._url_widget = QWebEngineView(self)
-        self._url_widget.load(url)
-        self._url_widget.show()
+        # self._url_widget = QWebEngineView(self)
+        # self._url_widget.load(url)
+        # self._url_widget.show()
 
-        self._layout.addWidget(self._url_widget)
+        # self._layout.addWidget(self._url_widget)

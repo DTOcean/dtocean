@@ -1233,8 +1233,8 @@ def test_dataflow_module(window_dataflow_module):
     assert test_control is not None
 
 
-# These dock tests below should probably be split into a separate files, with
-# the shell mocked to a useful state.
+# TODO: These dock tests below should probably be split into a separate files,
+# with the shell mocked to a useful state.
 
 
 def test_pipeline_context_menu(mocker, qtbot, window_dataflow_module):
