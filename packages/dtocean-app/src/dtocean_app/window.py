@@ -1360,8 +1360,8 @@ class DTOceanWindow(MainWindow):
         self._plot_context._bottom_box.addWidget(widget)
         self._plot_context._bottom_contents = widget
 
-        # Draw the widget
-        widget.draw_idle()
+        # # Draw the widget
+        # widget.draw_idle()
 
         if len(plt.get_fignums()) > 3:
             num_strs = ["{}".format(x) for x in plt.get_fignums()]
@@ -1432,8 +1432,8 @@ class DTOceanWindow(MainWindow):
         self._comp_context._bottom_box.addWidget(widget)
         self._comp_context._bottom_contents = widget
 
-        # Draw the widget
-        widget.draw_idle()
+        # # Draw the widget
+        # widget.draw_idle()
 
         if len(plt.get_fignums()) > 3:
             num_strs = ["{}".format(x) for x in plt.get_fignums()]
@@ -1533,8 +1533,8 @@ class DTOceanWindow(MainWindow):
         self._comp_context._bottom_box.addWidget(widget)
         self._comp_context._bottom_contents = widget
 
-        # Draw the widget
-        widget.draw_idle()
+        # # Draw the widget
+        # widget.draw_idle()
 
         if len(plt.get_fignums()) > 3:
             num_strs = ["{}".format(x) for x in plt.get_fignums()]
