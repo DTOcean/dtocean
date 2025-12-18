@@ -1365,6 +1365,7 @@ def window_plot_context(qtbot, window_dataflow_module):
         assert bottom_contents is not None
 
     qtbot.waitUntil(has_plot_bottom_contents)
+    qtbot.wait(500)
 
     return window_dataflow_module
 
