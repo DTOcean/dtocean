@@ -9,8 +9,17 @@ must be installed and available on the command line.
 
 To install Sphinx run the following from the root directory:
 
-```console
+```sh
 poetry install --only docs
+```
+
+If the docs are built from the git repository, the image files must first be
+retrieved using git-lfs (ensure that [git-lfs](https://git-lfs.com/) is installed
+first):
+
+```sh
+git lfs fetch --all
+git lfs pull
 ```
 
 ### Testing the Current Branch
@@ -22,7 +31,7 @@ available.
 
 To test the current branch from the root directory:
 
-```console
+```sh
 poetry run sphinx-build -a -W --keep-going -b html docs _build/html
 ```
 
@@ -35,7 +44,7 @@ publishing. They are built in the `docs/_build` directory. Note, docs are built
 from the remote so only pushed changes on branches will be shown. To build the
 docs use the following command from the root directory:
 
-```console
+```sh
 poetry run sphinx-multiversion -a -W --keep-going docs _build/html
 ```
 

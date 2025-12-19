@@ -13,6 +13,15 @@ Installation and development of dtocean-qt uses the
 [Poetry](https://python-poetry.org/) dependency manager. Poetry must be
 installed and available on the command line.
 
+If installing from the git repository, the image files must first be
+retrieved using git-lfs (ensure that [git-lfs](https://git-lfs.com/) is installed
+first):
+
+```sh
+git lfs fetch --all
+git lfs pull
+```
+
 To install:
 
 ```sh

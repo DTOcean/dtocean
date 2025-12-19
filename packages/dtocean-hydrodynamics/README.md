@@ -21,6 +21,15 @@ To install:
 $ poetry install
 ```
 
+## Post-Installation
+
+After installation, ensure that all the necessary data files are downloaded
+using the following command:
+
+```sh
+dtocean init
+```
+
 ## Tests
 
 A test suite is provided with the source code that uses [pytest](https://docs.pytest.org).

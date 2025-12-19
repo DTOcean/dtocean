@@ -30,15 +30,24 @@ the GUI, design and assessment module and offline documentation.
 
 Install the DTOcean suite of packages using pip:
 
-```console
+```sh
 pip install dtocean
+```
+
+## Post-Installation
+
+After installation, ensure that all the necessary data files are downloaded
+using the following command:
+
+```sh
+dtocean init
 ```
 
 ## Usage
 
 Open the DTOcean GUI from a command prompt:
 
-```console
+```sh
 dtocean app
 ```
 
