@@ -3,6 +3,7 @@ from dtocean_wec import run
 
 
 def init(args):
+    print("+ Fetching data files...")
     get_data(args.force)
 
 

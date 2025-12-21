@@ -188,7 +188,7 @@ version = "3.4.4"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 optional = false
 python-versions = ">=3.7"
-groups = ["docs"]
+groups = ["main", "docs"]
 files = [
     {file = "charset_normalizer-3.4.4-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:e824f1492727fa856dd6eda4f7cee25f8518a12f3c4a56a74e8095695089cf6d"},
     {file = "charset_normalizer-3.4.4-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:4bd5d4137d500351a30687c2d3971758aac9a19208fc110ccb9d7188fbe709e8"},
@@ -675,6 +675,7 @@ numpy = ">=1.26.4,<2.0.0"
 pandas = ">=2.2.3,<3.0.0"
 pillow = "^11.2.1"
 polite-config = {path = "../polite-config", develop = true}
+pyshortcuts = "^1.9.6"
 pyside6 = "^6.9.0"
 pywin32 = {version = "^308", markers = "sys_platform == \"win32\""}
 shiboken6 = "^6.9.0"
@@ -2083,6 +2084,29 @@ dev = ["twine (>=3.4.1)"]
 nodejs = ["nodejs-wheel-binaries"]
 
 [[package]]
+name = "pyshortcuts"
+version = "1.9.6"
+description = "Create desktop and Start Menu shortcuts for python scripts"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "pyshortcuts-1.9.6-py3-none-any.whl", hash = "sha256:557497cb33d091fcdc661d84a548d6b86ae663344926763199a21f1994a94680"},
+    {file = "pyshortcuts-1.9.6.tar.gz", hash = "sha256:03c549252cf37d03f03d63d63f5e8ddf0bc267b3da4c3ccfb48c8c7171d698ec"},
+]
+
+[package.dependencies]
+charset-normalizer = "*"
+pywin32 = {version = "*", markers = "platform_system == \"Windows\""}
+
+[package.extras]
+all = ["pyshortcuts[dev,doc,gui,test]"]
+dev = ["build", "twine"]
+doc = ["Sphinx"]
+gui = ["wxPython"]
+test = ["coverage", "pytest", "pytest-cov"]
+
+[[package]]
 name = "pyshp"
 version = "2.3.1"
 description = "Pure Python read/write support for ESRI Shapefile format"
@@ -2339,7 +2363,7 @@ description = "Python for Window Extensions"
 optional = false
 python-versions = "*"
 groups = ["main"]
-markers = "sys_platform == \"win32\""
+markers = "sys_platform == \"win32\" or platform_system == \"Windows\""
 files = [
     {file = "pywin32-308-cp310-cp310-win32.whl", hash = "sha256:796ff4426437896550d2981b9c2ac0ffd75238ad9ea2d3bfa67a1abd546d262e"},
     {file = "pywin32-308-cp310-cp310-win_amd64.whl", hash = "sha256:4fc888c59b3c0bef905ce7eb7e2106a07712015ea1c8234b703a088d46110e8e"},

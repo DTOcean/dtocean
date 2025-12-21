@@ -1,6 +1,36 @@
+import os
+import sys
+from pathlib import Path
+
+from pyshortcuts import make_shortcut
+
 from dtocean_app import main_
 from dtocean_app.utils.config import init_config
 from dtocean_plugins.cli.shared import SmartFormatter
+
+PARENT_PATH = Path(__file__).parent
+
+
+def init(args):
+    print("+ Creating start menu entry...")
+
+    is_win = sys.platform.startswith("win") or os.name.startswith("nt")
+    bindir = "Scripts" if is_win else "bin"
+    script = Path(sys.prefix, bindir, "dtocean app").resolve().as_posix()
+
+    icon_path = (
+        (PARENT_PATH.parents[1] / "dtocean_app" / "resources" / "turbine.ico")
+        .absolute()
+        .as_posix()
+    )
+
+    make_shortcut(
+        script,
+        name="DTOcean",
+        icon=str(icon_path),
+        terminal=False,
+        desktop=False,
+    )
 
 
 def subcommand(subparser):
