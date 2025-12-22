@@ -31,7 +31,7 @@ shiboken6 = "^6.9.0"
 pyside6 = "^6.9.0"
 pillow = "^11.2.1"
 pywin32 = {version = "^308", platform = "win32"}
-pyshortcuts = "^1.9.6"
+pyshortcuts = {git = "https://github.com/newville/pyshortcuts.git"}
 
 [tool.poetry.group.test]
 optional = true
