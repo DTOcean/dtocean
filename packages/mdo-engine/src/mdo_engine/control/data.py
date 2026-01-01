@@ -390,7 +390,7 @@ class DataStorage(Plugin):
         data_indexes,
         root_dir=None,
         warn_missing=False,
-        warn_unpickle=False,
+        warn_load=False,
     ):
         for data_index in data_indexes:
             self._convert_box_to_data(
@@ -399,11 +399,15 @@ class DataStorage(Plugin):
                 data_index,
                 root_dir,
                 warn_missing=warn_missing,
-                warn_unpickle=warn_unpickle,
+                warn_load=warn_load,
             )
 
     def serialise_pool(
-        self, data_pool, data_dir="data", root_dir=None, warn_save=True
+        self,
+        data_pool,
+        data_dir="data",
+        root_dir=None,
+        warn_save=True,
     ):
         self.serialise_data(data_pool, data_pool, data_dir, root_dir, warn_save)
 
@@ -413,7 +417,7 @@ class DataStorage(Plugin):
         data_pool,
         root_dir=None,
         warn_missing=False,
-        warn_unpickle=False,
+        warn_load=False,
     ):
         self.deserialise_data(
             data_catalog,
@@ -421,7 +425,7 @@ class DataStorage(Plugin):
             data_pool,
             root_dir,
             warn_missing=warn_missing,
-            warn_unpickle=warn_unpickle,
+            warn_load=warn_load,
         )
 
     def create_pool_subset(self, data_pool, datastate):
@@ -490,7 +494,12 @@ class DataStorage(Plugin):
         return data_obj
 
     def _convert_data_to_box(
-        self, data_pool, data_index, data_dir, root_dir=None, warn_save=True
+        self,
+        data_pool,
+        data_index,
+        data_dir,
+        root_dir=None,
+        warn_save=True,
     ):
         data_obj = data_pool.get(data_index)
 
@@ -534,7 +543,7 @@ class DataStorage(Plugin):
         data_index,
         root_dir=None,
         warn_missing=False,
-        warn_unpickle=False,
+        warn_load=False,
     ):
         data_box = data_pool.get(data_index)
 
@@ -555,10 +564,10 @@ class DataStorage(Plugin):
             data = data_structure.load_data(load_path)
         except Exception:
             msgStr = (
-                "Unpickling of data with id {} failed with an "
+                "Deserializing of data with id {} failed with an "
                 "unexpected error:\n{}"
             ).format(data_box.identifier, traceback.format_exc())
-            if warn_unpickle:
+            if warn_load:
                 module_logger.warning(msgStr)
                 data = None
             else:

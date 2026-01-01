@@ -547,7 +547,7 @@ def test_deserialise_pool_warn_missing(tmpdir):
     assert True
 
 
-def test_deserialise_pool_warn_unpickle(tmpdir, mocker):
+def test_deserialise_pool_warn_load(tmpdir, mocker):
     catalog = DataCatalog()
     validation = DataValidation(meta_cls=data.MyMetaData)
     validation.update_data_catalog_from_definitions(catalog, data)
@@ -569,7 +569,7 @@ def test_deserialise_pool_warn_unpickle(tmpdir, mocker):
     with pytest.raises(Exception):
         data_store.deserialise_pool(catalog, pool)
 
-    data_store.deserialise_pool(catalog, pool, warn_unpickle=True)
+    data_store.deserialise_pool(catalog, pool, warn_load=True)
 
     assert True
 

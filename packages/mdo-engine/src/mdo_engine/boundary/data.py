@@ -13,13 +13,13 @@ import abc
 import datetime as dt
 import glob
 import os
-import pickle
 import sys
 from abc import ABC
 from numbers import Number
+from pathlib import Path
 from types import NoneType
+from typing import Any
 
-import pandas as pd
 import pandas.core.indexes
 from polite_config.paths import UserDataPath, object_dir
 
@@ -27,6 +27,8 @@ from ..utilities.files import yaml_to_py
 
 # Compatibility for old pandas versions
 sys.modules["pandas.indexes"] = pandas.core.indexes
+
+PathOrStr = Path | str
 
 
 class DataDefinition(ABC):
@@ -116,37 +118,51 @@ class Structure(ABC):
         dt.tzinfo,
     ]
 
+    @property
+    @abc.abstractmethod
+    def version(self) -> int:
+        """Version identifier for backwards compatibility when deserializing"""
+        pass
+
     @abc.abstractmethod
     def get_data(self, raw, meta_data):
         """Returns a structured data object from raw input and meta data"""
+        pass
+
+    @staticmethod
+    @abc.abstractmethod
+    def toText(value: Any) -> str:
+        """Converts given value to a string"""
+        pass
+
+    @staticmethod
+    @abc.abstractmethod
+    def fromText(data: str, version: int) -> Any:
+        """Converts a string to structure compatible data for the given
+        version number"""
         pass
 
     @abc.abstractmethod
     def get_value(self, data):
         pass
 
-    def save_value(self, data, root_path):
-        file_path = "{}.pkl".format(root_path)
-        data_value = self.get_value(data)
+    def save_value(self, data: Any, root_path: PathOrStr) -> Path:
+        stub_path = Path(root_path)
+        file_path = stub_path.with_suffix(".txt")
 
-        with open(file_path, "wb") as fstream:
-            pickle.dump(data_value, fstream, -1)
+        data_value = self.get_value(data)
+        data_string = self.toText(data_value)
+
+        with open(file_path, "w") as fstream:
+            fstream.write(data_string)
 
         return file_path
 
-    def load_data(self, file_path):
-        # Bypass the get_data method in this case, but it may be necesary to
-        # call it for loading from other file types. In some cases unpickling
-        # is unique, such as opening old versions of pandas dataframes.
+    def load_data(self, file_path: PathOrStr):
+        with open(file_path, "r") as fstream:
+            data_string = fstream.read()
 
-        try:
-            with open(file_path, "rb") as fstream:
-                data = pickle.load(fstream)
-
-        except ImportError:
-            data = pd.read_pickle(file_path)
-
-        return data
+        return self.fromText(data_string, self.version)
 
     @classmethod
     def equals(cls, left, right):
