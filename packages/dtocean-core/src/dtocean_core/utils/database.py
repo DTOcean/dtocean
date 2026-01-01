@@ -1146,7 +1146,9 @@ def get_offset_map(
     column: pd.Series[int] = df[column_name]
     offset = first - value
     new = column + offset
-    offset_map = pd.Series(new.values, index=column).to_dict()
+    offset_map: dict[int, int] = {
+        x: y for x, y in zip(column.values, new.values)
+    }
 
     return offset_map
 
