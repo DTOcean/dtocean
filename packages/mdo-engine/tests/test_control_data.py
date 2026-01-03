@@ -658,7 +658,7 @@ def test_save_pool(tmpdir):
 
 
 def test_load_pool(tmpdir):
-    "Try unpickling a DataPool"
+    "Try loading a DataPool"
 
     catalog = DataCatalog()
     validation = DataValidation(meta_cls=data.MyMetaData)
@@ -692,6 +692,37 @@ def test_load_pool(tmpdir):
     assert new_data._data == "Tidal"
 
 
+def test_load_pool_type(tmpdir):
+    catalog = DataCatalog()
+    validation = DataValidation(meta_cls=data.MyMetaData)
+    validation.update_data_catalog_from_definitions(catalog, data)
+    data_store = DataStorage(data)
+    pool = DataPool()
+    state = DataState("test")
+    data_store.discover_structures(data)
+
+    metadata = catalog.get_metadata("my:test:variable")
+    data_store.create_new_data(pool, state, catalog, 1, metadata)
+    data_index = state.get_index("my:test:variable")
+
+    serial_pool = data_store.serialise_pool(pool, str(tmpdir))
+
+    test_path = os.path.join(str(tmpdir), "pool.json")
+    with open(test_path, "w") as f:
+        json.dump(serial_pool, f)
+
+    assert os.path.isfile(test_path)
+
+    with open(test_path, "r") as f:
+        loaded_pool = json.load(f)
+
+    new_pool = data_store.deserialise_pool(loaded_pool, catalog)
+    new_data = new_pool.get(data_index)
+
+    assert isinstance(new_data, Data)
+    assert new_data._data == 1
+
+
 def test_load_pool_root(tmpdir):
     "Try unpickling a DataPool using a root directory"
 
@@ -720,8 +751,6 @@ def test_load_pool_root(tmpdir):
     assert os.path.isfile(test_path)
 
     new_root = os.path.join(str(tmpdir), "test")
-    #    os.makedirs(new_root)
-    move_path = os.path.join(str(tmpdir), "test", "pool.pkl")
     shutil.copytree(str(tmpdir), new_root)
 
     with open(test_path, "r") as f:
