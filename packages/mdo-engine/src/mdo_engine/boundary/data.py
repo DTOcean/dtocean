@@ -186,6 +186,6 @@ class Structure(ABC):
 
 
 class SerialBox:
-    def __init__(self, identifier, load_dict):
+    def __init__(self, identifier: str, load_dict: dict[str, str]):
         self.identifier = identifier
         self.load_dict = load_dict

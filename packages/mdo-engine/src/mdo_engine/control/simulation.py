@@ -401,7 +401,7 @@ class Loader:
             store_path = file_path
         else:
             remove_root = os.path.join(os.path.normpath(root_dir), "")
-            store_path = file_path.replace(remove_root, "")
+            store_path = str(file_path).replace(remove_root, "")
 
         state_dict = state.dump()
 
@@ -554,7 +554,9 @@ class Controller(Loader):
 
         return names
 
-    def get_sequenced_interfaces(self, simulation: Simulation, hub_id) -> list[str]:
+    def get_sequenced_interfaces(
+        self, simulation: Simulation, hub_id
+    ) -> list[str]:
         hub = simulation.get_hub(hub_id)
         names = self._sequencer.get_sequenced_names(hub)
         return names

@@ -6,8 +6,8 @@
 
 # pylint: disable=protected-access
 
+import json
 import os
-import pickle
 
 # import sys
 import shutil
@@ -485,15 +485,20 @@ def test_serialise_pool(tmpdir):
 
     data_index = state.get_index("Technology:Common:DeviceType")
 
-    data_store.serialise_pool(pool, str(tmpdir))
+    result = data_store.serialise_pool(pool, str(tmpdir))
+
+    assert set(result["data_indexes"]) == pool._data_indexes
+    assert set(result["data"].keys()) == pool._data_indexes
+    assert result["links"] == pool._links
 
     data_box = pool.get(data_index)
-
     assert isinstance(data_box, SerialBox)
 
     data_path = data_box.load_dict["file_path"]
-
     assert os.path.isfile(data_path)
+
+    assert result["data"][data_index]["identifier"] == data_box.identifier
+    assert result["data"][data_index]["load_dict"] == data_box.load_dict
 
 
 def test_deserialise_pool(tmpdir):
@@ -511,10 +516,10 @@ def test_deserialise_pool(tmpdir):
     data_index = state.get_index("Technology:Common:DeviceType")
     new_data = pool.get(data_index)
 
-    data_store.serialise_pool(pool, str(tmpdir))
+    serial_pool = data_store.serialise_pool(pool, str(tmpdir))
 
-    data_store.deserialise_pool(catalog, pool)
-    new_data = pool.get(data_index)
+    new_pool = data_store.deserialise_pool(serial_pool, catalog)
+    new_data = new_pool.get(data_index)
 
     assert isinstance(new_data, Data)
     assert new_data._data == "Tidal"
@@ -531,7 +536,7 @@ def test_deserialise_pool_warn_missing(tmpdir):
 
     metadata = catalog.get_metadata("Technology:Common:DeviceType")
     data_store.create_new_data(pool, state, catalog, "Tidal", metadata)
-    data_store.serialise_pool(pool, str(tmpdir))
+    serial_pool = data_store.serialise_pool(pool, str(tmpdir))
 
     # Redefine the data stor
     catalog = DataCatalog()
@@ -540,11 +545,9 @@ def test_deserialise_pool_warn_missing(tmpdir):
     data_store = DataStorage(data)
 
     with pytest.raises(ValueError):
-        data_store.deserialise_pool(catalog, pool)
+        data_store.deserialise_pool(serial_pool, catalog)
 
-    data_store.deserialise_pool(catalog, pool, warn_missing=True)
-
-    assert True
+    data_store.deserialise_pool(serial_pool, catalog, warn_missing=True)
 
 
 def test_deserialise_pool_warn_load(tmpdir, mocker):
@@ -559,7 +562,7 @@ def test_deserialise_pool_warn_load(tmpdir, mocker):
     metadata = catalog.get_metadata("Technology:Common:DeviceType")
     data_store.create_new_data(pool, state, catalog, "Tidal", metadata)
 
-    data_store.serialise_pool(pool, str(tmpdir))
+    serial_pool = data_store.serialise_pool(pool, str(tmpdir))
 
     another_mock = mocker.Mock()
     another_mock.load_data = mocker.Mock(side_effect=TypeError("Boom!"))
@@ -567,11 +570,9 @@ def test_deserialise_pool_warn_load(tmpdir, mocker):
     get_structure.return_value = another_mock
 
     with pytest.raises(Exception):
-        data_store.deserialise_pool(catalog, pool)
+        data_store.deserialise_pool(serial_pool, catalog)
 
-    data_store.deserialise_pool(catalog, pool, warn_load=True)
-
-    assert True
+    data_store.deserialise_pool(serial_pool, catalog, warn_load=True)
 
 
 def test_serialise_pool_root(tmpdir):
@@ -614,18 +615,23 @@ def test_deserialise_pool_root(tmpdir):
     data_index = state.get_index("Technology:Common:DeviceType")
     new_data = pool.get(data_index)
 
-    data_store.serialise_pool(pool, str(tmpdir), root_dir=str(tmpdir))
-
-    data_store.deserialise_pool(catalog, pool, root_dir=str(tmpdir))
-    new_data = pool.get(data_index)
+    serial_pool = data_store.serialise_pool(
+        pool,
+        str(tmpdir),
+        root_dir=str(tmpdir),
+    )
+    new_pool = data_store.deserialise_pool(
+        serial_pool,
+        catalog,
+        root_dir=str(tmpdir),
+    )
+    new_data = new_pool.get(data_index)
 
     assert isinstance(new_data, Data)
     assert new_data._data == "Tidal"
 
 
 def test_save_pool(tmpdir):
-    "Try pickling a DataPool"
-
     catalog = DataCatalog()
     validation = DataValidation(meta_cls=data.MyMetaData)
     validation.update_data_catalog_from_definitions(catalog, data)
@@ -639,14 +645,14 @@ def test_save_pool(tmpdir):
 
     data_index = state.get_index("Technology:Common:DeviceType")
 
-    data_store.serialise_pool(pool, str(tmpdir))
-
+    serial_pool = data_store.serialise_pool(pool, str(tmpdir))
     data_box = pool.get(data_index)
 
     assert isinstance(data_box, SerialBox)
 
-    test_path = os.path.join(str(tmpdir), "pool.pkl")
-    pickle.dump(pool, open(test_path, "wb"), -1)
+    test_path = os.path.join(str(tmpdir), "pool.json")
+    with open(test_path, "w") as f:
+        json.dump(serial_pool, f)
 
     assert os.path.isfile(test_path)
 
@@ -668,17 +674,19 @@ def test_load_pool(tmpdir):
     data_index = state.get_index("Technology:Common:DeviceType")
     new_data = pool.get(data_index)
 
-    data_store.serialise_pool(pool, str(tmpdir))
+    serial_pool = data_store.serialise_pool(pool, str(tmpdir))
 
-    test_path = os.path.join(str(tmpdir), "pool.pkl")
-    pickle.dump(pool, open(test_path, "wb"), -1)
+    test_path = os.path.join(str(tmpdir), "pool.json")
+    with open(test_path, "w") as f:
+        json.dump(serial_pool, f)
 
     assert os.path.isfile(test_path)
 
-    loaded_pool = pickle.load(open(test_path, "rb"))
+    with open(test_path, "r") as f:
+        loaded_pool = json.load(f)
 
-    data_store.deserialise_pool(catalog, loaded_pool)
-    new_data = loaded_pool.get(data_index)
+    new_pool = data_store.deserialise_pool(loaded_pool, catalog)
+    new_data = new_pool.get(data_index)
 
     assert isinstance(new_data, Data)
     assert new_data._data == "Tidal"
@@ -701,10 +709,13 @@ def test_load_pool_root(tmpdir):
     data_index = state.get_index("Technology:Common:DeviceType")
     new_data = pool.get(data_index)
 
-    data_store.serialise_pool(pool, str(tmpdir), root_dir=str(tmpdir))
+    serial_pool = data_store.serialise_pool(
+        pool, str(tmpdir), root_dir=str(tmpdir)
+    )
 
-    test_path = os.path.join(str(tmpdir), "pool.pkl")
-    pickle.dump(pool, open(test_path, "wb"), -1)
+    test_path = os.path.join(str(tmpdir), "pool.json")
+    with open(test_path, "w") as f:
+        json.dump(serial_pool, f)
 
     assert os.path.isfile(test_path)
 
@@ -713,10 +724,13 @@ def test_load_pool_root(tmpdir):
     move_path = os.path.join(str(tmpdir), "test", "pool.pkl")
     shutil.copytree(str(tmpdir), new_root)
 
-    loaded_pool = pickle.load(open(move_path, "rb"))
+    with open(test_path, "r") as f:
+        loaded_pool = json.load(f)
 
-    data_store.deserialise_pool(catalog, loaded_pool, root_dir=new_root)
-    new_data = loaded_pool.get(data_index)
+    new_pool = data_store.deserialise_pool(
+        loaded_pool, catalog, root_dir=new_root
+    )
+    new_data = new_pool.get(data_index)
 
     assert isinstance(new_data, Data)
     assert new_data._data == "Tidal"

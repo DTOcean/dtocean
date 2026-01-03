@@ -1,4 +1,5 @@
 import builtins
+import json
 from copy import deepcopy
 
 from mdo_engine.boundary import DataDefinition, Structure
@@ -27,15 +28,34 @@ class autoDefinition(DataDefinition):
 class UnitData(Structure):
     """A single item of data"""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         return raw
 
     def get_value(self, data):
         return deepcopy(data)
 
+    @staticmethod
+    def toText(value):
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data, version):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
+
 
 class Simple(Structure):
     """Simple single value data such as a bool, str, int or float"""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         simple = raw
@@ -54,6 +74,17 @@ class Simple(Structure):
 
     def get_value(self, data):
         return deepcopy(data)
+
+    @staticmethod
+    def toText(value):
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data, version):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
 
 
 class AutoSimple(Simple):

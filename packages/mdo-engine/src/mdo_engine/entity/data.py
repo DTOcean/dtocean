@@ -3,6 +3,7 @@
 from collections import OrderedDict
 from collections.abc import Sequence
 from copy import deepcopy
+from typing import Any
 
 from ..utilities.identity import get_unique_id
 
@@ -144,18 +145,19 @@ class DataPool:
     """
 
     def __init__(self):
-        self._data_indexes = set()
-        self._data = {}
-        self._links = {}
+        self._data_indexes: set[str] = set()
+        self._data: dict[str, Any] = {}
+        self._links: dict[str, int] = {}
 
-    def add(self, data):
+    def add(self, data, data_index=None, links=0):
         #        print "\nadd:", self._data.keys()
 
-        data_index = get_unique_id(self._data_indexes)
+        if data_index is None:
+            data_index = get_unique_id(self._data_indexes)
 
         self._data_indexes.add(data_index)
         self._data[data_index] = data
-        self._links[data_index] = 0
+        self._links[data_index] = links
 
         return data_index
 

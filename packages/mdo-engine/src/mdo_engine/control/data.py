@@ -7,6 +7,7 @@ import logging
 import os
 import traceback
 from copy import deepcopy
+from typing import Any
 
 from ..boundary.data import SerialBox
 from ..entity.data import Data, DataPool, DataState, MetaData
@@ -380,7 +381,11 @@ class DataStorage(Plugin):
     ):
         for data_index in data_indexes:
             self._convert_data_to_box(
-                data_pool, data_index, data_dir, root_dir, warn_save
+                data_pool,
+                data_index,
+                data_dir,
+                root_dir,
+                warn_save,
             )
 
     def deserialise_data(
@@ -404,21 +409,49 @@ class DataStorage(Plugin):
 
     def serialise_pool(
         self,
-        data_pool,
+        data_pool: DataPool,
         data_dir="data",
         root_dir=None,
         warn_save=True,
-    ):
+    ) -> dict[str, Any]:
         self.serialise_data(data_pool, data_pool, data_dir, root_dir, warn_save)
+
+        data = {}
+        links = data_pool.mirror_links()
+
+        for index in data_pool:
+            box = data_pool.get(index)
+            assert isinstance(box, SerialBox)
+            data[index] = {
+                "identifier": box.identifier,
+                "load_dict": box.load_dict,
+            }
+
+        return {
+            "data_indexes": list(data_pool._data_indexes),
+            "data": data,
+            "links": links,
+        }
 
     def deserialise_pool(
         self,
+        serial_pool: dict[str, Any],
         data_catalog,
-        data_pool,
         root_dir=None,
         warn_missing=False,
         warn_load=False,
     ):
+        print(serial_pool["data"].values())
+        data = {
+            index: SerialBox(value["identifier"], value["load_dict"])
+            for index, value in serial_pool["data"].items()
+        }
+
+        data_pool = DataPool()
+        data_pool._data_indexes = set(serial_pool["data_indexes"])
+        data_pool._data = data
+        data_pool._links = serial_pool["links"]
+
         self.deserialise_data(
             data_catalog,
             data_pool,
@@ -427,6 +460,8 @@ class DataStorage(Plugin):
             warn_missing=warn_missing,
             warn_load=warn_load,
         )
+
+        return data_pool
 
     def create_pool_subset(self, data_pool, datastate):
         new_pool = DataPool()
@@ -525,10 +560,10 @@ class DataStorage(Plugin):
                 raise Exception(msgStr)
 
         if root_dir is None:
-            store_path = file_path
+            store_path = str(file_path)
         else:
             remove_root = os.path.join(os.path.normpath(root_dir), "")
-            store_path = file_path.replace(remove_root, "")
+            store_path = str(file_path).replace(remove_root, "")
 
         identifier = data_obj.get_id()
         load_dict = {"file_path": store_path, "structure_name": structure_name}
@@ -575,7 +610,10 @@ class DataStorage(Plugin):
 
         # Create and store the data object
         data_obj = self._make_data(
-            data_catalog, data_box.identifier, data, warn_missing=warn_missing
+            data_catalog,
+            data_box.identifier,
+            data,
+            warn_missing=warn_missing,
         )
 
         if data_obj is None:

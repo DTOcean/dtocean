@@ -1,4 +1,5 @@
 import builtins
+import json
 from copy import deepcopy
 
 import pandas as pd
@@ -9,15 +10,34 @@ from mdo_engine.boundary import Structure
 class UnitData(Structure):
     """A single item of data"""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         return raw
 
     def get_value(self, data):
         return deepcopy(data)
 
+    @staticmethod
+    def toText(value):
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data, version):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
+
 
 class Simple(Structure):
     """Simple single value data such as a bool, str, int or float"""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         simple = raw
@@ -37,9 +57,24 @@ class Simple(Structure):
     def get_value(self, data):
         return data
 
+    @staticmethod
+    def toText(value):
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data, version):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
+
 
 class SimpleList(Structure):
     """Simple list of value data such as a bool, str, int or float"""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         raw_list = raw
@@ -68,9 +103,24 @@ class SimpleList(Structure):
     def get_value(self, data):
         return data[:]
 
+    @staticmethod
+    def toText(value):
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data, version):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
+
 
 class TableData(Structure):
     """Structure represented in a pandas dataframe"""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         dataframe = pd.DataFrame(raw)
@@ -83,3 +133,14 @@ class TableData(Structure):
     @classmethod
     def equals(cls, left, right):
         return left.equals(right)
+
+    @staticmethod
+    def toText(value: pd.DataFrame):
+        return value.to_json()
+
+    @staticmethod
+    def fromText(data, version):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return pd.read_json(data)
