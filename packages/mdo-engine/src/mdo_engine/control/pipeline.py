@@ -297,7 +297,7 @@ class Sequencer:
             "completed_interfaces_names": completed_interface_names,
         }
 
-    def load_hub(self, hub_dict: dict[str, Any]) -> Hub:
+    def load_hub(self, hub_dict: dict[str, Any]) -> Hub | Pipeline:
         if hub_dict["type"] == "Hub":
             hub_class = Hub
         elif hub_dict["type"] == "Pipeline":

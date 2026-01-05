@@ -47,3 +47,18 @@ def test_complete(sequencer):
     sequencer.complete(pipeline, "Early Interface")
 
     assert sequencer.get_next_name(pipeline) == "Later Interface"
+
+
+def test_hub_dump_load(sequencer):
+    pipeline = sequencer.create_new_pipeline("DummyInterface", no_complete=True)
+    pipeline.force_completed = True
+
+    sequencer.sequence(pipeline, "Early Interface")
+    sequencer.sequence(pipeline, "Later Interface")
+    sequencer.complete(pipeline, "Early Interface")
+
+    hub_dict = sequencer.dump_hub(pipeline)
+    other = sequencer.load_hub(hub_dict)
+
+    assert id(pipeline) != id(other)
+    assert pipeline == other
