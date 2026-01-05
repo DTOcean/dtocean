@@ -7,7 +7,7 @@ Created on Tue Mar 31 10:53:17 2015
 
 import logging
 from types import ModuleType
-from typing import OrderedDict, Sequence
+from typing import Any, OrderedDict, Sequence
 
 from ..boundary.interface import WeightedInterface
 from ..control.sockets import Socket
@@ -84,7 +84,7 @@ class Sequencer:
 
         return socket_names
 
-    def get_socket(self, interface_type):
+    def get_socket(self, interface_type: str):
         """Get the socket object for the Hub
 
         Returns:
@@ -94,7 +94,7 @@ class Sequencer:
 
         return self._sockets[interface_type]
 
-    def create_new_hub(self, interface_type, no_complete=False):
+    def create_new_hub(self, interface_type: str, no_complete=False) -> Hub:
         if interface_type not in self._sockets:
             errStr = ("No socket available for interface type {}").format(
                 interface_type
@@ -108,7 +108,11 @@ class Sequencer:
 
         return new_hub
 
-    def create_new_pipeline(self, interface_type, no_complete=False):
+    def create_new_pipeline(
+        self,
+        interface_type: str,
+        no_complete=False,
+    ) -> Pipeline:
         if interface_type not in self._sockets:
             errStr = ("No socket available for interface type {}").format(
                 interface_type
@@ -124,7 +128,7 @@ class Sequencer:
 
         return new_pipeline
 
-    def get_available_names(self, hub):
+    def get_available_names(self, hub: Hub):
         """Return all the interface names found as plugins"""
 
         names_dict = self._names[hub.interface_type]
@@ -132,13 +136,13 @@ class Sequencer:
 
         return names
 
-    def get_scheduled_names(self, hub):
+    def get_scheduled_names(self, hub: Hub):
         cls_names = hub.get_scheduled_cls_names()
         scheduled_names = self._filter_names(hub, cls_names)
 
         return scheduled_names
 
-    def get_completed_names(self, hub):
+    def get_completed_names(self, hub: Hub):
         cls_names = hub.get_completed_cls_names()
         completed_names = self._filter_names(hub, cls_names)
 
@@ -149,7 +153,7 @@ class Sequencer:
         sequenced_names = self._filter_names(hub, cls_names)
         return sequenced_names
 
-    def get_next_name(self, hub):
+    def get_next_name(self, hub: Hub):
         interface_cls_name = hub.get_next_scheduled()
 
         if interface_cls_name is None:
@@ -161,7 +165,7 @@ class Sequencer:
 
         return interface_name
 
-    def refresh_interfaces(self, hub):
+    def refresh_interfaces(self, hub: Hub):
         completed_names = self.get_completed_names(hub)
         sequenced_names = self.get_sequenced_names(hub)
 
@@ -175,7 +179,7 @@ class Sequencer:
             # Store an object of the interface
             hub.refresh_interface(interface_cls_name, interface_obj)
 
-    def is_available(self, hub, interface_name):
+    def is_available(self, hub: Hub, interface_name: str):
         """Return all the interface names found as plugins for the given
         hub type"""
 
@@ -187,7 +191,7 @@ class Sequencer:
 
         return result
 
-    def get_cls_name(self, hub, interface_name):
+    def get_cls_name(self, hub: Hub, interface_name: str):
         if not self.is_available(hub, interface_name):
             return None
 
@@ -197,7 +201,7 @@ class Sequencer:
 
         return interface_cls_name
 
-    def get_weight(self, hub, interface_name):
+    def get_weight(self, hub: Hub, interface_name: str):
         """Get the weighting of the interface if set"""
 
         socket = self.get_socket(hub.interface_type)
@@ -216,7 +220,7 @@ class Sequencer:
 
         return result
 
-    def has_name(self, hub, interface_name):
+    def has_name(self, hub: Hub, interface_name: str):
         """Check if a hub has a sequenced interface name"""
 
         result = False
@@ -230,7 +234,7 @@ class Sequencer:
 
         return result
 
-    def sequence(self, hub, interface_name):
+    def sequence(self, hub: Hub, interface_name: str):
         """Sequence an interface for execution."""
 
         interface_cls_name, interface_obj = self._get_interface(
@@ -240,7 +244,7 @@ class Sequencer:
         # Store an object of the interface
         hub.add_interface(interface_cls_name, interface_obj)
 
-    def check_next(self, hub, interface_name):
+    def check_next(self, hub: Hub, interface_name: str):
         interface_cls_name = self.get_cls_name(hub, interface_name)
 
         if interface_cls_name is None:
@@ -251,7 +255,7 @@ class Sequencer:
 
         hub.check_next_scheduled(interface_cls_name)
 
-    def complete(self, hub, interface_name):
+    def complete(self, hub: Hub, interface_name: str):
         interface_cls_name = self.get_cls_name(hub, interface_name)
 
         if interface_cls_name is None:
@@ -262,7 +266,7 @@ class Sequencer:
 
         hub.set_completed(interface_cls_name)
 
-    def is_complete(self, hub, interface_name):
+    def is_complete(self, hub: Hub, interface_name: str):
         interface_cls_name = self.get_cls_name(hub, interface_name)
 
         if interface_cls_name is None:
@@ -275,13 +279,59 @@ class Sequencer:
 
         return result
 
-    def _filter_names(self, hub, value_list):
+    def dump_hub(self, hub: Hub) -> dict[str, Any]:
+        scheduled_interface_names = [
+            x.get_name() for x in hub._scheduled_interface_map.values()
+        ]
+        completed_interface_names = [
+            x.get_name() for x in hub._completed_interface_map.values()
+        ]
+
+        return {
+            "type": hub.__class__.__name__,
+            "interface_type": hub.interface_type,
+            "has_order": hub.has_order,
+            "force_completed": hub.force_completed,
+            "no_complete": hub._no_complete,
+            "scheduled_interface_names": scheduled_interface_names,
+            "completed_interfaces_names": completed_interface_names,
+        }
+
+    def load_hub(self, hub_dict: dict[str, Any]) -> Hub:
+        if hub_dict["type"] == "Hub":
+            hub_class = Hub
+        elif hub_dict["type"] == "Pipeline":
+            hub_class = Pipeline
+        else:
+            raise RuntimeError("Hub type not recognised")
+
+        hub = hub_class(hub_dict["interface_type"])
+        hub.has_order = hub_dict["has_order"]
+        hub.force_completed = hub_dict["force_completed"]
+        hub._no_complete = hub_dict["no_complete"]
+
+        for interface_name in hub_dict["scheduled_interface_names"]:
+            interface_cls_name, interface_obj = self._get_interface(
+                hub,
+                interface_name,
+            )
+            hub._scheduled_interface_map[interface_cls_name] = interface_obj
+
+        for interface_name in hub_dict["completed_interfaces_names"]:
+            interface_cls_name, interface_obj = self._get_interface(
+                hub,
+                interface_name,
+            )
+            hub._completed_interface_map[interface_cls_name] = interface_obj
+
+        return hub
+
+    def _filter_names(self, hub: Hub, value_list: list[str]):
         names_dict = self._names[hub.interface_type]
         result = [k for k, v in names_dict.items() if v in value_list]
-
         return result
 
-    def _get_interface(self, hub, interface_name):
+    def _get_interface(self, hub: Hub, interface_name: str):
         socket = self.get_socket(hub.interface_type)
         interface_cls_name = self.get_cls_name(hub, interface_name)
 
