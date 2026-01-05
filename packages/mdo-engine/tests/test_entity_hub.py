@@ -55,3 +55,52 @@ def test_rollback(sequencer):
     pipeline.rollback("EarlyInterface")
 
     assert not pipeline.is_completed("EarlyInterface")
+
+
+def test_pipeline_equality(sequencer):
+    pipeline = sequencer.create_new_pipeline("DummyInterface")
+    sequencer.sequence(pipeline, "Early Interface")
+    sequencer.sequence(pipeline, "Later Interface")
+    pipeline.set_completed("EarlyInterface")
+
+    other = sequencer.create_new_pipeline("DummyInterface")
+    sequencer.sequence(other, "Early Interface")
+    sequencer.sequence(other, "Later Interface")
+    other.set_completed("EarlyInterface")
+
+    assert id(pipeline) != id(other)
+    assert pipeline == other
+
+
+def test_hub_equality(sequencer):
+    hub = sequencer.create_new_hub("DummyInterface")
+    sequencer.sequence(hub, "Early Interface")
+    sequencer.sequence(hub, "Later Interface")
+    hub.set_completed("EarlyInterface")
+
+    other = sequencer.create_new_hub("DummyInterface")
+    sequencer.sequence(other, "Early Interface")
+    sequencer.sequence(other, "Later Interface")
+    other.set_completed("EarlyInterface")
+
+    assert id(hub) != id(other)
+    assert hub == other
+
+
+def test_hub_pipeline_inequality(sequencer):
+    pipeline = sequencer.create_new_pipeline("DummyInterface")
+    hub = sequencer.create_new_hub("DummyInterface")
+    assert pipeline != hub
+
+
+def test_pipeline_inequality(sequencer):
+    pipeline = sequencer.create_new_pipeline("DummyInterface")
+    sequencer.sequence(pipeline, "Early Interface")
+    sequencer.sequence(pipeline, "Later Interface")
+    pipeline.set_completed("EarlyInterface")
+
+    other = sequencer.create_new_pipeline("DummyInterface")
+    sequencer.sequence(other, "Early Interface")
+    sequencer.sequence(other, "Later Interface")
+
+    assert pipeline != other

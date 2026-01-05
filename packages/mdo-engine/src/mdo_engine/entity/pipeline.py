@@ -8,8 +8,8 @@ Created on Tue Mar 31 10:53:17 2015
 from collections import OrderedDict
 from copy import deepcopy
 
-
 from ..boundary.interface import Interface
+
 
 class Hub:
     """A Hub groups a particular class of interfaces and calculates the
@@ -22,14 +22,17 @@ class Hub:
 
     """
 
-    def __init__(self, interface_type, no_complete=False):
+    def __init__(self, interface_type: str, no_complete=False):
         self.interface_type = interface_type
         self.has_order = False
         self.force_completed = False
         self._no_complete = no_complete
-        self._id = None
-        self._scheduled_interface_map: OrderedDict[str, Interface] = OrderedDict()
-        self._completed_interface_map: OrderedDict[str, Interface] = OrderedDict()
+        self._scheduled_interface_map: OrderedDict[str, Interface] = (
+            OrderedDict()
+        )
+        self._completed_interface_map: OrderedDict[str, Interface] = (
+            OrderedDict()
+        )
 
     def add_interface(self, interface_cls_name: str, interface_obj):
         """Assosiate an interface object to the Hub
@@ -339,6 +342,26 @@ class Hub:
             last_key = next(reversed(ordered_dict))
 
         return last_key
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+
+        equals = True
+        equals &= self.interface_type == other.interface_type
+        equals &= self.has_order == other.has_order
+        equals &= self.force_completed == other.force_completed
+        equals &= self._no_complete == other._no_complete
+        equals &= (
+            self._scheduled_interface_map.keys()
+            == other._scheduled_interface_map.keys()
+        )
+        equals &= (
+            self._completed_interface_map.keys()
+            == other._completed_interface_map.keys()
+        )
+
+        return equals
 
 
 class Pipeline(Hub):
