@@ -612,23 +612,21 @@ def test_deserialise_pool_root(tmpdir):
     metadata = catalog.get_metadata("Technology:Common:DeviceType")
     data_store.create_new_data(pool, state, catalog, "Tidal", metadata)
 
-    data_index = state.get_index("Technology:Common:DeviceType")
-    new_data = pool.get(data_index)
-
     serial_pool = data_store.serialise_pool(
         pool,
         str(tmpdir),
         root_dir=str(tmpdir),
     )
+    data_store.deserialise_pool(pool, catalog, root_dir=str(tmpdir))
+
     new_pool = data_store.deserialise_pool(
         serial_pool,
         catalog,
         root_dir=str(tmpdir),
     )
-    new_data = new_pool.get(data_index)
 
-    assert isinstance(new_data, Data)
-    assert new_data._data == "Tidal"
+    assert pool is not new_pool
+    assert pool == new_pool
 
 
 def test_save_pool(tmpdir):
@@ -790,7 +788,7 @@ def test_create_pool_subset():
     # Create a subset based on the second state
     new_pool, new_state = data_store.create_pool_subset(pool, state2)
 
-    assert id(new_pool) != id(pool)
+    assert new_pool is not pool
     assert len(new_pool) == 1
 
     orig_data_index = state2.get_index("my:test:variable")
@@ -799,7 +797,7 @@ def test_create_pool_subset():
     new_data_index = new_state.get_index("my:test:variable")
     new_data_obj = new_pool.get(new_data_index)
 
-    assert id(orig_data_obj._data) != id(new_data_obj._data)
+    assert orig_data_obj._data is not new_data_obj._data
 
     orig_data_value = data_store.get_data_value(
         pool, state2, "my:test:variable"
@@ -812,7 +810,7 @@ def test_create_pool_subset():
     assert len(orig_data_value) == 2
     assert orig_data_value == new_data_value
 
-    assert id(state2) != id(new_state)
+    assert state2 is not new_state
     assert set(state2.get_identifiers()) == set(new_state.get_identifiers())
 
 

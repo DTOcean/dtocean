@@ -435,22 +435,24 @@ class DataStorage(Plugin):
 
     def deserialise_pool(
         self,
-        serial_pool: dict[str, Any],
+        serial_pool: DataPool | dict[str, Any],
         data_catalog,
         root_dir=None,
         warn_missing=False,
         warn_load=False,
     ):
-        print(serial_pool["data"].values())
-        data = {
-            index: SerialBox(value["identifier"], value["load_dict"])
-            for index, value in serial_pool["data"].items()
-        }
+        if isinstance(serial_pool, DataPool):
+            data_pool = serial_pool
+        else:
+            data = {
+                index: SerialBox(value["identifier"], value["load_dict"])
+                for index, value in serial_pool["data"].items()
+            }
 
-        data_pool = DataPool()
-        data_pool._data_indexes = set(serial_pool["data_indexes"])
-        data_pool._data = data
-        data_pool._links = serial_pool["links"]
+            data_pool = DataPool()
+            data_pool._data_indexes = set(serial_pool["data_indexes"])
+            data_pool._data = data
+            data_pool._links = serial_pool["links"]
 
         self.deserialise_data(
             data_catalog,

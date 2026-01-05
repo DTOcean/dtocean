@@ -60,5 +60,5 @@ def test_hub_dump_load(sequencer):
     hub_dict = sequencer.dump_hub(pipeline)
     other = sequencer.load_hub(hub_dict)
 
-    assert id(pipeline) != id(other)
+    assert pipeline is not other
     assert pipeline == other

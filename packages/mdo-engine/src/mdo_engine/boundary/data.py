@@ -189,3 +189,11 @@ class SerialBox:
     def __init__(self, identifier: str, load_dict: dict[str, str]):
         self.identifier = identifier
         self.load_dict = load_dict
+
+    def __eq__(self, other):
+        if not isinstance(other, SerialBox):
+            return False
+
+        return (self.identifier == other.identifier) & (
+            self.load_dict == other.load_dict
+        )

@@ -221,6 +221,26 @@ class DataPool:
     def count(self):
         return len(self._data)
 
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, DataPool):
+            return False
+
+        equals = True
+        equals &= self._data_indexes == other._data_indexes
+        equals &= self._links == other._links
+
+        if not equals:
+            return False
+
+        for index, value in self._data.items():
+            if index not in other._data:
+                return False
+            if value != other._data[index]:
+                print(value, other._data[index])
+                return False
+
+        return True
+
     def __len__(self):
         return self.count()
 
@@ -387,3 +407,14 @@ class Data:
 
     def get_structure_name(self):
         return self._structure_name
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Data):
+            return False
+
+        equals = True
+        equals &= self._id == other._id
+        equals &= self._structure_name == other._structure_name
+        equals &= self._data == other._data
+
+        return equals

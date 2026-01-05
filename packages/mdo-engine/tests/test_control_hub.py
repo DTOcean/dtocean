@@ -64,14 +64,11 @@ def test_refresh(sequencer):
 
     next_interface = hub.get_next_scheduled()
     before_object = hub.get_interface_obj(next_interface)
-    before_id = hex(id(before_object))
 
     sequencer.refresh_interfaces(hub)
-
     after_object = hub.get_interface_obj(next_interface)
-    after_id = hex(id(after_object))
 
-    assert before_id != after_id
+    assert before_object is not after_object
 
 
 def test_get_next_scheduled_none(sequencer):

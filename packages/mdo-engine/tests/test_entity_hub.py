@@ -68,7 +68,7 @@ def test_pipeline_equality(sequencer):
     sequencer.sequence(other, "Later Interface")
     other.set_completed("EarlyInterface")
 
-    assert id(pipeline) != id(other)
+    assert pipeline is not other
     assert pipeline == other
 
 
@@ -83,7 +83,7 @@ def test_hub_equality(sequencer):
     sequencer.sequence(other, "Later Interface")
     other.set_completed("EarlyInterface")
 
-    assert id(hub) != id(other)
+    assert hub is not other
     assert hub == other
 
 
