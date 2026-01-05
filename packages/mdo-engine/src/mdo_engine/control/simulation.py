@@ -13,6 +13,7 @@ import os
 import sys
 from collections import OrderedDict
 from copy import deepcopy
+from typing import Any
 
 from ..boundary.data import SerialBox
 from ..boundary.interface import MaskVariable
@@ -241,7 +242,10 @@ class Loader:
         for state in active_states:
             safe_id = get_unique_id(used_identifiers)
             state_box = self._convert_state_to_box(
-                state, safe_id, state_dir, root_dir
+                state,
+                safe_id,
+                state_dir,
+                root_dir,
             )
             active_boxes.append(state_box)
 
@@ -251,7 +255,10 @@ class Loader:
         for state in redo_states:
             safe_id = get_unique_id(used_identifiers)
             state_box = self._convert_state_to_box(
-                state, safe_id, state_dir, root_dir
+                state,
+                safe_id,
+                state_dir,
+                root_dir,
             )
             redo_boxes.append(state_box)
 
@@ -385,7 +392,13 @@ class Loader:
 
         return final_dict
 
-    def _convert_state_to_box(self, state, identifier, save_dir, root_dir=None):
+    def _convert_state_to_box(
+        self,
+        state,
+        identifier,
+        save_dir,
+        root_dir=None,
+    ):
         if not isinstance(state, (BaseState, PseudoState, DataState)):
             errStr = (
                 "Only objects of type BaseState, PseudoState & "
@@ -919,7 +932,12 @@ class Controller(Loader):
         return data_value
 
     def get_level_values(
-        self, pool, simulation, data_identity, levels=None, force_masks=None
+        self,
+        pool,
+        simulation,
+        data_identity,
+        levels=None,
+        force_masks=None,
     ):
         simulation_copy = deepcopy(simulation)
 
@@ -943,7 +961,12 @@ class Controller(Loader):
         return level_results
 
     def input_available(
-        self, pool, simulation, hub_id, interface_name, check_id
+        self,
+        pool,
+        simulation,
+        hub_id,
+        interface_name,
+        check_id,
     ):
         interface_obj = self.get_interface_obj(
             simulation, hub_id, interface_name
@@ -967,7 +990,12 @@ class Controller(Loader):
         return result
 
     def load_interface(
-        self, pool, simulation, hub_id, interface_name, skip_vars=None
+        self,
+        pool,
+        simulation,
+        hub_id,
+        interface_name,
+        skip_vars=None,
     ):
         interface_obj = self.get_interface_obj(
             simulation, hub_id, interface_name
@@ -978,6 +1006,82 @@ class Controller(Loader):
         )
 
         return interface_obj
+
+    def serialise_simulation(
+        self,
+        simulation: Simulation,
+        state_dir="states",
+        root_dir=None,
+    ) -> dict[str, Any]:
+        self.serialise_states(simulation, state_dir, root_dir)
+
+        hubs = {}
+        active_states = []
+        redo_states = []
+        merged_state = None
+
+        for hub_id, hub in simulation._hubs:
+            hub[hub_id] = self._sequencer.dump_hub(hub)
+
+        for state in simulation._active_states:
+            state_dict = {
+                "identifier": state.identifier,
+                "load_dict": state.load_dict,
+            }
+            active_states.append(state_dict)
+
+        for state in simulation._redo_states:
+            state_dict = {
+                "identifier": state.identifier,
+                "load_dict": state.load_dict,
+            }
+            redo_states.append(state_dict)
+
+        if simulation._merged_state is not None:
+            merged_state = {
+                "identifier": simulation._merged_state.identifier,
+                "load_dict": simulation._merged_state.load_dict,
+            }
+
+        return {
+            "title": simulation._title,
+            "hubs": hubs,
+            "active_states": active_states,
+            "redo_states": redo_states,
+            "merged_state": merged_state,
+        }
+
+    def deserialise_simulation(
+        self,
+        serial_sim: Simulation | dict[str, Any],
+        root_dir=None,
+    ):
+        if isinstance(serial_sim, Simulation):
+            simulation = serial_sim
+        else:
+            simulation = Simulation()
+            simulation._title = serial_sim["title"]
+
+            for hub_id, hub_dict in serial_sim["hubs"]:
+                simulation._hubs[hub_id] = self._sequencer.load_hub(hub_dict)
+
+            simulation._active_states = [
+                SerialBox(value["identifier"], value["load_dict"])
+                for value in serial_sim["active_states"]
+            ]
+
+            simulation._redo_states = [
+                SerialBox(value["identifier"], value["load_dict"])
+                for value in serial_sim["redo_states"]
+            ]
+
+            if serial_sim["merged_state"] is not None:
+                merged_state = serial_sim["merged_state"]
+                simulation._merged_state = SerialBox(
+                    merged_state["identifier"], merged_state["load_dict"]
+                )
+
+        self.deserialise_states(simulation, root_dir)
 
     @classmethod
     def reset_hub(cls, simulation, hub_id):
