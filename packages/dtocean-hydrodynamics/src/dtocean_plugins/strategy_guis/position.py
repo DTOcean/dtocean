@@ -51,7 +51,7 @@ from shiboken6 import Shiboken
 from dtocean_plugins.strategies.position import AdvancedPosition
 from dtocean_plugins.strategies.position_optimiser import (
     _load_config_template,
-    dump_config,
+    dump_config_yaml,
 )
 from dtocean_plugins.strategy_guis.base import (
     GUIStrategy,
@@ -881,7 +881,7 @@ class AdvancedPositionWidget(
                         self._config["worker_dir"],
                         GUIAdvancedPosition.get_config_fname(),
                     )
-                    old_config = GUIAdvancedPosition.load_config(
+                    old_config = GUIAdvancedPosition.load_yaml(
                         old_config_path
                     )
                     old_config.pop("clean_existing_dir")
@@ -1021,7 +1021,7 @@ class AdvancedPositionWidget(
         if not file_path:
             return
 
-        config = GUIAdvancedPosition.load_config(str(file_path))
+        config = GUIAdvancedPosition.load_yaml(str(file_path))
         self._config = _init_config(config)
 
         self._update_status(init=True)
@@ -1041,7 +1041,7 @@ class AdvancedPositionWidget(
         if not file_path:
             return
 
-        dump_config(file_path, self._config)
+        dump_config_yaml(file_path, self._config)
 
     @Slot()
     def _update_worker_dir(self):

@@ -34,7 +34,7 @@ from natsort import natsorted
 
 from dtocean_plugins.strategies.base import Strategy
 
-from .position_optimiser import PositionOptimiser, dump_config, load_config
+from .position_optimiser import PositionOptimiser, dump_config_yaml, load_config_yaml
 from .position_optimiser.iterator import (
     get_positioner,
     iterate,
@@ -185,11 +185,6 @@ class AdvancedPosition(Strategy):
     @classmethod
     def get_config_fname(cls):
         return "config.yaml"
-
-    def dump_config_hook(self, config):
-        safe_config = deepcopy(config)
-        safe_config["clean_existing_dir"] = None
-        return safe_config
 
     def get_variables(self):
         set_vars = ["options.user_array_layout", "project.rated_power"]
@@ -493,18 +488,18 @@ class AdvancedPosition(Strategy):
             if sim_title in self._sim_record:
                 self.remove_simulation_title(sim_title)
 
-    @classmethod
-    def load_config(cls, config_path):
-        config = load_config(config_path)
-        return config
-
-    def dump_config(self, config_path):
+    def dump_yaml(self, config_path):
         config = self.dump_config_hook(self._config)
-        dump_config(config_path, config)
+        dump_config_yaml(config_path, config)
+
+    @classmethod
+    def load_yaml(cls, config_path):
+        config = load_config_yaml(config_path)
+        return config
 
     @classmethod
     def export_config_template(cls, export_path):
-        dump_config(export_path)
+        dump_config_yaml(export_path)
 
     @classmethod
     def allow_run(cls, core, project, config):
@@ -640,6 +635,24 @@ class AdvancedPosition(Strategy):
         status_str = "Project ready"
 
         return status_str, 1
+    
+    @staticmethod
+    def dump_config(config):
+        safe_config = deepcopy(config)
+        safe_config["clean_existing_dir"] = None
+        return safe_config
+    
+    @staticmethod
+    def load_config(serial_config):
+        return serial_config
+    
+    @staticmethod
+    def dump_sim_details(sim_details):
+        return None
+
+    @staticmethod
+    def load_sim_details(serial_sim_details):
+        return None
 
 
 def _release_logging_locks():

@@ -43,14 +43,13 @@ class Strategy(object):
         self._tree = Tree()
 
         # Record the simulation titles used in the strategy
-        self._sim_record = []
+        self._sim_record: list[str] = []
 
-        # Record the configuration dictionary of the strategy (assume this
-        # is picklable)
-        self._config = None
+        # Record the configuration dictionary of the strategy
+        self._config: Optional[dict[str, Any]] = None
 
         # Record any detailed information about the simulation (assume this
-        # is picklable)
+        # is json serializable)
         self.sim_details: Optional[Any] = None
 
     @classmethod
@@ -82,11 +81,28 @@ class Strategy(object):
         take a Core and a Project class as the only inputs.
         """
 
+    @staticmethod
+    @abc.abstractmethod
+    def dump_config(config):
+        """Convert the config in a json serializable state"""
+
+    @staticmethod
+    @abc.abstractmethod
+    def load_yaml(serial_config):
+        """Convert the json representation of the config"""
+
+    @staticmethod
+    @abc.abstractmethod
+    def dump_sim_details(sim_details):
+        """Convert the sim details in a json serializable state"""
+
+    @staticmethod
+    @abc.abstractmethod
+    def load_sim_details(serial_sim_details):
+        """Convert the json representation of the sim details"""
+
     def get_config(self):
         return deepcopy(self._config)
-
-    def dump_config_hook(self, config):  # pylint: disable=no-self-use
-        return config
 
     def set_config(self, config_dict):
         self._config = config_dict

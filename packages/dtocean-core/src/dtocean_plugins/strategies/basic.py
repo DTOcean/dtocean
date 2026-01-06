@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2021-2024 Mathew Topper
+#    Copyright (C) 2021-2026 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -55,3 +55,19 @@ class BasicStrategy(Strategy):
                 core, project, allow_unavailable=True
             )
             current_mod = self._module_menu.get_current(core, project)
+    
+    @staticmethod
+    def dump_config(config):
+        return None
+    
+    @staticmethod
+    def load_yaml(serial_config):
+        return None
+    
+    @staticmethod
+    def dump_sim_details(sim_details):
+        return None
+
+    @staticmethod
+    def load_sim_details(serial_sim_details):
+        return None

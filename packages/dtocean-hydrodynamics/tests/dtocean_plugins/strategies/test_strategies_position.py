@@ -1479,35 +1479,35 @@ def test_advanced_load_config(mocker):
         autospec=True,
     )
 
-    assert AdvancedPosition.load_config(None)
+    assert AdvancedPosition.load_yaml(None)
 
 
 def test_advanced_dump_config(mocker, advanced):
     config = {"clean_existing_dir": True}
     advanced._config = config
 
-    dump_config = mocker.patch(
-        "dtocean_plugins.strategies.position.dump_config", autospec=True
+    dump_config_yaml = mocker.patch(
+        "dtocean_plugins.strategies.position.dump_config_yaml", autospec=True,
     )
 
     mock_path = "mock"
-    advanced.dump_config(mock_path)
+    advanced.dump_yaml(mock_path)
 
-    assert dump_config.called
-    assert dump_config.call_args.args[0] == mock_path
-    assert dump_config.call_args.args[1]["clean_existing_dir"] is None
+    assert dump_config_yaml.called
+    assert dump_config_yaml.call_args.args[0] == mock_path
+    assert dump_config_yaml.call_args.args[1]["clean_existing_dir"] is None
 
 
 def test_advanced_export_config_template(mocker, advanced):
-    dump_config = mocker.patch(
-        "dtocean_plugins.strategies.position.dump_config", autospec=True
+    dump_config_yaml = mocker.patch(
+        "dtocean_plugins.strategies.position.dump_config_yaml", autospec=True,
     )
 
     mock_path = "mock"
     advanced.export_config_template(mock_path)
 
-    assert dump_config.called
-    assert dump_config.call_args.args[0] == mock_path
+    assert dump_config_yaml.called
+    assert dump_config_yaml.call_args.args[0] == mock_path
 
 
 @pytest.mark.parametrize(

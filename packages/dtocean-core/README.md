@@ -93,8 +93,8 @@ dtocean init -h
 
 #### dtocean core run
 
-The main `dtocean core run` command can run DTOcean projects saved as `.prj` files,
-either for the next scheduled module or all modules. For help, type:
+The main `dtocean core run` command can run DTOcean projects saved as `.dtop`
+files, either for the next scheduled module or all modules. For help, type:
 
 ```sh
 dtocean core run -h

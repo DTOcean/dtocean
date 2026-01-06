@@ -225,7 +225,7 @@ def test_dump_project(
     eco_branch = var_tree.get_branch(core, project, "Mock Theme")
     eco_branch.read_test_data(core, project, inputs_economics)
     core.dump_project(project, str(tmpdir))
-    project_file_path = os.path.join(str(tmpdir), "project.pkl")
+    project_file_path = os.path.join(str(tmpdir), "project.json")
 
     assert os.path.isfile(project_file_path)
 
@@ -255,7 +255,7 @@ def test_dump_project_archive(
     eco_branch = var_tree.get_branch(core, project, "Mock Theme")
     eco_branch.read_test_data(core, project, inputs_economics)
 
-    project_file_name = "my_project.prj"
+    project_file_name = "my_project.dtop"
     project_file_path = os.path.join(str(tmpdir), project_file_name)
 
     core.dump_project(project, project_file_path)
@@ -304,7 +304,7 @@ def test_load_project_archive(
     eco_branch = var_tree.get_branch(core, project, "Mock Theme")
     eco_branch.read_test_data(core, project, inputs_economics)
 
-    project_file_name = "my_project.prj"
+    project_file_name = "my_project.dtop"
     project_file_path = os.path.join(str(tmpdir), project_file_name)
 
     core.dump_project(project, project_file_path)
@@ -360,7 +360,7 @@ def test_dump_datastate(
     core.dump_datastate(project, str(tmpdir))
 
     datastate_file_path = os.path.join(str(tmpdir), "datastate_dump.json")
-    pool_file_path = os.path.join(str(tmpdir), "pool.pkl")
+    pool_file_path = os.path.join(str(tmpdir), "pool.json")
 
     assert os.path.isfile(datastate_file_path)
     assert os.path.isfile(pool_file_path)
@@ -391,7 +391,7 @@ def test_dump_datastate_archive(
     eco_branch = var_tree.get_branch(core, project, "Mock Theme")
     eco_branch.read_test_data(core, project, inputs_economics)
 
-    datastate_file_name = "my_datastate.dts"
+    datastate_file_name = "my_datastate.dtos"
     datastate_file_path = os.path.join(str(tmpdir), datastate_file_name)
 
     core.dump_datastate(project, datastate_file_path)
@@ -440,7 +440,7 @@ def test_load_datastate_archive(
     eco_branch = var_tree.get_branch(core, temp_project, "Mock Theme")
     eco_branch.read_test_data(core, temp_project, inputs_economics)
 
-    datastate_file_name = "my_datastate.dts"
+    datastate_file_name = "my_datastate.dtos"
     datastate_file_path = os.path.join(str(tmpdir), datastate_file_name)
 
     core.dump_datastate(temp_project, datastate_file_path)
@@ -498,7 +498,7 @@ def test_load_datastate_archive_exclude(
     eco_branch = var_tree.get_branch(core, temp_project, "Mock Theme")
     eco_branch.read_test_data(core, temp_project, inputs_economics)
 
-    datastate_file_name = "my_datastate.dts"
+    datastate_file_name = "my_datastate.dtos"
     datastate_file_path = os.path.join(str(tmpdir), datastate_file_name)
 
     core.dump_datastate(temp_project, datastate_file_path)

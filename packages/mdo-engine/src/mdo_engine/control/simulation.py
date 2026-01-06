@@ -1020,8 +1020,8 @@ class Controller(Loader):
         redo_states = []
         merged_state = None
 
-        for hub_id, hub in simulation._hubs:
-            hub[hub_id] = self._sequencer.dump_hub(hub)
+        for hub_id, hub in simulation._hubs.items():
+            hubs[hub_id] = self._sequencer.dump_hub(hub)
 
         for state in simulation._active_states:
             state_dict = {
@@ -1055,14 +1055,15 @@ class Controller(Loader):
         self,
         serial_sim: Simulation | dict[str, Any],
         root_dir=None,
-    ):
+        sim_class: type[Simulation] = Simulation,
+    ) -> Simulation:
         if isinstance(serial_sim, Simulation):
             simulation = serial_sim
         else:
-            simulation = Simulation()
+            simulation = sim_class()
             simulation._title = serial_sim["title"]
 
-            for hub_id, hub_dict in serial_sim["hubs"]:
+            for hub_id, hub_dict in serial_sim["hubs"].items():
                 simulation._hubs[hub_id] = self._sequencer.load_hub(hub_dict)
 
             simulation._active_states = [

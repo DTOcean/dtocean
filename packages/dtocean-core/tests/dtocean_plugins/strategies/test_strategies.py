@@ -22,6 +22,22 @@ class MockStrategy(Strategy):
     def execute(self, core, project):
         pass
 
+    @staticmethod
+    def dump_config(config):
+        return config
+
+    @staticmethod
+    def load_yaml(serial_config):
+        return serial_config
+
+    @staticmethod
+    def dump_sim_details(sim_details):
+        return None
+
+    @staticmethod
+    def load_sim_details(serial_sim_details):
+        return None
+
 
 def test_strategy_get_config():
     strategy = MockStrategy()
@@ -34,12 +50,12 @@ def test_strategy_get_config():
     assert id(test) != id(strategy._config)
 
 
-def test_strategy_dump_config_hook():
+def test_strategy_dump_config():
     strategy = MockStrategy()
     strategy.configure()
 
     config = strategy.get_config()
-    test = strategy.dump_config_hook(config)
+    test = strategy.dump_config(config)
 
     assert id(test) == id(config)
 

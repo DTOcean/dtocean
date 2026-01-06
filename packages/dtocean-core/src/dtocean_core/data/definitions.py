@@ -15,12 +15,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import builtins
+import json
 import os
+from collections import Counter
 from copy import deepcopy
 from datetime import datetime
 from itertools import product
+from numbers import Number
 from pathlib import Path
-from typing import Optional, Protocol
+from typing import Any, Optional, Protocol
 
 import matplotlib.patheffects as PathEffects
 import matplotlib.pyplot as plt
@@ -37,7 +40,7 @@ from mdo_engine.boundary.interface import Box
 from mdo_engine.utilities.database import PostGIS
 from natsort import natsorted
 from scipy import interpolate
-from shapely import Point, Polygon
+from shapely import Point, Polygon, from_geojson, to_geojson
 from shapely.plotting import patch_from_polygon
 
 from ..utils.database import (
@@ -46,6 +49,8 @@ from ..utils.database import (
     get_one_from_column,
     get_table_df,
 )
+
+Simple = bool | str | int | float
 
 # Add additional immutable classes
 Structure.immutables.extend([Point, Polygon])
@@ -78,18 +83,12 @@ class PlotMixin(BaseMixin):
     fig_handle: Figure
 
 
-class UnknownData(Structure):
-    """An item of data whose structure is not understood"""
-
-    def get_data(self, raw, meta_data):
-        return raw
-
-    def get_value(self, data):
-        return deepcopy(data)
-
-
 class SeriesData(Structure):
     """Structure represented in a series of some sort"""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         series = pd.Series(raw)
@@ -107,6 +106,17 @@ class SeriesData(Structure):
     @classmethod
     def equals(cls, left, right):
         return left.equals(right)
+
+    @staticmethod
+    def toText(value: pd.Series) -> str:
+        return value.to_json()
+
+    @staticmethod
+    def fromText(data: str, version: int) -> pd.Series:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return pd.read_json(data, typ="series")
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -269,6 +279,10 @@ class TableData(Structure):
     of the labels if the argument 'add_labels_pos' is set to "front".
     """
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(
         self,
         raw,
@@ -376,6 +390,17 @@ class TableData(Structure):
     @classmethod
     def equals(cls, left, right):
         return left.equals(right)
+
+    @staticmethod
+    def toText(value: pd.DataFrame) -> str:
+        return value.to_json()
+
+    @staticmethod
+    def fromText(data: str, version: int) -> pd.DataFrame:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return pd.read_json(data, typ="frame")
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -789,6 +814,10 @@ class NumpyND(Structure):
     the get_value method deliberately raises an error. Subclasses of this class
     should be used instead."""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         array = np.array(raw)
 
@@ -802,6 +831,17 @@ class NumpyND(Structure):
     @classmethod
     def equals(cls, left, right):
         return np.array_equal(left, right)
+
+    @staticmethod
+    def toText(value: np.ndarray) -> str:
+        return json.dumps(value.tolist())
+
+    @staticmethod
+    def fromText(data: str, version: int) -> np.ndarray:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return np.array(json.loads(data))
 
 
 class Numpy2D(NumpyND):
@@ -1268,6 +1308,10 @@ class Histogram(Structure):
     "values" and "bins".
     """
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         if len(raw[1]) != len(raw[0]) + 1:
             errStr = (
@@ -1290,6 +1334,17 @@ class Histogram(Structure):
         bins_equal = np.array_equal(left["bins"], right["bins"])
 
         return vals_equal and bins_equal
+
+    @staticmethod
+    def toText(value: dict[str, Number]) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> dict[str, Number]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -2180,6 +2235,10 @@ class CartesianListDictColumn(CartesianListDict):
 class SimpleData(Structure):
     """Simple single value data such as a bool, str, int or float"""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         typed = self._assign_type(raw, meta_data.types)
 
@@ -2260,6 +2319,17 @@ class SimpleData(Structure):
 
         return typed
 
+    @staticmethod
+    def toText(value: Simple) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Simple:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
+
 
 class PathData(SimpleData):
     """A SimpleData subclass for retrieving path strings. Should be used as
@@ -2277,6 +2347,10 @@ class DirectoryData(PathData):
 
 class SimpleList(Structure):
     """Simple list of value data such as a bool, str, int or float"""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         raw_list = raw
@@ -2311,6 +2385,17 @@ class SimpleList(Structure):
             result = data[:]
 
         return result
+
+    @staticmethod
+    def toText(value: list[Simple]) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> list[Simple]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
 
     @staticmethod
     def auto_plot(auto: PlotMixin):
@@ -2373,6 +2458,10 @@ class SimpleDict(Structure):
     """Dictionary containing a named variable as a key and a simple
     single valued str, float, int, bool as the value."""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         raw_dict = raw
 
@@ -2409,6 +2498,17 @@ class SimpleDict(Structure):
 
     def get_value(self, data):
         return deepcopy(data)
+
+    @staticmethod
+    def toText(value: dict[str, Simple]) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> dict[str, Simple]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -2644,6 +2744,10 @@ class SimpleDictColumn(SimpleDict):
 class DateTimeData(Structure):
     """A datetime.dateime data object"""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         if not isinstance(raw, datetime):
             errStr = (
@@ -2656,6 +2760,17 @@ class DateTimeData(Structure):
 
     def get_value(self, data):
         return data
+
+    @staticmethod
+    def toText(value: datetime) -> str:
+        return value.isoformat()
+
+    @staticmethod
+    def fromText(data: str, version: int) -> datetime:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return datetime.fromisoformat(data)
 
 
 class DateTimeDict(DateTimeData):
@@ -2749,6 +2864,10 @@ class TriStateData(Structure):
     """Data that can be "true", "false" or "unknown". Must be provided as
     a string"""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         if isinstance(raw, str):
             if raw in ["true", "false", "unknown"]:
@@ -2764,9 +2883,24 @@ class TriStateData(Structure):
     def get_value(self, data):
         return deepcopy(data)
 
+    @staticmethod
+    def toText(value: str) -> str:
+        return value
+
+    @staticmethod
+    def fromText(data: str, version: int) -> str:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return data
+
 
 class PointData(Structure):
     """A shapely Point variable. These are expected to be georeferenced."""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         if isinstance(raw, Point):
@@ -2787,6 +2921,21 @@ class PointData(Structure):
 
     def get_value(self, data):
         return data
+
+    @staticmethod
+    def toText(value: Point) -> str:
+        return to_geojson(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Point:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        point = from_geojson(data)
+        if not isinstance(point, Point):
+            raise RuntimeError("Incorrect geometry detected")
+
+        return point
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -3354,6 +3503,10 @@ class PointDictColumn(PointDict):
 
 
 class PolygonData(Structure):
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         if isinstance(raw, Polygon):
             ring = raw
@@ -3382,6 +3535,21 @@ class PolygonData(Structure):
 
     def get_value(self, data):
         return data
+
+    @staticmethod
+    def toText(value: Polygon) -> str:
+        return to_geojson(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Polygon:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        polygon = from_geojson(data)
+        if not isinstance(polygon, Polygon):
+            raise RuntimeError("Incorrect geometry detected")
+
+        return polygon
 
     @staticmethod
     def auto_plot(auto: PlotMixin):
@@ -3943,6 +4111,10 @@ class XGridND(Structure):
     Note: This class should not be used directly, subclass and set get_n_dims
     to an integer value."""
 
+    @property
+    def version(self):
+        return 1
+
     def get_n_dims(self):
         errStr = "Only subclasses of XGridND may be used."
 
@@ -4051,6 +4223,17 @@ class XGridND(Structure):
     @classmethod
     def equals(cls, left, right):
         return left.identical(right)
+
+    @staticmethod
+    def toText(value: xr.DataArray) -> str:
+        return json.dumps(value.to_dict())
+
+    @staticmethod
+    def fromText(data: str, version: int) -> xr.DataArray:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return xr.DataArray.from_dict(json.loads(data))
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -4166,6 +4349,10 @@ class XSetND(XGridND):
     Note: This class should not be used directly, subclass and set get_n_dims
     to an integer value."""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         """
         Add raw data.
@@ -4252,6 +4439,17 @@ class XSetND(XGridND):
         data_set = xr.Dataset(set_dict)
 
         return data_set
+
+    @staticmethod
+    def toText(value: xr.Dataset) -> str:
+        return json.dumps(value.to_dict())
+
+    @staticmethod
+    def fromText(data: str, version: int) -> xr.Dataset:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return xr.Dataset.from_dict(json.loads(data))
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -4389,6 +4587,10 @@ class Network(Structure):
         quantity of components used at each node and a unique marker that can
         be used to assosiate external data to the node labels."""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         if set(raw.keys()) != set(["topology", "nodes"]):
             errStr = (
@@ -4406,19 +4608,44 @@ class Network(Structure):
         return deepcopy(data)
 
     @staticmethod
+    def toText(value: dict[str, Any]) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> dict[str, Any]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        network = json.loads(data)
+        _quantity_to_counter(network["nodes"])
+
+        return network
+
+    @staticmethod
     def auto_file_input(auto: FileMixin):
         auto.check_path(True)
 
         with open(auto._path, "r") as stream:
-            data = yaml.load(stream, Loader=yaml.FullLoader)
+            network = yaml.load(stream, Loader=yaml.FullLoader)
 
-        auto.data.result = data
+        _quantity_to_counter(network["nodes"])
+        auto.data.result = network
 
     @staticmethod
     def auto_file_output(auto: FileMixin):
+        def _quantity_to_dict(d):
+            for key, value in d.items():
+                if key == "quantity":
+                    d[key] = dict(value)
+                    continue
+
+            if isinstance(value, dict):
+                yield from _quantity_to_counter(value)
+
         auto.check_path()
 
         network_dict = auto.data.result
+        _quantity_to_dict(network_dict["nodes"])
 
         with open(auto._path, "w") as stream:
             yaml.dump(network_dict, stream, default_flow_style=False)
@@ -4428,14 +4655,39 @@ class Network(Structure):
         return [".yaml"]
 
 
+def _quantity_to_counter(d):
+    for key, value in d.items():
+        if key == "quantity":
+            d[key] = Counter(value)
+            continue
+
+        if isinstance(value, dict):
+            yield from _quantity_to_counter(value)
+
+
 class EIADict(Structure):
     """Structure for storing environmental recommendations"""
+
+    @property
+    def version(self):
+        return 1
 
     def get_data(self, raw, meta_data):
         return raw
 
     def get_value(self, data):
         return deepcopy(data)
+
+    @staticmethod
+    def toText(value: dict[str, Any]) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> dict[str, Any]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
 
     @staticmethod
     def auto_file_output(auto: FileMixin):
@@ -4449,11 +4701,26 @@ class EIADict(Structure):
 class RecommendationDict(Structure):
     """Structure for storing environmental recommendations"""
 
+    @property
+    def version(self):
+        return 1
+
     def get_data(self, raw, meta_data):
         return raw
 
     def get_value(self, data):
         return deepcopy(data)
+
+    @staticmethod
+    def toText(value: dict[str, Any]) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> dict[str, Any]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
 
     @staticmethod
     def auto_file_output(auto: FileMixin):

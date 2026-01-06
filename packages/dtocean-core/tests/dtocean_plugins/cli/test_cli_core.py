@@ -8,10 +8,10 @@ from dtocean_plugins.cli.core import _config
 
 
 @pytest.mark.parametrize(
-    "arg, expected", [("", True), ("-o out.prj", "out.prj"), ("-n", False)]
+    "arg, expected", [("", True), ("-o out.dtop", "out.dtop"), ("-n", False)]
 )
 def test_setup_run(mocker, arg, expected):
-    testargs = ["dtocean", "core", "run", "mock.prj", "-fwl"]
+    testargs = ["dtocean", "core", "run", "mock.dtop", "-fwl"]
     if arg:
         testargs.append(arg)
 
@@ -20,7 +20,7 @@ def test_setup_run(mocker, arg, expected):
 
     main()
 
-    assert test.call_args.args == ("mock.prj", expected, True, True, True)
+    assert test.call_args.args == ("mock.dtop", expected, True, True, True)
 
 
 @pytest.mark.parametrize("arg", ["logging", "database"])

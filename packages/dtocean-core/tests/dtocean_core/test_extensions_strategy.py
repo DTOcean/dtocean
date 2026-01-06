@@ -1,6 +1,6 @@
 # pylint: disable=redefined-outer-name,protected-access
 
-import pickle
+import json
 from collections import OrderedDict
 
 import matplotlib.pyplot as plt
@@ -41,6 +41,22 @@ class MockStrategy(Strategy):
         take a Core and a Project class as the only inputs.
         """
         pass
+
+    @staticmethod
+    def dump_config(config):
+        return None
+
+    @staticmethod
+    def load_yaml(serial_config):
+        return None
+
+    @staticmethod
+    def dump_sim_details(sim_details):
+        return None
+
+    @staticmethod
+    def load_sim_details(serial_sim_details):
+        return None
 
 
 @pytest.fixture()
@@ -573,10 +589,10 @@ def test_load_strategy(mocker, manager):
 
     mocker.patch(
         "dtocean_core.extensions.open",
-        mocker.mock_open(read_data=pickle.dumps(mock_stg_dict, -1)),
+        mocker.mock_open(read_data=json.dumps(mock_stg_dict)),
     )
 
-    result = manager.load_strategy("mock.pkl")
+    result = manager.load_strategy("mock.json")
 
     assert isinstance(result, MockStrategy)
     assert set(strategy._sim_record) == set(["Default", "Default Clone 1"])
@@ -603,11 +619,11 @@ def test_load_strategy_no_version(mocker, manager):
 
     mocker.patch(
         "dtocean_core.extensions.open",
-        mocker.mock_open(read_data=pickle.dumps(mock_stg_dict, -1)),
+        mocker.mock_open(read_data=json.dumps(mock_stg_dict)),
     )
 
     with pytest.raises(ValueError) as excinfo:
-        manager.load_strategy("mock.pkl")
+        manager.load_strategy("mock.json")
 
     assert "project object is required" in str(excinfo.value)
 
@@ -633,14 +649,14 @@ def test_load_strategy_old(mocker, manager):
 
     mocker.patch(
         "dtocean_core.extensions.open",
-        mocker.mock_open(read_data=pickle.dumps(mock_stg_dict, -1)),
+        mocker.mock_open(read_data=json.dumps(mock_stg_dict)),
     )
 
     project = Project("mock")
     project.add_simulation(OrderedSim("Default"))
     project.add_simulation(OrderedSim("Default Clone 1"))
 
-    result = manager.load_strategy("mock.pkl", project)
+    result = manager.load_strategy("mock.json", project)
 
     assert isinstance(result, MockStrategy)
     assert set(strategy._sim_record) == set(["Default", "Default Clone 1"])

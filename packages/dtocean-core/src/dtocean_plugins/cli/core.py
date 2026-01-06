@@ -13,7 +13,7 @@ def subcommand(subparser):
 
 def _setup_run(subparser):
     desStr = (
-        "Execute DTOcean .prj project files. By default, the next "
+        "Execute DTOcean .dtop project files. By default, the next "
         "module scheduled is executed. All scheduled modules can also "
         "be run using the appropriate option. Completed simulations are "
         "saved to a new project file with '_complete' appended to the "

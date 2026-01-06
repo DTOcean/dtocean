@@ -466,7 +466,7 @@ class PositionOptimiser:
         config_path = os.path.join(self._worker_directory, self._config_fname)
         safe_config = deepcopy(config)
         safe_config["clean_existing_dir"] = None
-        dump_config(config_path, config)
+        dump_config_yaml(config_path, config)
 
         # Store the es object and counter search dict for potential restart
         opt.dump_outputs(self._worker_directory, es, evaluator, nh)
@@ -496,7 +496,7 @@ class PositionOptimiser:
         config_path = os.path.join(worker_directory, self._config_fname)
 
         try:
-            config = load_config(config_path)
+            config = load_config_yaml(config_path)
             opt.load_outputs(worker_directory)
         except:  # pylint: disable=bare-except  # noqa: E722
             log_msg = "Can not find state of previous optimisation"
@@ -532,7 +532,7 @@ class PositionOptimiser:
 
         # Reload the config in the worker directory
         config_path = os.path.join(self._worker_directory, self._config_fname)
-        config = load_config(config_path)
+        config = load_config_yaml(config_path)
 
         # Reload outputs
         es, counter_dict, nh = opt.load_outputs(self._worker_directory)
@@ -657,9 +657,9 @@ class PositionOptimiser:
 
         assert self._worker_directory is not None
         config_path = os.path.join(self._worker_directory, self._config_fname)
-        config = load_config(config_path)
+        config = load_config_yaml(config_path)
         config["max_resample_factor"] = self._cma_main.max_resample_loops
-        dump_config(config_path, config)
+        dump_config_yaml(config_path, config)
 
         if "auto" not in str(max_resample_factor):
             self._dump_config = False
@@ -795,7 +795,7 @@ def _dump_results_control(
         f.write(dump_str)
 
 
-def load_config(config_path):
+def load_config_yaml(config_path):
     ruyaml = YAML()
 
     with open(config_path, "r") as stream:
@@ -804,7 +804,7 @@ def load_config(config_path):
     return config
 
 
-def dump_config(config_path, config=None, use_template=True):
+def dump_config_yaml(config_path, config=None, use_template=True):
     if config is None:
         config = {}
 
@@ -829,7 +829,7 @@ def dump_config(config_path, config=None, use_template=True):
 
 def _load_config_template(config_name="config.yaml"):
     config_path = os.path.join(THIS_DIR, config_name)
-    config = load_config(config_path)
+    config = load_config_yaml(config_path)
 
     return config
 

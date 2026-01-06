@@ -92,8 +92,8 @@ def package_dir(src_dir_path, dst_path: StrOrPath, archive=False):
 
     shutil.copyfile(tgz_file_path, dst_path)
 
-    rmtree_retry(src_dir_path, fail_silent=True)  # pylint: disable=unexpected-keyword-arg
-    rmtree_retry(tgz_dir_path, fail_silent=True)  # pylint: disable=unexpected-keyword-arg
+    rmtree_retry(src_dir_path, fail_silent=True)
+    rmtree_retry(tgz_dir_path, fail_silent=True)
 
 
 def unpack_archive(src_path, dst_path):

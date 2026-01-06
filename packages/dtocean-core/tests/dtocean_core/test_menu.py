@@ -514,7 +514,7 @@ def test_DataMenu_export_data(
     mod_branch = var_tree.get_branch(core, project, mod_name)
     mod_branch.read_test_data(core, project, inputs_wp2_tidal)
 
-    dts_path = os.path.join(str(tmp_path), "test.dts")
+    dts_path = os.path.join(str(tmp_path), "test.dtos")
 
     data_menu.export_data(core, project, dts_path)
 
@@ -552,7 +552,7 @@ def test_DataMenu_import_data(
 
     pre_length = len(project._pool)
 
-    dts_path = os.path.join(str(tmp_path), "test.dts")
+    dts_path = os.path.join(str(tmp_path), "test.dtos")
 
     data_menu.export_data(core, project, dts_path)
 

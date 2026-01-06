@@ -20,6 +20,7 @@ import itertools
 import logging
 import math
 import random
+from typing import Optional
 
 import pandas as pd
 
@@ -256,3 +257,35 @@ class MultiSensitivity(Strategy):
 
         # Run the simulation
         basic.execute(core, project)
+    
+    @staticmethod
+    def dump_config(config: Optional[dict]):
+        if config is None:
+            return None
+        
+        return {"inputs_df": config["inputs_df"].to_json(),
+                "subsp_ratio": config["subsp_ratio"],
+                "skip_errors": config["skip_errors"]}
+    
+    @staticmethod
+    def load_yaml(serial_config: Optional[dict]):
+        if serial_config is None:
+            return None
+        
+        return {"inputs_df": pd.read_json(serial_config["inputs_df"]),
+                "subsp_ratio": serial_config["subsp_ratio"],
+                "skip_errors": serial_config["skip_errors"]}
+    
+    @staticmethod
+    def dump_sim_details(sim_details: Optional[pd.DataFrame]):
+        if sim_details is None:
+            return None
+        
+        return sim_details.to_json()
+
+    @staticmethod
+    def load_sim_details(serial_sim_details: Optional[str]):
+        if serial_sim_details is None:
+            return None
+        
+        return pd.read_json(serial_sim_details)

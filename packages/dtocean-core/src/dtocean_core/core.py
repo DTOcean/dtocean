@@ -16,7 +16,6 @@
 import json
 import logging
 import os
-import pickle
 import shutil
 import tempfile
 from copy import deepcopy
@@ -24,7 +23,6 @@ from pathlib import Path
 from typing import Optional, Union
 
 import matplotlib.pyplot as plt
-from mdo_engine.boundary.data import SerialBox
 from mdo_engine.boundary.interface import (
     AutoInterface,
     MetaInterface,
@@ -298,12 +296,16 @@ class OrderedSim(Simulation):
 class Project:
     """Class to store simulations, data pool and other project related data."""
 
-    def __init__(self, title: str):
+    def __init__(self, title: str, pool: Optional[DataPool] = None):
         self.title = title
-        self._pool = DataPool()
         self._simulations: list[OrderedSim] = []
         self._active_index: Optional[int] = None
         self._db_cred: Optional[dict[str, str]] = None
+
+        if pool is None:
+            self._pool = DataPool()
+        else:
+            self._pool = pool
 
     def is_active(self):
         result = False
@@ -618,145 +620,165 @@ class Core:
         # A data store is required
         data_store = DataStorage(core_data)
 
-        prj_dir_path = tempfile.mkdtemp()
+        dtop_dir_path = tempfile.mkdtemp()
 
         # Copy the project before editing and ensure type Project
         project_copy = project.to_project()
 
         # Serialise the pool
-        pool_dir = os.path.join(prj_dir_path, "pool")
+        pool_dir = os.path.join(dtop_dir_path, "pool")
 
         if os.path.exists(pool_dir):
             shutil.rmtree(pool_dir)
         os.makedirs(pool_dir)
 
         pool = project_copy.get_pool()
-        data_store.serialise_pool(pool, pool_dir, root_dir=prj_dir_path)
+        serial_pool = data_store.serialise_pool(
+            pool,
+            pool_dir,
+            root_dir=dtop_dir_path,
+        )
 
         # Now iterate through the simulations
-        sim_boxes = []
+        sim_dicts = []
 
         for i, simulation in enumerate(project_copy._simulations):
             sim_dir_name = "simulation_{}".format(i)
-            sim_dir = os.path.join(prj_dir_path, sim_dir_name)
+            sim_dir = os.path.join(dtop_dir_path, sim_dir_name)
 
             if os.path.exists(sim_dir):
                 shutil.rmtree(sim_dir)
             os.makedirs(sim_dir)
 
-            sim_file_name = "{}.pkl".format(sim_dir_name)
+            sim_file_name = "{}.json".format(sim_dir_name)
             sim_file_path = os.path.join(sim_dir, sim_file_name)
 
-            self.control.serialise_states(
-                simulation, sim_dir, root_dir=prj_dir_path
+            serial_sim = self.control.serialise_simulation(
+                simulation,
+                sim_dir,
+                root_dir=dtop_dir_path,
             )
 
-            with open(sim_file_path, "wb") as fstream:
-                pickle.dump(simulation, fstream, -1)
+            # Add extra keys for OrderedSim
+            serial_sim["level_map"] = simulation.level_map
+            serial_sim["output_scope"] = simulation.output_scope
+            serial_sim["execution_level"] = simulation._execution_level
+            serial_sim["inspection_level"] = simulation._inspection_level
+            serial_sim["hub_order"] = simulation._hub_order
+            serial_sim["hub_input_status"] = simulation._hub_input_status
+            serial_sim["hub_output_status"] = simulation._hub_output_status
+            serial_sim["force_unvailable"] = simulation._force_unvailable
+
+            with open(sim_file_path, "w") as fstream:
+                json.dump(serial_sim, fstream)
 
             sim_store_path = os.path.join(sim_dir_name, sim_file_name)
-            sim_dict = {"file_path": sim_store_path}
-            sim_box = SerialBox(sim_dir_name, sim_dict)
+            sim_dicts.append({"file_path": sim_store_path})
 
-            sim_boxes.append(sim_box)
+        # Create a serial representation for the project and save it
+        serial_project = {
+            "title": project.title,
+            "pool": serial_pool,
+            "simulations": sim_dicts,
+            "active_index": project._active_index,
+            "db_cred": project._db_cred,
+        }
+        project_file_path = os.path.join(dtop_dir_path, "project.json")
 
-        # Replace the simulations with the sim boxes
-        project_copy._simulations = sim_boxes
+        with open(project_file_path, "w") as fstream:
+            json.dump(serial_project, fstream)
 
-        # Now pickle the project
-        project_file_path = os.path.join(prj_dir_path, "project.pkl")
-
-        with open(project_file_path, "wb") as fstream:
-            pickle.dump(project_copy, fstream, -1)
-
-        # OK need to consider if we want a prj file or a directory first.
-        if dump_path.suffix == ".prj":
+        # OK need to consider if we want a dtop file or a directory first.
+        if dump_path.suffix == ".dtop":
             archive = True
         elif dump_path.is_dir():
             archive = False
         else:
             errStr = (
                 "Argument dump_path must either be an existing "
-                "directory or a file path with .prj extension"
+                "directory or a file path with .dtop extension"
             )
             raise ValueError(errStr)
 
         # Package the directory
-        package_dir(prj_dir_path, dump_path, archive)
+        package_dir(dtop_dir_path, dump_path, archive)
 
     def load_project(self, load_path):
         # A data store is required
         data_store = DataStorage(core_data)
 
-        # A sequencer is also required
-        sequencer = Sequencer(
-            self._hub_sockets, INTERFACE_MODULES, warn_import=True
-        )
-
         # Flag to remove project directory
-        remove_prj_dir = False
+        remove_dtop_dir = False
 
-        # OK need to consider if we have a prj file or a directory first.
-        # If its a prj file them unzip it.
-        if os.path.isfile(load_path) and ".prj" in load_path:
+        # OK need to consider if we have a dtop file or a directory first.
+        # If its a dtop file them unzip it.
+        if os.path.isfile(load_path) and ".dtop" in load_path:
             # Unzip the file to a temporary directory
-            prj_dir_path = tempfile.mkdtemp()
-            unpack_archive(load_path, prj_dir_path)
-            remove_prj_dir = True
+            dtop_dir_path = tempfile.mkdtemp()
+            unpack_archive(load_path, dtop_dir_path)
+            remove_dtop_dir = True
 
         elif os.path.isdir(load_path):
-            prj_dir_path = load_path
+            dtop_dir_path = load_path
 
         else:
             errStr = (
                 "Argument load_path must either be a directory or a "
-                "file with .prj extension"
+                "file with .dtop extension"
             )
             raise ValueError(errStr)
 
-        # Now unpickle the project
-        project_file_path = os.path.join(prj_dir_path, "project.pkl")
+        # Now load the project
+        project_file_path = os.path.join(dtop_dir_path, "project.json")
 
-        with open(project_file_path, "rb") as fstream:
-            load_project = pickle.load(fstream)
+        with open(project_file_path, "r") as fstream:
+            serial_project = json.load(fstream)
 
         # Now iterate through the serial boxes
         simulations = []
 
-        for i, sim_box in enumerate(load_project._simulations):
-            sim_file_relative = sim_box.load_dict["file_path"]
-            sim_file_path = os.path.join(prj_dir_path, sim_file_relative)
+        for sim_dict in serial_project["simulations"]:
+            sim_file_relative = sim_dict["file_path"]
+            sim_file_path = os.path.join(dtop_dir_path, sim_file_relative)
 
-            with open(sim_file_path, "rb") as fstream:
-                simulation = pickle.load(fstream)
+            with open(sim_file_path, "r") as fstream:
+                serial_sim = json.load(fstream)
 
-            self.control.deserialise_states(simulation, root_dir=prj_dir_path)
+            simulation = self.control.deserialise_simulation(
+                serial_sim,
+                root_dir=dtop_dir_path,
+                sim_class=OrderedSim,
+            )
+            assert isinstance(simulation, OrderedSim)
 
-            # Replace interface objects in hubs for backwards compatibility
-            hub_ids = simulation.get_hub_ids()
-
-            for hub_id in hub_ids:
-                hub = simulation.get_hub(hub_id)
-                sequencer.refresh_interfaces(hub)
+            simulation.level_map = serial_sim["level_map"]
+            simulation.output_scope = serial_sim["output_scope"]
+            simulation._execution_level = serial_sim["execution_level"]
+            simulation._inspection_level = serial_sim["inspection_level"]
+            simulation._hub_order = serial_sim["hub_order"]
+            simulation._hub_input_status = serial_sim["hub_input_status"]
+            simulation._hub_output_status = serial_sim["hub_output_status"]
+            simulation._force_unvailable = serial_sim["force_unvailable"]
 
             simulations.append(simulation)
 
-        # Replace the sim boxes with the simulations
-        load_project._simulations = simulations
-
         # Deserialise the pool
-        pool = load_project.get_pool()
-        data_store.deserialise_pool(
+        pool = data_store.deserialise_pool(
+            serial_project["pool"],
             self.data_catalog,
-            pool,
-            root_dir=prj_dir_path,
+            root_dir=dtop_dir_path,
             warn_missing=True,
-            warn_unpickle=True,
+            warn_load=True,
         )
 
+        load_project = Project(serial_project["title"], pool)
+        load_project._simulations = simulations
+        load_project._active_index = serial_project["active_index"]
+        load_project._db_cred = serial_project["db_cred"]
+
         # Remove the project directory if necessary
-        if remove_prj_dir:
-            shutil.rmtree(prj_dir_path)
+        if remove_dtop_dir:
+            shutil.rmtree(dtop_dir_path)
 
         # Reset the input / output statuses
         for simulation in simulations:
@@ -1032,23 +1054,26 @@ class Core:
             self.unmask_states(project)
 
         # Serialise the pool
-        dts_dir_path = tempfile.mkdtemp()
-        pool_dir = os.path.join(dts_dir_path, "pool")
+        dtos_dir_path = tempfile.mkdtemp()
+        pool_dir = os.path.join(dtos_dir_path, "pool")
 
         if os.path.exists(pool_dir):
             shutil.rmtree(pool_dir)
         os.makedirs(pool_dir)
 
-        data_store.serialise_pool(save_pool, pool_dir, root_dir=dts_dir_path)
+        serial_pool = data_store.serialise_pool(
+            save_pool,
+            pool_dir,
+            root_dir=dtos_dir_path,
+        )
+        # Now dump the pool
+        pool_file_path = os.path.join(dtos_dir_path, "pool.json")
 
-        # Now pickle the pool
-        pool_file_path = os.path.join(dts_dir_path, "pool.pkl")
-
-        with open(pool_file_path, "wb") as fstream:
-            pickle.dump(save_pool, fstream, -1)
+        with open(pool_file_path, "w") as fstream:
+            json.dump(serial_pool, fstream)
 
         # Serialise the datastate
-        file_path = os.path.join(dts_dir_path, "datastate_dump.json")
+        file_path = os.path.join(dtos_dir_path, "datastate_dump.json")
         state_dict = save_state.dump()
 
         with open(file_path, "w") as json_file:
@@ -1057,10 +1082,10 @@ class Core:
         # OK need to consider if we want a file or a directory first.
         errStr = (
             "Argument dump_path must either be an existing "
-            "directory or a file path with .dts extension"
+            "directory or a file path with .dtos extension"
         )
 
-        if os.path.splitext(dump_path)[1] == ".dts":
+        if os.path.splitext(dump_path)[1] == ".dtos":
             archive = True
         elif os.path.isdir(dump_path):
             archive = False
@@ -1068,7 +1093,7 @@ class Core:
             raise ValueError(errStr)
 
         # Package the directory
-        package_dir(dts_dir_path, dump_path, archive)
+        package_dir(dtos_dir_path, dump_path, archive)
 
     def load_datastate(self, project, load_path, exclude=None, overwrite=True):
         # A data store is required
@@ -1085,52 +1110,52 @@ class Core:
         input_ids = simulation.get_input_ids(valid_statuses=valid_statuses)
 
         # Flag to remove datastate directory
-        remove_dts_dir = False
+        remove_dtos_dir = False
 
-        # OK need to consider if we have a prj file or a directory first.
-        # If its a prj file them unzip it.
-        if os.path.isfile(load_path) and ".dts" in load_path:
+        # OK need to consider if we have a dtos file or a directory first.
+        # If its a dtos file them unzip it.
+        if os.path.isfile(load_path) and ".dtos" in load_path:
             # Unzip the file to a temporary directory
-            dts_dir_path = tempfile.mkdtemp()
-            unpack_archive(load_path, dts_dir_path)
-            remove_dts_dir = True
+            dtos_dir_path = tempfile.mkdtemp()
+            unpack_archive(load_path, dtos_dir_path)
+            remove_dtos_dir = True
 
         elif os.path.isdir(load_path):
-            dts_dir_path = load_path
+            dtos_dir_path = load_path
 
         else:
             errStr = (
                 "Argument load_path must either be a directory or a file"
-                "with .dts extension"
+                "with .dtos extension"
             )
             raise ValueError(errStr)
 
         # Load datastate json
-        load_path = os.path.join(dts_dir_path, "datastate_dump.json")
+        load_path = os.path.join(dtos_dir_path, "datastate_dump.json")
 
-        with open(load_path, "rb") as json_file:
+        with open(load_path, "r") as json_file:
             dump_dict = json.load(json_file)
 
         state_data: dict = dump_dict["data"]
 
-        # Now unpickle the pool
-        pool_file_path = os.path.join(dts_dir_path, "pool.pkl")
+        # Now load the pool data
+        pool_file_path = os.path.join(dtos_dir_path, "pool.json")
 
-        with open(pool_file_path, "rb") as fstream:
-            temp_pool = pickle.load(fstream)
+        with open(pool_file_path, "r") as fstream:
+            serial_pool = json.load(fstream)
 
         # Deserialise the pool
-        data_store.deserialise_pool(
+        temp_pool = data_store.deserialise_pool(
+            serial_pool,
             self.data_catalog,
-            temp_pool,
-            root_dir=dts_dir_path,
+            root_dir=dtos_dir_path,
             warn_missing=True,
-            warn_unpickle=True,
+            warn_load=True,
         )
 
         # Remove the project directory if necessary
-        if remove_dts_dir:
-            shutil.rmtree(dts_dir_path)
+        if remove_dtos_dir:
+            shutil.rmtree(dtos_dir_path)
 
         # Create a new datastate in the existing pool with the loaded data
         var_ids = []
@@ -1163,11 +1188,18 @@ class Core:
             var_objs.append(data_obj)
 
         self.add_datastate(
-            project, identifiers=var_ids, values=var_objs, use_objects=True
+            project,
+            identifiers=var_ids,
+            values=var_objs,
+            use_objects=True,
         )
 
     def get_levels(
-        self, project, show_masked=True, sim_index=None, sim_title=None
+        self,
+        project,
+        show_masked=True,
+        sim_index=None,
+        sim_title=None,
     ):
         simulation = project.get_simulation(sim_index, sim_title)
         levels = OrderedSet(

@@ -236,7 +236,7 @@ class Evaluator:
         worker_file_root_path = "{}_{}".format(
             self._root_project_base_name, evaluation
         )
-        worker_project_name = "{}.prj".format(worker_file_root_path)
+        worker_project_name = "{}.dtop".format(worker_file_root_path)
         worker_project_path = os.path.join(
             self._worker_directory, worker_project_name
         )

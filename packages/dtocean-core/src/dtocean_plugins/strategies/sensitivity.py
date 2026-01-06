@@ -17,6 +17,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from numbers import Number
+from typing import Optional, Sequence
 
 from .base import Strategy
 from .basic import BasicStrategy
@@ -40,7 +42,11 @@ class UnitSensitivity(Strategy):
         return "Unit Sensitivity"
 
     def configure(
-        self, module_name, variable_name, variable_values, skip_errors=True
+        self,
+        module_name: str,
+        variable_name: str,
+        variable_values: Sequence[Number],
+        skip_errors=True,
     ):
         config_dict = {
             "module_name": module_name,
@@ -190,3 +196,19 @@ class UnitSensitivity(Strategy):
             title_str = "{} ({})".format(title_str, meta.units[0])
 
         return title_str
+
+    @staticmethod
+    def dump_config(config: Optional[dict]):
+        return config
+
+    @staticmethod
+    def load_yaml(serial_config: Optional[dict]):
+        return serial_config
+
+    @staticmethod
+    def dump_sim_details(sim_details):
+        return None
+
+    @staticmethod
+    def load_sim_details(serial_sim_details):
+        return None

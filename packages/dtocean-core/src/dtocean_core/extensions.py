@@ -13,9 +13,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import json
 import logging
 import os
-import pickle
 from collections import OrderedDict
 from typing import Optional
 
@@ -28,6 +28,7 @@ from mdo_engine.utilities.plugins import Plugin
 import dtocean_plugins.strategies as strategies
 import dtocean_plugins.tools as tools
 from dtocean_core.core import Core, Project
+from dtocean_plugins.strategies.base import Strategy
 from dtocean_plugins.tools.base import Tool
 
 from .menu import ModuleMenu
@@ -90,7 +91,7 @@ class StrategyManager(ExtensionManager):
 
         self._module_menu = ModuleMenu()
 
-    def get_strategy(self, strategy_name):
+    def get_strategy(self, strategy_name) -> Strategy:
         if strategy_name not in self.get_available():
             errStr = ("Name {} is not a recognised " "strategy").format(
                 strategy_name
@@ -496,40 +497,40 @@ class StrategyManager(ExtensionManager):
 
         return plt.gcf()
 
-    def dump_strategy(self, strategy, dump_path):
-        if os.path.splitext(dump_path)[1] != ".pkl":
-            errStr = "Argument dump_path must be a file with .pkl extension"
+    def dump_strategy(self, strategy: Strategy, dump_path):
+        if os.path.splitext(dump_path)[1] != ".json":
+            errStr = "Argument dump_path must be a file with .json extension"
             raise ValueError(errStr)
 
         stg_dict = self._get_dump_dict(strategy)
 
-        with open(dump_path, "wb") as fstream:
-            pickle.dump(stg_dict, fstream, -1)
+        with open(dump_path, "w") as fstream:
+            json.dump(stg_dict, fstream)
 
     def load_strategy(self, load_path, project=None):
-        # OK need to consider if we have a pkl file
-        if not os.path.isfile(load_path) and ".pkl" not in load_path:
-            errStr = "Argument load_path must be a file with .pkl extension"
+        # OK need to consider if we have a json file
+        if not os.path.isfile(load_path) and ".json" not in load_path:
+            errStr = "Argument load_path must be a file with .json extension"
             raise ValueError(errStr)
 
         # Load the strategy file
-        with open(load_path, "rb") as fstream:
-            stg_dict = pickle.load(fstream)
+        with open(load_path, "r") as fstream:
+            stg_dict = json.load(fstream)
 
         # Now deserialise the data
         new_strategy = self._set_load_dict(stg_dict, project=project)
 
         return new_strategy
 
-    def _get_dump_dict(self, strategy):
+    def _get_dump_dict(self, strategy: Strategy):
         # Now store the strategy information
         stg_name_str = strategy.get_name()
 
         stg_dict = {
             "name": stg_name_str,
-            "sim_record": strategy._sim_record,  # pylint: disable=protected-access
-            "config": strategy.dump_config_hook(strategy._config),  # pylint: disable=protected-access
-            "sim_details": strategy.sim_details,
+            "sim_record": strategy._sim_record,
+            "config": strategy.dump_config(strategy._config),
+            "sim_details": strategy.dump_sim_details(strategy.sim_details),
             "version": 2.1,
         }
 
@@ -554,9 +555,11 @@ class StrategyManager(ExtensionManager):
         else:
             sim_titles = stg_dict["sim_record"]
 
-        new_strategy._sim_record = sim_titles  # pylint: disable=protected-access
-        new_strategy._config = stg_dict["config"]  # pylint: disable=protected-access
-        new_strategy.sim_details = stg_dict["sim_details"]
+        new_strategy._sim_record = sim_titles
+        new_strategy._config = new_strategy.load_yaml(stg_dict["config"])
+        new_strategy.sim_details = new_strategy.load_sim_details(
+            stg_dict["sim_details"]
+        )
 
         return new_strategy
 

@@ -44,6 +44,22 @@ class MockStrategy(Strategy):
         """
         pass
 
+    @staticmethod
+    def dump_config(config):
+        return None
+
+    @staticmethod
+    def load_yaml(serial_config):
+        return None
+
+    @staticmethod
+    def dump_sim_details(sim_details):
+        return None
+
+    @staticmethod
+    def load_sim_details(serial_sim_details):
+        return None
+
 
 class MockMenu(ModuleMenu):
     def execute_current(
@@ -69,7 +85,7 @@ def test_main_full(mocker, capsys, tmpdir):
 
     mocker.patch("dtocean_core.utils.execute.StrategyManager", new=MockManager)
 
-    fpath = str(tmpdir.join("test.prj"))
+    fpath = str(tmpdir.join("test.dtop"))
 
     main(fpath, save=True, full=True, warn=True, log=True)
 
@@ -83,7 +99,7 @@ def test_main_full(mocker, capsys, tmpdir):
     assert "Execution time" in test
     assert "Saving project" in test
     assert len(os.listdir(str(tmpdir))) == 1
-    assert os.listdir(str(tmpdir))[0] == "test_complete.prj"
+    assert os.listdir(str(tmpdir))[0] == "test_complete.dtop"
 
 
 def test_main_next(mocker, capsys, tmpdir):
@@ -95,7 +111,7 @@ def test_main_next(mocker, capsys, tmpdir):
 
     mocker.patch("dtocean_core.utils.execute.StrategyManager", new=MockManager)
 
-    fpath = str(tmpdir.join("test.prj"))
+    fpath = str(tmpdir.join("test.dtop"))
 
     main(fpath, save=False, full=False, warn=False, log=False)
 
@@ -114,10 +130,10 @@ def test_main_save_path(mocker, tmpdir):
 
     mocker.patch("dtocean_core.utils.execute.StrategyManager", new=MockManager)
 
-    fpath = str(tmpdir.join("test.prj"))
-    spath = str(tmpdir.join("other.prj"))
+    fpath = str(tmpdir.join("test.dtop"))
+    spath = str(tmpdir.join("other.dtop"))
 
     main(fpath, save=spath)
 
     assert len(os.listdir(str(tmpdir))) == 1
-    assert os.listdir(str(tmpdir))[0] == "other.prj"
+    assert os.listdir(str(tmpdir))[0] == "other.dtop"

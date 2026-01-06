@@ -63,10 +63,6 @@ class GUIStructure:
     """Dummy class for plugin detection"""
 
 
-class UnknownData(GUIStructure, definitions.UnknownData):
-    """Overloading UnknownData class"""
-
-
 class SeriesData(GUIStructure, definitions.SeriesData):
     """Overloading SeriesData class"""
 

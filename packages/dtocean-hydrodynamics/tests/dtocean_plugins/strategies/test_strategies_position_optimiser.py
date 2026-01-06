@@ -35,8 +35,8 @@ if dtocean_hydro:
         _get_param_control,
         _get_range_fixed,
         _get_range_multiplier,
-        dump_config,
-        load_config,
+        dump_config_yaml,
+        load_config_yaml,
     )
     from dtocean_plugins.strategies.position_optimiser.positioner import (
         ParaPositioner,
@@ -838,8 +838,8 @@ def test_PositionOptimiser_start_more(
 
 def test_dump_load_dump_load_config(tmpdir):
     config_path = str(tmpdir.join("config.yaml"))
-    dump_config(config_path)
-    config = load_config(config_path)
+    dump_config_yaml(config_path)
+    config = load_config_yaml(config_path)
 
     expected_keys = [
         "worker_dir",
@@ -872,8 +872,8 @@ def test_dump_load_dump_load_config(tmpdir):
 
     assert set(expected_params) <= set(config["parameters"])
 
-    dump_config(config_path, config, use_template=False)
-    new_config = load_config(config_path)
+    dump_config_yaml(config_path, config, use_template=False)
+    new_config = load_config_yaml(config_path)
 
     assert new_config == config
 
@@ -888,7 +888,7 @@ def test_PositionOptimiser_is_restart(mocker, tmpdir):
     config_fname = "mock.yaml"
 
     config_path = str(tmpdir.join(config_fname))
-    dump_config(config_path)
+    dump_config_yaml(config_path)
 
     test = PositionOptimiser(mock_core, config_fname)
 
@@ -897,13 +897,13 @@ def test_PositionOptimiser_is_restart(mocker, tmpdir):
 
 def test_dump_config_extra_keys(tmpdir):
     config_path = str(tmpdir.join("config.yaml"))
-    dump_config(config_path)
-    config = load_config(config_path)
+    dump_config_yaml(config_path)
+    config = load_config_yaml(config_path)
 
     config["mock"] = "mock"
 
-    dump_config(config_path, config)
-    new_config = load_config(config_path)
+    dump_config_yaml(config_path, config)
+    new_config = load_config_yaml(config_path)
 
     assert "mock" not in new_config
 
@@ -920,7 +920,7 @@ def test_PositionOptimiser_is_restart_no_state(caplog, mocker, tmpdir):
     config_fname = "mock.yaml"
 
     config_path = str(tmpdir.join(config_fname))
-    dump_config(config_path)
+    dump_config_yaml(config_path)
 
     test = PositionOptimiser(mock_core, config_fname)
 
@@ -948,7 +948,7 @@ def test_PositionOptimiser_is_restart_missing_keys(caplog, mocker, tmpdir):
         "n_threads": None,
     }
 
-    dump_config(config_path, mock_config, use_template=False)
+    dump_config_yaml(config_path, mock_config, use_template=False)
     test = PositionOptimiser(mock_core, config_fname)
 
     with caplog_for_logger(caplog, "dtocean_core"):
@@ -1376,7 +1376,7 @@ def test_PositionOptimiser_next_dump(
     config_after_time = p_config.mtime()
     assert config_after_time > config_before_time
 
-    new_config = load_config(str(p_config))
+    new_config = load_config_yaml(str(p_config))
     assert "max_resample_factor" in new_config
 
 
