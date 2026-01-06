@@ -1083,6 +1083,8 @@ class Controller(Loader):
 
         self.deserialise_states(simulation, root_dir)
 
+        return simulation
+
     @classmethod
     def reset_hub(cls, simulation, hub_id):
         hub = simulation.get_hub(hub_id)

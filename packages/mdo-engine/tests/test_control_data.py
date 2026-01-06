@@ -749,9 +749,10 @@ def test_load_pool_root(tmpdir):
     assert os.path.isfile(test_path)
 
     new_root = os.path.join(str(tmpdir), "test")
+    move_path = os.path.join(str(tmpdir), "test", "pool.json")
     shutil.copytree(str(tmpdir), new_root)
 
-    with open(test_path, "r") as f:
+    with open(move_path, "r") as f:
         loaded_pool = json.load(f)
 
     new_pool = data_store.deserialise_pool(

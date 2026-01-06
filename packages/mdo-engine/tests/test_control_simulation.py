@@ -7,8 +7,8 @@ Created on Wed Jan 21 17:28:04 2015
 
 # pylint: disable=redefined-outer-name,protected-access
 
+import json
 import os
-import pickle
 import shutil
 from copy import deepcopy
 
@@ -555,12 +555,41 @@ def test_save_simulation(controller, tmpdir):
 
     assert check_integrity(pool, [new_sim])
 
-    controller.serialise_states(new_sim, str(tmpdir))
+    sim_dict = controller.serialise_simulation(new_sim, str(tmpdir))
 
-    test_path = os.path.join(str(tmpdir), "simulation.pkl")
-    pickle.dump(new_sim, open(test_path, "wb"), -1)
+    assert "title" in sim_dict
+    assert sim_dict["title"] == new_sim.get_title()
 
-    assert os.path.isfile(test_path)
+    assert "hubs" in sim_dict
+    for expected, test in zip(new_sim._hubs, sim_dict["hubs"]):
+        loaded_hub = controller._sequencer.load_hub(test)
+        assert loaded_hub == expected
+
+    assert "active_states" in sim_dict
+    for expected, test in zip(
+        new_sim._active_states,
+        sim_dict["active_states"],
+    ):
+        assert test["identifier"] == expected.identifier
+        assert test["load_dict"] == expected.load_dict
+
+    assert "redo_states" in sim_dict
+    for expected, test in zip(
+        new_sim._redo_states,
+        sim_dict["redo_states"],
+    ):
+        assert test["identifier"] == expected.identifier
+        assert test["load_dict"] == expected.load_dict
+
+    assert "merged_state" in sim_dict
+
+    if new_sim._merged_state is None:
+        assert sim_dict["merged_state"] is None
+    else:
+        test = sim_dict["merged_state"]
+        expected = new_sim._merged_state
+        assert test["identifier"] == expected.identifier
+        assert test["load_dict"] == expected.load_dict
 
 
 def test_load_simulation(controller, tmpdir):
@@ -595,15 +624,18 @@ def test_load_simulation(controller, tmpdir):
 
     new_levels = new_sim.get_all_levels()
 
-    controller.serialise_states(new_sim, str(tmpdir))
+    serial_sim = controller.serialise_simulation(new_sim, str(tmpdir))
 
-    test_path = os.path.join(str(tmpdir), "simulation.pkl")
-    pickle.dump(new_sim, open(test_path, "wb"), -1)
+    test_path = os.path.join(str(tmpdir), "simulation.json")
+    with open(test_path, "w") as f:
+        json.dump(serial_sim, f)
 
     assert os.path.isfile(test_path)
 
-    loaded_sim = pickle.load(open(test_path, "rb"))
-    controller.deserialise_states(loaded_sim)
+    with open(test_path, "r") as f:
+        new_serial_sim = json.load(f)
+
+    loaded_sim = controller.deserialise_simulation(new_serial_sim)
 
     assert check_integrity(pool, [loaded_sim])
 
@@ -818,20 +850,26 @@ def test_load_simulation_root(controller, tmpdir):
 
     new_levels = new_sim.get_all_levels()
 
-    controller.serialise_states(new_sim, str(tmpdir), str(tmpdir))
+    serial_sim = controller.serialise_simulation(
+        new_sim,
+        str(tmpdir),
+        str(tmpdir),
+    )
 
-    test_path = os.path.join(str(tmpdir), "simulation.pkl")
-    pickle.dump(new_sim, open(test_path, "wb"), -1)
+    test_path = os.path.join(str(tmpdir), "simulation.json")
+    with open(test_path, "w") as f:
+        json.dump(serial_sim, f)
 
     assert os.path.isfile(test_path)
 
     new_root = os.path.join(str(tmpdir), "test")
-    #    os.makedirs(new_root)
-    move_path = os.path.join(str(tmpdir), "test", "simulation.pkl")
+    move_path = os.path.join(str(tmpdir), "test", "simulation.json")
     shutil.copytree(str(tmpdir), new_root)
 
-    loaded_sim = pickle.load(open(move_path, "rb"))
-    controller.deserialise_states(loaded_sim, new_root)
+    with open(move_path, "r") as f:
+        new_serial_sim = json.load(f)
+
+    loaded_sim = controller.deserialise_simulation(new_serial_sim, new_root)
 
     assert check_integrity(pool, [loaded_sim])
 

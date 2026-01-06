@@ -24,7 +24,10 @@ class DataValidation(Plugin):
         self._meta_cls = meta_cls
 
     def update_data_catalog_from_definitions(
-        self, data_catalog, package, super_cls="DataDefinition"
+        self,
+        data_catalog,
+        package,
+        super_cls="DataDefinition",
     ):
         """Create a data catalog searching for DataDefinition classes in the
         given package directory"""
