@@ -12,6 +12,7 @@ file system.
 import abc
 import datetime as dt
 import glob
+import json
 import os
 import sys
 from abc import ABC
@@ -148,21 +149,22 @@ class Structure(ABC):
 
     def save_value(self, data: Any, root_path: PathOrStr) -> Path:
         stub_path = Path(root_path)
-        file_path = stub_path.with_suffix(".txt")
+        file_path = stub_path.with_suffix(".json")
 
         data_value = self.get_value(data)
         data_string = self.toText(data_value)
+        data_versioned = {"version": self.version, "data": data_string}
 
         with open(file_path, "w") as fstream:
-            fstream.write(data_string)
+            json.dump(data_versioned, fstream)
 
         return file_path
 
     def load_data(self, file_path: PathOrStr):
         with open(file_path, "r") as fstream:
-            data_string = fstream.read()
+            data_versioned = json.load(fstream)
 
-        return self.fromText(data_string, self.version)
+        return self.fromText(data_versioned["data"], data_versioned["version"])
 
     @classmethod
     def equals(cls, left, right):
