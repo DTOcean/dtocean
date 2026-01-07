@@ -29,7 +29,7 @@ from mdo_engine.utilities.data import check_integrity
 @pytest.fixture(scope="module")
 def controller():
     data_store = DataStorage(data_plugins)
-    sequencer = Sequencer(["SPTInterface"], [interfaces])
+    sequencer = Sequencer(["FileInterface"], [interfaces])
     control = Controller(data_store, sequencer)
 
     return control
@@ -439,7 +439,7 @@ def test_convert_box_to_state(controller, tmpdir):
     assert isinstance(new_data, Data)
 
 
-def test_serialise_states(controller, tmpdir):
+def test_serialise_states(tmpdir, controller):
     """Test saving a datastate."""
 
     pool = DataPool()
@@ -525,7 +525,7 @@ def test_deserialise_states(controller, tmpdir):
     assert isinstance(new_data, Data)
 
 
-def test_save_simulation(controller, tmpdir):
+def test_save_simulation(tmpdir, controller):
     """Test pickling a simulation."""
 
     pool = DataPool()
@@ -550,10 +550,18 @@ def test_save_simulation(controller, tmpdir):
 
     new_sim = Simulation("Hello World!")
     controller.add_datastate(
-        pool, new_sim, "executed", catalog, [test_variable], [raw_data]
+        pool,
+        new_sim,
+        "executed",
+        catalog,
+        [test_variable],
+        [raw_data],
     )
 
     assert check_integrity(pool, [new_sim])
+
+    controller.create_new_pipeline(new_sim, "FileInterface", "mock")
+    controller.sequence_interface(new_sim, "mock", "Datawell SPT File")
 
     sim_dict = controller.serialise_simulation(new_sim, str(tmpdir))
 
@@ -561,7 +569,10 @@ def test_save_simulation(controller, tmpdir):
     assert sim_dict["title"] == new_sim.get_title()
 
     assert "hubs" in sim_dict
-    for expected, test in zip(new_sim._hubs, sim_dict["hubs"]):
+    for expected, test in zip(
+        new_sim._hubs.values(),
+        sim_dict["hubs"].values(),
+    ):
         loaded_hub = controller._sequencer.load_hub(test)
         assert loaded_hub == expected
 
@@ -592,7 +603,7 @@ def test_save_simulation(controller, tmpdir):
         assert test["load_dict"] == expected.load_dict
 
 
-def test_load_simulation(controller, tmpdir):
+def test_load_simulation(tmpdir, controller):
     """Test pickling and unpickling a simulation."""
 
     pool = DataPool()
@@ -617,10 +628,18 @@ def test_load_simulation(controller, tmpdir):
 
     new_sim = Simulation("Hello World!")
     controller.add_datastate(
-        pool, new_sim, "executed", catalog, [test_variable], [raw_data]
+        pool,
+        new_sim,
+        "executed",
+        catalog,
+        [test_variable],
+        [raw_data],
     )
 
     assert check_integrity(pool, [new_sim])
+
+    controller.create_new_pipeline(new_sim, "FileInterface", "mock")
+    controller.sequence_interface(new_sim, "mock", "Datawell SPT File")
 
     new_levels = new_sim.get_all_levels()
 
