@@ -487,6 +487,7 @@ def test_serialise_pool(tmpdir):
 
     result = data_store.serialise_pool(pool, str(tmpdir))
 
+    assert result["version"] == 1
     assert set(result["data_indexes"]) == pool._data_indexes
     assert set(result["data"].keys()) == pool._data_indexes
     assert result["links"] == pool._links

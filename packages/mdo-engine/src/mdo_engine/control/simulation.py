@@ -1044,6 +1044,7 @@ class Controller(Loader):
             }
 
         return {
+            "version": 1,
             "title": simulation._title,
             "hubs": hubs,
             "active_states": active_states,
@@ -1060,6 +1061,9 @@ class Controller(Loader):
         if isinstance(serial_sim, Simulation):
             simulation = serial_sim
         else:
+            if serial_sim["version"] != 1:
+                raise RuntimeError("Data version not recognised")
+
             simulation = sim_class()
             simulation._title = serial_sim["title"]
 

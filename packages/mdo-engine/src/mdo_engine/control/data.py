@@ -431,6 +431,7 @@ class DataStorage(Plugin):
             }
 
         return {
+            "version": 1,
             "data_indexes": list(data_pool._data_indexes),
             "data": data,
             "links": links,
@@ -447,6 +448,9 @@ class DataStorage(Plugin):
         if isinstance(serial_pool, DataPool):
             data_pool = serial_pool
         else:
+            if serial_pool["version"] != 1:
+                raise RuntimeError("Data version not recognised")
+
             data = {
                 index: SerialBox(value["identifier"], value["load_dict"])
                 for index, value in serial_pool["data"].items()

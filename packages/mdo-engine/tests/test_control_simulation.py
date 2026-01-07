@@ -645,6 +645,8 @@ def test_load_simulation(tmpdir, controller):
 
     serial_sim = controller.serialise_simulation(new_sim, str(tmpdir))
 
+    assert serial_sim["version"] == 1
+
     test_path = os.path.join(str(tmpdir), "simulation.json")
     with open(test_path, "w") as f:
         json.dump(serial_sim, f)
