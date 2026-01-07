@@ -208,3 +208,36 @@ def test_HistogramDict_auto_plot(tmpdir):
 
     assert len(plt.get_fignums()) == 1
     plt.close("all")
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+        }
+    )
+    structure = HistogramDict()
+
+    test_data_one = np.random.random(10)
+    test_data_two = np.random.random(10)
+    values_one, bins_one = np.histogram(test_data_one)
+    values_two, bins_two = np.histogram(test_data_two)
+    raw = {
+        "test_one": (values_one, bins_one),
+        "test_two": (values_two, bins_two),
+    }
+
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    assert structure.fromText(c, structure.version) == a
+
+
+def test_toText_fromText_none():
+    structure = HistogramDict()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

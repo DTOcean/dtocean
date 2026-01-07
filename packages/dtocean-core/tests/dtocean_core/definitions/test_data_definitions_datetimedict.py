@@ -32,6 +32,7 @@ def test_DateTimeDict():
     a = test.get_data(raw, meta)
     b = test.get_value(a)
 
+    assert b is not None
     assert b["a"] == raw["a"]
     assert b["b"] == raw["b"]
 
@@ -157,3 +158,27 @@ def test_DateTimeDict_auto_file_output_bad_ext():
 
     with pytest.raises(IOError):
         fin.connect()
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {"identifier": "test", "structure": "test", "title": "test"}
+    )
+    structure = DateTimeDict()
+
+    raw = {
+        "a": datetime.datetime.now(),
+        "b": datetime.datetime.now(datetime.UTC),
+    }
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    assert structure.fromText(c, structure.version) == a
+
+
+def test_toText_fromText_none():
+    structure = DateTimeDict()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

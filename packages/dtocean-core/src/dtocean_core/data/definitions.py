@@ -21,9 +21,8 @@ from collections import Counter
 from copy import deepcopy
 from datetime import datetime
 from itertools import product
-from numbers import Number
 from pathlib import Path
-from typing import Any, Optional, Protocol
+from typing import Any, Optional, Protocol, TypeVar
 
 import matplotlib.patheffects as PathEffects
 import matplotlib.pyplot as plt
@@ -51,6 +50,7 @@ from ..utils.database import (
 )
 
 Simple = bool | str | int | float
+T = TypeVar("T")
 
 # Add additional immutable classes
 Structure.immutables.extend([Point, Polygon])
@@ -1318,7 +1318,7 @@ class Histogram(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> dict[str, list[int | float]]:
         if len(raw[1]) != len(raw[0]) + 1:
             errStr = (
                 "The bin separators must contain one more item than the "
@@ -1327,11 +1327,14 @@ class Histogram(Structure):
             ).format(len(raw[0]), len(raw[1]))
             raise ValueError(errStr)
 
-        histogram = {"values": raw[0], "bins": raw[1]}
+        histogram = {
+            "values": np.array(raw[0]).tolist(),
+            "bins": np.array(raw[1]).tolist(),
+        }
 
         return histogram
 
-    def get_value(self, data):
+    def get_value(self, data: T) -> T:
         return deepcopy(data)
 
     @classmethod
@@ -1342,11 +1345,13 @@ class Histogram(Structure):
         return vals_equal and bins_equal
 
     @staticmethod
-    def toText(value: dict[str, Number]) -> str:
+    def toText(value: Optional[dict[str, list[int | float]]]) -> str:
         return json.dumps(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> dict[str, Number]:
+    def fromText(
+        data: str, version: int
+    ) -> Optional[dict[str, list[int | float]]]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
@@ -1503,6 +1508,20 @@ class HistogramDict(Histogram):
                 return False
 
         return True
+
+    @staticmethod
+    def toText(value: Optional[dict[str, dict[str, list[int | float]]]]) -> str:
+        return json.dumps(value)
+
+    @staticmethod
+    def fromText(
+        data: str,
+        version: int,
+    ) -> Optional[dict[str, dict[str, list[int | float]]]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        return json.loads(data)
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -1751,7 +1770,7 @@ class CartesianList(Numpy2D):
 
         return data
 
-    def get_value(self, data):
+    def get_value(self, data: Optional[np.ndarray]) -> Optional[np.ndarray]:
         result = None
 
         if data is not None:
@@ -2087,14 +2106,18 @@ class CartesianListDict(CartesianList):
 
         return safe_data
 
-    def get_value(self, data):
-        new_dict = None
+    def get_value(
+        self,
+        data: Optional[dict[Any, np.ndarray]],
+    ) -> Optional[dict[Any, np.ndarray]]:
+        new_dict: Optional[dict[Any, np.ndarray]] = None
 
         if data is not None:
-            new_dict = {
-                k: super(CartesianListDict, self).get_value(v)
-                for k, v in data.items()
-            }
+            new_dict = {}
+            for k, v in data.items():
+                new_v = super(CartesianListDict, self).get_value(v)
+                assert new_v is not None
+                new_dict[k] = new_v
 
         return new_dict
 
@@ -2110,6 +2133,25 @@ class CartesianListDict(CartesianList):
             value_check.append(np.array_equal(lvalue, rvalue))
 
         return all(value_check)
+
+    @staticmethod
+    def toText(value: Optional[dict[Any, np.ndarray]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        serial_dict = {k: v.tolist() for k, v in value.items()}
+        return json.dumps(serial_dict)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[dict[Any, np.ndarray]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+        if raw is None:
+            return None
+
+        return {k: np.array(v) for k, v in raw.items()}
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -2788,13 +2830,19 @@ class DateTimeData(Structure):
         return data
 
     @staticmethod
-    def toText(value: datetime) -> str:
+    def toText(value: Optional[datetime]) -> str:
+        if value is None:
+            return ""
+
         return value.isoformat()
 
     @staticmethod
-    def fromText(data: str, version: int) -> datetime:
+    def fromText(data: str, version: int) -> Optional[datetime]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
+
+        if not data:
+            return None
 
         return datetime.fromisoformat(data)
 
@@ -2803,7 +2851,7 @@ class DateTimeDict(DateTimeData):
     """Dictionary containing a named variable as a key and a datatime as the
     value."""
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> dict[str, datetime]:
         raw_dict = raw
         checked_dict = {}
 
@@ -2827,8 +2875,35 @@ class DateTimeDict(DateTimeData):
 
         return checked_dict
 
-    def get_value(self, data):
+    def get_value(
+        self,
+        data: Optional[dict[str, datetime]],
+    ) -> Optional[dict[str, datetime]]:
+        if data is None:
+            return None
+
         return deepcopy(data)
+
+    @staticmethod
+    def toText(value: Optional[dict[str, datetime]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        iso_dict = {k: v.isoformat() for k, v in value.items()}
+
+        return json.dumps(iso_dict)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[dict[str, datetime]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+
+        if raw is None:
+            return None
+
+        return {k: datetime.fromisoformat(v) for k, v in raw.items()}
 
     @staticmethod
     def auto_file_input(auto: FileMixin):

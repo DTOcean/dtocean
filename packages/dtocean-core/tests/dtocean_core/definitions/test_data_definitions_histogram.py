@@ -277,3 +277,33 @@ def test_HistogramColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["x", "f(x)"],
+        }
+    )
+
+    structure = Histogram()
+
+    bin_values = [1, 2, 3, 4, 5]
+    bin_separators = [0, 2, 4, 6, 8, 10]
+    raw = (bin_values, bin_separators)
+
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    assert structure.fromText(c, structure.version) == a
+
+
+def test_toText_fromText_none():
+    structure = Histogram()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None
