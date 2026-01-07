@@ -252,3 +252,34 @@ def test_CartesianDictColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "types": ["str"],
+        }
+    )
+    structure = CartesianDict()
+
+    raw = {"a": (0, 1), "b": (1, 2), 1: (2, 3)}
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert test is not None
+
+    for k, v in a.items():
+        assert k in test
+        assert (test[k] == v).all()
+
+
+def test_toText_fromText_none():
+    structure = CartesianDict()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

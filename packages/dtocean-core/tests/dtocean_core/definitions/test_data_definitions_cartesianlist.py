@@ -192,3 +192,25 @@ def test_CartesianListColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {"identifier": "test", "structure": "test", "title": "test"}
+    )
+    structure = CartesianList()
+
+    raw = [(0, 1), (1, 2)]
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert (test == a).all()
+
+
+def test_toText_fromText_none():
+    structure = CartesianList()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

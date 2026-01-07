@@ -193,3 +193,28 @@ def test_CartesianDataColumn_auto_db_none(mocker):
 
     assert query.data.result is None
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+        }
+    )
+    structure = CartesianData()
+
+    raw = (0, 1)
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    assert (structure.fromText(c, structure.version) == a).all()
+
+
+def test_toText_fromText_none():
+    structure = CartesianData()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

@@ -833,15 +833,21 @@ class NumpyND(Structure):
         return np.array_equal(left, right)
 
     @staticmethod
-    def toText(value: np.ndarray) -> str:
+    def toText(value: Optional[np.ndarray]) -> str:
+        if value is None:
+            return json.dumps(None)
         return json.dumps(value.tolist())
 
     @staticmethod
-    def fromText(data: str, version: int) -> np.ndarray:
+    def fromText(data: str, version: int) -> Optional[np.ndarray]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        return np.array(json.loads(data))
+        value = json.loads(data)
+        if value is None:
+            return None
+
+        return np.array(value)
 
 
 class Numpy2D(NumpyND):
@@ -1637,7 +1643,7 @@ class CartesianData(NumpyND):
 
         return data
 
-    def get_value(self, data):
+    def get_value(self, data) -> Optional[np.ndarray]:
         result = None
 
         if data is not None:
@@ -1882,14 +1888,15 @@ class CartesianDict(CartesianData):
 
         return safe_data
 
-    def get_value(self, data):
+    def get_value(self, data) -> Optional[dict[Any, np.ndarray]]:
         new_dict = None
 
         if data is not None:
-            new_dict = {
-                k: super(CartesianDict, self).get_value(v)
-                for k, v in data.items()
-            }
+            new_dict = {}
+            for k, v in data.items():
+                new_v = super(CartesianDict, self).get_value(v)
+                assert new_v is not None
+                new_dict[k] = new_v
 
         return new_dict
 
@@ -1905,6 +1912,25 @@ class CartesianDict(CartesianData):
             value_check.append(np.array_equal(lvalue, rvalue))
 
         return all(value_check)
+
+    @staticmethod
+    def toText(value: Optional[dict[Any, np.ndarray]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        serial_dict = {k: v.tolist() for k, v in value.items()}
+        return json.dumps(serial_dict)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[dict[Any, np.ndarray]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+        if raw is None:
+            return None
+
+        return {k: np.array(v) for k, v in raw.items()}
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
