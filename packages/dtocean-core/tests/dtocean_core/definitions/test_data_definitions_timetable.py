@@ -330,3 +330,45 @@ def test_TimeSeriesColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["a", "b"],
+            "units": ["kg", None],
+        }
+    )
+
+    structure = TimeTable()
+
+    dates = []
+    dt = datetime(2010, 12, 1)
+    end = datetime(2010, 12, 2, 23, 59, 59)
+    step = timedelta(seconds=3600)
+
+    while dt < end:
+        dates.append(dt)
+        dt += step
+
+    values = np.random.rand(len(dates))
+    raw = {"DateTime": dates, "a": values, "b": values}
+
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert test.round(15).equals(a.round(15))
+
+
+def test_toText_fromText_none():
+    structure = TimeTable()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

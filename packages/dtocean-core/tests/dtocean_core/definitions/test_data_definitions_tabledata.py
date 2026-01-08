@@ -21,14 +21,14 @@ def test_TableData():
     idx = range(1000)
 
     values = np.random.rand(len(idx))
-    raw = {"index": idx, "a": values, "b": values}
+    raw = {"idx": idx, "a": values, "b": values}
 
     meta = CoreMetaData(
         {
             "identifier": "test",
             "structure": "test",
             "title": "test",
-            "labels": ["index", "a", "b"],
+            "labels": ["idx", "a", "b"],
             "units": [None, "kg", None],
         }
     )
@@ -57,14 +57,14 @@ def test_TableData_auto_file(tmpdir, fext):
     idx = range(1000)
 
     values = np.random.rand(len(idx))
-    raw = {"index": idx, "a": values, "b": values}
+    raw = {"idx": idx, "a": values, "b": values}
 
     meta = CoreMetaData(
         {
             "identifier": "test",
             "structure": "test",
             "title": "test",
-            "labels": ["index", "a", "b"],
+            "labels": ["idx", "a", "b"],
             "units": [None, "kg", None],
         }
     )
@@ -98,7 +98,7 @@ def test_TableData_auto_file(tmpdir, fext):
 def test_TableDataData_equals():
     idx = range(1000)
     values = np.random.rand(len(idx))
-    raw = {"index": idx, "a": values, "b": values}
+    raw = {"idx": idx, "a": values, "b": values}
 
     a = pd.DataFrame(raw)
     b = pd.DataFrame(raw)
@@ -111,9 +111,9 @@ def test_TableDataData_not_equals():
     values1 = np.random.rand(len(idx))
     values2 = np.random.rand(len(idx))
 
-    raw1 = {"index": idx, "a": values1, "b": values1}
+    raw1 = {"idx": idx, "a": values1, "b": values1}
 
-    raw2 = {"index": idx, "c": values2, "d": values2}
+    raw2 = {"idx": idx, "c": values2, "d": values2}
 
     a = pd.DataFrame(raw1)
     b = pd.DataFrame(raw2)
@@ -132,7 +132,7 @@ def test_TableDataColumn_auto_db(mocker):
     idx = range(1000)
     values = np.random.rand(len(idx))
 
-    mock_dict = {"index": idx, "a": values, "b": values}
+    mock_dict = {"idx": idx, "a": values, "b": values}
     mock_df = pd.DataFrame(mock_dict)
 
     mocker.patch(
@@ -146,8 +146,8 @@ def test_TableDataColumn_auto_db(mocker):
             "identifier": "test",
             "structure": "test",
             "title": "test",
-            "labels": ["index", "a", "b"],
-            "tables": ["mock.mock", "index", "a", "b"],
+            "labels": ["idx", "a", "b"],
+            "tables": ["mock.mock", "idx", "a", "b"],
         }
     )
 
@@ -167,7 +167,7 @@ def test_TableDataColumn_auto_db(mocker):
 
 
 def test_TableDataColumn_auto_db_empty(mocker):
-    mock_dict = {"index": [], "a": [], "b": []}
+    mock_dict = {"idx": [], "a": [], "b": []}
     mock_df = pd.DataFrame(mock_dict)
 
     mocker.patch(
@@ -181,8 +181,8 @@ def test_TableDataColumn_auto_db_empty(mocker):
             "identifier": "test",
             "structure": "test",
             "title": "test",
-            "labels": ["index", "a", "b"],
-            "tables": ["mock.mock", "index", "a", "b"],
+            "labels": ["idx", "a", "b"],
+            "tables": ["mock.mock", "idx", "a", "b"],
         }
     )
 
@@ -200,7 +200,7 @@ def test_TableDataColumn_auto_db_empty(mocker):
 
 
 def test_TableDataColumn_auto_db_none(mocker):
-    mock_dict = {"index": [None, None], "a": [None, None], "b": [None, None]}
+    mock_dict = {"idx": [None, None], "a": [None, None], "b": [None, None]}
     mock_df = pd.DataFrame(mock_dict)
 
     mocker.patch(
@@ -214,8 +214,8 @@ def test_TableDataColumn_auto_db_none(mocker):
             "identifier": "test",
             "structure": "test",
             "title": "test",
-            "labels": ["index", "a", "b"],
-            "tables": ["mock.mock", "index", "a", "b"],
+            "labels": ["idx", "a", "b"],
+            "tables": ["mock.mock", "idx", "a", "b"],
         }
     )
 
@@ -230,3 +230,61 @@ def test_TableDataColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["idx", "a", "b"],
+            "units": [None, "kg", None],
+        }
+    )
+    structure = TableData()
+
+    idx = range(1000)
+    values = np.random.rand(len(idx))
+
+    raw = {"idx": idx, "a": values, "b": values}
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert test.round(15).equals(a.round(15))
+
+
+def test_toText_fromText_no_convert():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["Velocity", "Thrust", "Power"],
+        }
+    )
+    structure = TableData()
+
+    velocity = [x for x in range(10)]
+    thrust = [2 * x for x in range(10)]
+    power = [3 * x for x in range(10)]
+
+    raw = {"Velocity": velocity, "Thrust": thrust, "Power": power}
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert test.equals(a)
+
+
+def test_toText_fromText_none():
+    structure = TableData()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

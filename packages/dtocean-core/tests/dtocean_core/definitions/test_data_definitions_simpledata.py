@@ -263,3 +263,32 @@ def test_SimpleDataColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+@pytest.mark.parametrize(
+    "raw, ttype",
+    [(1, "int"), ("hello", "str"), (True, "bool"), (0.5, "float")],
+)
+def test_toText_fromText(raw, ttype):
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "types": [ttype],
+        }
+    )
+    structure = SimpleData()
+
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    assert structure.fromText(c, structure.version) == a
+
+
+def test_toText_fromText_none():
+    structure = SimpleData()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

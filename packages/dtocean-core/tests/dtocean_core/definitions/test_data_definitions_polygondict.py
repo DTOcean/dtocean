@@ -3,6 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
+import shapely
 from geoalchemy2.elements import WKTElement
 from mdo_engine.control.factory import InterfaceFactory
 
@@ -362,3 +363,36 @@ def test_PolygonDictColumn_auto_db_no_tables(mocker):
 
     with pytest.raises(ValueError):
         query.connect()
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+        }
+    )
+    structure = PolygonDict()
+
+    raw = {
+        "block 1": [(0.0, 0.0), (1.0, 1.0), (2.0, 2.0)],
+        "block 2": [(10.0, 10.0), (11.0, 11.0), (12.0, 12.0)],
+    }
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert test is not None
+
+    for k, v in a.items():
+        assert k in test
+        assert shapely.equals(test[k], v)
+
+
+def test_toText_fromText_none():
+    structure = PolygonDict()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

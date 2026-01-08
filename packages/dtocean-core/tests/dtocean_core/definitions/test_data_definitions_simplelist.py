@@ -14,8 +14,6 @@ from dtocean_core.core import (
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import SimpleList, SimpleListColumn
 
-# pylint: disable=protected-access
-
 
 def test_SimpleList_available():
     new_core = Core()
@@ -281,3 +279,38 @@ def test_SimpleListColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+@pytest.mark.parametrize(
+    "raw, ttype",
+    [
+        ([1, 2], "int"),
+        (["hello", "world"], "str"),
+        ([True, False], "bool"),
+        ([0.5, 0.6], "float"),
+    ],
+)
+def test_toText_fromText(raw, ttype):
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "types": [ttype],
+        }
+    )
+    structure = SimpleList()
+
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert test == a
+
+
+def test_toText_fromText_none():
+    structure = SimpleList()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

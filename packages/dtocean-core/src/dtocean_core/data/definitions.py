@@ -91,12 +91,10 @@ class SeriesData(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
-        series = pd.Series(raw)
+    def get_data(self, raw, meta_data) -> pd.Series:
+        return pd.Series(raw)
 
-        return series
-
-    def get_value(self, data):
+    def get_value(self, data: Optional[pd.Series]) -> Optional[pd.Series]:
         result = None
 
         if data is not None:
@@ -109,15 +107,21 @@ class SeriesData(Structure):
         return left.equals(right)
 
     @staticmethod
-    def toText(value: pd.Series) -> str:
-        return value.to_json()
+    def toText(value: Optional[pd.Series]) -> str:
+        if value is None:
+            return ""
+
+        return value.to_json(orient="table", double_precision=15)
 
     @staticmethod
-    def fromText(data: str, version: int) -> pd.Series:
+    def fromText(data: str, version: int) -> Optional[pd.Series]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        return pd.read_json(data, typ="series")
+        if not data:
+            return None
+
+        return pd.read_json(StringIO(data), orient="table").iloc[:, 0]
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -161,7 +165,7 @@ class TimeSeries(SeriesData):
     """List of tuples expected with the first entries being datetime.datetime
     objects."""
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> pd.Series:
         if isinstance(raw, pd.Series):
             if not isinstance(raw.index, pd.DatetimeIndex):
                 errStr = (
@@ -296,6 +300,10 @@ class TableData(Structure):
             errStr = "Labels must be set for TableData column names"
             raise ValueError(errStr)
 
+        if "index" in meta_data.labels:
+            errStr = "'index' may not be used as a column name"
+            raise ValueError(errStr)
+
         if meta_data.units is not None and len(meta_data.units) != len(
             meta_data.labels
         ):
@@ -397,7 +405,7 @@ class TableData(Structure):
         if value is None:
             return ""
 
-        return value.to_json(orient="table")
+        return value.to_json(orient="table", double_precision=15)
 
     @staticmethod
     def fromText(data: str, version: int) -> Optional[pd.DataFrame]:
@@ -2334,7 +2342,7 @@ class SimpleData(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> Simple:
         typed = self._assign_type(raw, meta_data.types)
 
         if meta_data.valid_values is not None:
@@ -2401,7 +2409,10 @@ class SimpleData(Structure):
 
         return typed
 
-    def get_value(self, data):
+    def get_value(self, data: Optional[Simple]) -> Optional[Simple]:
+        if data is None:
+            return None
+
         return deepcopy(data)
 
     def _assign_type(self, raw, type_list):  # pylint: disable=no-self-use
@@ -2415,11 +2426,11 @@ class SimpleData(Structure):
         return typed
 
     @staticmethod
-    def toText(value: Simple) -> str:
+    def toText(value: Optional[Simple]) -> str:
         return json.dumps(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> Simple:
+    def fromText(data: str, version: int) -> Optional[Simple]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
@@ -2447,7 +2458,7 @@ class SimpleList(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> list[Simple]:
         raw_list = raw
 
         if meta_data.types is not None:
@@ -2473,7 +2484,7 @@ class SimpleList(Structure):
 
         return simple_list
 
-    def get_value(self, data):
+    def get_value(self, data: Optional[list[Simple]]) -> Optional[list[Simple]]:
         result = None
 
         if data is not None:
@@ -2482,11 +2493,11 @@ class SimpleList(Structure):
         return result
 
     @staticmethod
-    def toText(value: list[Simple]) -> str:
+    def toText(value: Optional[list[Simple]]) -> str:
         return json.dumps(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> list[Simple]:
+    def fromText(data: str, version: int) -> Optional[list[Simple]]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
@@ -2557,7 +2568,7 @@ class SimpleDict(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> dict[str, Simple]:
         raw_dict = raw
 
         if meta_data.types is not None:
@@ -2591,15 +2602,20 @@ class SimpleDict(Structure):
 
         return typed_dict
 
-    def get_value(self, data):
+    def get_value(
+        self, data: Optional[dict[str, Simple]]
+    ) -> Optional[dict[str, Simple]]:
+        if data is None:
+            return None
+
         return deepcopy(data)
 
     @staticmethod
-    def toText(value: dict[str, Simple]) -> str:
+    def toText(value: Optional[dict[str, Simple]]) -> str:
         return json.dumps(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> dict[str, Simple]:
+    def fromText(data: str, version: int) -> Optional[dict[str, Simple]]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
@@ -2996,7 +3012,7 @@ class TriStateData(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> str:
         if isinstance(raw, str):
             if raw in ["true", "false", "unknown"]:
                 return raw
@@ -3008,19 +3024,19 @@ class TriStateData(Structure):
         ).format(raw)
         raise ValueError(errStr)
 
-    def get_value(self, data):
-        return deepcopy(data)
+    def get_value(self, data) -> Optional[str]:
+        return data
 
     @staticmethod
-    def toText(value: str) -> str:
-        return value
+    def toText(value: Optional[str]) -> str:
+        return json.dumps(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> str:
+    def fromText(data: str, version: int) -> Optional[str]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        return data
+        return json.loads(data)
 
 
 class PointData(Structure):
@@ -3687,7 +3703,7 @@ class PolygonData(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> Polygon:
         if isinstance(raw, Polygon):
             ring = raw
 
@@ -3713,23 +3729,28 @@ class PolygonData(Structure):
 
         return ring
 
-    def get_value(self, data):
+    def get_value(self, data) -> Optional[Polygon]:
         return data
 
     @staticmethod
-    def toText(value: Polygon) -> str:
+    def toText(value: Optional[Polygon]) -> str:
+        if value is None:
+            return ""
+
         return to_geojson(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> Polygon:
+    def fromText(data: str, version: int) -> Optional[Polygon]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        polygon = from_geojson(data)
-        if not isinstance(polygon, Polygon):
-            raise RuntimeError("Incorrect geometry detected")
+        if not data:
+            return None
 
-        return polygon
+        poly = from_geojson(data)
+        assert isinstance(poly, Polygon)
+
+        return poly
 
     @staticmethod
     def auto_plot(auto: PlotMixin):
@@ -3946,20 +3967,50 @@ class PolygonDataColumn(PolygonData):
 
 
 class PolygonList(PolygonData):
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> list[Polygon]:
         ring_list = [
             super(PolygonList, self).get_data(x, meta_data) for x in raw
         ]
 
         return ring_list
 
-    def get_value(self, data):
+    def get_value(self, data) -> Optional[list[Polygon]]:
         ring_list = None
 
         if data is not None:
-            ring_list = [super(PolygonList, self).get_value(x) for x in data]
+            ring_list = []
+            for v in data:
+                poly = super(PolygonList, self).get_value(v)
+                assert isinstance(poly, Polygon)
+                ring_list.append(poly)
 
         return ring_list
+
+    @staticmethod
+    def toText(value: Optional[list[Polygon]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        return json.dumps([to_geojson(p) for p in value])
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[list[Polygon]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+
+        if raw is None:
+            return None
+
+        new_list = []
+
+        for p in raw:
+            point = from_geojson(p)
+            assert isinstance(point, Polygon)
+            new_list.append(point)
+
+        return new_list
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -4106,7 +4157,7 @@ class PolygonListColumn(PolygonList):
 
 
 class PolygonDict(PolygonData):
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> dict[Any, Polygon]:
         ring_dict = {
             k: super(PolygonDict, self).get_data(v, meta_data)
             for k, v in raw.items()
@@ -4114,16 +4165,36 @@ class PolygonDict(PolygonData):
 
         return ring_dict
 
-    def get_value(self, data):
+    def get_value(self, data) -> Optional[dict[Any, Polygon]]:
         ring_dict = None
 
         if data is not None:
-            ring_dict = {
-                k: super(PolygonDict, self).get_value(v)
-                for k, v in data.items()
-            }
+            ring_dict = {}
+            for k, v in data.items():
+                poly = super(PolygonDict, self).get_value(v)
+                assert isinstance(poly, Polygon)
+                ring_dict[k] = poly
 
         return ring_dict
+
+    @staticmethod
+    def toText(value: Optional[dict[Any, Polygon]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        serial_dict = {k: to_geojson(v) for k, v in value.items()}
+        return json.dumps(serial_dict)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[dict[Any, Polygon]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+        if raw is None:
+            return None
+
+        return {k: from_geojson(v) for k, v in raw.items()}
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -4300,7 +4371,7 @@ class XGridND(Structure):
 
         raise NotImplementedError(errStr)
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> xr.DataArray:
         """
         Add raw data.
 
@@ -4533,7 +4604,7 @@ class XSetND(XGridND):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> xr.Dataset:
         """
         Add raw data.
 
@@ -4621,13 +4692,19 @@ class XSetND(XGridND):
         return data_set
 
     @staticmethod
-    def toText(value: xr.Dataset) -> str:
+    def toText(value: Optional[xr.Dataset]) -> str:
+        if value is None:
+            return ""
+
         return json.dumps(value.to_dict())
 
     @staticmethod
-    def fromText(data: str, version: int) -> xr.Dataset:
+    def fromText(data: str, version: int) -> Optional[xr.Dataset]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
+
+        if not data:
+            return None
 
         return xr.Dataset.from_dict(json.loads(data))
 

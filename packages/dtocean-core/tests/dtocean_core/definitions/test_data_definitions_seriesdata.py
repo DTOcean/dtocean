@@ -98,3 +98,54 @@ def test_SeriesData_auto_file(tmpdir):
     result = test.get_data(fin.data.result, meta)
 
     assert len(result) == len(raw)
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["mass"],
+            "units": ["kg"],
+        }
+    )
+    structure = SeriesData()
+
+    raw = np.random.rand(10)
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert test.round(15).equals(a.round(15))
+
+
+def test_toText_fromText_no_convert():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["mass"],
+            "units": ["kg"],
+        }
+    )
+    structure = SeriesData()
+
+    raw = (0.0, 1.0, 2.0, 3.0)
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert test.equals(a)
+
+
+def test_toText_fromText_none():
+    structure = SeriesData()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

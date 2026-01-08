@@ -32,6 +32,7 @@ def test_SimplePie():
     a = test.get_data(raw, meta)
     b = test.get_value(a)
 
+    assert b is not None
     assert b["a"] == 0
     assert b["b"] == 1
 
@@ -111,3 +112,34 @@ def test_SimplePie_auto_plot():
 
     assert len(plt.get_fignums()) == 1
     plt.close("all")
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "types": ["int"],
+        }
+    )
+    structure = SimplePie()
+
+    raw = {"a": 0, "b": 1}
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert test is not None
+
+    for k, v in a.items():
+        assert k in test
+        assert test[k] == v
+
+
+def test_toText_fromText_none():
+    structure = SimplePie()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

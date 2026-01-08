@@ -158,3 +158,44 @@ def test_Strata_auto_plot(tmpdir):
     assert len(plt.get_fignums()) == 1
     plt.close("all")
     plt.close("all")
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["x", "y", "layer", "depth", "sediment"],
+        }
+    )
+    structure = Strata()
+
+    x = np.linspace(0.0, 1000.0, 101)
+    y = np.linspace(0.0, 300.0, 31)
+    nx = len(x)
+    ny = len(y)
+
+    X, Y = np.meshgrid(x, y)
+    Z = -X * 0.1 - 1
+    depths = Z.T[:, :, np.newaxis]
+    sediments = np.full((nx, ny, 1), "rock")
+
+    raw = {
+        "values": {"depth": depths, "sediment": sediments},
+        "coords": [x, y, ["layer 1"]],
+    }
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert test.equals(a)
+
+
+def test_toText_fromText_none():
+    structure = Strata()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

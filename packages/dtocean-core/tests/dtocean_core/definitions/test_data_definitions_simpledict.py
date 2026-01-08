@@ -48,6 +48,7 @@ def test_SimpleDict(tinput, ttype):
     a = test.get_data(raw, meta)
     b = test.get_value(a)
 
+    assert b is not None
     assert b["a"] == tinput[0]
     assert b["b"] == tinput[1]
 
@@ -298,3 +299,43 @@ def test_SimpleDictColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+@pytest.mark.parametrize(
+    "tinput, ttype",
+    [
+        ([1, 2], "int"),
+        (["hello", "world"], "str"),
+        ([True, False], "bool"),
+        ([0.5, 0.6], "float"),
+    ],
+)
+def test_toText_fromText(tinput, ttype):
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "types": [ttype],
+        }
+    )
+    structure = SimpleDict()
+
+    raw = {"a": tinput[0], "b": tinput[1]}
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert test is not None
+
+    for k, v in a.items():
+        assert k in test
+        assert test[k] == v
+
+
+def test_toText_fromText_none():
+    structure = SimpleDict()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None
