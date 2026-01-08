@@ -333,3 +333,33 @@ def test_NumpyLineColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["x", "f(x)"],
+        }
+    )
+    structure = NumpyLine()
+
+    coarse_sample = np.linspace(0.0, 2 * np.pi, num=5)
+    raw = list(zip(coarse_sample, np.sin(coarse_sample)))
+
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert np.equal(a, test).all()
+
+
+def test_toText_fromText_none():
+    structure = NumpyLine()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

@@ -154,3 +154,31 @@ def test_Numpy2DColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["x"],
+        }
+    )
+    structure = Numpy2D()
+
+    raw = np.random.rand(10, 8)
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert np.equal(a, test).all()
+
+
+def test_toText_fromText_none():
+    structure = Numpy2D()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

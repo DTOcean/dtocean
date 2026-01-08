@@ -3,6 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pytest
 import shapefile
+import shapely
 from mdo_engine.control.factory import InterfaceFactory
 
 from dtocean_core.core import AutoFileInput, AutoFileOutput, AutoPlot, Core
@@ -197,3 +198,32 @@ def test_PointList_auto_plot(tmpdir):
 
     assert len(plt.get_fignums()) == 1
     plt.close("all")
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+        }
+    )
+    structure = PointList()
+
+    raw = [(0.0, 0.0), (1.0, 1.0), (2.0, 2.0)]
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert test is not None
+
+    for p, expected in zip(test, a):
+        shapely.equals(p, expected)
+
+
+def test_toText_fromText_none():
+    structure = PointList()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

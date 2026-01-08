@@ -3,6 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pytest
 import shapefile
+import shapely
 from geoalchemy2.elements import WKTElement
 from mdo_engine.control.factory import InterfaceFactory
 from shapely.geometry import Point
@@ -320,3 +321,30 @@ def test_PointDataColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+        }
+    )
+    structure = PointData()
+
+    raw = (0, 1)
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert shapely.equals(a, test)
+
+
+def test_toText_fromText_none():
+    structure = PointData()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

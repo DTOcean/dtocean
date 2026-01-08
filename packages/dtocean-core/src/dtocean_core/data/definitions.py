@@ -20,6 +20,7 @@ import os
 from collections import Counter
 from copy import deepcopy
 from datetime import datetime
+from io import StringIO
 from itertools import product
 from pathlib import Path
 from typing import Any, Optional, Protocol, TypeVar
@@ -379,7 +380,7 @@ class TableData(Structure):
 
         return dataframe
 
-    def get_value(self, data):
+    def get_value(self, data: Optional[pd.DataFrame]) -> Optional[pd.DataFrame]:
         result = None
 
         if data is not None:
@@ -392,15 +393,21 @@ class TableData(Structure):
         return left.equals(right)
 
     @staticmethod
-    def toText(value: pd.DataFrame) -> str:
-        return value.to_json()
+    def toText(value: Optional[pd.DataFrame]) -> str:
+        if value is None:
+            return ""
+
+        return value.to_json(orient="table")
 
     @staticmethod
-    def fromText(data: str, version: int) -> pd.DataFrame:
+    def fromText(data: str, version: int) -> Optional[pd.DataFrame]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        return pd.read_json(data, typ="frame")
+        if not data:
+            return None
+
+        return pd.read_json(StringIO(data), orient="table", typ="frame")
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -1133,7 +1140,7 @@ class NumpyLineColumn(NumpyLine):
 class NumpyLineDict(NumpyLine):
     """Collection of NumpyLine structures on matching axes."""
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> dict[Any, np.ndarray]:
         valid_dict = {}
 
         for key, value in raw.items():
@@ -1146,16 +1153,17 @@ class NumpyLineDict(NumpyLine):
 
         return valid_dict
 
-    def get_value(self, data):
-        copy_dict = None
+    def get_value(self, data) -> Optional[dict[Any, np.ndarray]]:
+        new_dict = None
 
         if data is not None:
-            copy_dict = {
-                k: super(NumpyLineDict, self).get_value(v)
-                for k, v in data.items()
-            }
+            new_dict = {}
+            for k, v in data.items():
+                new_v = super(NumpyLineDict, self).get_value(v)
+                assert new_v is not None
+                new_dict[k] = new_v
 
-        return copy_dict
+        return new_dict
 
     @classmethod
     def equals(cls, left, right):
@@ -1169,6 +1177,25 @@ class NumpyLineDict(NumpyLine):
             value_check.append(np.array_equal(lvalue, rvalue))
 
         return all(value_check)
+
+    @staticmethod
+    def toText(value: Optional[dict[Any, np.ndarray]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        serial_dict = {k: v.tolist() for k, v in value.items()}
+        return json.dumps(serial_dict)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[dict[Any, np.ndarray]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+        if raw is None:
+            return None
+
+        return {k: np.array(v) for k, v in raw.items()}
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -3003,7 +3030,7 @@ class PointData(Structure):
     def version(self):
         return 1
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> Point:
         if isinstance(raw, Point):
             point = raw
 
@@ -3020,21 +3047,26 @@ class PointData(Structure):
 
         return point
 
-    def get_value(self, data):
+    def get_value(self, data) -> Point:
         return data
 
     @staticmethod
-    def toText(value: Point) -> str:
+    def toText(value: Optional[Point]) -> str:
+        if value is None:
+            return ""
+
         return to_geojson(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> Point:
+    def fromText(data: str, version: int) -> Optional[Point]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
+        if not data:
+            return None
+
         point = from_geojson(data)
-        if not isinstance(point, Point):
-            raise RuntimeError("Incorrect geometry detected")
+        assert isinstance(point, Point)
 
         return point
 
@@ -3212,20 +3244,46 @@ class PointData(Structure):
 class PointList(PointData):
     """A list containing shapely Point variables as values"""
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> list[Point]:
         point_list = [
             super(PointList, self).get_data(xy, meta_data) for xy in raw
         ]
 
         return point_list
 
-    def get_value(self, data):
+    def get_value(self, data) -> Optional[list[Point]]:
         new_point_list = None
 
         if data is not None:
             new_point_list = [super(PointList, self).get_value(p) for p in data]
 
         return new_point_list
+
+    @staticmethod
+    def toText(value: Optional[list[Point]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        return json.dumps([to_geojson(p) for p in value])
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[list[Point]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+
+        if raw is None:
+            return None
+
+        new_list = []
+
+        for p in raw:
+            point = from_geojson(p)
+            assert isinstance(point, Point)
+            new_list.append(point)
+
+        return new_list
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -3408,7 +3466,7 @@ class PointList(PointData):
 class PointDict(PointData):
     """A dictionary containing shapely Point variables as values"""
 
-    def get_data(self, raw, meta_data):
+    def get_data(self, raw, meta_data) -> dict[Any, Point]:
         points_dict = {
             k: super(PointDict, self).get_data(v, meta_data)
             for k, v in raw.items()
@@ -3416,15 +3474,36 @@ class PointDict(PointData):
 
         return points_dict
 
-    def get_value(self, data):
-        new_points_dict = None
+    def get_value(self, data) -> Optional[dict[Any, Point]]:
+        new_dict = None
 
         if data is not None:
-            new_points_dict = {
-                k: super(PointDict, self).get_value(v) for k, v in data.items()
-            }
+            new_dict = {}
+            for k, v in data.items():
+                new_v = super(PointDict, self).get_value(v)
+                assert new_v is not None
+                new_dict[k] = new_v
 
-        return new_points_dict
+        return new_dict
+
+    @staticmethod
+    def toText(value: Optional[dict[Any, Point]]) -> str:
+        if value is None:
+            return json.dumps(None)
+
+        serial_dict = {k: to_geojson(v) for k, v in value.items()}
+        return json.dumps(serial_dict)
+
+    @staticmethod
+    def fromText(data: str, version: int) -> Optional[dict[Any, Point]]:
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
+        raw = json.loads(data)
+        if raw is None:
+            return None
+
+        return {k: from_geojson(v) for k, v in raw.items()}
 
     @staticmethod
     def auto_file_input(auto: FileMixin):

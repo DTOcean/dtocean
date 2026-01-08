@@ -214,3 +214,37 @@ def test_IndexTableColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["Label", "Data"],
+        }
+    )
+    structure = IndexTable()
+
+    labels = []
+    while len(labels) != 10:
+        labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
+
+    data = [2 * float(x) for x in range(10)]
+    raw = {"Label": labels, "Data": data}
+
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+    test = structure.fromText(c, structure.version)
+
+    assert test is not None
+    assert test.equals(a)
+
+
+def test_toText_fromText_none():
+    structure = IndexTable()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None

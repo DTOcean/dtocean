@@ -303,3 +303,41 @@ def test_NumpyLineDictArrayColumn_auto_db_none(mocker):
     query.connect()
 
     assert query.data.result is None
+
+
+def test_toText_fromText():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["x"],
+            "types": ["str"],
+        }
+    )
+    structure = NumpyLineDict()
+
+    coarse_sample = np.linspace(0.0, 2 * np.pi, num=5)
+    fine_sample = np.linspace(0.0, 2 * np.pi, num=9)
+
+    coarse_sin = list(zip(coarse_sample, np.sin(coarse_sample)))
+    fine_cos = list(zip(fine_sample, np.cos(fine_sample)))
+
+    raw = {"Sin(x)": coarse_sin, "Cos(x)": fine_cos, 1: coarse_sin}
+    a = structure.get_data(raw, meta)
+    b = structure.get_value(a)
+    c = structure.toText(b)
+
+    test = structure.fromText(c, structure.version)
+    assert test is not None
+
+    for k, v in a.items():
+        assert k in test
+        assert (test[k] == v).all()
+
+
+def test_toText_fromText_none():
+    structure = NumpyLineDict()
+    c = structure.toText(None)
+
+    assert structure.fromText(c, structure.version) is None
