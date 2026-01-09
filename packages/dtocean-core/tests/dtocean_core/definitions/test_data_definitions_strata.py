@@ -157,7 +157,6 @@ def test_Strata_auto_plot(tmpdir):
 
     assert len(plt.get_fignums()) == 1
     plt.close("all")
-    plt.close("all")
 
 
 def test_toText_fromText():

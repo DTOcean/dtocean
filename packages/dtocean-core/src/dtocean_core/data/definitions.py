@@ -4463,7 +4463,7 @@ class XGridND(Structure):
 
         return coord_tuples, attrs
 
-    def get_value(self, data):
+    def get_value(self, data) -> Optional[xr.DataArray]:
         result = None
 
         if data is not None:
@@ -4476,13 +4476,19 @@ class XGridND(Structure):
         return left.identical(right)
 
     @staticmethod
-    def toText(value: xr.DataArray) -> str:
+    def toText(value: Optional[xr.DataArray]) -> str:
+        if value is None:
+            return ""
+
         return json.dumps(value.to_dict())
 
     @staticmethod
-    def fromText(data: str, version: int) -> xr.DataArray:
+    def fromText(data: str, version: int) -> Optional[xr.DataArray]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
+
+        if not data:
+            return None
 
         return xr.DataArray.from_dict(json.loads(data))
 
@@ -4690,6 +4696,14 @@ class XSetND(XGridND):
         data_set = xr.Dataset(set_dict)
 
         return data_set
+
+    def get_value(self, data) -> Optional[xr.Dataset]:
+        result = None
+
+        if data is not None:
+            result = data.copy(deep=True)
+
+        return result
 
     @staticmethod
     def toText(value: Optional[xr.Dataset]) -> str:
