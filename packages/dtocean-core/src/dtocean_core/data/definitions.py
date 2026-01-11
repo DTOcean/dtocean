@@ -1,5 +1,5 @@
 #    Copyright (C) 2016 Mathew Topper, David Bould, Rui Duarte, Francesco Ferri
-#    Copyright (C) 2017-2024 Mathew Topper
+#    Copyright (C) 2017-2026 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import json
 import os
 from collections import Counter
 from copy import deepcopy
-from datetime import datetime
+from datetime import date, datetime, time, timedelta
 from io import StringIO
 from itertools import product
 from pathlib import Path
@@ -57,6 +57,37 @@ T = TypeVar("T")
 Structure.immutables.extend([Point, Polygon])
 
 BLUE = "#6699cc"
+
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (datetime, date, time)):
+            return obj.isoformat()
+        elif isinstance(obj, timedelta):
+            return (datetime.min + obj).time().isoformat()
+
+        return super(DateTimeEncoder, self).default(obj)
+
+
+class DateTimeDecoder(json.JSONDecoder):
+    def __init__(self, *args, **kwargs):
+        json.JSONDecoder.__init__(
+            self, object_hook=self.object_hook, *args, **kwargs
+        )
+
+    def object_hook(self, source):
+        if isinstance(source, dict):
+            for k, v in source.items():
+                source[k] = self.object_hook(v)
+        elif isinstance(source, list):
+            for index, row in enumerate(source):
+                source[index] = self.object_hook(row)
+        if isinstance(source, str):
+            try:
+                return datetime.fromisoformat(source)
+            except ValueError:
+                pass
+        return source
 
 
 class BaseMixin(Protocol):
@@ -4480,7 +4511,7 @@ class XGridND(Structure):
         if value is None:
             return ""
 
-        return json.dumps(value.to_dict())
+        return json.dumps(value.to_dict(), cls=DateTimeEncoder)
 
     @staticmethod
     def fromText(data: str, version: int) -> Optional[xr.DataArray]:
@@ -4490,7 +4521,7 @@ class XGridND(Structure):
         if not data:
             return None
 
-        return xr.DataArray.from_dict(json.loads(data))
+        return xr.DataArray.from_dict(json.loads(data, cls=DateTimeDecoder))
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -4510,8 +4541,12 @@ class XGridND(Structure):
     @staticmethod
     def auto_file_output(auto: FileMixin):
         auto.check_path()
-
         data = auto.data.result
+        assert isinstance(data, xr.DataArray)
+
+        for v in data.coords.values():
+            if "units" in v.attrs:
+                v.attrs["unit"] = v.attrs.pop("units")
 
         data = data.to_dataset(name="data")
         data.to_netcdf(auto._path, format="NETCDF4")

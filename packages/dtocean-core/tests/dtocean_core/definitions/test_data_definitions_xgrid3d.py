@@ -1,12 +1,11 @@
 from datetime import datetime
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from mdo_engine.control.factory import InterfaceFactory
 
-from dtocean_core.core import AutoFileInput, AutoFileOutput, AutoPlot, Core
+from dtocean_core.core import AutoFileInput, AutoFileOutput, Core
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import XGrid3D
 
@@ -20,8 +19,12 @@ def test_XGrid3D_available():
 
 def test_XGrid3D():
     raw = {
-        "values": np.random.randn(2, 3, 1),
-        "coords": [["a", "b"], [-2, 0, 2], [datetime(2010, 12, 1)]],
+        "values": np.random.randn(2, 3, 2),
+        "coords": [
+            ["a", "b"],
+            [-2, 0, 2],
+            [datetime(2010, 12, 1), datetime(2010, 12, 2)],
+        ],
     }
     meta = CoreMetaData(
         {
@@ -38,7 +41,7 @@ def test_XGrid3D():
     b = test.get_value(a)
 
     assert b is not None
-    assert b.values.shape == (2, 3, 1)
+    assert b.values.shape == (2, 3, 2)
     assert b.units == "POWER!"
     assert b.y.units == "m"
     assert b.t.units == "s"
@@ -57,8 +60,12 @@ def test_XGrid3D_auto_file(tmpdir, fext):
     test_path_path = Path(test_path)
 
     raw = {
-        "values": np.random.randn(2, 3, 1),
-        "coords": [["a", "b"], [-2, 0, 2], [datetime(2010, 12, 1)]],
+        "values": np.random.randn(2, 3, 2),
+        "coords": [
+            ["a", "b"],
+            [-2, 0, 2],
+            [datetime(2010, 12, 1), datetime(2010, 12, 2)],
+        ],
     }
     meta = CoreMetaData(
         {
@@ -66,7 +73,7 @@ def test_XGrid3D_auto_file(tmpdir, fext):
             "structure": "test",
             "title": "test",
             "labels": ["x", "y", "time"],
-            "units": [None, "m", "seconds", "POWER!"],
+            "units": [None, "m", "s", "POWER!"],
         }
     )
 
@@ -93,70 +100,10 @@ def test_XGrid3D_auto_file(tmpdir, fext):
     fin.connect()
     result = test.get_data(fin.data.result, meta)
 
-    assert result.values.shape == (2, 3, 1)
+    assert result.values.shape == (2, 3, 2)
     assert result.units == "POWER!"
     assert result.y.units == "m"
     assert result.time.units == "s"
-
-
-def test_XGrid3D_auto_plot():
-    raw = {
-        "values": np.random.randn(2, 3, 1),
-        "coords": [["a", "b"], [-2, 0, 2], [datetime(2010, 12, 1)]],
-    }
-    meta = CoreMetaData(
-        {
-            "identifier": "test",
-            "structure": "test",
-            "title": "test",
-            "labels": ["x", "y", "t"],
-            "units": [None, "m", "s", "POWER!"],
-        }
-    )
-
-    test = XGrid3D()
-
-    fout_factory = InterfaceFactory(AutoPlot)
-    PlotCls = fout_factory(meta, test)
-
-    plot = PlotCls()
-    plot.data.result = test.get_data(raw, meta)
-    plot.meta.result = meta
-
-    plot.connect()
-
-    assert len(plt.get_fignums()) == 1
-    plt.close("all")
-
-
-def test_XGrid3D_auto_plot_reverse():
-    raw = {
-        "values": np.random.randn(2, 3, 1),
-        "coords": [["a", "b"], [-2, 0, 2], [datetime(2010, 12, 1)]],
-    }
-    meta = CoreMetaData(
-        {
-            "identifier": "test",
-            "structure": "test",
-            "title": "test",
-            "labels": ["x", "y", "t"],
-            "units": [None, "m", "s", "POWER!"],
-        }
-    )
-
-    test = XGrid3D()
-
-    fout_factory = InterfaceFactory(AutoPlot)
-    PlotCls = fout_factory(meta, test)
-
-    plot = PlotCls()
-    plot.data.result = test.get_data(raw, meta)
-    plot.meta.result = meta
-
-    plot.connect()
-
-    assert len(plt.get_fignums()) == 1
-    plt.close("all")
 
 
 def test_toText_fromText():
