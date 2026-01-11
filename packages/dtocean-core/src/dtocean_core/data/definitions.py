@@ -4721,10 +4721,14 @@ class XSetND(XGridND):
                 local_units = None
 
             coords, attrs = self._get_coords_attrs(
-                dims, raw["coords"], local_units
+                dims,
+                raw["coords"],
+                local_units,
             )
             data_array = xr.DataArray(
-                raw["values"][k], coords=coords, attrs=attrs
+                raw["values"][k],
+                coords=coords,
+                attrs=attrs,
             )
             set_dict[k] = data_array
 
@@ -4773,7 +4777,8 @@ class XSetND(XGridND):
         coord_list = []
 
         for coord in auto.meta.result.labels[:-n_vars]:
-            coord_list.append(dataset.coords[coord])
+            coord_array = dataset.coords[coord]
+            coord_list.append(coord_array.data.tolist())
 
         raw_dict = {"values": values_dict, "coords": coord_list}
 
