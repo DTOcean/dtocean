@@ -146,14 +146,14 @@ class ThreadOpen(QtCore.QThread):
             int_file_path = None
 
             # Check the extension
-            if os.path.splitext(load_path)[1] == ".dto":
+            if os.path.splitext(load_path)[1] == ".dtox":
                 dto_dir_path = tempfile.mkdtemp()
                 tar = tarfile.open(load_path)
                 tar.extractall(dto_dir_path, filter="data")
 
-                prj_file_path = os.path.join(dto_dir_path, "project.prj")
+                prj_file_path = os.path.join(dto_dir_path, "project.dtop")
                 sco_file_path = os.path.join(dto_dir_path, "scope.json")
-                stg_file_path = os.path.join(dto_dir_path, "strategy.pkl")
+                stg_file_path = os.path.join(dto_dir_path, "strategy.json")
                 int_file_path = os.path.join(dto_dir_path, "interfaces.json")
 
                 if not os.path.isfile(stg_file_path):
@@ -161,13 +161,13 @@ class ThreadOpen(QtCore.QThread):
                 if not os.path.isfile(int_file_path):
                     int_file_path = None
 
-            elif os.path.splitext(load_path)[1] == ".prj":
+            elif os.path.splitext(load_path)[1] == ".dtop":
                 prj_file_path = load_path
 
             else:
                 errStr = (
-                    "The file path must be a file with either .dto or "
-                    ".prj extension"
+                    "The file path must be a file with either .dtox or "
+                    ".dtop extension"
                 )
                 raise ValueError(errStr)
 
@@ -194,9 +194,7 @@ class ThreadOpen(QtCore.QThread):
             # Load up the strategy if one was found
             if stg_file_path is not None:
                 strategy_manager = GUIStrategyManager(None)
-                self._strategy = strategy_manager.load_strategy(
-                    stg_file_path, load_project
-                )
+                self._strategy = strategy_manager.load_strategy(stg_file_path)
 
             else:
                 self._strategy = None
@@ -255,21 +253,21 @@ class ThreadSave(QtCore.QThread):
                 raise ValueError(errStr)
 
             # Check the extension
-            if os.path.splitext(self._save_path)[1] not in [".dto", ".prj"]:
+            if os.path.splitext(self._save_path)[1] not in [".dtox", ".dtop"]:
                 errStr = (
-                    "The file path must be a file with either .dto or "
-                    ".prj extension"
+                    "The file path must be a file with either .dtox or "
+                    ".dtop extension"
                 )
                 raise ValueError(errStr)
 
             dto_dir_path = tempfile.mkdtemp()
 
             # Dump the project
-            prj_file_path = os.path.join(dto_dir_path, "project.prj")
+            prj_file_path = os.path.join(dto_dir_path, "project.dtop")
             self._core.dump_project(self._project, prj_file_path)
 
             # If saving a project file only
-            if os.path.splitext(self._save_path)[1] == ".prj":
+            if os.path.splitext(self._save_path)[1] == ".dtop":
                 shutil.move(prj_file_path, self._save_path)
                 shutil.rmtree(dto_dir_path)
 
@@ -285,7 +283,7 @@ class ThreadSave(QtCore.QThread):
 
             # Set the standard archive contents
             arch_files = [prj_file_path, sco_file_path]
-            arch_paths = ["project.prj", "scope.json"]
+            arch_paths = ["project.dtop", "scope.json"]
 
             # Dump the activated interfaces
             if self._activated_interfaces:
@@ -301,11 +299,11 @@ class ThreadSave(QtCore.QThread):
             # Dump the strategy (if there is one)
             if self._strategy is not None:
                 strategy_manager = GUIStrategyManager(None)
-                stg_file_path = os.path.join(dto_dir_path, "strategy.pkl")
+                stg_file_path = os.path.join(dto_dir_path, "strategy.json")
                 strategy_manager.dump_strategy(self._strategy, stg_file_path)
 
                 arch_files.append(stg_file_path)
-                arch_paths.append("strategy.pkl")
+                arch_paths.append("strategy.json")
 
             # Now tar the files together
             dto_file_name = os.path.split(self._save_path)[1]
@@ -1210,7 +1208,11 @@ class Shell(QtCore.QObject):
         self.project = self._active_thread._project
         self.project_path = self._active_thread._project_path
         self.activated_interfaces = self._active_thread._activated_interfaces
-        self.strategy = self._active_thread._strategy
+
+        strategy = self._active_thread._strategy
+        assert isinstance(strategy, GUIStrategy)
+
+        self.strategy = strategy
         self._current_scope = self._active_thread._current_scope
 
         self.project_title_change.emit(self.project.title)

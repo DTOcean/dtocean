@@ -8,6 +8,10 @@ from dtocean_plugins.strategies.base import Strategy
 class MockStrategy(Strategy):
     """A mock strategy"""
 
+    @property
+    def version(self) -> int:
+        return 1
+
     @classmethod
     def get_name(cls):
         return "Mock"
@@ -27,7 +31,10 @@ class MockStrategy(Strategy):
         return config
 
     @staticmethod
-    def load_yaml(serial_config):
+    def load_config(serial_config, version):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
         return serial_config
 
     @staticmethod

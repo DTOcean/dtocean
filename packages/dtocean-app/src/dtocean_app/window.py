@@ -1646,7 +1646,7 @@ class DTOceanWindow(MainWindow):
     @QtCore.Slot()
     def _open_project(self):
         msg = "Open Project"
-        valid_exts = "DTOcean Files (*.dto *.prj)"
+        valid_exts = "DTOcean Files (*.dtox *.dtop)"
 
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,
@@ -1737,7 +1737,8 @@ class DTOceanWindow(MainWindow):
     def _saveas_project(self):
         msg = "Save Project"
         valid_exts = (
-            "DTOcean Application File (*.dto);;" "DTOcean Project File (*.prj)"
+            "DTOcean Application File (*.dtox);;"
+            "DTOcean Project File (*.dtop)"
         )
 
         file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -1780,7 +1781,7 @@ class DTOceanWindow(MainWindow):
     @QtCore.Slot()
     def _export_data(self):
         msg = "Export Data"
-        valid_exts = "Datastate Files (*.dts)"
+        valid_exts = "Datastate Files (*.dtos)"
 
         file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
             self,
@@ -1795,7 +1796,7 @@ class DTOceanWindow(MainWindow):
     @QtCore.Slot()
     def _export_data_mask(self):
         msg = "Export Data (Mask Outputs)"
-        valid_exts = "Datastate Files (*.dts)"
+        valid_exts = "Datastate Files (*.dtos)"
 
         file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
             self,
@@ -1810,7 +1811,7 @@ class DTOceanWindow(MainWindow):
     @QtCore.Slot()
     def _import_data(self):
         msg = "Import Data"
-        valid_exts = "Datastate Files (*.dts)"
+        valid_exts = "Datastate Files (*.dtos)"
 
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,
@@ -1825,7 +1826,7 @@ class DTOceanWindow(MainWindow):
     @QtCore.Slot()
     def _import_data_skip(self):
         msg = "Import Data (Skip Satisfied)"
-        valid_exts = "Datastate Files (*.dts)"
+        valid_exts = "Datastate Files (*.dtos)"
 
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,

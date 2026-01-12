@@ -368,7 +368,7 @@ def test_window_debug(window_debug):
 
 
 def test_project_open_error(mocker, qtbot, tmp_path, window_debug):
-    dto_file = tmp_path / "test.dto"
+    dto_file = tmp_path / "test.dtos"
     dto_file_path = str(dto_file)
 
     mocker.patch.object(
@@ -826,7 +826,7 @@ def test_set_device_type(window_floating_wave):
 
 def test_export_data(qtbot, mocker, tmpdir, window_floating_wave):
     # File path
-    datastate_file_name = "my_datastate.dts"
+    datastate_file_name = "my_datastate.dtos"
     datastate_file_path = os.path.join(str(tmpdir), datastate_file_name)
 
     mocker.patch.object(
@@ -853,7 +853,7 @@ def test_export_data(qtbot, mocker, tmpdir, window_floating_wave):
 
 def test_export_data_mask(qtbot, mocker, tmpdir, window_floating_wave):
     # File path
-    datastate_file_name = "my_datastate.dts"
+    datastate_file_name = "my_datastate.dtos"
     datastate_file_path = os.path.join(str(tmpdir), datastate_file_name)
 
     mocker.patch.object(
@@ -880,7 +880,7 @@ def test_export_data_mask(qtbot, mocker, tmpdir, window_floating_wave):
 
 def test_import_data(qtbot, mocker, tmpdir, window_floating_wave):
     # File path
-    datastate_file_name = "my_datastate.dts"
+    datastate_file_name = "my_datastate.dtos"
     datastate_file_path = os.path.join(str(tmpdir), datastate_file_name)
 
     mocker.patch.object(
@@ -939,7 +939,7 @@ def test_import_data(qtbot, mocker, tmpdir, window_floating_wave):
 
 def test_import_data_skip(qtbot, mocker, tmpdir, window_floating_wave):
     # File path
-    datastate_file_name = "my_datastate.dts"
+    datastate_file_name = "my_datastate.dtos"
     datastate_file_path = os.path.join(str(tmpdir), datastate_file_name)
 
     mocker.patch.object(
@@ -1094,7 +1094,7 @@ def window_dataflow_empty(qtbot, window_with_pipeline):
 
 
 def test_empty_project_reload(qtbot, mocker, tmp_path, window_dataflow_empty):
-    dto_file = tmp_path / "test.dto"
+    dto_file = tmp_path / "test.dtos"
     dto_file_path = str(dto_file)
 
     mocker.patch.object(
@@ -1924,7 +1924,7 @@ def test_strategy_reload(
     window_dataflow_module,
     strategy_manager_basic,
 ):
-    dto_file = tmp_path / "test.dto"
+    dto_file = tmp_path / "test.dtos"
     dto_file_path = str(dto_file)
 
     mocker.patch.object(
