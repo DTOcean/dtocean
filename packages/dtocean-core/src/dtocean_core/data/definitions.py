@@ -4924,15 +4924,18 @@ class Network(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def toText(value: dict[str, Any]) -> str:
-        return json.dumps(value)
+    def toText(value: Optional[dict[str, Any]]) -> str:
+        return SimpleDict.toText(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> dict[str, Any]:
+    def fromText(data: str, version: int) -> Optional[dict[str, Any]]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        network = json.loads(data)
+        network = SimpleDict.fromText(data, 1)
+        if network is None:
+            return None
+
         _quantity_to_counter(network["nodes"])
 
         return network
@@ -4940,9 +4943,7 @@ class Network(Structure):
     @staticmethod
     def auto_file_input(auto: FileMixin):
         auto.check_path(True)
-
-        with open(auto._path, "r") as stream:
-            network = yaml.load(stream, Loader=yaml.FullLoader)
+        network = Box.from_yaml(filename=auto._path, Loader=yaml.FullLoader)
 
         _quantity_to_counter(network["nodes"])
         auto.data.result = network
@@ -4961,10 +4962,10 @@ class Network(Structure):
         auto.check_path()
 
         network_dict = auto.data.result
-        _quantity_to_dict(network_dict["nodes"])
+        assert isinstance(network_dict, Box)
 
-        with open(auto._path, "w") as stream:
-            yaml.dump(network_dict, stream, default_flow_style=False)
+        _quantity_to_dict(network_dict["nodes"])
+        network_dict.to_yaml(auto._path, default_flow_style=False)
 
     @staticmethod
     def get_valid_extensions(auto: BaseMixin):
@@ -4995,19 +4996,23 @@ class EIADict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def toText(value: dict[str, Any]) -> str:
-        return json.dumps(value)
+    def toText(value: Optional[dict[str, Any]]) -> str:
+        return SimpleDict.toText(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> dict[str, Any]:
+    def fromText(data: str, version: int) -> Optional[dict[str, Any]]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        return json.loads(data)
+        return SimpleDict.fromText(data, 1)
 
     @staticmethod
     def auto_file_output(auto: FileMixin):
         SimpleDict.auto_file_output(auto)
+
+    @staticmethod
+    def auto_file_input(auto: FileMixin):
+        SimpleDict.auto_file_input(auto)
 
     @staticmethod
     def get_valid_extensions(auto: BaseMixin):
@@ -5028,19 +5033,23 @@ class RecommendationDict(Structure):
         return deepcopy(data)
 
     @staticmethod
-    def toText(value: dict[str, Any]) -> str:
-        return json.dumps(value)
+    def toText(value: Optional[dict[str, Any]]) -> str:
+        return SimpleDict.toText(value)
 
     @staticmethod
-    def fromText(data: str, version: int) -> dict[str, Any]:
+    def fromText(data: str, version: int) -> Optional[dict[str, Any]]:
         if version != 1:
             raise RuntimeError("Data version not recognised")
 
-        return json.loads(data)
+        return SimpleDict.fromText(data, 1)
 
     @staticmethod
     def auto_file_output(auto: FileMixin):
         SimpleDict.auto_file_output(auto)
+
+    @staticmethod
+    def auto_file_input(auto: FileMixin):
+        SimpleDict.auto_file_input(auto)
 
     @staticmethod
     def get_valid_extensions(auto: BaseMixin):

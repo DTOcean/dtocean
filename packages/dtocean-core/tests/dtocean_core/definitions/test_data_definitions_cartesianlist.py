@@ -1,9 +1,16 @@
 from pathlib import Path
 
 import pytest
+from matplotlib import pyplot as plt
 from mdo_engine.control.factory import InterfaceFactory
 
-from dtocean_core.core import AutoFileInput, AutoFileOutput, AutoQuery, Core
+from dtocean_core.core import (
+    AutoFileInput,
+    AutoFileOutput,
+    AutoPlot,
+    AutoQuery,
+    Core,
+)
 from dtocean_core.data import CoreMetaData
 from dtocean_core.data.definitions import CartesianList, CartesianListColumn
 
@@ -88,6 +95,32 @@ def test_CartesianList_auto_file(tmpdir, fext):
 
         assert result[0][0] == 0
         assert result[0][1] == 1
+
+
+def test_CartesianList_auto_plot():
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["a", "b"],
+            "units": ["c", "d"],
+        }
+    )
+    test = CartesianList()
+
+    fout_factory = InterfaceFactory(AutoPlot)
+    PlotCls = fout_factory(meta, test)
+
+    plot = PlotCls()
+    raw = [(0, 1), (1, 2)]
+    plot.data.result = test.get_data(raw, meta)
+    plot.meta.result = meta
+
+    plot.connect()
+
+    assert len(plt.get_fignums()) == 1
+    plt.close("all")
 
 
 def test_CartesianListColumn_available():

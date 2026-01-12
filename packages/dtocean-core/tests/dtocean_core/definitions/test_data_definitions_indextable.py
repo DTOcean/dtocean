@@ -18,9 +18,7 @@ def test_IndexTable_available():
 
 
 def test_IndexTable():
-    labels = []
-    while len(labels) != 10:
-        labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
+    labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
 
     data = [2 * float(x) for x in range(10)]
 
@@ -57,12 +55,8 @@ def test_IndexTable_auto_file(tmpdir, fext):
     test_path = tmpdir.mkdir("sub").join("test{}".format(fext))
     test_path_path = Path(test_path)
 
-    labels = []
-    while len(labels) != 10:
-        labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
-
+    labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
     data = [2 * float(x) for x in range(10)]
-
     raw = {"Label": labels, "Data": data}
 
     meta = CoreMetaData(
@@ -109,10 +103,7 @@ def test_IndexTableColumn_available():
 
 
 def test_IndexTableColumn_auto_db(mocker):
-    labels = []
-    while len(labels) != 10:
-        labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
-
+    labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
     data = [2 * float(x) for x in range(10)]
 
     mock_dict = {"label": labels, "data": data}
@@ -227,10 +218,7 @@ def test_toText_fromText():
     )
     structure = IndexTable()
 
-    labels = []
-    while len(labels) != 10:
-        labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
-
+    labels = list(set([uuid.uuid4().hex[:6].upper() for _ in range(10)]))
     data = [2 * float(x) for x in range(10)]
     raw = {"Label": labels, "Data": data}
 
