@@ -4749,7 +4749,7 @@ class XSetND(XGridND):
         if value is None:
             return ""
 
-        return json.dumps(value.to_dict())
+        return json.dumps(value.to_dict(), cls=DateTimeEncoder)
 
     @staticmethod
     def fromText(data: str, version: int) -> Optional[xr.Dataset]:
@@ -4759,7 +4759,7 @@ class XSetND(XGridND):
         if not data:
             return None
 
-        return xr.Dataset.from_dict(json.loads(data))
+        return xr.Dataset.from_dict(json.loads(data, cls=DateTimeDecoder))
 
     @staticmethod
     def auto_file_input(auto: FileMixin):
@@ -4787,8 +4787,13 @@ class XSetND(XGridND):
     @staticmethod
     def auto_file_output(auto: FileMixin):
         auto.check_path()
-
         data = auto.data.result
+        assert isinstance(data, xr.Dataset)
+
+        for v in data.coords.values():
+            if "units" in v.attrs:
+                v.attrs["unit"] = v.attrs.pop("units")
+
         data.to_netcdf(auto._path, format="NETCDF4")
 
     @staticmethod
