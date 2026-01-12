@@ -735,6 +735,9 @@ class Core:
         with open(project_file_path, "r") as fstream:
             serial_project = json.load(fstream)
 
+        if serial_project["version"] != 1:
+            raise RuntimeError("Data version not recognised")
+
         # Now iterate through the serial boxes
         simulations = []
 
