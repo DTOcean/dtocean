@@ -92,5 +92,5 @@ exclude = [
 line-length = 80
 
 [build-system]
-requires = ["poetry-core", "meson", "ninja", "numpy~=1.26.4", "pyside6"]
+requires = ["poetry-core", "meson", "ninja", "numpy~=2.3.5", "pyside6"]
 build-backend = "poetry.core.masonry.api"

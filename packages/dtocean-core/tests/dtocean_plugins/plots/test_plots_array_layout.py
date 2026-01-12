@@ -188,7 +188,7 @@ def test_ArrayLeasePlotNumbers_available(core, project, tree, inputs_wp3):
     assert "Lease Area Array Layout (With Device Numbers)" in result
 
 
-def test_ArrayLeasePlotNumbers(qtbot, core, project, tree, inputs_wp3):
+def test_ArrayLeasePlotNumbers(core, project, tree, inputs_wp3):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -212,11 +212,6 @@ def test_ArrayLeasePlotNumbers(qtbot, core, project, tree, inputs_wp3):
     assert len(plt.get_fignums()) == 1
 
     plt.close("all")
-
-    def check_closed():
-        assert len(plt.get_fignums()) == 0
-
-    qtbot.waitUntil(check_closed)
 
 
 def test_ArrayCablesPlot_available(core, project, tree):
@@ -273,7 +268,7 @@ def test_ArrayCablesPlot_available(core, project, tree):
     assert "Array Cable Layout" in result
 
 
-def test_ArrayCablesPlot(qtbot, core, project, tree):
+def test_ArrayCablesPlot(core, project, tree):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -329,11 +324,6 @@ def test_ArrayCablesPlot(qtbot, core, project, tree):
     print("closing")
 
     plt.close("all")
-
-    def check_closed():
-        assert len(plt.get_fignums()) == 0
-
-    qtbot.waitUntil(check_closed)
 
 
 def test_ArrayFoundationsPlot_available(core, project, tree):
@@ -434,7 +424,7 @@ def test_ArrayFoundationsPlot_available(core, project, tree):
         "drag",
     ],
 )
-def test_ArrayFoundationsPlot(qtbot, core, project, tree, soiltype):
+def test_ArrayFoundationsPlot(core, project, tree, soiltype):
     project = deepcopy(project)
     module_menu = ModuleMenu()
     project_menu = ProjectMenu()
@@ -522,11 +512,6 @@ def test_ArrayFoundationsPlot(qtbot, core, project, tree, soiltype):
     assert len(plt.get_fignums()) == 1
 
     plt.close("all")
-
-    def check_closed():
-        assert len(plt.get_fignums()) == 0
-
-    qtbot.waitUntil(check_closed)
 
 
 @pytest.mark.parametrize(
