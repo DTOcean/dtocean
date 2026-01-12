@@ -37,6 +37,11 @@ class UnitSensitivity(Strategy):
         # Borrow the Basic strategy
         self._basic = BasicStrategy()
 
+    @property
+    def version(self) -> int:
+        """Version identifier for backwards compatibility when deserializing"""
+        return 1
+
     @classmethod
     def get_name(cls):
         return "Unit Sensitivity"
@@ -202,7 +207,10 @@ class UnitSensitivity(Strategy):
         return config
 
     @staticmethod
-    def load_yaml(serial_config: Optional[dict]):
+    def load_config(serial_config: Optional[dict], version: int):
+        if version != 1:
+            raise RuntimeError("Data version not recognised")
+
         return serial_config
 
     @staticmethod

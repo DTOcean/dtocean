@@ -27,6 +27,11 @@ class BasicStrategy(Strategy):
     """A basic strategy which will run all selected modules and themes in
     sequence."""
 
+    @property
+    def version(self) -> int:
+        """Version identifier for backwards compatibility when deserializing"""
+        return 1
+
     @classmethod
     def get_name(cls):
         return "Basic"
@@ -55,15 +60,15 @@ class BasicStrategy(Strategy):
                 core, project, allow_unavailable=True
             )
             current_mod = self._module_menu.get_current(core, project)
-    
+
     @staticmethod
     def dump_config(config):
         return None
-    
+
     @staticmethod
-    def load_yaml(serial_config):
+    def load_config(serial_config, version):
         return None
-    
+
     @staticmethod
     def dump_sim_details(sim_details):
         return None

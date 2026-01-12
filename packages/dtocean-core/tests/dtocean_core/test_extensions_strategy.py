@@ -13,6 +13,10 @@ from dtocean_plugins.strategies.base import Strategy
 
 
 class MockStrategy(Strategy):
+    @property
+    def version(self) -> int:
+        return 1
+
     @classmethod
     def get_name(cls):
         """A class method for the common name of the strategy.
@@ -47,7 +51,7 @@ class MockStrategy(Strategy):
         return None
 
     @staticmethod
-    def load_yaml(serial_config):
+    def load_config(serial_config, version):
         return None
 
     @staticmethod
@@ -622,41 +626,5 @@ def test_load_strategy_no_version(mocker, manager):
         mocker.mock_open(read_data=json.dumps(mock_stg_dict)),
     )
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(KeyError):
         manager.load_strategy("mock.json")
-
-    assert "project object is required" in str(excinfo.value)
-
-
-def test_load_strategy_old(mocker, manager):
-    strategy = MockStrategy()
-    mocker.patch.object(
-        manager, "get_strategy", return_value=strategy, autospec=True
-    )
-
-    mocker.patch(
-        "dtocean_core.extensions.os.path.isfile",
-        return_value=True,
-        autospec=True,
-    )
-
-    mock_stg_dict = {
-        "name": "basic",
-        "sim_record": [0, 1],
-        "config": None,
-        "sim_details": None,
-    }
-
-    mocker.patch(
-        "dtocean_core.extensions.open",
-        mocker.mock_open(read_data=json.dumps(mock_stg_dict)),
-    )
-
-    project = Project("mock")
-    project.add_simulation(OrderedSim("Default"))
-    project.add_simulation(OrderedSim("Default Clone 1"))
-
-    result = manager.load_strategy("mock.json", project)
-
-    assert isinstance(result, MockStrategy)
-    assert set(strategy._sim_record) == set(["Default", "Default Clone 1"])

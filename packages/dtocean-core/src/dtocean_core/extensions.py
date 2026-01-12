@@ -507,7 +507,7 @@ class StrategyManager(ExtensionManager):
         with open(dump_path, "w") as fstream:
             json.dump(stg_dict, fstream)
 
-    def load_strategy(self, load_path, project=None):
+    def load_strategy(self, load_path):
         # OK need to consider if we have a json file
         if not os.path.isfile(load_path) and ".json" not in load_path:
             errStr = "Argument load_path must be a file with .json extension"
@@ -518,7 +518,7 @@ class StrategyManager(ExtensionManager):
             stg_dict = json.load(fstream)
 
         # Now deserialise the data
-        new_strategy = self._set_load_dict(stg_dict, project=project)
+        new_strategy = self._set_load_dict(stg_dict)
 
         return new_strategy
 
@@ -529,34 +529,30 @@ class StrategyManager(ExtensionManager):
         stg_dict = {
             "name": stg_name_str,
             "sim_record": strategy._sim_record,
-            "config": strategy.dump_config(strategy._config),
+            "config": {
+                "version": strategy.version,
+                "data": strategy.dump_config(strategy._config),
+            },
             "sim_details": strategy.dump_sim_details(strategy.sim_details),
-            "version": 2.1,
+            "version": 1,
         }
 
         return stg_dict
 
-    def _set_load_dict(self, stg_dict, project=None):
+    def _set_load_dict(self, stg_dict):
+        if stg_dict["version"] != 1:
+            raise RuntimeError("Data version not recognised")
+
         # Now build the strategy
         new_strategy = self.get_strategy(stg_dict["name"])
 
         # Now deserialise the data
-        if "version" not in stg_dict:
-            if project is None:
-                err_msg = (
-                    "A project object is required for deserialising "
-                    "strategies with the old sim_record type"
-                )
-                raise ValueError(err_msg)
-
-            sim_indexes = stg_dict["sim_record"]
-            sim_titles = project.get_simulation_titles(sim_indexes)
-
-        else:
-            sim_titles = stg_dict["sim_record"]
-
+        sim_titles = stg_dict["sim_record"]
         new_strategy._sim_record = sim_titles
-        new_strategy._config = new_strategy.load_yaml(stg_dict["config"])
+        new_strategy._config = new_strategy.load_config(
+            stg_dict["config"]["data"],
+            stg_dict["config"]["version"],
+        )
         new_strategy.sim_details = new_strategy.load_sim_details(
             stg_dict["sim_details"]
         )

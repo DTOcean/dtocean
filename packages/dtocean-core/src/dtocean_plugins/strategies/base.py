@@ -52,6 +52,12 @@ class Strategy(object):
         # is json serializable)
         self.sim_details: Optional[Any] = None
 
+    @property
+    @abc.abstractmethod
+    def version(self) -> int:
+        """Version identifier for backwards compatibility when deserializing"""
+        pass
+
     @classmethod
     @abc.abstractmethod
     def get_name(cls):
@@ -88,7 +94,7 @@ class Strategy(object):
 
     @staticmethod
     @abc.abstractmethod
-    def load_yaml(serial_config):
+    def load_config(serial_config: Optional[dict], version: int):
         """Convert the json representation of the config"""
 
     @staticmethod

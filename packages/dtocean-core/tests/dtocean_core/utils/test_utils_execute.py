@@ -15,6 +15,10 @@ class MockCore(Core):
 
 
 class MockStrategy(Strategy):
+    @property
+    def version(self) -> int:
+        return 1
+
     @classmethod
     def get_name(cls):
         """A class method for the common name of the strategy.
@@ -49,7 +53,7 @@ class MockStrategy(Strategy):
         return None
 
     @staticmethod
-    def load_yaml(serial_config):
+    def load_config(serial_config, version):
         return None
 
     @staticmethod
