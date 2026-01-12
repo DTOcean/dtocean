@@ -677,6 +677,7 @@ class Core:
 
         # Create a serial representation for the project and save it
         serial_project = {
+            "version": 1,
             "title": project.title,
             "pool": serial_pool,
             "simulations": sim_dicts,
