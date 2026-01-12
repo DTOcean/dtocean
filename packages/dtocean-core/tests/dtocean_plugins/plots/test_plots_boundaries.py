@@ -146,7 +146,7 @@ def test_AllBoundaryPlot_available(core, project, tree):
     assert "All Boundaries" in result
 
 
-def test_AllBoundaryPlot(core, project, tree):
+def test_AllBoundaryPlot(qtbot, core, project, tree):
     project = deepcopy(project)
 
     boundaries_branch = tree.get_branch(
@@ -161,6 +161,11 @@ def test_AllBoundaryPlot(core, project, tree):
     assert len(plt.get_fignums()) == 1
 
     plt.close("all")
+
+    def check_closed():
+        assert len(plt.get_fignums()) == 0
+
+    qtbot.waitUntil(check_closed)
 
 
 def test_DesignBoundaryPlot_available(core, project, tree, inputs_boundary):
@@ -185,7 +190,7 @@ def test_DesignBoundaryPlot_available(core, project, tree, inputs_boundary):
     assert "Design Boundaries" in result
 
 
-def test_DesignBoundaryPlot(core, project, tree, inputs_boundary):
+def test_DesignBoundaryPlot(qtbot, core, project, tree, inputs_boundary):
     project = deepcopy(project)
 
     module_menu = ModuleMenu()
@@ -214,3 +219,8 @@ def test_DesignBoundaryPlot(core, project, tree, inputs_boundary):
     assert len(plt.get_fignums()) == 1
 
     plt.close("all")
+
+    def check_closed():
+        assert len(plt.get_fignums()) == 0
+
+    qtbot.waitUntil(check_closed)

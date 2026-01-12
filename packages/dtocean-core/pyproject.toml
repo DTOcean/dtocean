@@ -27,10 +27,10 @@ polite-config = {path = "../polite-config", develop = true}
 cma = "^4.0.0"
 cycler = "^0.12.1"
 geoalchemy2 = "^0.17.1"
-matplotlib = "^3.8.4"
+matplotlib = "^3.10.8"
 natsort = "^8.4.0"
 netcdf4 = "^1.7.2"
-numpy = "^1.26.4"
+numpy = "^2.3.5"
 openpyxl = "^3.1.5"
 pandas = "^2.2.3"
 pillow = "^11.0.0"
@@ -45,7 +45,7 @@ shapely = "^2.0.6"
 utm = "^0.7.0"
 xarray = "^2024.11.0"
 xlrd = "^2.0.1"
-basemap = "^1.4.1"
+basemap = "^2.0.0"
 pywin32 = {version = "^308", platform = "win32"}
 cmocean = "^4.0.3"
 
@@ -83,6 +83,7 @@ version-pinning-rule = '~'
 filterwarnings = [
     'ignore:numpy.ndarray size changed:RuntimeWarning',
 ]
+qt_api="pyside6"
 
 [tool.pyright]
 typeCheckingMode = "basic"
