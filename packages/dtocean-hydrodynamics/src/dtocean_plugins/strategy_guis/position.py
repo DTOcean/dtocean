@@ -881,9 +881,7 @@ class AdvancedPositionWidget(
                         self._config["worker_dir"],
                         GUIAdvancedPosition.get_config_fname(),
                     )
-                    old_config = GUIAdvancedPosition.load_yaml(
-                        old_config_path
-                    )
+                    old_config = GUIAdvancedPosition.load_yaml(old_config_path)
                     old_config.pop("clean_existing_dir")
 
         else:
@@ -1507,8 +1505,8 @@ class AdvancedPositionWidget(
                 norm=norm,
             )
 
-        ax.set_xlim([xmin, xmax])
-        ax.set_ylim([ymin, ymax])
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(ymin, ymax)
 
         ax.set(xlabel=x_axis_str, ylabel=y_axis_str)
 

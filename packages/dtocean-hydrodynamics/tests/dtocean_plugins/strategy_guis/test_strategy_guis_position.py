@@ -38,7 +38,7 @@ def test_GUIAdvancedPosition_allow_run(mocker):
     )
 
     test = GUIAdvancedPosition()
-    test._config = "mock"
+    test._config = {"mock": "mock"}
 
     assert test.allow_run("mock", "mock") is True
 
@@ -216,7 +216,7 @@ def test_AdvancedPositionWidget_import_config(
     mocker.patch.object(
         QtWidgets.QFileDialog, "getOpenFileName", return_value="mock"
     )
-    mocker.patch.object(GUIAdvancedPosition, "load_config", return_value=config)
+    mocker.patch.object(GUIAdvancedPosition, "load_yaml", return_value=config)
 
     window = AdvancedPositionWidget(None, mock_shell, {})
     window.show()

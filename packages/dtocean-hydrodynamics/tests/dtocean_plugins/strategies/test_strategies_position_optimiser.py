@@ -645,14 +645,22 @@ def test_PositionOptimiser_start(
     mock_core = Core()
 
     mocker.patch.object(
-        mock_core, "get_data_value", return_value=2, autospec=True
+        mock_core,
+        "get_data_value",
+        return_value=2,
+        autospec=True,
     )
-
     mocker.patch.object(
-        mock_core, "load_project", return_value=mock_project, autospec=True
+        mock_core,
+        "load_project",
+        return_value=mock_project,
+        autospec=True,
     )
-
-    mocker.patch.object(mock_core, "dump_project", autospec=True)
+    dump_project: MagicMock = mocker.patch.object(
+        mock_core,
+        "dump_project",
+        autospec=True,
+    )
 
     worker_dir = str(tmpdir)
     base_penalty = 1
@@ -721,7 +729,7 @@ def test_PositionOptimiser_start(
     assert test._cma_main.nh.maxevals == minevals
 
     assert len(tmpdir.listdir()) == 5
-    assert not mock_core.dump_project.called
+    assert not dump_project.called
 
 
 def test_PositionOptimiser_start_more(
@@ -754,13 +762,19 @@ def test_PositionOptimiser_start_more(
     mock_core = Core()
 
     mocker.patch.object(
-        mock_core, "get_data_value", return_value=2, autospec=True
+        mock_core,
+        "get_data_value",
+        return_value=2,
+        autospec=True,
     )
-
-    mocker.patch.object(mock_core, "dump_project", autospec=True)
-
+    dump_project: MagicMock = mocker.patch.object(
+        mock_core,
+        "dump_project",
+        autospec=True,
+    )
     mocker.patch(
-        "dtocean_plugins.strategies.position_optimiser.Core", mock_core
+        "dtocean_plugins.strategies.position_optimiser.Core",
+        mock_core,
     )
 
     worker_dir = str(tmpdir)
@@ -833,7 +847,7 @@ def test_PositionOptimiser_start_more(
     assert test._cma_main.nh is None
 
     assert len(tmpdir.listdir()) == 4
-    assert mock_core.dump_project.called
+    assert dump_project.called
 
 
 def test_dump_load_dump_load_config(tmpdir):
@@ -1062,7 +1076,7 @@ def test_PositionOptimiser_restart(mocker, tmpdir, lease_polygon, layer_depths):
     config["parameters"] = parameters
 
     load_config = mocker.patch(
-        "dtocean_plugins.strategies.position_optimiser.load_config",
+        "dtocean_plugins.strategies.position_optimiser.load_config_yaml",
         return_value=config,
         autospec=True,
     )
@@ -1183,7 +1197,7 @@ def test_PositionOptimiser_restart_more(
     config["parameters"] = parameters
 
     load_config = mocker.patch(
-        "dtocean_plugins.strategies.position_optimiser.load_config",
+        "dtocean_plugins.strategies.position_optimiser.load_config_yaml",
         return_value=config,
         autospec=True,
     )

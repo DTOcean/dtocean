@@ -88,7 +88,7 @@ class Array_pkg(object):
         NoGo_bathymetry=None,
         debug=False,
     ):
-        dirwise = sum(np.cross(Lease[1:-1] - Lease[0], Lease[2:] - Lease[0]))
+        dirwise = sum(cross2d(Lease[1:-1] - Lease[0], Lease[2:] - Lease[0]))
         if dirwise > 0:
             Lease[1:] = Lease[range(-1, -len(Lease), -1)]
         self.Lease = Lease
@@ -464,3 +464,7 @@ class Array_pkg(object):
         plt.show()
 
         return ax
+
+
+def cross2d(x, y):
+    return x[..., 0] * y[..., 1] - x[..., 1] * y[..., 0]

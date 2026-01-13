@@ -626,16 +626,14 @@ def points_to_grid(points, xs, ys, fill_value=np.nan):
 
 
 def get_indices(search, base):
-    index = np.argsort(base)
+    index = np.argsort(base, stable=True)
     sorted_base = base[index]
     sorted_search = np.searchsorted(sorted_base, search)
 
     searchindex = np.take(index, sorted_search, mode="clip")
     mask = base[searchindex] != search
 
-    result = np.ma.array(searchindex, mask=mask)
-
-    return result
+    return np.ma.array(searchindex, mask=mask)
 
 
 def _get_perp_positions(main_bearing, separation_len, centre_coord):

@@ -331,7 +331,7 @@ def window_results(mocker, qtbot, tmp_path, hydro_shell, config, results_df):
 
     mocker.patch.object(
         GUIAdvancedPosition,
-        "load_config",
+        "load_yaml",
         side_effect=copy_config,
     )
 
@@ -657,7 +657,7 @@ def test_AdvancedPositionWidget_optimiser_restart(
     config["clean_existing_dir"] = True
     mocker.patch.object(
         GUIAdvancedPosition,
-        "load_config",
+        "load_yaml",
         side_effect=lambda *args: deepcopy(config),
     )
 

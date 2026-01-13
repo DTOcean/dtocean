@@ -95,7 +95,7 @@ class WP2output(object):
     def __init__(
         self,
         AEP_array,
-        power_prod_perD_perS,
+        power_prod_perD_perS: np.ndarray,
         AEP_perD,
         power_prod_perD,
         Device_Positon,

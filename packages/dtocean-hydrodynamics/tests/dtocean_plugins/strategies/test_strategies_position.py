@@ -57,9 +57,9 @@ def test_advanced_get_config_fname():
     assert AdvancedPosition.get_config_fname() == "config.yaml"
 
 
-def test_advanced_dump_config_hook(advanced):
+def test_advanced_dump_config(advanced):
     mock = {"clean_existing_dir": True}
-    test = advanced.dump_config_hook(mock)
+    test = advanced.dump_config(mock)
 
     assert test["clean_existing_dir"] is None
 
@@ -1418,15 +1418,21 @@ def test_advanced_load_simulation_ids_titles(
     mock_core = Core()
     mocker.patch.object(mock_core, "dump_project", autospec=True)
     mocker.patch.object(
-        mock_core, "load_project", return_value=mock_load_project, autospec=True
+        mock_core,
+        "load_project",
+        return_value=mock_load_project,
+        autospec=True,
     )
-    mocker.patch.object(mock_core, "import_simulation", autospec=True)
+    import_simulation: MagicMock = mocker.patch.object(
+        mock_core,
+        "import_simulation",
+        autospec=True,
+    )
 
     sim_titles = ["Mock 0", "Mock 1", "Mock 2", "Mock 3", "Mock 4"]
-
     advanced.load_simulation_ids(mock_core, mock_project, sim_ids, sim_titles)
 
-    test_project = mock_core.import_simulation.call_args_list[0].args[0]
+    test_project = import_simulation.call_args_list[0].args[0]
 
     assert test_project.title == "load"
     assert advanced.get_simulation_record() == sim_titles
@@ -1474,7 +1480,7 @@ def test_advanced_remove_simulations(
 
 def test_advanced_load_config(mocker):
     mocker.patch(
-        "dtocean_plugins.strategies.position.load_config",
+        "dtocean_plugins.strategies.position.load_config_yaml",
         return_value=True,
         autospec=True,
     )
@@ -1482,12 +1488,13 @@ def test_advanced_load_config(mocker):
     assert AdvancedPosition.load_yaml(None)
 
 
-def test_advanced_dump_config(mocker, advanced):
+def test_advanced_dump_yaml(mocker, advanced):
     config = {"clean_existing_dir": True}
     advanced._config = config
 
     dump_config_yaml = mocker.patch(
-        "dtocean_plugins.strategies.position.dump_config_yaml", autospec=True,
+        "dtocean_plugins.strategies.position.dump_config_yaml",
+        autospec=True,
     )
 
     mock_path = "mock"
@@ -1500,7 +1507,8 @@ def test_advanced_dump_config(mocker, advanced):
 
 def test_advanced_export_config_template(mocker, advanced):
     dump_config_yaml = mocker.patch(
-        "dtocean_plugins.strategies.position.dump_config_yaml", autospec=True,
+        "dtocean_plugins.strategies.position.dump_config_yaml",
+        autospec=True,
     )
 
     mock_path = "mock"
