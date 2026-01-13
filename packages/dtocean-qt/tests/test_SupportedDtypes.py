@@ -22,7 +22,6 @@ def expected_support():
         numpy.uint16,
         numpy.uint32,
         numpy.uint64,
-        numpy.float_,
         numpy.float16,
         numpy.float32,
         numpy.float64,
@@ -73,7 +72,7 @@ class TestSupportedDtypes(object):
         s = StringIO()
         assert obj.description(s) is None
         assert obj.description(str) is None
-        assert obj.description(numpy.complex_) is None
+        assert obj.description(numpy.complex64) is None
 
         # lists, tuples, dicts refer to numpy.object types and
         # return a 'text' description - working as intended or bug?
