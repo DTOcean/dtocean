@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Francesco Ferri
-#    Copyright (C) 2017-2025 Mathew Topper
+#    Copyright (C) 2017-2026 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ Created on Wed May 04 16:11:29 2016
 """
 
 import logging
-import pickle
 from typing import TypeAlias, cast
 
 import matplotlib as mpl
@@ -244,29 +243,3 @@ def check_bathymetry_format(xyz, bound):
             status = 1
 
     return xyz, bound, status
-
-
-if __name__ == "__main__":
-    from shapely.geometry import Point
-
-    from .visualise_polygons import plotCompositePolygon
-
-    z_bounds = [0, np.inf]
-
-    # load a test bathymetry
-    xyz = pickle.load(open("bathy_test.p", "rb")).T
-    xyz = xyz * np.array([1, 1, -1], "f")
-
-    # generate a random array
-    test_array = np.random.rand(1000, 2) * 100.0
-
-    # test the bathymetry function
-    mp, unf = get_unfeasible_regions(xyz, z_bounds, debug=True)
-
-    if mp is not None:
-        fig, ax = plt.subplots(1, 1)
-        plotCompositePolygon(mp, ax=ax)
-
-        mask = np.array([mp.contains(Point(xx, yy)) for xx, yy in test_array])
-        ax.plot(test_array[not mask, 0], test_array[not mask, 1], "rx")
-        ax.plot(test_array[mask, 0], test_array[mask, 1], "ro")

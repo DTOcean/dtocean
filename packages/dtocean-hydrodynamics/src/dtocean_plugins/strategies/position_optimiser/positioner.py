@@ -27,7 +27,7 @@ import numpy as np
 from shapely.geometry import LineString, MultiPoint, Point, Polygon, box
 from shapely.ops import nearest_points, polylabel
 
-import dtocean_hydro.utils.bathymetry_utility as bathymetry_utility
+import dtocean_hydro.utils.bathymetry as bathymetry
 
 
 class DevicePositioner:
@@ -163,7 +163,7 @@ def _get_depth_exclusion_poly(layer_depths, min_depth=-np.inf, max_depth=0):
     xyz = np.dstack([xv.flatten(), yv.flatten(), zv.flatten()])[0]
     safe_xyz = xyz[~np.isnan(xyz).any(axis=1)]
 
-    exclude, _ = bathymetry_utility.get_unfeasible_regions(
+    exclude, _ = bathymetry.get_unfeasible_regions(
         safe_xyz,
         [min_depth, max_depth],
     )

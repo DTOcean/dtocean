@@ -37,7 +37,7 @@ from scipy import interpolate
 from shapely.geometry import Point, Polygon
 
 import dtocean_wave.utils.read_bem_solution as reader
-from dtocean_hydro.utils.bathymetry_utility import get_unfeasible_regions
+from dtocean_hydro.utils.bathymetry import get_unfeasible_regions
 from dtocean_hydro.utils.set_wdirs_multibody import anglewrap, convertangle
 
 # Start logging

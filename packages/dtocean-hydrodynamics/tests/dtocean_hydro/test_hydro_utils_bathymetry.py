@@ -23,7 +23,7 @@ import numpy as np
 import pytest
 from shapely.geometry import Point
 
-from dtocean_hydro.utils.bathymetry_utility import (
+from dtocean_hydro.utils.bathymetry import (
     get_bathymetry_grid,
     get_unfeasible_regions,
 )

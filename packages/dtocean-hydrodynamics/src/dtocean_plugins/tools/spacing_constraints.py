@@ -29,7 +29,7 @@ from mdo_engine.boundary.interface import MaskVariable
 from shapely.geometry import Polygon, box
 
 from dtocean_hydro.array import Array_pkg
-from dtocean_hydro.utils.bathymetry_utility import get_unfeasible_regions
+from dtocean_hydro.utils.bathymetry import get_unfeasible_regions
 from dtocean_hydro.utils.convert import (
     bearing_to_vector,
     make_tide_statistics,

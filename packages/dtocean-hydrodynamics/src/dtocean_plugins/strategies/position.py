@@ -34,7 +34,11 @@ from natsort import natsorted
 
 from dtocean_plugins.strategies.base import Strategy
 
-from .position_optimiser import PositionOptimiser, dump_config_yaml, load_config_yaml
+from .position_optimiser import (
+    PositionOptimiser,
+    dump_config_yaml,
+    load_config_yaml,
+)
 from .position_optimiser.iterator import (
     get_positioner,
     iterate,
@@ -489,7 +493,7 @@ class AdvancedPosition(Strategy):
                 self.remove_simulation_title(sim_title)
 
     def dump_yaml(self, config_path):
-        config = self.dump_config_hook(self._config)
+        config = self.dump_config(self._config)
         dump_config_yaml(config_path, config)
 
     @classmethod
@@ -635,17 +639,17 @@ class AdvancedPosition(Strategy):
         status_str = "Project ready"
 
         return status_str, 1
-    
+
     @staticmethod
     def dump_config(config):
         safe_config = deepcopy(config)
         safe_config["clean_existing_dir"] = None
         return safe_config
-    
+
     @staticmethod
     def load_config(serial_config):
         return serial_config
-    
+
     @staticmethod
     def dump_sim_details(sim_details):
         return None
