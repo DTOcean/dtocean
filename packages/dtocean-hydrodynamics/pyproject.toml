@@ -23,7 +23,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
-cma = "^4.0.0"
+cma = "^4.4.1"
 h5py = "^3.12.1"
 matplotlib = "^3.10.8"
 natsort = "^8.4.0"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Pau Mercadez Ruiz
-#    Copyright (C) 2017-2025 Mathew Topper
+#    Copyright (C) 2017-2026 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ from math import cos, log10, pi, tan, tanh
 
 import numpy as np
 from numpy import (
-    NaN,
     arctan2,
     array,
     ceil,
@@ -42,6 +41,7 @@ from numpy import (
     float64,
     int32,
     meshgrid,
+    nan,
     ones,
     real,
     sqrt,
@@ -215,7 +215,7 @@ def CylWaveField(
         Xi, Yi = Bodiescoord[i]
         ri = sqrt((XX - Xi) ** 2 + (YY - Yi) ** 2)
         thetai = arctan2(YY - Yi, XX - Xi)
-        Phii[i][ri <= disregard] = NaN
+        Phii[i][ri <= disregard] = nan
         a = amplitudes[(2 * Nm + 1) * i : (2 * Nm + 1) * (i + 1)]
         for m in mode[Nm:]:
             Psii = jv(m, wnumber * ri) - 1j * yv(m, wnumber * ri)

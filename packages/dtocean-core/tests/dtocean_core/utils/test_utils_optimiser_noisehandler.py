@@ -119,7 +119,7 @@ class MockEvaluator(Evaluator):
 
         all_costs = np.array(all_costs)
         cost = (
-            np.NaN if np.all(all_costs != all_costs) else np.nanmean(all_costs)
+            np.nan if np.all(all_costs != all_costs) else np.nanmean(all_costs)
         )
 
         return {"cost": cost}

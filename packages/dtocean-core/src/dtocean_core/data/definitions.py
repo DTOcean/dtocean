@@ -1306,14 +1306,14 @@ class NumpyLineDict(NumpyLine):
     def auto_plot(auto: PlotMixin):
         plt.figure()
 
-        kwargs = {}
-
-        if len(auto.data.result) < 10:
-            kwargs["label"] = auto.data.result.keys()
-        else:
-            kwargs["color"] = "0.5"
-
         for line in auto.data.result:
+            kwargs = {}
+
+            if len(auto.data.result) < 10:
+                kwargs["label"] = line
+            else:
+                kwargs["color"] = "0.5"
+
             plt.plot(*zip(*auto.data.result[line]), **kwargs)
 
         if len(auto.data.result) < 10:
@@ -4602,7 +4602,7 @@ class XGrid2D(XGridND):
         plt.ylabel(ylabel)
 
         if xcoord.values.dtype.kind in {"U", "S"}:
-            plt.xticks(x, xuniques)
+            plt.xticks(x, [str(v) for v in xuniques])
         else:
             locs, _ = plt.xticks()
             assert isinstance(locs, np.ndarray)
@@ -4612,7 +4612,7 @@ class XGrid2D(XGridND):
             ax1.set_xticklabels(new_labels)
 
         if ycoord.values.dtype.kind in {"U", "S"}:
-            plt.yticks(y, yuniques)
+            plt.yticks(y, [str(v) for v in yuniques])
         else:
             locs, _ = plt.yticks()
             assert isinstance(locs, np.ndarray)

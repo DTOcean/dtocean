@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (c) 2014 Inria
-#    Copyright (C) 2021-2024 Mathew Topper
+#    Copyright (C) 2021-2026 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #  Author: Nikolaus Hansen, 2008-
 #  Author: Petr Baudis, 2014
 #  Author: Youhei Akimoto, 2016-
+#  Author: Mathew Topper 2021-
 
 # pylint: disable=line-too-long
 
@@ -361,22 +362,18 @@ class NoiseHandler:
         if choice == 1:
             # take n_first first and reev - n_first best of the remaining
             n_first = lam_reev - lam_reev // 2
-            sort_idx = np.argsort(np.array(fit, copy=False)[n_first:]) + n_first
-            return np.array(
-                list(range(0, n_first))
-                + list(sort_idx[0 : lam_reev - n_first]),
-                copy=False,
+            sort_idx = np.argsort(np.asarray(fit)[n_first:]) + n_first
+            return np.asarray(
+                list(range(0, n_first)) + list(sort_idx[0 : lam_reev - n_first])
             )
         elif choice == 2:
-            idx_sorted = np.argsort(np.array(fit, copy=False))
+            idx_sorted = np.argsort(np.asarray(fit))
             # take lam_reev equally spaced, starting with best
             linsp = np.linspace(0, len(fit) - len(fit) / lam_reev, lam_reev)
             return idx_sorted[[int(i) for i in linsp]]
         # take the ``lam_reeval`` best from the first ``2 * lam_reeval + 2`` values.
         elif choice == 3:
-            return np.argsort(np.array(fit, copy=False)[: 2 * (lam_reev + 1)])[
-                :lam_reev
-            ]
+            return np.argsort(np.asarray(fit)[: 2 * (lam_reev + 1)])[:lam_reev]
         else:
             raise ValueError(
                 "unrecognized choice value %d for noise reev" % choice
