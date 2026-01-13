@@ -120,15 +120,15 @@ class ThreadOpen(QtCore.QThread):
     taskFinished = QtCore.Signal()
     error_detected = QtCore.Signal(object, object, object)
 
-    def __init__(self, core, file_path):
+    def __init__(self, core: GUICore, file_path: str):
         super().__init__()
         self._core = core
         self._file_path = file_path
-        self._project = None
-        self._current_scope = None
+        self._project: Optional[GUIProject] = None
+        self._current_scope: Optional[str] = None
         self._activated_interfaces: dict[str, list[Any]] = {}
-        self._strategy = None
-        self._project_path = None
+        self._strategy: Optional[GUIStrategy] = None
+        self._project_path: Optional[str] = None
 
     def run(self):  # pragma: no cover
         if RUNNING_COVERAGE:
@@ -810,7 +810,7 @@ class Shell(QtCore.QObject):
         self.update_scope.emit(self._current_scope)
 
     @QtCore.Slot(str)
-    def open_project(self, file_path):
+    def open_project(self, file_path: str):
         self._active_thread = ThreadOpen(self.core, file_path)
         self._active_thread.taskFinished.connect(self._finalize_open_project)
         self._active_thread.start()
@@ -1204,15 +1204,10 @@ class Shell(QtCore.QObject):
             self._clear_active_thread()
             return
 
-        assert isinstance(self._active_thread._project, GUIProject)
         self.project = self._active_thread._project
         self.project_path = self._active_thread._project_path
         self.activated_interfaces = self._active_thread._activated_interfaces
-
-        strategy = self._active_thread._strategy
-        assert isinstance(strategy, GUIStrategy)
-
-        self.strategy = strategy
+        self.strategy = self._active_thread._strategy
         self._current_scope = self._active_thread._current_scope
 
         self.project_title_change.emit(self.project.title)

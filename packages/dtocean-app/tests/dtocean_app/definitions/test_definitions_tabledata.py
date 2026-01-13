@@ -57,7 +57,7 @@ def meta():
             "identifier": "test",
             "structure": "test",
             "title": "test",
-            "labels": ["index", "a", "b"],
+            "labels": ["idx", "a", "b"],
             "units": [None, "kg", None],
             "types": ["int", "float", "str"],
         }
@@ -79,7 +79,7 @@ def test_data(meta, structure):
     a = np.random.rand(len(idx))
     letters = string.ascii_lowercase
     b = [random.choice(letters) + random.choice(letters) for _ in idx]
-    raw = {"index": idx, "a": a, "b": b}
+    raw = {"idx": idx, "a": a, "b": b}
 
     return structure.get_data(raw, meta)
 

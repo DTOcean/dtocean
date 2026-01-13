@@ -368,7 +368,7 @@ def test_window_debug(window_debug):
 
 
 def test_project_open_error(mocker, qtbot, tmp_path, window_debug):
-    dto_file = tmp_path / "test.dtos"
+    dto_file = tmp_path / "test.dtox"
     dto_file_path = str(dto_file)
 
     mocker.patch.object(
@@ -1094,7 +1094,7 @@ def window_dataflow_empty(qtbot, window_with_pipeline):
 
 
 def test_empty_project_reload(qtbot, mocker, tmp_path, window_dataflow_empty):
-    dto_file = tmp_path / "test.dtos"
+    dto_file = tmp_path / "test.dtox"
     dto_file_path = str(dto_file)
 
     mocker.patch.object(
@@ -1711,7 +1711,7 @@ def test_simulation_active_themes_warn(
     assert "differ from those originally selected" in caplog.text
 
 
-@pytest.mark.parametrize("ext", ["dto", "prj"])
+@pytest.mark.parametrize("ext", ["dtox", "dtop"])
 def test_project_save(qtbot, mocker, tmp_path, window_dataflow_module, ext):
     dto_file = tmp_path / "test.{}".format(ext)
     dto_file_path = str(dto_file)
@@ -1924,7 +1924,7 @@ def test_strategy_reload(
     window_dataflow_module,
     strategy_manager_basic,
 ):
-    dto_file = tmp_path / "test.dtos"
+    dto_file = tmp_path / "test.dtox"
     dto_file_path = str(dto_file)
 
     mocker.patch.object(

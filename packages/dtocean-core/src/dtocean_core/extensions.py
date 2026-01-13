@@ -507,7 +507,7 @@ class StrategyManager(ExtensionManager):
         with open(dump_path, "w") as fstream:
             json.dump(stg_dict, fstream)
 
-    def load_strategy(self, load_path):
+    def load_strategy(self, load_path) -> Strategy:
         # OK need to consider if we have a json file
         if not os.path.isfile(load_path) and ".json" not in load_path:
             errStr = "Argument load_path must be a file with .json extension"

@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import typing
 from typing import TYPE_CHECKING, Optional
 
 import pandas as pd
@@ -326,6 +327,11 @@ class GUIStrategyManager(ListFrameEditor, StrategyManager):
     def show(self):
         self._update_configuration()
         super().show()
+
+    if typing.TYPE_CHECKING:
+
+        def get_strategy(self, strategy_name) -> GUIStrategy: ...
+        def load_strategy(self, load_path) -> GUIStrategy: ...
 
 
 class GUIToolManager(ToolManager):
