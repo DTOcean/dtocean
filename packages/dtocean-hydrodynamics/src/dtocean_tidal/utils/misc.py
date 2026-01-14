@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016 Thomas Roc
-#    Copyright (C) 2017-2025 Mathew Topper
+#    Copyright (C) 2017-2026 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -211,7 +211,7 @@ def transec_surf(hydro, array, debug=False):
 
     (xm, ym, xM, yM) = hydro.lease.bounds
     turb_keys = []
-    ref = np.arange(Nturb)
+    ref = np.arange(Nturb).astype(int)
 
     # In case there is only one turbine
     if Nturb == 1:

@@ -50,8 +50,17 @@ def Hydrostatics_Nemohcal(directory):
         * len(meshes)
     )
     Kb, Kg = Hydrostatics(
-        meshes, modes, cb, cg, ro=1000.00, g=9.81, fixedA=False
+        meshes,
+        modes,
+        cb,
+        cg,
+        ro=1000.00,
+        g=9.81,
+        fixedA=False,
     )[::2]
+    assert isinstance(Kb, np.ndarray)
+    assert isinstance(Kg, np.ndarray)
+
     return Kb + Kg
 
 
@@ -167,6 +176,7 @@ def Hydrostatics(
         Fbuoy.append(ro * g * fbuoy)
         Kgrav.append(ro * Vol * g * kgrav)
         Fgrav.append(ro * Vol * g * fgrav)
+
     return block_diag(*Kbuoy), Fbuoy, block_diag(*Kgrav), Fgrav
 
 

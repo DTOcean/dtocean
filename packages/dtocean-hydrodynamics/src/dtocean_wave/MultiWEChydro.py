@@ -176,7 +176,7 @@ class MultiBody(object):
         # wave directions, Os, to analyse.
         # initialize
         Pyradd = zeros((NBo,) + self.ScatDiag.shape, dtype=float)
-        Padd = Pyradd.copy()
+        Padd: np.ndarray = Pyradd.copy()
         PyraddWEC = zeros((1,) + self.ScatDiag.shape, dtype=float)
         PaddWEC = PyraddWEC.copy()
 

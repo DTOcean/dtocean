@@ -248,7 +248,9 @@ class SurF(object):
             nodes.append(nodeori)
             for i1, node in enumerate(nodes):
                 if all(nodeori == node):
-                    conectivity[i0 / 4, int((i0 / 4.0 - i0 / 4) * 4)] = i1 + 1
+                    con_idx_0 = i0 // 4
+                    con_idx_1 = int((i0 / 4.0 - i0 / 4) * 4)
+                    conectivity[con_idx_0, con_idx_1] = i1 + 1
                     if i1 + 1 < len(nodes):
                         nodes.pop()
                         break

@@ -203,7 +203,8 @@ class MultiBodyAnalysis:
                 dof_with_parent = new_bodies[joint[1][0]]["dof_with_parent"]
             joint_dof.append(dof_with_parent)
 
-        Dij = np.zeros(Igs.shape).tolist()
+        zeros: np.ndarray = np.zeros(Igs.shape)
+        Dij = zeros.tolist()
         Id = np.eye(3)
         Z = np.eye(3) * 0.0
         Bm = np.zeros((loose_dof, loose_dof_b))
