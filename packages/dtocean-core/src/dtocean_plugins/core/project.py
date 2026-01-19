@@ -661,7 +661,8 @@ class FilterInterface(ProjectInterface, QueryInterface):
                 raise ValueError(errStr)
 
             self._db.call_stored_proceedure(
-                "filter.sp_filter_device_data", [system_ids.values[0].item()]
+                "filter.sp_filter_device_data",
+                [system_ids.values[0].item()],
             )
 
             self.data.device_filtered = True
@@ -686,7 +687,8 @@ class FilterInterface(ProjectInterface, QueryInterface):
                 raise ValueError(errStr)
 
             self._db.call_stored_proceedure(
-                "filter.sp_filter_site_data", [site_ids.values[0].item()]
+                "filter.sp_filter_site_data",
+                [site_ids.values[0].item()],
             )
 
             self.data.site_filtered = True

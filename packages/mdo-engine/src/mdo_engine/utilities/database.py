@@ -8,6 +8,7 @@ import socket
 from abc import ABC
 
 import psycopg
+from psycopg import sql
 from psycopg.types import TypeInfo
 from psycopg.types.shapely import register_shapely
 from sqlalchemy import MetaData, Table, create_engine, text
@@ -185,9 +186,16 @@ class Database(ABC):
         with self._engine.begin() as connection:
             connection.execute(text(query))
 
-    def call_stored_proceedure(self, proceedure_name, proceedure_args):
+    def call_function(self, function_name, *function_args):
         """Return the results from calling a stored proceedure. Note this
         is not DB agnostic as not all SQL DBs support stored proceedures."""
+
+        query = sql.SQL("SELECT {function_name}({arguments})").format(
+            function_name=sql.Identifier(function_name),
+            arguments=sql.SQL(",").join(
+                [sql.Literal(arg) for arg in function_args]
+            ),
+        )
 
         if self._engine is None:
             errStr = "No connection has been made."
@@ -197,7 +205,7 @@ class Database(ABC):
 
         try:
             cursor = connection.cursor()
-            cursor.callproc(proceedure_name, proceedure_args)
+            cursor.callproc(function_name, function_args)
             results = list(cursor.fetchall())
             cursor.close()
             connection.commit()
