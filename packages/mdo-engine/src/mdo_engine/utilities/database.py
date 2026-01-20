@@ -6,6 +6,7 @@ import contextlib
 import logging
 import socket
 from abc import ABC
+from typing import Optional
 
 import psycopg
 from psycopg import sql
@@ -30,7 +31,7 @@ class Database(ABC):
         self._echo = False
         self._engine = None
         self._meta = None
-        self._timeout = None
+        self._timeout: Optional[int] = None
         self.session = None
 
         if config_dict is not None:
@@ -86,7 +87,7 @@ class Database(ABC):
 
         return credentials_dict
 
-    def set_echo(self, echo):
+    def set_echo(self, echo: bool):
         self._echo = echo
 
     def set_timeout(self, timeout):
@@ -191,7 +192,7 @@ class Database(ABC):
         is not DB agnostic as not all SQL DBs support stored proceedures."""
 
         query = sql.SQL("SELECT {function_name}({arguments})").format(
-            function_name=sql.Identifier(function_name),
+            function_name=sql.SQL(function_name),
             arguments=sql.SQL(",").join(
                 [sql.Literal(arg) for arg in function_args]
             ),
@@ -201,17 +202,10 @@ class Database(ABC):
             errStr = "No connection has been made."
             raise IOError(errStr)
 
-        connection = self._engine.raw_connection()
-
-        try:
-            cursor = connection.cursor()
-            cursor.callproc(function_name, function_args)
-            results = list(cursor.fetchall())
-            cursor.close()
-            connection.commit()
-
-        finally:
-            connection.close()
+        with self._engine.connect() as conn:
+            with conn.begin():
+                cursor = conn.execute(text(query.as_string()))
+                results = list(cursor.fetchall())
 
         return results
 
@@ -300,7 +294,7 @@ class PostgreSQL(Database):
         table_name,
         schema="public",
         remove_trailing_space=True,
-    ):
+    ) -> Table:
         if self._meta is None:
             errStr = "No connection has been made."
             raise IOError(errStr)
@@ -327,7 +321,6 @@ class PostgreSQL(Database):
 
         if meta_name in self._meta.tables:
             table = self._meta.tables[meta_name]
-
         else:
             table = self.reflect_table(table_name, schema)
 
@@ -386,8 +379,7 @@ class PostgreSQL(Database):
     def server_execute_query(
         self,
         query,
-        fetch_limit=1000,
-        cursor_limit=None,
+        yield_per=100,
     ):
         """"""
 
@@ -395,44 +387,15 @@ class PostgreSQL(Database):
             errStr = "No connection has been made."
             raise IOError(errStr)
 
-        # Sanitise the line limit and query string
-        safe_fetch_limit = int(fetch_limit)
-        new_query = query.strip()
+        results = []
 
-        # Add cursor limit to query if requested and its not already been set
-        if cursor_limit is not None and "LIMIT" not in new_query:
-            safe_cursor_limit = int(cursor_limit)
-
-            if new_query[-1] == ";":
-                new_query = new_query[:-1]
-            new_query += " LIMIT {:d};".format(int(safe_cursor_limit))
-
-        connection = self._engine.raw_connection()
-
-        msg = "Executing server side query: {}".format(new_query)
-        module_logger.debug(msg)
-
-        try:
-            cursor = connection.cursor()
-            cursor.execute(new_query)
-
-            results = []
-
-            while True:
-                rows = cursor.fetchmany(safe_fetch_limit)
-                if not rows:
-                    break
-
-                module_logger.debug("Fetched {} rows".format(len(rows)))
-
-                for row in rows:
-                    results.append(row)
-
-            cursor.close()
-            connection.commit()
-
-        finally:
-            connection.close()
+        with self._engine.connect() as conn:
+            with conn.execution_options(yield_per=yield_per).execute(
+                text(query)
+            ) as result:
+                for partition in result.partitions():
+                    for row in partition:
+                        results.append(row)
 
         return results
 

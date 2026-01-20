@@ -660,9 +660,9 @@ class FilterInterface(ProjectInterface, QueryInterface):
                 ).format(self.data.selected_system)
                 raise ValueError(errStr)
 
-            self._db.call_stored_proceedure(
+            self._db.call_function(
                 "filter.sp_filter_device_data",
-                [system_ids.values[0].item()],
+                system_ids.values[0].item(),
             )
 
             self.data.device_filtered = True
@@ -686,9 +686,9 @@ class FilterInterface(ProjectInterface, QueryInterface):
                 ).format(self.data.selected_site)
                 raise ValueError(errStr)
 
-            self._db.call_stored_proceedure(
+            self._db.call_function(
                 "filter.sp_filter_site_data",
-                [site_ids.values[0].item()],
+                site_ids.values[0].item(),
             )
 
             self.data.site_filtered = True

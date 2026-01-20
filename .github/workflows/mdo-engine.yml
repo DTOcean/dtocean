@@ -27,11 +27,38 @@ jobs:
     defaults:
       run:
         working-directory: packages/mdo-engine
+    env:
+      DATABASE_URL: https://github.com/DTOcean/dtocean-database-next/releases/download/v2026.01.0/dtocean-database-v2026.01.0.tar.gz
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
           persist-credentials: false
+      - name: Set database root password
+        run: |
+          echo "POSTGRES_PASSWORD=$(uuidgen)" >> $GITHUB_ENV
+      - name: Cache database folder
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: database
+          key: ${{ env.DATABASE_URL }}
+      - name: Download and extract database folder
+        run: |
+          mkdir database
+          wget -O dtocean-database.tar.gz ${DATABASE_URL}
+          tar xzf dtocean-database.tar.gz -C database
+        working-directory: ${{ github.workspace }}
+        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Start database container
+        run: |
+          docker run \
+          --name dtocean-database \
+          --mount type=bind,src=${GITHUB_WORKSPACE}/database/export,dst=/home/postgres/export \
+          -e POSTGRES_PASSWORD \
+          -p 5432:5432 \
+          -d \
+          postgis/postgis
       - uses: actions/setup-python@v5
         with:
           python-version: 3.12
@@ -42,7 +69,7 @@ jobs:
           poetry install --with test
       - name: Run tests
         run: |
-          poetry run pytest --cov src --cov-report=xml tests
+          poetry run pytest --cov src --cov-report=xml --postgresql-password="${POSTGRES_PASSWORD}" --postgresql-path=${GITHUB_WORKSPACE}/database tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:

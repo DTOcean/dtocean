@@ -39,6 +39,8 @@ import pandas as pd
 from box import Box
 from sqlalchemy.exc import DBAPIError
 
+from mdo_engine.utilities.database import PostGIS
+
 from ..utilities.misc import Injective
 
 StrOrPath = Union[str, Path]
@@ -614,7 +616,7 @@ class QueryInterface(MetaInterface):
 
     def __init__(self):
         super(QueryInterface, self).__init__()
-        self._db = None
+        self._db: Optional[PostGIS] = None
 
     def put_database(self, database):
         self._db = database
