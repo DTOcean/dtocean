@@ -401,8 +401,6 @@ class Branch:
                 if status is None:
                     continue
 
-                assert isinstance(status, str)
-
                 if "unavailable" in status:
                     continue
 
