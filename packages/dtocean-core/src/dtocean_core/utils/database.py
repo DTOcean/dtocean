@@ -60,7 +60,10 @@ def bathy_records_to_strata(bathy_records=None, pre_bathy=None):
 
     elif bathy_records is not None:
         bathy_parts = init_bathy_records(bathy_records)
-        assert bathy_parts is not None
+        if bathy_parts is None:
+            module_logger.warning("No bathymetric points found")
+            return None
+
         bathy_table, xi, yj = bathy_parts
 
     elif pre_bathy is not None:

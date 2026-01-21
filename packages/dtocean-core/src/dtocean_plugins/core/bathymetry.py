@@ -26,7 +26,6 @@ from shapely import Polygon, to_wkt
 
 from dtocean_core.utils.database import (
     bathy_records_to_strata,
-    init_bathy_records,
     tidal_series_records_to_xset,
 )
 
@@ -172,9 +171,8 @@ class LeaseBathyInterface(QueryInterface):
         ).format(func_poly_str)
 
         result = self._db.server_execute_query(query_str)
-        pre_bathy = init_bathy_records(result)
+        raw_strata = bathy_records_to_strata(result)
 
-        raw_strata = bathy_records_to_strata(pre_bathy=pre_bathy)
         self.data.bathymetry = raw_strata
 
 
@@ -318,8 +316,8 @@ class CorridorBathyInterface(QueryInterface):
         ).format(func_poly_str)
 
         result = self._db.server_execute_query(query_str)
-
         raw_strata = bathy_records_to_strata(result)
+
         self.data.corridor = raw_strata
 
 
@@ -466,4 +464,5 @@ class TidalEnergyInterface(QueryInterface):
 
         result = self._db.server_execute_query(query_str)
         raw_strata = tidal_series_records_to_xset(result)
+
         self.data.tidal_series = raw_strata
