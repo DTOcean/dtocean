@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2016-2024 Mathew Topper
+#    Copyright (C) 2016-2026 Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ Created on Fri Jul 29 17:44:49 2016
 """
 
 from mdo_engine.boundary.interface import QueryInterface
+from shapely import Polygon, to_wkt
 
 from dtocean_core.utils.database import (
     bathy_records_to_strata,
@@ -154,7 +155,8 @@ class LeaseBathyInterface(QueryInterface):
             raise RuntimeError("No database connected")
 
         # Manipulate wkt string for function requirements
-        poly_wkt = self.data.lease_poly.to_wkt()
+        lease_poly: Polygon = self.data.lease_poly
+        poly_wkt = to_wkt(lease_poly)
         func_poly_str = poly_wkt.replace("POLYGON ((", "")[:-2]
 
         query_str = (
@@ -299,7 +301,8 @@ class CorridorBathyInterface(QueryInterface):
             raise RuntimeError("No database connected")
 
         # Manipulate wkt string for function requirements
-        poly_wkt = self.data.corridor_poly.to_wkt()
+        corridor_poly: Polygon = self.data.corridor_poly
+        poly_wkt = to_wkt(corridor_poly)
         func_poly_str = poly_wkt.replace("POLYGON ((", "")[:-2]
 
         query_str = (
@@ -443,7 +446,8 @@ class TidalEnergyInterface(QueryInterface):
             raise RuntimeError("No database connected")
 
         # Manipulate wkt string for function requirements
-        poly_wkt = self.data.lease_poly.to_wkt()
+        lease_poly: Polygon = self.data.lease_poly
+        poly_wkt = to_wkt(lease_poly)
         func_poly_str = poly_wkt.replace("POLYGON ((", "")[:-2]
 
         query_str = (

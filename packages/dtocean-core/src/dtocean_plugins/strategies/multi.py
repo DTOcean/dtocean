@@ -245,11 +245,13 @@ class MultiSensitivity(Strategy):
             # Check for existance of the variable
             module_inputs = mod_branch.get_input_status(core, project)
 
-            if variable not in module_inputs.keys():
-                msgStr = (
-                    "Variable {} is not an input to module " "{}."
-                ).format(variable, module)
+            msgStr = f"Variable {variable} is not an input to module {module}."
+            if module_inputs is None:
                 raise ValueError(msgStr)
+            else:
+                assert isinstance(module_inputs, dict)
+                if variable not in module_inputs.keys():
+                    raise ValueError(msgStr)
 
             multi_var = mod_branch.get_input_variable(core, project, variable)
 

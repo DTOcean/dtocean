@@ -231,11 +231,12 @@ class ProjectMenu(ConnectorMenu):
             raise RuntimeError(errStr)
 
         self._execute(
-            core, project, "Site and System Options", set_output_level=False
+            core,
+            project,
+            "Site and System Options",
+            set_output_level=False,
         )
-
         self.activate(core, project, "Site Boundary Selection")
-
         self.activate(core, project, "Database Filtering Interface")
 
     def initiate_bathymetry(self, core, project):

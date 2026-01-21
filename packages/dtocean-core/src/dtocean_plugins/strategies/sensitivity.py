@@ -99,11 +99,15 @@ class UnitSensitivity(Strategy):
         # Check for existance of the variable
         module_inputs = mod_branch.get_input_status(core, project)
 
-        if variable_name not in module_inputs.keys():
-            msgStr = ("Variable {} is not an input to module " "{}.").format(
-                variable_name, module_name
-            )
+        msgStr = (
+            f"Variable {variable_name} is not an input to module {module_name}."
+        )
+        if module_inputs is None:
             raise ValueError(msgStr)
+        else:
+            assert isinstance(module_inputs, dict)
+            if variable_name not in module_inputs.keys():
+                raise ValueError(msgStr)
 
         unit_var = mod_branch.get_input_variable(core, project, variable_name)
 

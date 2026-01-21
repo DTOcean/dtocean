@@ -67,11 +67,6 @@ def postgresql_path(request):
 
 
 def test_get_database_bad_version(postgresql_noproc, postgresql_path):
-    """
-    Given the postgresql process fixture object returns a db connection
-    :param psql_proc: postgres process fixture
-    :return: psycopg2 connection
-    """
     janitor = DatabaseJanitor(
         user=postgresql_noproc.user,
         host=postgresql_noproc.host,

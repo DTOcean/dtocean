@@ -17,7 +17,7 @@ import logging
 import sys
 from pathlib import Path
 from pickle import load as load_pkl
-from typing import Union
+from typing import Optional, Sequence, Union
 
 import matplotlib.pyplot as plt
 from mdo_engine.boundary.interface import FileInterface
@@ -89,6 +89,9 @@ class Tree:
 
         for branch in branch_list:
             branch_input_status = branch.get_input_status(core, project)
+            if branch_input_status is None:
+                continue
+            assert isinstance(branch_input_status, dict)
 
             if skip_unavailable:
                 branch_inputs = [
@@ -168,12 +171,20 @@ class Branch:
 
         return output_declaration
 
-    def get_input_status(self, core, project, variable=None):
+    def get_input_status(
+        self,
+        core,
+        project,
+        variable=None,
+    ) -> Optional[dict | str]:
         connector = _get_connector(project, self._hub_name)
 
         branch_status = connector.get_interface_inputs_status(
             project, self._name
         )
+
+        if branch_status is None:
+            return None
 
         if variable is not None:
             if not isinstance(variable, InputVariable):
@@ -234,6 +245,10 @@ class Branch:
 
         # Check that the inputs exist in the tree
         module_inputs = self.get_input_status(core, project)
+        if module_inputs is None:
+            return None
+
+        assert isinstance(module_inputs, dict)
 
         if variable_id not in module_inputs.keys():
             msgStr = ("Variable {} is not an input to branch " "{}.").format(
@@ -330,7 +345,10 @@ class Branch:
             raise RuntimeError(errStr)
 
         branch_input_status = self.get_input_status(core, project)
+        if branch_input_status is None:
+            return None
 
+        assert isinstance(branch_input_status, dict)
         variables = []
 
         for identifier, status in branch_input_status.items():
@@ -380,6 +398,10 @@ class Branch:
 
             if skip_unavailable:
                 status = self.get_input_status(core, project, variable)
+                if status is None:
+                    continue
+
+                assert isinstance(status, str)
 
                 if "unavailable" in status:
                     continue
@@ -1000,7 +1022,7 @@ def _get_read_values(core, project, interface, variable_ids):
 def _read_variables(
     core,
     project,
-    variables,
+    variables: Sequence[InputVariable],
     overwrite=True,
     set_auto=False,
     log_exceptions=False,
@@ -1009,6 +1031,7 @@ def _read_variables(
     into the active data state"""
 
     results = {}
+    variables = list(variables)
 
     while variables:
         variable = variables.pop()
@@ -1033,7 +1056,12 @@ def _read_variables(
 
         # Check if additional variables are provided by the same interface
         needed = set(all_var_ids)
-        provided = set(interface.declare_outputs())
+        outputs = interface.declare_outputs()
+
+        if outputs is None:
+            provided = set()
+        else:
+            provided = set(outputs)
 
         add_var_ids = needed & provided
 

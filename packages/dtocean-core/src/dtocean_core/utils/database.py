@@ -35,7 +35,7 @@ from packaging.version import Version
 from pandas.api.types import is_integer_dtype
 from polite_config.configuration import ReadYAML
 from polite_config.paths import ModPath, UserDataPath
-from shapely import get_srid, set_srid, wkb, wkt
+from shapely import Point, get_srid, set_srid, wkt
 from sqlalchemy.dialects import postgresql
 
 from .files import onerror
@@ -214,7 +214,6 @@ def init_bathy_records(bathy_records):
 
     bathy_cols = ["utm_point", "depth"]
     bathy_cols.extend(["layer_order", "initial_depth", "sediment_type"])
-
     bathy_table = pd.DataFrame.from_records(bathy_records, columns=bathy_cols)
 
     if bathy_table.empty:
@@ -242,8 +241,8 @@ def point_to_xy(
     x = []
     y = []
 
-    for point_hex in df[point_column]:
-        point = wkb.loads(point_hex, hex=True)
+    for point in df[point_column]:
+        assert isinstance(point, Point)
         coords = list(point.coords)[0]
         x.append(coords[0])
         y.append(coords[1])
@@ -265,28 +264,44 @@ def point_to_xy(
     return df
 
 
-def get_grid_coords(df, xlabel="x", ylabel="y"):
+def get_grid_coords(df: pd.DataFrame, xlabel="x", ylabel="y"):
     xi = np.unique(df[xlabel])
-    xdist = xi[1:] - xi[:-1]
 
-    if len(np.unique(xdist)) != 1:
-        safe_dist = [str(x) for x in np.unique(xdist)]
-        dist_str = ", ".join(safe_dist)
-        errStr = (
-            "Distances in x-direction are not equal. Unique lengths " "are: {}"
-        ).format(dist_str)
-        raise ValueError(errStr)
+    ## TODO: Find a better method to check for valid grid spacing
+    # for x in xi:
+    #     yx: pd.Series = df[ylabel][df[xlabel] == x].sort_values().unique()
+    #     if len(yx) < 2:
+    #         continue
+
+    #     ydist = np.diff(yx)
+
+    #     if len(np.unique(ydist)) != 1:
+    #         safe_dist = [str(y) for y in np.unique(ydist)]
+    #         dist_str = ", ".join(safe_dist)
+    #         errStr = (
+    #             f"Distances in y-direction for x = {x} are not equal. Unique "
+    #             f"lengths are: {dist_str}"
+    #         )
+    #         raise ValueError(errStr)
 
     yj = np.unique(df[ylabel])
-    ydist = yj[1:] - yj[:-1]
 
-    if len(np.unique(ydist)) != 1:
-        safe_dist = [str(y) for y in np.unique(ydist)]
-        dist_str = ", ".join(safe_dist)
-        errStr = (
-            "Distances in y-direction are not equal. Unique lengths " "are: {}"
-        ).format(dist_str)
-        raise ValueError(errStr)
+    ## TODO: Find a better method to check for valid grid spacing
+    # for y in yj:
+    #     xy: pd.Series = df[xlabel][df[ylabel] == y].sort_values().unique()
+    #     if len(xy) < 2:
+    #         continue
+
+    #     xdist = np.diff(xy)
+
+    #     if len(np.unique(xdist)) != 1:
+    #         safe_dist = [str(x) for x in np.unique(xdist)]
+    #         dist_str = ", ".join(safe_dist)
+    #         errStr = (
+    #             f"Distances in x-direction for y = {y} are not equal. Unique "
+    #             f"lengths are: {dist_str}"
+    #         )
+    #         raise ValueError(errStr)
 
     return xi, yj
 

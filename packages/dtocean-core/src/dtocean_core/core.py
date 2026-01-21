@@ -25,6 +25,7 @@ from typing import Optional, Union
 import matplotlib.pyplot as plt
 from mdo_engine.boundary.interface import (
     AutoInterface,
+    Interface,
     MetaInterface,
     QueryInterface,
     RawInterface,
@@ -232,7 +233,7 @@ class OrderedSim(Simulation):
 
         return result
 
-    def get_input_status(self, hub_id, interface_name):
+    def get_input_status(self, hub_id, interface_name) -> Optional[dict]:
         if self._hub_input_status is None:
             return None
 
@@ -1452,7 +1453,7 @@ class Core:
 
         return interface
 
-    def connect_interface(self, project, interface):
+    def connect_interface(self, project: Project, interface: Interface):
         # TODO: Is this pre-population something to do in mdo_engine?
         # If its a QueryInterface try to connect the database
         if (
@@ -1767,7 +1768,7 @@ class Connector:
 
         return active_inputs
 
-    def get_interface_inputs_status(self, project, interface_name):
+    def get_interface_inputs_status(self, project: Project, interface_name):
         simulation = project.get_simulation()
         inputs_status = simulation.get_input_status(self._hub, interface_name)
 
@@ -1805,6 +1806,10 @@ class Connector:
         # For the data requirments to be met all the inputs should list
         # as satisfied.
         input_status = self.get_interface_inputs_status(project, interface_name)
+        if input_status is None:
+            return False
+
+        assert isinstance(input_status, dict)
 
         if len(input_status) == 0:
             return True
