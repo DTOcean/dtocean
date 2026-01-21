@@ -624,6 +624,10 @@ class QueryInterface(MetaInterface):
     def get_dataframe(self, table_name):
         if self._db is None:
             errStr = "No database defined"
+            raise RuntimeError(errStr)
+
+        if self._db._engine is None:
+            errStr = "No database connection"
             raise IOError(errStr)
 
         return pd.read_sql(table_name, self._db._engine)
@@ -632,6 +636,10 @@ class QueryInterface(MetaInterface):
         """Retry database actions on failure and rollback if necessary"""
         if self._db is None:
             errStr = "No database defined"
+            raise IOError(errStr)
+
+        if self._db.session is None:
+            errStr = "No database connection"
             raise IOError(errStr)
 
         while attempts:

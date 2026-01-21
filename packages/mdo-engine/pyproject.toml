@@ -32,6 +32,7 @@ pytest-mock = "^3.14.0"
 mock = "^5.1.0"
 dtocean-dummy-module = {path = "../dtocean-dummy-module"}
 pytest-cov = "^6.0.0"
+pytest-postgresql = "^7.0.2"
 
 [tool.poetry.group.audit]
 optional = true

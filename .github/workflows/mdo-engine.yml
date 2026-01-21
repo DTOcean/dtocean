@@ -17,13 +17,9 @@ on:
       - 'packages/dtocean-dummy-module/**'
       - 'packages/polite-config/**'
 jobs:
-  pytest:
-    name: Unit tests
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest]
+  pytest-linux:
+    name: Unit tests (ubuntu-latest)
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: packages/mdo-engine
@@ -70,6 +66,32 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest --cov src --cov-report=xml --postgresql-password="${POSTGRES_PASSWORD}" --postgresql-path=${GITHUB_WORKSPACE}/database tests
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          flags: mdo-engine
+  pytest-windows:
+    name: Unit tests (windows-latest)
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: packages/mdo-engine
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+      - name: Install package
+        run: |
+          poetry install --with test
+      - name: Run tests
+        run: |
+          poetry run pytest --cov src --cov-report=xml tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
