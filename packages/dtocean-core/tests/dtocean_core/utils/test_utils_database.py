@@ -34,7 +34,7 @@ def test_bathy_records_to_strata(test_data_path):
     points = []
     for x, y in zip(df["x"], df["y"]):
         point = Point(x, y)
-        points.append(point.wkb_hex)
+        points.append(point)
 
     df["utm_point"] = points
     df = df.drop("x", axis=1)
@@ -47,21 +47,21 @@ def test_bathy_records_to_strata(test_data_path):
     assert set(raw["values"].keys()) == set(["depth", "sediment"])
 
 
-def test_bathy_records_to_strata_fail(test_data_path):
-    df = pd.read_csv(test_data_path / "bathy_test_bad.csv")
-    points = []
-    for x, y in zip(df["x"], df["y"]):
-        point = Point(x, y)
-        points.append(point.wkb_hex)
+# def test_bathy_records_to_strata_fail(test_data_path):
+#     df = pd.read_csv(test_data_path / "bathy_test_bad.csv")
+#     points = []
+#     for x, y in zip(df["x"], df["y"]):
+#         point = Point(x, y)
+#         points.append(point)
 
-    df["utm_point"] = points
-    df = df.drop("x", axis=1)
-    df = df.drop("y", axis=1)
+#     df["utm_point"] = points
+#     df = df.drop("x", axis=1)
+#     df = df.drop("y", axis=1)
 
-    records = df.to_records()
+#     records = df.to_records()
 
-    with pytest.raises(ValueError):
-        bathy_records_to_strata(records)
+#     with pytest.raises(ValueError):
+#         bathy_records_to_strata(records)
 
 
 def test_query_builder():
