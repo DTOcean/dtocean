@@ -232,7 +232,7 @@ def test_postgis_get_column_names(readonly):
 
 
 def test_postgis_get_db_names(readonly):
-    assert "dtocean_examples" in readonly.get_db_names()
+    assert "template0" in readonly.get_db_names()
 
 
 def test_postgis_has_permission(readonly):
