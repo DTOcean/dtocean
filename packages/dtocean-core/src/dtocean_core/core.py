@@ -683,7 +683,6 @@ class Core:
             "pool": serial_pool,
             "simulations": sim_dicts,
             "active_index": project._active_index,
-            "db_cred": project._db_cred,
         }
         project_file_path = os.path.join(dtop_dir_path, "project.json")
 
@@ -779,7 +778,6 @@ class Core:
         load_project = Project(serial_project["title"], pool)
         load_project._simulations = simulations
         load_project._active_index = serial_project["active_index"]
-        load_project._db_cred = serial_project["db_cred"]
 
         # Remove the project directory if necessary
         if remove_dtop_dir:
