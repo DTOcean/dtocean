@@ -47,7 +47,12 @@ def send_data_to_bem_interface(
     in_stat = dataobj.check_inputs()
     if in_stat[0]:
         print("Sending data to the BEM class")
-        wec_obj = BemSolution(dataobj, db_folder, bin_folder, debug=False)
+        wec_obj = BemSolution(
+            dataobj,
+            db_folder,
+            bin_folder,
+            debug=False,
+        )
         wec_obj.call_module()
         assert wec_obj.reader is not None
 

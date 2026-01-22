@@ -25,8 +25,10 @@ Created on Wed Jun 15 09:15:30 2016
 
 import os
 import shutil
+import sys
+import threading
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import QThread, Signal, Slot
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -41,6 +43,41 @@ from .designer.ui_run_nemoh_form import Ui_Form as Ui_T2
 from .form_utils import clean_prj_folder, send_data_to_bem_interface
 from .utils import data_check as dck
 from .utils.file_utilities import split_string, split_string_multilist
+
+RUNNING_COVERAGE = "coverage" in sys.modules
+
+
+class ThreadBEM(QThread):
+    taskFinished = Signal()
+    error_detected = Signal(object, object, object)
+
+    def __init__(self, data, db_folder, bin_folder, read_nemoh_flag):
+        super().__init__()
+        self._data = data
+        self._db_folder = db_folder
+        self._bin_folder = bin_folder
+        self._read_nemoh_flag = read_nemoh_flag
+        self._stat = None
+
+    def run(self):  # pragma: no cover
+        if RUNNING_COVERAGE:
+            sys.settrace(threading.gettrace())
+
+        self._run()
+
+    def _run(self):
+        try:
+            self._stat = send_data_to_bem_interface(
+                self._data,
+                self._db_folder,
+                self._bin_folder,
+                force_read_flag=self._read_nemoh_flag,
+            )
+            self.taskFinished.emit()
+        except Exception:
+            etype, evalue, etraceback = sys.exc_info()
+            self.error_detected.emit(etype, evalue, etraceback)
+            self.taskFinished.emit()
 
 
 class RunNemoh(QWidget, Ui_T2):
@@ -60,6 +97,8 @@ class RunNemoh(QWidget, Ui_T2):
         self.btn_add_body.clicked.connect(self.add_data_tab_body)
         self.btn_remove_body.clicked.connect(self.remove_data_tab_body)
         self.btn_calculate_t2.clicked.connect(self.link_to_bem_interface)
+
+        self.btn_stop_calculation_t2.setEnabled(False)
 
         QToolTip.setFont(QFont("SansSerif", 11))
         self.label_2.setToolTip(
@@ -86,7 +125,6 @@ class RunNemoh(QWidget, Ui_T2):
             chl.stateChanged.connect(self.shared_dof_handles)
 
         self.btn_calculate_t2.setEnabled(False)
-        self.btn_stop_calculation_t2.setEnabled(False)
 
         self.cb_gen_array_mat.stateChanged.connect(self.gen_array_handles)
         self.gr_cyl_spec.setEnabled(False)
@@ -103,6 +141,8 @@ class RunNemoh(QWidget, Ui_T2):
         if not os.path.isdir(os.path.join(self._prj, self._raw)):
             os.mkdir(os.path.join(self._prj, self._raw))
 
+        self._active_thread = None
+
     def show_mesh(self):
         filename = str(self.mesh_f_t2.text())
         if not os.path.isfile(filename):
@@ -118,7 +158,6 @@ class RunNemoh(QWidget, Ui_T2):
         self._data = data
         self.populate_prj()
         self.btn_calculate_t2.setEnabled(False)
-        self.btn_stop_calculation_t2.setEnabled(False)
 
         if "hyd" in data.keys():
             self.trigger_results.emit(self._data["hyd"])
@@ -164,18 +203,52 @@ class RunNemoh(QWidget, Ui_T2):
                     "the File menu!"
                 )
 
+        self.btn_submit_t2.setEnabled(False)
         self.btn_calculate_t2.setEnabled(False)
-        self.btn_stop_calculation_t2.setEnabled(False)
-        stat = send_data_to_bem_interface(
+
+        self._active_thread = ThreadBEM(
             self._data,
             self.db_folder,
             self.bin_folder,
-            force_read_flag=read_nemoh_flag,
+            read_nemoh_flag,
         )
-        if stat[0]:
-            self._data["hyd"] = stat[1]
-            self.btn_submit_t2.setEnabled(True)
-            self.trigger_results.emit(stat[1])
+        self._active_thread.error_detected.connect(self._display_error)
+        self._active_thread.taskFinished.connect(self._run_finished)
+        self._active_thread.start()
+
+    @Slot()
+    def _run_finished(self):
+        assert self._data is not None
+
+        if self._active_thread is None:
+            raise RuntimeError("No simulation detected")
+
+        if (
+            self._active_thread._stat is not None
+            and self._active_thread._stat[0]
+        ):
+            self._data["hyd"] = self._active_thread._stat[1]
+            self.trigger_results.emit(self._active_thread._stat[1])
+
+        self._active_thread.wait()
+        self._active_thread = None
+
+        self.btn_submit_t2.setEnabled(True)
+        self.btn_calculate_t2.setEnabled(True)
+
+    @Slot(object, object, object)
+    def _display_error(self, etype, evalue, etraceback):
+        type_str = str(etype)
+        type_strs = type_str.split(".")
+        sane_type_str = type_strs[-1].replace("'>", "")
+
+        if sane_type_str[0].lower() in "aeiou":
+            article = "An"
+        else:
+            article = "A"
+
+        errMsg = "{} {} occurred: {}".format(article, sane_type_str, evalue)
+        QMessageBox.critical(self, "ERROR", errMsg)
 
     @classmethod
     def _ask_existing(cls):
@@ -205,10 +278,8 @@ class RunNemoh(QWidget, Ui_T2):
         status = self.check_input_data()
         if status:
             self.btn_calculate_t2.setEnabled(True)
-            self.btn_stop_calculation_t2.setEnabled(True)
         else:
             self.btn_calculate_t2.setEnabled(False)
-            self.btn_stop_calculation_t2.setEnabled(False)
 
     def check_input_data(self):
         if self._data is None:

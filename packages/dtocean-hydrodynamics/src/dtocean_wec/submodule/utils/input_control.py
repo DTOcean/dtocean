@@ -16,11 +16,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+from pathlib import Path
 
 from . import file_utilities as f_util
 
 
-def check_hydrodynamic_files(folder, get_array_mat=True):
+def check_hydrodynamic_files(folder: Path, get_array_mat=True):
     # using a sequential apporach this check comes after the check_folder.
     # therefore there is no need to re-check the directory existence
     base_file_list = ("Nemoh.cal",)
@@ -75,7 +76,7 @@ def check_hydrostatic_files(folder, n_bodies):
     return (True, "")
 
 
-def check_folder_tree(folder):
+def check_folder_tree(folder: Path):
     # level 0
     #    level0 = ('hydrodynamic', )
     #    sub_l0 = next(os.walk(folder))[1]
@@ -105,7 +106,7 @@ def check_folder_tree(folder):
     return (True, "")
 
 
-def check_nemoh_results(data_folder, get_array_mat=True):
+def check_nemoh_results(data_folder: Path, get_array_mat=True):
     # status_files = check_nemoh_inputs(data_folder)
     # if not status_files[0]:
     #    raise ValueError(status_files[1])
@@ -233,8 +234,3 @@ def check_filetype_in_folder(ftype, data_folder):
             ),
             "Remove the unused files",
         )
-
-
-if __name__ == "__main__":
-    print(check_nemoh_inputs(r"C:\Users\francesco\Desktop\Nemoh_project"))
-    print(check_nemoh_results(r"C:\Users\francesco\Desktop\Nemoh_project"))

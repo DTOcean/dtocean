@@ -66,6 +66,7 @@ def form_hyd_calculated(qtbot, form_hyd_filled: RunNemoh, main_window):
     form_hyd_filled.btn_submit_t2.click()
     qtbot.waitUntil(lambda: form_hyd_filled.btn_calculate_t2.isEnabled())
 
+    print(main_window.form_power.isEnabled())
     form_hyd_filled.btn_calculate_t2.click()
     qtbot.waitUntil(lambda: main_window.form_power.isEnabled())
 

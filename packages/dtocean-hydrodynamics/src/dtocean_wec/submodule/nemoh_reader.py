@@ -26,6 +26,7 @@ using a given WAMIT solution.
 """
 
 import os
+from pathlib import Path
 
 import numpy as np
 
@@ -87,8 +88,8 @@ class NemohReader:
         self.bodies = bodies
         self.n_bodies = len(bodies)
 
-        self._path_prj_hdy = data_folder
-        self._path_prj_dyn_res = os.path.join(self._path_prj_hdy, "results")
+        self._path_prj_hdy = Path(data_folder)
+        self._path_prj_dyn_res = self._path_prj_hdy / "results"
 
         self.periods = (
             2
@@ -275,7 +276,9 @@ class NemohReader:
     def read_results(self):
         k_hst = self.__read_hst()
 
+        print("pre read")
         (freq_ca, ca) = self.__read_ca()
+        print("post read")
         (freq_cm, cm) = self.__read_cm()
 
         (freq_fex, angle_fex, fex) = self.__read_fex()

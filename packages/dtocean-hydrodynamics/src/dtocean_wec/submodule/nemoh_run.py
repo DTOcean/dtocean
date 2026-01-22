@@ -41,8 +41,11 @@ from .hydrostatics import Hydrostatics_Nemohcal
 from .utils.mesh import MeshBem
 from .utils.multibody_analysis import MultiBodyAnalysis
 
+# Check if running coverage
+RUNNING_COVERAGE = "coverage" in sys.modules
+
 # Start logging
-module_logger = logging.getLogger(__name__)
+MODULE_LOGGER = logging.getLogger(__name__)
 
 
 class NemohExecute:
@@ -486,7 +489,7 @@ def _get_cylinder_radius(meshes):
     centroid = coord.mean(0)
 
     if not np.sqrt(np.sum(centroid[:2] ** 2)) / coord.max() < 1e-3:
-        module_logger.warning(
+        MODULE_LOGGER.warning(
             "WARNING: the centroid of the mesh file is not centered "
             "at the origin of the mesh coordinate system.\n"
             "Consider regenerating a mesh to satisfy this condition."

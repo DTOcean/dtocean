@@ -163,6 +163,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @Slot(str)
     def handle_message(self, message: str):
         self.console.insertPlainText(message)
+        self.console.ensureCursorVisible()
 
     @Slot()
     def handle_new_project(self):
