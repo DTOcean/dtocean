@@ -6,6 +6,8 @@ from dtocean_core.core import Core
 from dtocean_core.menu import ModuleMenu, ProjectMenu
 from dtocean_core.pipeline import Tree, _get_connector
 
+from dtocean_plugins.modules.hydrodynamics import _convert_results
+
 
 @pytest.fixture(scope="module")
 def core():
@@ -283,3 +285,15 @@ def test_tidal_interface_entry_fail(
     with pytest.raises(ValueError):
         interface.connect(debug_entry=True)
         interface.connect(debug_entry=True)
+
+
+def test_convert_results(outputs_wp2_wave):
+    output = _convert_results(
+        outputs_wp2_wave["wp2_outputs"],
+        "Wave Floating",
+        outputs_wp2_wave["occurrence_matrix"],
+        0.286,
+        0.013,
+    )
+
+    assert output

@@ -29,6 +29,7 @@ hydrodynamic module.
 
 import logging
 from pprint import pformat
+from typing import Any, Optional, Sequence
 
 import numpy as np
 
@@ -80,7 +81,7 @@ class WP2output(object):
          q_array (float)[]: q-factor for the array, calculated as energy
            produced by the array over the energy produced by the device without
            interaction times the number of devices.
-         TI (float)[TIDAL ONLY]: turbulence intensity per seastate
+         TI (numpy.ndarray)[TIDAL ONLY]: turbulence intensity per seastate
          power_matrix_machine (numpy.ndarray) [WAVE ONLY]:
              power matrix of the single WEC.
          main_direction (numpy.ndarray):
@@ -94,20 +95,20 @@ class WP2output(object):
 
     def __init__(
         self,
-        AEP_array,
+        AEP_array: float,
         power_prod_perD_perS: np.ndarray,
-        AEP_perD,
-        power_prod_perD,
-        Device_Positon,
-        Nbodies,
-        Resource_reduction,
-        Device_Model,
-        q_perD,
-        q_array,
-        main_direction,
-        TI=None,
-        power_matrix_machine=None,
-        power_matrix_dims=None,
+        AEP_perD: np.ndarray,
+        power_prod_perD: np.ndarray,
+        Device_Positon: dict[str, Sequence[float]],
+        Nbodies: int,
+        Resource_reduction: float,
+        Device_Model: Optional[dict[str, Any]],
+        q_perD: np.ndarray,
+        q_array: float,
+        main_direction: np.ndarray,
+        TI: Optional[np.ndarray] = None,
+        power_matrix_machine: Optional[np.ndarray] = None,
+        power_matrix_dims: Optional[dict[str, np.ndarray]] = None,
     ):
         self.Annual_Energy_Production_Array = AEP_array
         self.power_prod_perD_perS = power_prod_perD_perS

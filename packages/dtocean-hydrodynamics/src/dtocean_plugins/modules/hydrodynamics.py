@@ -29,7 +29,7 @@ Note:
 
 import pickle
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Sequence
 
 import numpy as np
 from mdo_engine.boundary.interface import MaskVariable
@@ -38,6 +38,7 @@ from polite_config.paths import UserDataPath
 
 from dtocean_hydro.input import WP2_MachineData, WP2_SiteData, WP2input
 from dtocean_hydro.main import WP2
+from dtocean_hydro.output import WP2output
 from dtocean_hydro.utils.convert import (
     bearing_to_vector,
     check_bin_widths,
@@ -354,7 +355,7 @@ class HydroInterface(ModuleInterface):
 
         return id_map
 
-    def connect(self, debug_entry=False, export_data=False):
+    def connect(self, debug_entry=False, export_data=True):
         """The connect method is used to execute the external program and
         populate the interface data store with values.
 
@@ -762,153 +763,231 @@ class HydroInterface(ModuleInterface):
             pkl_path = debug_path / "hydrodynamics_outputs.pkl"
             pickle.dump(result, open(pkl_path, "wb"))
 
-        AEP_per_device = {}
-        pow_per_device = {}
-        pmf_per_device = {}
-        layout = {}
-        q_factor_per_device = {}
-        dev_ids = []
+        converted = _convert_results(
+            result,
+            self.data.type,
+            occurrence_matrix,
+            self.data.rated_power_device,
+            self.data.pow_bins,
+        )
 
         # Layout
-        for dev_id, coords in result.Array_layout.items():
-            dev_id = dev_id.lower()
-            layout[dev_id] = np.array(coords)
-            dev_ids.append(dev_id)
+        self.data.device_position = converted["device_position"]
+        self.data.n_bodies = converted["n_bodies"]
 
-        dev_ids = natsorted(dev_ids)
-
-        self.data.device_position = layout
-        self.data.n_bodies = int(result.Nbodies)
-
-        # Total annual energy (convert to MWh)
-        self.data.AEP_array = float(result.Annual_Energy_Production_Array) / 1e6
-
-        # Array capacity factor
-        ideal_energy = (
-            365 * 24 * self.data.n_bodies * self.data.rated_power_device
-        )
-        self.data.array_efficiency = self.data.AEP_array / ideal_energy
-
-        # Annual energy per device (convert to MWh)
-        for dev_id, AEP in zip(dev_ids, result.Annual_Energy_Production_perD):
-            AEP_per_device[dev_id] = float(AEP) / 1e6  # SimpleDIct
-
-        self.data.AEP_per_device = AEP_per_device
-
-        # Mean power per device (convert to MW)
-        for dev_id, power in zip(dev_ids, result.power_prod_perD):
-            pow_per_device[dev_id] = float(power) / 1e6  # SimpleDIct
-
-        self.data.pow_per_device = pow_per_device
-
-        for dev_id, pow_per_state in zip(dev_ids, result.power_prod_perD_perS):
-            # Power probability mass function (convert to MW)
-            flat_prob = occurrence_matrix["p"].flatten("F")
-            pow_list = pow_per_state / 1e6
-
-            assert np.isclose(flat_prob.sum(), 1.0)
-            assert len(flat_prob) == len(pow_list)
-
-            # Find uniques powers
-            unique_powers = []
-
-            for power in pow_list:
-                if not np.isclose(power, unique_powers).any():
-                    unique_powers.append(power)
-
-            # Catch any matching powers and sum the probabilities
-            powers = []
-            probs = []
-
-            match_index_check = []
-
-            for power in unique_powers:
-                matches = np.isclose(power, pow_list)
-                assert len(matches) >= 1
-                match_idx = np.where(matches)
-                match_probs = flat_prob[match_idx]
-                match_index_check.extend(match_idx[0].tolist())
-
-                powers.append(power)
-                probs.append(match_probs.sum())
-
-                # Nullify the found indexes to ensure uniqueness
-                pow_list[match_idx] = np.nan
-                flat_prob[match_idx] = np.nan
-
-            repeated_indexes = set(
-                [x for x in match_index_check if match_index_check.count(x) > 1]
-            )
-
-            assert len(repeated_indexes) == 0
-            assert np.isclose(sum(probs), 1.0)
-
-            pmf_per_device[dev_id] = np.array(zip(powers, probs))
-
-        # Power probability histograms
-        dev_pow_hists = make_power_histograms(
-            pmf_per_device, self.data.rated_power_device, self.data.pow_bins
-        )
-
-        self.data.pow_pmf_per_device = pmf_per_device
-        self.data.pow_hist_per_device = dev_pow_hists
+        # Performance
+        self.data.AEP_array = converted["AEP_array"]
+        self.data.array_efficiency = converted["array_efficiency"]
+        self.data.AEP_per_device = converted["AEP_per_device"]
+        self.data.pow_per_device = converted["pow_per_device"]
+        self.data.pow_pmf_per_device = converted["pow_pmf_per_device"]
+        self.data.pow_hist_per_device = converted["pow_hist_per_device"]
 
         # Resource modification
-        self.data.q_factor_per_device = q_factor_per_device
-        self.data.q_factor_array = result.q_factor_Array
-
-        self.data.resource_reduction = float(result.Resource_Reduction)
-
-        for dev_id, q_factor in zip(dev_ids, result.q_factor_Per_Device):
-            q_factor_per_device[dev_id] = q_factor
+        self.data.q_factor_per_device = converted["q_factor_per_device"]
+        self.data.q_factor_array = converted["q_factor_array"]
+        self.data.resource_reduction = converted["resource_reduction"]
 
         # Main Direction
-        self.data.main_direction = vector_to_bearing(*result.main_direction)
+        self.data.main_direction = converted["main_direction"]
 
         # Device type specific outputs
         if "Wave" in self.data.type:
-            # External forces
-            fex_dict = result.Hydrodynamic_Parameters
-            modes = np.array(fex_dict["mode_def"])
-            freqs = np.array(fex_dict["wave_fr"])
+            self.data.ext_forces = converted["ext_forces"]
+            self.data.power_matrix = converted["power_matrix"]
 
-            # Convert directions to bearings
-            bearings = [radians_to_bearing(x) for x in fex_dict["wave_dir"]]
-            dirs = np.array(bearings)
 
-            fex_raw = (
-                np.zeros([len(modes), len(freqs), len(dirs)], dtype=complex)
-                * np.nan
-            )
+def _convert_results(
+    result: WP2output,
+    device_type: str,
+    occurrence_matrix: dict[str, Any],
+    rated_power_device: float,
+    pow_bins: Optional[float],
+):
+    converted = {}
 
-            for i, mode_fex in enumerate(fex_dict["fex"]):
-                if mode_fex:
-                    fex_raw[i, :, :] = np.expand_dims(mode_fex, axis=1)
+    AEP_per_device = {}
+    pow_per_device = {}
+    pmf_per_device = {}
+    layout = {}
+    q_factor_per_device = {}
+    dev_ids = []
 
-            fex_xgrid = {"values": fex_raw, "coords": [modes, freqs, dirs]}
+    layout, dev_ids = _get_layout(result.Array_layout)
+    n_bodies = int(result.Nbodies)
 
-            self.data.ext_forces = fex_xgrid
+    # Total annual energy (convert to MWh)
+    AEP_array = float(result.Annual_Energy_Production_Array) / 1e6
 
-            ## Power Matrix in kW
-            assert result.power_matrix_machine is not None
-            assert result.power_matrix_dims is not None
-            power_matrix = result.power_matrix_machine / 1000.0
-            power_matrix_dims = result.power_matrix_dims
+    # Array capacity factor
+    ideal_energy = 365 * 24 * n_bodies * rated_power_device
 
-            # Convert directions to bearings
-            bearings = [
-                radians_to_bearing(x) for x in power_matrix_dims["dirs"]
-            ]
+    # Annual energy per device (convert to MWh)
+    for dev_id, AEP in zip(dev_ids, result.Annual_Energy_Production_perD):
+        AEP_per_device[dev_id] = float(AEP) / 1e6  # SimpleDIct
 
-            occurrence_matrix_coords = [
-                power_matrix_dims["te"],
-                power_matrix_dims["hm0"],
-                bearings,
-            ]
+    # Mean power per device (convert to MW)
+    for dev_id, power in zip(dev_ids, result.power_prod_perD):
+        pow_per_device[dev_id] = float(power) / 1e6  # SimpleDIct
 
-            matrix_xgrid = {
-                "values": power_matrix,
-                "coords": occurrence_matrix_coords,
-            }
+    pmf_per_device = _get_pmf_per_device(
+        dev_ids,
+        result.power_prod_perD_perS,
+        occurrence_matrix,
+    )
 
-            self.data.power_matrix = matrix_xgrid
+    # Power probability histograms
+    dev_pow_hists = make_power_histograms(
+        pmf_per_device,
+        rated_power_device,
+        pow_bins,
+    )
+
+    for dev_id, q_factor in zip(dev_ids, result.q_factor_Per_Device):
+        q_factor_per_device[dev_id] = q_factor
+
+    converted["device_position"] = layout
+    converted["n_bodies"] = n_bodies
+    converted["AEP_array"] = AEP_array
+    converted["array_efficiency"] = AEP_array / ideal_energy
+    converted["AEP_per_device"] = AEP_per_device
+    converted["pow_per_device"] = pow_per_device
+
+    converted["pow_pmf_per_device"] = pmf_per_device
+    converted["pow_hist_per_device"] = dev_pow_hists
+
+    # Resource modification
+    converted["q_factor_per_device"] = q_factor_per_device
+    converted["q_factor_array"] = result.q_factor_Array
+    converted["resource_reduction"] = float(result.Resource_Reduction)
+
+    # Main Direction
+    converted["main_direction"] = vector_to_bearing(*result.main_direction)
+
+    # Device type specific outputs
+    if "Wave" not in device_type:
+        return converted
+
+    # External forces
+    assert result.Hydrodynamic_Parameters is not None
+    assert result.power_matrix_machine is not None
+    assert result.power_matrix_dims is not None
+
+    fex_xgrid, matrix_xgrid = _get_external_forces(
+        result.Hydrodynamic_Parameters,
+        result.power_matrix_machine,
+        result.power_matrix_dims,
+    )
+    converted["ext_forces"] = fex_xgrid
+    converted["power_matrix"] = matrix_xgrid
+
+    return converted
+
+
+def _get_layout(array_layout: dict[str, Sequence[float]]):
+    layout = {}
+    dev_ids = []
+
+    # Layout
+    for dev_id, coords in array_layout.items():
+        dev_id = dev_id.lower()
+        layout[dev_id] = np.array(coords)
+        dev_ids.append(dev_id)
+
+    return layout, natsorted(dev_ids)
+
+
+def _get_pmf_per_device(
+    dev_ids: Sequence[str],
+    power_prod_perD_perS: np.ndarray,
+    occurrence_matrix: dict[str, Any],
+):
+    pmf_per_device: dict[str, np.ndarray] = {}
+
+    for dev_id, pow_per_state in zip(dev_ids, power_prod_perD_perS):
+        # Power probability mass function (convert to MW)
+        flat_prob = occurrence_matrix["p"].flatten("F")
+        pow_list = pow_per_state / 1e6
+
+        assert np.isclose(flat_prob.sum(), 1.0)
+        assert len(flat_prob) == len(pow_list)
+
+        # Find uniques powers
+        unique_powers = []
+
+        for power in pow_list:
+            if not np.isclose(power, unique_powers).any():
+                unique_powers.append(power)
+
+        # Catch any matching powers and sum the probabilities
+        powers = []
+        probs = []
+
+        match_index_check = []
+
+        for power in unique_powers:
+            matches = np.isclose(power, pow_list)
+            assert len(matches) >= 1
+            match_idx = np.where(matches)
+            match_probs = flat_prob[match_idx]
+            match_index_check.extend(match_idx[0].tolist())
+
+            powers.append(power)
+            probs.append(match_probs.sum())
+
+            # Nullify the found indexes to ensure uniqueness
+            pow_list[match_idx] = np.nan
+            flat_prob[match_idx] = np.nan
+
+        repeated_indexes = set(
+            [x for x in match_index_check if match_index_check.count(x) > 1]
+        )
+
+        assert len(repeated_indexes) == 0
+        assert np.isclose(sum(probs), 1.0)
+
+        pmf_per_device[dev_id] = np.array(list(zip(powers, probs)))
+
+    return pmf_per_device
+
+
+def _get_external_forces(
+    fex_dict: dict[str, Any],
+    power_matrix_machine: np.ndarray,
+    power_matrix_dims: dict[str, np.ndarray],
+):
+    modes = np.array(fex_dict["mode_def"])
+    freqs = np.array(fex_dict["wave_fr"])
+
+    # Convert directions to bearings
+    bearings = [radians_to_bearing(x) for x in fex_dict["wave_dir"]]
+    dirs = np.array(bearings)
+
+    fex_raw = (
+        np.zeros([len(modes), len(freqs), len(dirs)], dtype=complex) * np.nan
+    )
+
+    for i, mode_fex in enumerate(fex_dict["fex"]):
+        if mode_fex:
+            fex_raw[i, :, :] = np.expand_dims(mode_fex, axis=1)
+
+    fex_xgrid = {"values": fex_raw, "coords": [modes, freqs, dirs]}
+
+    ## Power Matrix in kW
+    power_matrix = power_matrix_machine / 1000.0
+
+    # Convert directions to bearings
+    bearings = [radians_to_bearing(x) for x in power_matrix_dims["dirs"]]
+
+    occurrence_matrix_coords = [
+        power_matrix_dims["te"],
+        power_matrix_dims["hm0"],
+        bearings,
+    ]
+
+    matrix_xgrid = {
+        "values": power_matrix,
+        "coords": occurrence_matrix_coords,
+    }
+
+    return fex_xgrid, matrix_xgrid

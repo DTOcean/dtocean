@@ -1,9 +1,13 @@
+import pickle
 import shutil
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
+
+from dtocean_hydro.output import WP2output
 
 FILE = Path(__file__).resolve()
 
@@ -23,6 +27,21 @@ def inputs_wp2_tidal(test_data_path):
 def inputs_wp2_wave(test_data_path):
     yield _make_test_data(test_data_path, "inputs_wp2_wave")
     _remove_test_data("inputs_wp2_wave")
+
+
+@pytest.fixture(scope="session")
+def outputs_wp2_wave(test_data_path):
+    dst_path_pkl = _make_test_data(test_data_path, "outputs_wp2_wave")
+    with open(dst_path_pkl, "rb") as dataf:
+        # Pickle dictionary using protocol 0.
+        test_data: dict[str, Any] = pickle.load(dataf)
+
+    yield {
+        "wp2_outputs": WP2output(**test_data["wp2_outputs"]),
+        "occurrence_matrix": test_data["occurrence_matrix"],
+    }
+
+    _remove_test_data("outputs_wp2_wave")
 
 
 def _make_test_data(data_dir: Path, name: str):
