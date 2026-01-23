@@ -23,6 +23,7 @@ Created on Wed Jun 15 09:15:29 2016
 
 import os
 import shutil
+from pathlib import Path
 
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QFont
@@ -277,7 +278,7 @@ class ReadNemoh(QWidget, Ui_T3):
 
     def check_input_data(self):
         folder_stat = in_ck.check_nemoh_results(
-            self.le_data_t3.text(),
+            Path(self.le_data_t3.text()),
             get_array_mat=self.cb_gen_array_mat_t3.isChecked(),
         )
         if folder_stat[0]:
