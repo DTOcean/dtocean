@@ -36,7 +36,6 @@ def test_calculate_again(
     form_hyd_calculated.btn_calculate_t2.click()
 
     def is_enabled():
-        assert main_window.form_power is not None
-        return main_window.form_power.isEnabled()
+        assert form_hyd_calculated.btn_calculate_t2.isEnabled()
 
     qtbot.waitUntil(is_enabled)

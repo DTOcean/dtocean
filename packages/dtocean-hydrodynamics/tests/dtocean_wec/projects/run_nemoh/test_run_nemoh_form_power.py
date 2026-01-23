@@ -32,7 +32,6 @@ def form_power_cylinder(
         lambda *args: str(heaving_cylinder_path),
     )
 
-    qtbot.wait(1000)
     form_power.btn_browse_pfit.click()
     qtbot.waitUntil(lambda: form_power.btn_load_pfit.isEnabled())
 
