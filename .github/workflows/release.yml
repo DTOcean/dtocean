@@ -398,6 +398,7 @@ jobs:
         run: poetry build
 
       - name: Publish package distributions to PyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.POLITE_CONFIG_DIR }}/dist
