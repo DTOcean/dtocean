@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+
 import numpy
 import pandas
 import pytest
@@ -12,7 +14,8 @@ from PySide6.QtCore import (
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 from dtocean_qt.pandas.views.CustomDelegates import (
     BigIntSpinboxDelegate,
-    CustomDoubleSpinboxDelegate,
+    DateTimeDelegate,
+    DoubleSpinboxDelegate,
     TextDelegate,
     createDelegate,
 )
@@ -111,10 +114,12 @@ class TestCustomDelegates(object):
         model = tableView.model()
         model.setDataFrame(data)
         for i, delegate in enumerate([dlg]):
+            assert not isinstance(delegate, DateTimeDelegate)
             assert tableView.itemDelegateForColumn(i) == delegate
 
             option = QtWidgets.QStyleOptionViewItem()
             editor = delegate.createEditor(tableView, option, index)
+
             delegate.setEditorData(editor, index)
             assert not isinstance(editor, QtWidgets.QLineEdit)
             assert editor.value() == index.data()
@@ -128,7 +133,7 @@ class TestCustomDelegates(object):
                 assert isinstance(delegate, BigIntSpinboxDelegate)
             elif dtype in DataFrameModel._floatDtypes:
                 info = numpy.finfo(dtype)
-                assert isinstance(delegate, CustomDoubleSpinboxDelegate)
+                assert isinstance(delegate, DoubleSpinboxDelegate)
                 assert (
                     delegate.decimals
                     == DataFrameModel._float_precisions[str(value.dtype)]
@@ -189,3 +194,46 @@ class TestTextDelegate(object):
         tableView.setCurrentIndex(model.index(0, 1))
 
         assert index.data(Qt.ItemDataRole.DisplayRole) == "f"
+
+
+class TestDateTimeDelegate(object):
+    @pytest.fixture
+    def dataFrame(self):
+        data = [
+            [datetime.datetime.fromisoformat("2000-01-01 00:00"), 1, 2, 3, 4],
+            [datetime.datetime.fromisoformat("2000-01-01 12:00"), 6, 7, 8, 9],
+            [
+                datetime.datetime.fromisoformat("2000-01-02 00:00"),
+                11,
+                12,
+                13,
+                14,
+            ],
+        ]
+        columns = ["DateTime", "Bar", "Spam", "Eggs", "Baz"]
+        dataFrame = pandas.DataFrame(data, columns=columns)
+        return dataFrame
+
+    def test_editing(self, dataFrame, qtbot):
+        model = DataFrameModel(dataFrame)
+        tableView = QtWidgets.QTableView()
+
+        qtbot.addWidget(tableView)
+        tableView.setModel(model)
+
+        createDelegate(numpy.dtype("datetime64[us]"), 0, tableView)
+        tableView.show()
+        index = model.index(0, 0)
+
+        assert not model.editable
+        model.enableEditing(True)
+        assert model.editable
+
+        now = datetime.datetime.now()
+        tableView.setCurrentIndex(index)
+        tableView.edit(index)
+        editor = list(tableView.findChildren(QtWidgets.QDateTimeEdit))[0]
+        editor.setDateTime(now)  # type: ignore
+        tableView.setCurrentIndex(model.index(0, 1))
+
+        assert index.data(Qt.ItemDataRole.DisplayRole) == now

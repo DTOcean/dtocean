@@ -38,7 +38,7 @@ class Example(QtWidgets.QWidget):
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
         self.imgContainer = QtWidgets.QLabel(self)
-        img = QtGui.QPixmap(":/europe.png")
+        img = QtGui.QPixmap("europe.png")
         self.imgContainer.setPixmap(img)
         size = img.size()
         self.imgContainer.resize(size.width(), self.height())

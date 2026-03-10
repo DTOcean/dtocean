@@ -2,6 +2,7 @@
 
 
 import numpy
+import pandas as pd
 from PySide6 import QtWidgets
 from PySide6.QtCore import (
     Qt,
@@ -30,13 +31,15 @@ def createDelegate(dtype, column, view):
         delegate = BigIntSpinboxDelegate(intInfo.min, intInfo.max, parent=view)
     elif dtype in model._floatDtypes:
         floatInfo = numpy.finfo(dtype)
-        delegate = CustomDoubleSpinboxDelegate(
+        delegate = DoubleSpinboxDelegate(
             floatInfo.min,
             floatInfo.max,
             decimals=model._float_precisions[str(dtype)],
             parent=view,
         )
-    elif dtype is numpy.dtype(object):
+    elif dtype in model._dateDtypes:
+        delegate = DateTimeDelegate(parent=view)
+    elif pd.api.types.is_string_dtype(dtype):
         delegate = TextDelegate(parent=view)
     else:
         delegate = None
@@ -131,8 +134,18 @@ class BigIntSpinboxDelegate(QtWidgets.QItemDelegate):
         """
         spinBox.setGeometry(option.rect)
 
+    def sizeHint(self, option, index):
+        original = super(BigIntSpinboxDelegate, self).sizeHint(
+            option,
+            index,
+        )
+        new_width = original.width() + 75
+        original.setWidth(new_width)
 
-class CustomDoubleSpinboxDelegate(QtWidgets.QItemDelegate):
+        return original
+
+
+class DoubleSpinboxDelegate(QtWidgets.QItemDelegate):
     """delegate for floats.
 
     Attributes:
@@ -155,7 +168,7 @@ class CustomDoubleSpinboxDelegate(QtWidgets.QItemDelegate):
             decimals (int, optional): decimals to use.  defaults to 2.
 
         """
-        super(CustomDoubleSpinboxDelegate, self).__init__(parent)
+        super(DoubleSpinboxDelegate, self).__init__(parent)
 
         self.minimum = minimum
         self.maximum = maximum
@@ -213,6 +226,16 @@ class CustomDoubleSpinboxDelegate(QtWidgets.QItemDelegate):
         """
         editor.setGeometry(option.rect)
 
+    def sizeHint(self, option, index):
+        original = super(DoubleSpinboxDelegate, self).sizeHint(
+            option,
+            index,
+        )
+        new_width = original.width() + 75
+        original.setWidth(new_width)
+
+        return original
+
 
 class TextDelegate(QtWidgets.QItemDelegate):
     """delegate for all kind of text."""
@@ -268,6 +291,69 @@ class TextDelegate(QtWidgets.QItemDelegate):
             index (QModelIndex): model data index.
         """
         editor.setGeometry(option.rect)
+
+
+class DateTimeDelegate(QtWidgets.QItemDelegate):
+    """delegate for floats.
+
+    Attributes:
+        maximum (float): minimum allowed number in QDoubleSpinBox.
+        minimum (float): maximum allowed number in QDoubleSpinBox.
+        singleStep (int): amount of steps to stepUp QDoubleSpinBox
+        decimals (int): decimals to use
+
+    """
+
+    def __init__(self, parent=None):
+        super(DateTimeDelegate, self).__init__(parent)
+
+    def createEditor(self, parent, option, index):
+        """Returns the widget used to edit the item specified by index for editing. The parent widget and style option are used to control how the editor widget appears.
+
+        Args:
+            parent (QWidget): parent widget.
+            option (QStyleOptionViewItem): controls how editor widget appears.
+            index (QModelIndex): model data index.
+        """
+        editor = QtWidgets.QDateTimeEdit(parent)
+        return editor
+
+    def setEditorData(self, editor, index):
+        assert isinstance(editor, QtWidgets.QDateTimeEdit)
+        value = index.model().data(index, Qt.ItemDataRole.EditRole)
+        editor.setDateTime(value.toPython())
+
+    def setModelData(self, editor: QtWidgets.QDateTimeEdit, model, index):
+        """Gets data from the editor widget and stores it in the specified model at the item index.
+
+        Args:
+            spinBox (QDoubleSpinBox): editor widget.
+            model (QAbstractItemModel): parent model.
+            index (QModelIndex): model data index.
+        """
+        editor.interpretText()
+        value = editor.dateTime().toPython()
+        model.setData(index, value, Qt.ItemDataRole.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        """Updates the editor for the item specified by index according to the style option given.
+
+        Args:
+            spinBox (QDoubleSpinBox): editor widget.
+            option (QStyleOptionViewItem): controls how editor widget appears.
+            index (QModelIndex): model data index.
+        """
+        editor.setGeometry(option.rect)
+
+    def sizeHint(self, option, index):
+        original = super(DateTimeDelegate, self).sizeHint(
+            option,
+            index,
+        )
+        new_width = original.width() + 75
+        original.setWidth(new_width)
+
+        return original
 
 
 class DtypeComboDelegate(QtWidgets.QStyledItemDelegate):
@@ -349,3 +435,10 @@ class DtypeComboDelegate(QtWidgets.QStyledItemDelegate):
     def currentIndexChanged(self):
         """Emits a signal after changing the selection for a `QComboBox`."""
         self.commitData.emit(self.sender())
+
+    def sizeHint(self, option, index):
+        original = super(DtypeComboDelegate, self).sizeHint(option, index)
+        new_width = original.width() + 75
+        original.setWidth(new_width)
+
+        return original

@@ -1,17 +1,22 @@
-name: dtocean actions
+name: dtocean tests
 on:
   push:
-    branches: [ next ]
+    branches:
+      - main
     paths:
       - '.codecov.yml'
-      - '.github/workflows/dtocean.yml'
+      - '.github/workflows/test-dtocean.yml'
       - 'packages/dtocean/**'
+      - 'poetry.lock'
   pull_request:
-    branches: [ next ]
+    branches:
+      - main
     paths:
       - '.codecov.yml'
-      - '.github/workflows/dtocean.yml'
+      - '.github/workflows/test-dtocean.yml'
       - 'packages/dtocean/**'
+      - 'poetry.lock'
+
 jobs:
   pytest:
     name: Unit tests
@@ -33,11 +38,13 @@ jobs:
           python-version: 3.12
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
-      - name: Install poetry-dynamic-versioning
-        run: poetry self add poetry_dynamic_versioning
+      - name: Install poetry plugins
+        run: |
+          poetry self add poetry_dynamic_versioning
+          poetry self add poetry-monoranger-plugin
       - name: Install package
         run: |
-          poetry install --with test
+          poetry install --only dtocean,test
       - name: Run tests
         run: |
           poetry run pytest --cov src --cov-report=xml tests
@@ -61,11 +68,13 @@ jobs:
           python-version: 3.12
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
-      - name: Install poetry-dynamic-versioning
-        run: poetry self add poetry_dynamic_versioning
+      - name: Install poetry plugins
+        run: |
+          poetry self add poetry_dynamic_versioning
+          poetry self add poetry-monoranger-plugin
       - name: Install package
         run: |
-          poetry install --with audit
+          poetry install --only audit,dtocean
       - name: Run ruff
         run: |
           poetry run ruff check --output-format github

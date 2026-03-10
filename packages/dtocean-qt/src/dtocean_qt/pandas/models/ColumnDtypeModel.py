@@ -210,7 +210,7 @@ class ColumnDtypeModel(QAbstractTableModel):
                 columnName = self._dataFrame.columns[index.row()]
 
                 try:
-                    if dtype == np.dtype("<M8[ns]"):
+                    if dtype in SupportedDtypes.datetimeTypes():
                         if currentDtype in SupportedDtypes.boolTypes():
                             raise Exception(
                                 "Can't convert a boolean value into a datetime value."

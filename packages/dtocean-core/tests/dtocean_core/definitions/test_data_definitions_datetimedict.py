@@ -94,10 +94,16 @@ def test_DateTimeDict_auto_file(tmpdir, fext):
     result = test.get_data(fin.data.result, meta)
 
     # Time zone awareness is lost and microseconds are lost in xls case and
-    assert result["a"].replace(microsecond=0) == raw["a"].replace(microsecond=0)
-    assert result["b"].replace(microsecond=0) == raw["b"].astimezone(
-        pytz.utc
-    ).replace(tzinfo=None).replace(microsecond=0)
+    assert round_seconds(result["a"]) == round_seconds(raw["a"])
+    assert round_seconds(result["b"]) == round_seconds(
+        raw["b"].astimezone(pytz.utc).replace(tzinfo=None)
+    )
+
+
+def round_seconds(obj: datetime.datetime) -> datetime.datetime:
+    if obj.microsecond >= 500_000:
+        obj += datetime.timedelta(seconds=1)
+    return obj.replace(microsecond=0)
 
 
 def test_DateTimeDict_auto_file_input_bad_header(mocker):

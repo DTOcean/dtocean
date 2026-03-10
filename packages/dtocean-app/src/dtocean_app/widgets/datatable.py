@@ -32,6 +32,7 @@ https://opensource.org/licenses/MIT
 
 import csv
 import io
+from typing import Any
 
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 from dtocean_qt.pandas.views.CustomDelegates import createDelegate
@@ -304,16 +305,20 @@ class DataTableWidget(QtWidgets.QWidget):
             columns = sorted(index.column() for index in selection)
             rowcount = rows[-1] - rows[0] + 1
             colcount = columns[-1] - columns[0] + 1
-            table = [[""] * colcount for _ in range(rowcount)]
+            table: list[Any] = [[""] * colcount for _ in range(rowcount)]
 
             for index in selection:
                 row = index.row() - rows[0]
                 column = index.column() - columns[0]
-                table[row][column] = index.data()
+                data = index.data()
+                if isinstance(data, QtCore.QDateTime):
+                    data = data.toPython()
+
+                table[row][column] = data
 
             stream = io.StringIO()
             csv.writer(stream).writerows(table)
-            QtWidgets.QApplication().clipboard().setText(stream.getvalue())
+            QtWidgets.QApplication.clipboard().setText(stream.getvalue())
 
     @QtCore.Slot(bool)
     def enableEditing(self, enabled):

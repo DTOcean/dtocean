@@ -9,7 +9,7 @@ PACKAGE_DIR = Path(__file__).parents[1].resolve()
 DST_DIR = PACKAGE_DIR / "src" / "dtocean_docs" / "html"
 
 
-def _build_docs(srcdir: str, confdir: str, outdir: str):
+def _build_docs(srcdir: Path, confdir: Path, outdir: Path):
     with (
         patch_docutils(confdir),
         docutils_namespace(),

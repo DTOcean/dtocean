@@ -673,8 +673,8 @@ class Core:
             with open(sim_file_path, "w") as fstream:
                 json.dump(serial_sim, fstream)
 
-            sim_store_path = os.path.join(sim_dir_name, sim_file_name)
-            sim_dicts.append({"file_path": sim_store_path})
+            sim_store_path = Path(sim_dir_name) / sim_file_name
+            sim_dicts.append({"file_path": sim_store_path.as_posix()})
 
         # Create a serial representation for the project and save it
         serial_project = {
@@ -742,8 +742,8 @@ class Core:
         simulations = []
 
         for sim_dict in serial_project["simulations"]:
-            sim_file_relative = sim_dict["file_path"]
-            sim_file_path = os.path.join(dtop_dir_path, sim_file_relative)
+            sim_file_relative = Path(sim_dict["file_path"])
+            sim_file_path = Path(dtop_dir_path) / sim_file_relative
 
             with open(sim_file_path, "r") as fstream:
                 serial_sim = json.load(fstream)

@@ -743,7 +743,7 @@ class HydroInterface(ModuleInterface):
         if export_data:
             userdir = UserDataPath("dtocean_core", "DTOcean", "config")
             debug_path = userdir.parent / "debug"
-            debug_path.mkdir(exist_ok=True)
+            debug_path.mkdir(exist_ok=True, parents=True)
 
             pkl_path = debug_path / "hydrodynamics_inputs.pkl"
             pickle.dump(iWP2input, open(pkl_path, "wb"))

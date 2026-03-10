@@ -1,14 +1,11 @@
 name: poetry install
 description: 'Install a Python package using Poetry'
 inputs:
-  root-directory:
-    description: 'Source code root directory'
-    required: true
   python-version:
     description: 'Python version to install (defaults to 3.12)'
     default: "3.12"
   groups:
-    description: 'Optional groups to include, as a json list'
+    description: 'Groups to include, as a json list'
     default: "[]"
 
 runs:
@@ -18,19 +15,21 @@ runs:
       shell: bash
       run: |
         GROUPS_ARG=""
-
-        for element in ${{ join(fromJSON(inputs.groups), ' ') }}; do
-            GROUPS_ARG="${GROUPS_ARG} --with ${element}"
-        done
-
+        GROUPS_INPUT="${{ join(fromJSON(inputs.groups), ',') }}"
+        if [[ -n "$GROUPS_INPUT" ]]; then
+           GROUPS_ARG=" --only ${GROUPS_INPUT}";
+        fi
         echo "GROUPS_ARG=${GROUPS_ARG}" >> $GITHUB_ENV
     - uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
     - name: Install poetry
       uses: abatilo/actions-poetry@v2
+    - name: Install poetry-monoranger-plugin
+      shell: bash
+      run: |
+        poetry self add poetry-monoranger-plugin
     - name: Install package
       shell: bash
       run: |
-        cd "${{ inputs.root-directory }}"
         poetry install${GROUPS_ARG}

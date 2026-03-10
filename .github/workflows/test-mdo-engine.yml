@@ -1,30 +1,37 @@
-name: dtocean-core actions
+name: mdo-engine tests
 on:
   push:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/dtocean-core.yml'
-      - 'packages/dtocean-app/**'
-      - 'packages/dtocean-core/**'
-      - 'packages/mdo-engine/**'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-mdo-engine.yml"
+      - "packages/mdo-engine/**"
+      - "packages/dtocean-dummy-module/src/**"
+      - "packages/polite-config/src/**"
+      - "poetry.lock"
   pull_request:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/dtocean-core.yml'
-      - 'packages/dtocean-app/**'
-      - 'packages/dtocean-core/**'
-      - 'packages/mdo-engine/**'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-mdo-engine.yml"
+      - "packages/mdo-engine/**"
+      - "packages/dtocean-dummy-module/src/**"
+      - "packages/polite-config/src/**"
+      - "poetry.lock"
+
 jobs:
   pytest-linux:
     name: Unit tests (ubuntu-latest)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.14", "3.13", "3.12"]
     defaults:
       run:
-        working-directory: packages/dtocean-core
+        working-directory: packages/mdo-engine
     env:
       DATABASE_URL: https://github.com/DTOcean/dtocean-database-next/releases/download/v2026.01.0/dtocean-database-v2026.01.0.tar.gz
     steps:
@@ -32,16 +39,6 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
-      # https://github.com/actions/runner-images/issues/7048
-      - name: Change Mirror Priorities (Linux)
-        run: |
-          sudo sed -i '/archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:2/priority:0/' /etc/apt/apt-mirrors.txt
-          sudo sed -i '/azure.archive.ubuntu.com\/ubuntu\/\tpriority/ s/priority:0/priority:1/' /etc/apt/apt-mirrors.txt
-          sudo sed -i '/security.ubuntu.com\/ubuntu\/\tpriority/ s/priority:3/priority:2/' /etc/apt/apt-mirrors.txt
-          sudo cat /etc/apt/apt-mirrors.txt
-        if: runner.os == 'Linux'
-      - name: Install system dependencies (GUI)
-        run: sudo apt update && sudo apt-get install -y libegl1-mesa-dev
       - name: Set database root password
         run: |
           echo "POSTGRES_PASSWORD=$(uuidgen)" >> $GITHUB_ENV
@@ -67,62 +64,61 @@ jobs:
           -p 5432:5432 \
           -d \
           postgis/postgis
-      - name: Install dtocean-core
+      - name: Install package
         uses: ./.github/actions/poetry-install
-        with: 
-          root-directory: ${{ github.workspace }}/packages/dtocean-core
-          groups: '["test", "test-extras"]'
+        with:
+          groups: '["dtocean-dummy-module", "mdo-engine", "test", "test-postgresql"]'
+          python-version: ${{ matrix.python-version }}
       - name: Run tests
         run: |
-          poetry run pytest --cov=src --cov-report=xml --postgresql-password="${POSTGRES_PASSWORD}" --postgresql-path=${GITHUB_WORKSPACE}/database tests
+          poetry run pytest --cov src --cov-report=xml --postgresql-password="${POSTGRES_PASSWORD}" --postgresql-path=${GITHUB_WORKSPACE}/database tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          flags: dtocean-core
-      - name: Stop database container
-        run: docker stop dtocean-database
+          flags: mdo-engine
   pytest-windows:
     name: Unit tests (windows-latest)
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.14", "3.13", "3.12"]
     defaults:
       run:
-        working-directory: packages/dtocean-core
+        working-directory: packages/mdo-engine
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
           persist-credentials: false
-      - name: Install dtocean-core
+      - name: Install package
         uses: ./.github/actions/poetry-install
-        with: 
-          root-directory: ${{ github.workspace }}/packages/dtocean-core
-          groups: '["test", "test-extras"]'
+        with:
+          groups: '["dtocean-dummy-module", "mdo-engine", "test"]'
+          python-version: ${{ matrix.python-version }}
       - name: Run tests
         run: |
-          poetry run pytest --cov=src --cov-report=xml tests
+          poetry run pytest --cov src --cov-report=xml tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          flags: dtocean-core
+          flags: mdo-engine
   audit:
     name: Code audit
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/dtocean-core
+        working-directory: packages/mdo-engine
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       - name: Install package
-        run: |
-          poetry install --with audit --with test-extras
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["audit", "mdo-engine"]'
+          python-version: 3.14
       - name: Run ruff
         run: |
           poetry run ruff check --output-format github

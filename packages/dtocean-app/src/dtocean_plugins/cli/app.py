@@ -53,7 +53,7 @@ def _setup_app(subparser):
 
         For help::
 
-            $ dtocean app -h
+            dtocean app -h
 
     """
 
@@ -87,7 +87,7 @@ def _setup_config(subparser):
 
         To get help::
 
-            $ dtocean app config -h
+            dtocean app config -h
 
     """
 

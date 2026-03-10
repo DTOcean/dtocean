@@ -7,6 +7,7 @@ import logging
 import os
 import traceback
 from copy import deepcopy
+from pathlib import Path
 from typing import Any
 
 from ..boundary.data import SerialBox
@@ -575,7 +576,10 @@ class DataStorage(Plugin):
             store_path = str(file_path).replace(remove_root, "")
 
         identifier = data_obj.get_id()
-        load_dict = {"file_path": store_path, "structure_name": structure_name}
+        load_dict = {
+            "file_path": Path(store_path).as_posix(),
+            "structure_name": structure_name,
+        }
 
         data_box = SerialBox(identifier, load_dict)
         data_pool.replace(data_index, data_box)
@@ -594,13 +598,13 @@ class DataStorage(Plugin):
         if not isinstance(data_box, SerialBox):
             return
 
-        file_path = data_box.load_dict["file_path"]
+        file_path = Path(data_box.load_dict["file_path"])
         structure_name = data_box.load_dict["structure_name"]
 
         if root_dir is None:
             load_path = file_path
         else:
-            load_path = os.path.join(root_dir, file_path)
+            load_path = Path(root_dir) / file_path
 
         data_structure = self.get_structure(structure_name)
 

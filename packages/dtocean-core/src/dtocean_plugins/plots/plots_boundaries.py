@@ -21,11 +21,16 @@ Created on Wed Apr 06 15:59:04 2016
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
+import math
 from typing import Optional
 
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.basemap import Basemap
+import shapely.geometry as sgeom
+from cartopy.mpl.geoaxes import GeoAxes
+from matplotlib import ticker
 from pyproj import Transformer
 from shapely import Polygon, transform
 from shapely.plotting import patch_from_polygon
@@ -98,52 +103,106 @@ class SiteBoundaryPlot(PlotInterface):
         return id_map
 
     def connect(self):
+        def down(number, base=5):
+            return base * math.ceil(number / base)
+
+        def up(number, base=5):
+            return base * (math.ceil(number / base) + 1)
+
         site_poly = self.data.boundaries[self.data.name]
 
         centroid = np.array(site_poly.centroid.coords[0])
-        llcrnrlon = centroid[0] - 5.0
-        llcrnrlat = centroid[1] - 5.0
-        urcrnrlon = centroid[0] + 5.0
-        urcrnrlat = centroid[1] + 5.0
+        left = centroid[0] - 5.0
+        right = centroid[0] + 5.0
+        bottom = centroid[1] - 5.0
+        top = centroid[1] + 5.0
 
-        m = Basemap(
-            llcrnrlon=llcrnrlon,
-            llcrnrlat=llcrnrlat,
-            urcrnrlon=urcrnrlon,
-            urcrnrlat=urcrnrlat,
-            projection="lcc",
-            lat_1=centroid[1],
-            lon_0=centroid[0],
-            resolution="l",
-            area_thresh=1000.0,
+        proj = ccrs.LambertConformal(
+            central_longitude=centroid[0],
+            central_latitude=centroid[1],
         )
 
-        m.drawcountries(linewidth=0.25)
-        m.fillcontinents(color="#8B7500")
-        m.drawmapboundary(fill_color="lightblue")
-        m.drawmeridians(np.arange(0, 360, 5), labels=[0, 0, 0, 1], fontsize=10)
-        m.drawparallels(np.arange(-90, 90, 5), labels=[1, 0, 0, 0], fontsize=10)
+        # Base plot
+        ax = plt.axes(projection=proj, facecolor=cfeature.COLORS["water"])
+        assert isinstance(ax, GeoAxes)
+        ax.set_extent([left, right, bottom, top], ccrs.PlateCarree())
 
-        x, y = m(*centroid)
-        assert isinstance(x, float)
-        assert isinstance(y, float)
-
-        m.plot(
-            x, y, "s", mew=3, ms=20, fillstyle="none", markeredgecolor="yellow"
+        feat = cfeature.LAND.with_scale("50m")
+        geoms = intersecting_geometries(feat, [left, right, bottom, top])
+        ax.add_geometries(
+            geoms,
+            crs=ccrs.PlateCarree(),
+            facecolor=cfeature.COLORS["land"],
         )
 
-        ax = plt.gca()
+        feat = cfeature.COASTLINE.with_scale("50m")
+        geoms = intersecting_geometries(feat, [left, right, bottom, top])
+        ax.add_geometries(
+            geoms,
+            crs=ccrs.PlateCarree(),
+            edgecolor="black",
+            facecolor="never",
+        )
+
+        feat = cfeature.BORDERS.with_scale("50m")
+        geoms = intersecting_geometries(feat, [left, right, bottom, top])
+        ax.add_geometries(
+            geoms,
+            crs=ccrs.PlateCarree(),
+            edgecolor="black",
+            facecolor="never",
+        )
+
+        # Gridlines
+        gl = ax.gridlines(
+            crs=ccrs.PlateCarree(),
+            draw_labels=True,
+            x_inline=False,
+            y_inline=False,
+            linewidth=0.33,
+            color="k",
+            alpha=0.5,
+        )
+        gl.right_labels = gl.top_labels = False
+        gl.ylocator = ticker.FixedLocator(np.arange(down(bottom), up(top), 5))
+        gl.xlocator = ticker.FixedLocator(np.arange(down(left), up(right), 5))
+
+        # Annotation
+        ax.plot(
+            centroid[0],
+            centroid[1],
+            "s",
+            mew=3,
+            ms=20,
+            fillstyle="none",
+            markeredgecolor="orange",
+            transform=ccrs.PlateCarree(),
+        )
         ax.annotate(
             self.data.name,
-            xy=(x, y + 50000),
+            xy=(centroid[0], centroid[1] + 1),
             horizontalalignment="center",
             color="black",
             backgroundcolor="white",
             size="large",
             weight="roman",
+            transform=ccrs.PlateCarree(),
         )
 
         self.fig_handle = plt.gcf()
+
+
+def intersecting_geometries(feat, extent):
+    geometries = feat.geometries()
+    if extent is not None and not np.isnan(extent[0]):
+        extent_geom = sgeom.box(extent[0], extent[2], extent[1], extent[3])
+        return (
+            geom
+            for geom in geometries
+            if geom is not None and extent_geom.intersects(geom)
+        )
+    else:
+        return geometries
 
 
 class AllBoundaryPlot(PlotInterface):

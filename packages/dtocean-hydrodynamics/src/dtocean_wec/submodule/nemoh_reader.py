@@ -275,12 +275,8 @@ class NemohReader:
 
     def read_results(self):
         k_hst = self.__read_hst()
-
-        print("pre read")
         (freq_ca, ca) = self.__read_ca()
-        print("post read")
         (freq_cm, cm) = self.__read_cm()
-
         (freq_fex, angle_fex, fex) = self.__read_fex()
 
         freq_ca, freq_cm, freq_fex, angle_fex = [

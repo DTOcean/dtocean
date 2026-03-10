@@ -1,5 +1,6 @@
-[![dtocean-qt actions](https://github.com/DTOcean/dtocean/actions/workflows/dtocean-qt.yml/badge.svg?branch=next)](https://github.com/DTOcean/dtocean/actions/workflows/dtocean-qt.yml)
+[![dtocean-qt actions](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-qt.yml/badge.svg?branch=main)](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-qt.yml)
 [![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=dtocean-qt)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=dtocean-qt)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dtocean-qt)
 
 # dtocean-qt
 
@@ -7,41 +8,12 @@ PySide6 (Qt for Python) utilities for use within the DTOcean software suite.
 Currently, only widgets and models for pandas (the data analysis / manipulation
 library for Python) are available.
 
+Part of the [DTOcean](https://github.com/DTOcean/dtocean) suite of tools.
+
 ## Installation
 
-Installation and development of dtocean-qt uses the
-[Poetry](https://python-poetry.org/) dependency manager. Poetry must be
-installed and available on the command line.
-
-If installing from the git repository, the image files must first be
-retrieved using git-lfs (ensure that [git-lfs](https://git-lfs.com/) is installed
-first):
-
 ```sh
-git lfs fetch --all
-git lfs pull
-```
-
-To install:
-
-```sh
-$ poetry install
-```
-
-## Tests
-
-A test suite is provided with the source code that uses [pytest](https://docs.pytest.org).
-
-Install the testing dependencies:
-
-```sh
-$ poetry install --with test
-```
-
-Run the tests:
-
-```sh
-$ poetry run pytest
+pip install dtocean-qt
 ```
 
 ## Usage
@@ -138,18 +110,77 @@ Finally, start the app:
 >>> app.exec() # doctest: +SKIP
 ```
 
-You can find other examples in the *examples* folder of the source.
+You can find other examples in the `examples` folder of the source.
 
 ```sh
 cd examples
 python TestApp.py
 ```
 
+## Development
+
+Development of dtocean-qt uses the [Poetry](https://python-poetry.org/)
+dependency manager. Poetry must be installed and available on the command line.
+
+If installing from the git repository, the image files must first be
+retrieved using git-lfs (ensure that [git-lfs](https://git-lfs.com/) is installed
+first):
+
+```sh
+git lfs fetch --all
+git lfs pull
+```
+
+To install:
+
+```sh
+poetry install
+```
+
+## Tests
+
+A test suite is provided with the source code that uses [pytest](https://docs.pytest.org).
+
+Install the testing dependencies:
+
+```sh
+poetry install --with test
+```
+
+Run the tests:
+
+```sh
+poetry run pytest
+```
+
+Code quality can also be audited using the [ruff](https://docs.astral.sh/ruff/)
+and [pyright](https://github.com/microsoft/pyright) tools. Install the
+dependencies:
+
+```sh
+poetry install --with audit
+```
+
+Run the audit:
+
+```sh
+poetry run ruff
+poetry run pyright src
+```
+
+The above tests can be run across all compatible Python versions using
+[tox](https://tox.wiki/) and [tox-uv](https://github.com/tox-dev/tox-uv). To
+install and run:
+
+```sh
+poetry install --with tox
+poetry run tox
+```
+
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to
-discuss what you would like to change. Please make sure to update tests as
-appropriate.
+Please see the [dtocean](https://github.com/DTOcean/dtocean) GitHub repository
+for contributing guidelines.
 
 ## Credits
 

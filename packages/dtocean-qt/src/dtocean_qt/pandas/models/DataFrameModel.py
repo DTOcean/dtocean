@@ -246,7 +246,9 @@ class DataFrameModel(QAbstractTableModel):
 
         def convertValue(row, col, columnDtype):
             value = None
-            if columnDtype is numpy.dtype(object):
+            if columnDtype is numpy.dtype(
+                object
+            ) or pandas.api.types.is_string_dtype(columnDtype):
                 value = self._dataFrame.iloc[row, col]
             elif columnDtype in self._floatDtypes:
                 to_convert = cast(float, self._dataFrame.iloc[row, col])
@@ -379,7 +381,7 @@ class DataFrameModel(QAbstractTableModel):
             col = self._dataFrame.columns[index.column()]
             columnDtype = self._dataFrame.dtypes.iloc[index.column()]
 
-            if columnDtype is numpy.dtype(object):
+            if pandas.api.types.is_string_dtype(columnDtype):
                 pass
 
             elif columnDtype in self._intDtypes:
@@ -623,9 +625,9 @@ class DataFrameModel(QAbstractTableModel):
 
         defaultValues = []
         for dtype in self._dataFrame.dtypes:
-            if dtype.type == numpy.dtype("<M8[ns]"):
+            if dtype.type in self._dateDtypes:
                 val = pandas.Timestamp("")
-            elif dtype.type == numpy.dtype(object):
+            elif pandas.api.types.is_string_dtype(dtype.type):
                 val = ""
             else:
                 val = dtype.type()

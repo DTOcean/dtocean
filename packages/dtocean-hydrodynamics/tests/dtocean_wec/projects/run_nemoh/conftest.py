@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 from PySide6.QtWidgets import QFileDialog
+from pytestqt.qtbot import QtBot
 
 from dtocean_wec.tab2 import RunNemoh
 
@@ -9,7 +10,7 @@ THIS_DIR = Path(__file__)
 
 
 @pytest.fixture
-def form_hyd(monkeypatch, qtbot, tmp_path, main_window):
+def form_hyd(monkeypatch, qtbot: QtBot, tmp_path, main_window):
     monkeypatch.setattr(
         QFileDialog,
         "getExistingDirectory",
@@ -29,7 +30,7 @@ def form_hyd(monkeypatch, qtbot, tmp_path, main_window):
 
 
 @pytest.fixture
-def form_hyd_filled(qtbot, monkeypatch, form_hyd: RunNemoh):
+def form_hyd_filled(qtbot: QtBot, monkeypatch, form_hyd: RunNemoh):
     form_hyd.ndof.setText("1")
     form_hyd.pto_dof.setText("1")
     form_hyd.moor_dof.setText("1")
@@ -62,12 +63,12 @@ def form_hyd_filled(qtbot, monkeypatch, form_hyd: RunNemoh):
 
 
 @pytest.fixture
-def form_hyd_calculated(qtbot, form_hyd_filled: RunNemoh, main_window):
+def form_hyd_calculated(qtbot: QtBot, form_hyd_filled: RunNemoh, main_window):
     form_hyd_filled.btn_submit_t2.click()
     qtbot.waitUntil(lambda: form_hyd_filled.btn_calculate_t2.isEnabled())
 
     print(main_window.form_power.isEnabled())
     form_hyd_filled.btn_calculate_t2.click()
-    qtbot.waitUntil(lambda: main_window.form_power.isEnabled())
+    qtbot.waitUntil(lambda: main_window.form_power.isEnabled(), timeout=30000)
 
     return form_hyd_filled

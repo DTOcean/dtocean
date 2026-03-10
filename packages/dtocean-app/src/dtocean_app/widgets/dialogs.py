@@ -378,9 +378,8 @@ class ListTableEditor(QtWidgets.QDialog, Ui_ListTableEditor):
 
         for j, column in enumerate(dataframe):
             series = dataframe[column]
-
             for i, value in enumerate(series):
-                if value is None:
+                if pd.isna(value):
                     value = ""
                 item = QtWidgets.QTableWidgetItem(value)
 

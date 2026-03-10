@@ -37,7 +37,7 @@ def start_logging(level=None):
     objdir = ModPath(__name__, "config")
     userdir = UserDataPath("dtocean_dummy", "DTOcean", "config")
     dirmap = DirectoryMap(userdir, objdir)
-    
+
     appdir_path = userdir.parent
     logdir = Path(appdir_path, "logs")
     logdir.mkdir(exist_ok=True, parents=True)
@@ -83,7 +83,7 @@ def module_interface():
         point" in the setup.py module for the package. To get the available
         options for the package, type the following in the command line::
 
-            $ dtocean-dummy -h
+            dtocean-dummy -h
 
     """
 

@@ -15,7 +15,6 @@ from dtocean_qt.pandas.excepthook import excepthook
 from dtocean_qt.pandas.models.DataFrameModel import DataFrameModel
 from dtocean_qt.pandas.models.DataSearch import DataSearch
 from dtocean_qt.pandas.models.mime import PandasCellMimeType, PandasCellPayload
-from dtocean_qt.pandas.views._ui import icons_rc  # noqa: F401
 from dtocean_qt.pandas.views.CSVDialogs import CSVExportDialog, CSVImportDialog
 from dtocean_qt.pandas.views.CustomDelegates import DtypeComboDelegate
 from dtocean_qt.pandas.views.DataTableView import DataTableWidget

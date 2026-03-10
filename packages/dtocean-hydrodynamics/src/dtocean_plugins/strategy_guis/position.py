@@ -2208,7 +2208,6 @@ def _close_plot(plot_widget):
     n_figs = len(plt.get_fignums())
 
     log_msg = "Closing figure {} ({} open)".format(fignum, n_figs)
-    print(log_msg)
     module_logger.debug(log_msg)
 
     plt.close(fignum)
