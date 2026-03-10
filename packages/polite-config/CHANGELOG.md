@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v3.0.0 (2026-03-10)
+
+### Features
+
+- Release version 3
+  ([`fef02d9`](https://github.com/DTOcean/dtocean/commit/fef02d95eb1c4cb8f170e6416a5dde60afd4ef1a))
+
+
 ## v3.0.0.dev0 (2026-03-06)
 
 ### Added
