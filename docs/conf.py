@@ -74,8 +74,8 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 
 # SMV settings
-smv_tag_whitelist = r"^v\d+\.\d+\.\d+$"
-smv_remote_whitelist = r"upstream"
+smv_tag_whitelist = r"^root-v\d+\.\d+\.\d+$"
+smv_branch_whitelist = r"^main$"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

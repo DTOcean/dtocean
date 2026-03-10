@@ -2,7 +2,7 @@
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Other Versions</span>
-    v: {{ current_version.name }}
+    v: {{ current_version.name.removeprefix("root-") }}
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
@@ -10,7 +10,7 @@
     <dl>
       <dt>Tags</dt>
       {%- for item in versions.tags|reverse %}
-      <dd><a href="{{ item.url }}">{{ item.name }}</a></dd>
+      <dd><a href="{{ item.url }}">{{ item.name.removeprefix("root-") }}</a></dd>
       {%- endfor %}
     </dl>
     {%- endif %}
