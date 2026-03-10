@@ -369,8 +369,8 @@ jobs:
       run:
         working-directory: ${{ env.POLITE_CONFIG_DIR }}
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/polite-config/
+      name: pypi
+      url: https://pypi.org/project/polite-config/
     steps:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v4
@@ -397,11 +397,10 @@ jobs:
       - name: Package project
         run: poetry build
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.POLITE_CONFIG_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
 
   publish-mdo-engine:
@@ -414,8 +413,8 @@ jobs:
       run:
         working-directory: ${{ env.MDO_ENGINE_DIR }}
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/mdo-engine/
+      name: pypi
+      url: https://pypi.org/project/mdo-engine/
     steps:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v4
@@ -442,12 +441,11 @@ jobs:
       - name: Package project
         run: poetry build
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.MDO_ENGINE_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
 
   publish-dtocean-core:
@@ -460,8 +458,8 @@ jobs:
       run:
         working-directory: ${{ env.DTOCEAN_CORE_DIR }}
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/dtocean-core/
+      name: pypi
+      url: https://pypi.org/project/dtocean-core/
     steps:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v4
@@ -488,12 +486,11 @@ jobs:
       - name: Package project
         run: poetry build
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_CORE_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
 
   publish-dtocean-qt:
@@ -505,8 +502,8 @@ jobs:
       run:
         working-directory: ${{ env.DTOCEAN_QT_DIR }}
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/dtocean-qt/
+      name: pypi
+      url: https://pypi.org/project/dtocean-qt/
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v5
@@ -515,12 +512,11 @@ jobs:
           pattern: dtocean-qt-*
           merge-multiple: true
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_QT_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
 
   publish-dtocean-app:
@@ -532,8 +528,8 @@ jobs:
       run:
         working-directory: ${{ env.DTOCEAN_APP_DIR }}
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/dtocean-app/
+      name: pypi
+      url: https://pypi.org/project/dtocean-app/
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v5
@@ -542,12 +538,11 @@ jobs:
           pattern: dtocean-app-*
           merge-multiple: true
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_APP_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
 
   publish-dtocean-hydrodynamics:
@@ -559,8 +554,8 @@ jobs:
       run:
         working-directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/dtocean-hydrodynamics/
+      name: pypi
+      url: https://pypi.org/project/dtocean-hydrodynamics/
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v5
@@ -569,12 +564,11 @@ jobs:
           pattern: dtocean-hydrodynamics-*
           merge-multiple: true
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
 
   publish-docs:
@@ -629,8 +623,8 @@ jobs:
     permissions:
       id-token: write
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/dtocean-docs/
+      name: pypi
+      url: https://pypi.org/project/dtocean-docs/
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v5
@@ -639,12 +633,11 @@ jobs:
           pattern: dtocean-docs-*
           merge-multiple: true
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_DOCS_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
 
   publish-dtocean:
@@ -657,8 +650,8 @@ jobs:
       run:
         working-directory: ${{ env.DTOCEAN_DIR }}
     environment:
-      name: testpypi
-      url: https://test.pypi.org/project/dtocean/
+      name: pypi
+      url: https://pypi.org/project/dtocean/
     steps:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v4
@@ -696,10 +689,9 @@ jobs:
       - name: Package project
         run: poetry build
 
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPI
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_DIR }}/dist
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
