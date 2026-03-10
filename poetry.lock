@@ -749,7 +749,7 @@ url = "packages/dtocean"
 
 [[package]]
 name = "dtocean-app"
-version = "2.1.14"
+version = "4.0.0"
 description = "Main graphical application for the DTOcean tools"
 optional = false
 python-versions = ">=3.12,<3.15"
@@ -777,7 +777,7 @@ url = "packages/dtocean-app"
 
 [[package]]
 name = "dtocean-core"
-version = "3.1.11"
+version = "4.0.0"
 description = "The main (non-graphical) interface for the DTOcean tools"
 optional = false
 python-versions = ">=3.12,<3.15"
@@ -819,7 +819,7 @@ url = "packages/dtocean-core"
 
 [[package]]
 name = "dtocean-docs"
-version = "1.2.5"
+version = "4.0.0"
 description = "Offline DTOcean documentation for dtocean-app"
 optional = false
 python-versions = ">=3.12,<3.15"
@@ -856,7 +856,7 @@ url = "packages/dtocean-dummy-module"
 
 [[package]]
 name = "dtocean-hydrodynamics"
-version = "3.3.12"
+version = "4.0.0"
 description = "Hydrodynamics module for the DTOcean tools"
 optional = false
 python-versions = ">=3.12,<3.15"
@@ -887,7 +887,7 @@ url = "packages/dtocean-hydrodynamics"
 
 [[package]]
 name = "dtocean-qt"
-version = "1.2.2"
+version = "4.0.0"
 description = "Qt extensions for the DTOcean GUI"
 optional = false
 python-versions = ">=3.12,<3.15"
@@ -1592,7 +1592,7 @@ dev = ["meson-python (>=0.13.1,<0.17.0)", "pybind11 (>=2.13.2,!=2.13.3)", "setup
 
 [[package]]
 name = "mdo-engine"
-version = "1.0.13"
+version = "3.0.0"
 description = "Data management, coupling and execution for MDO problems"
 optional = false
 python-versions = ">=3.12,<3.15"
@@ -2091,7 +2091,7 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "polite-config"
-version = "2.0.6"
+version = "3.0.0"
 description = "Easy functions for paths, logging and configuration files"
 optional = false
 python-versions = ">=3.12,<3.15"
