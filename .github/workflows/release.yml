@@ -29,21 +29,21 @@ jobs:
       contents: write
     outputs:
       polite-config-released: ${{ steps.release-polite-config.outputs.released }}
-      polite-config-commit_sha: ${{ steps.release-polite-config.outputs.commit_sha }}
+      polite-config-commit_sha: ${{ steps.release-polite-config.outputs.commit_sha || github.ref }}
       mdo-engine-released: ${{ steps.release-mdo-engine.outputs.released }}
-      mdo-engine-commit_sha: ${{ steps.release-mdo-engine.outputs.commit_sha }}
+      mdo-engine-commit_sha: ${{ steps.release-mdo-engine.outputs.commit_sha || github.ref }}
       dtocean-core-released: ${{ steps.release-dtocean-core.outputs.released }}
-      dtocean-core-commit_sha: ${{ steps.release-dtocean-core.outputs.commit_sha }}
+      dtocean-core-commit_sha: ${{ steps.release-dtocean-core.outputs.commit_sha || github.ref }}
       dtocean-qt-released: ${{ steps.release-dtocean-qt.outputs.released }}
-      dtocean-qt-commit_sha: ${{ steps.release-dtocean-qt.outputs.commit_sha }}
+      dtocean-qt-commit_sha: ${{ steps.release-dtocean-qt.outputs.commit_sha || github.ref }}
       dtocean-app-released: ${{ steps.release-dtocean-app.outputs.released }}
-      dtocean-app-commit_sha: ${{ steps.release-dtocean-app.outputs.commit_sha }}
+      dtocean-app-commit_sha: ${{ steps.release-dtocean-app.outputs.commit_sha || github.ref }}
       dtocean-hydrodynamics-released: ${{ steps.release-dtocean-hydrodynamics.outputs.released }}
-      dtocean-hydrodynamics-commit_sha: ${{ steps.release-dtocean-hydrodynamics.outputs.commit_sha }}
+      dtocean-hydrodynamics-commit_sha: ${{ steps.release-dtocean-hydrodynamics.outputs.commit_sha || github.ref }}
       root-released: ${{ steps.release-root.outputs.released }}
-      root-commit_sha: ${{ steps.release-root.outputs.commit_sha }}
+      root-commit_sha: ${{ steps.release-root.outputs.commit_sha || github.ref }}
       dtocean-docs-released: ${{ steps.release-dtocean-docs.outputs.released }}
-      dtocean-docs-commit_sha: ${{ steps.release-dtocean-docs.outputs.commit_sha }}
+      dtocean-docs-commit_sha: ${{ steps.release-dtocean-docs.outputs.commit_sha || github.ref }}
 
     steps:
       - name: Wait for all test jobs
