@@ -9,14 +9,15 @@ permissions:
   contents: read
 
 env:
-  POLITE_CONFIG_DIR: packages/polite-config
-  MDO_ENGINE_DIR: packages/mdo-engine
   DTOCEAN_CORE_DIR: packages/dtocean-core
   DTOCEAN_QT_DIR: packages/dtocean-qt
   DTOCEAN_APP_DIR: packages/dtocean-app
   DTOCEAN_HYDRODYNAMICS_DIR: packages/dtocean-hydrodynamics
   DTOCEAN_DOCS_DIR: packages/dtocean-docs
   DTOCEAN_DIR: packages/dtocean
+  POLITE_CONFIG_DIR: packages/polite-config
+  MDO_ENGINE_DIR: packages/mdo-engine
+  RELEASING_REPO: DTOcean/dtocean
 
 jobs:
   release:
@@ -76,6 +77,7 @@ jobs:
           directory: ${{ env.POLITE_CONFIG_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           vcs_release: false
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Release mdo-engine
         id: release-mdo-engine
@@ -84,6 +86,7 @@ jobs:
           directory: ${{ env.MDO_ENGINE_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           vcs_release: false
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Release dtocean-core
         id: release-dtocean-core
@@ -92,6 +95,7 @@ jobs:
           directory: ${{ env.DTOCEAN_CORE_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           vcs_release: false
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Release dtocean-qt
         id: release-dtocean-qt
@@ -100,6 +104,7 @@ jobs:
           directory: ${{ env.DTOCEAN_QT_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           vcs_release: false
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Release dtocean-app
         id: release-dtocean-app
@@ -108,6 +113,7 @@ jobs:
           directory: ${{ env.DTOCEAN_APP_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           vcs_release: false
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Release dtocean-hydrodynamics
         id: release-dtocean-hydrodynamics
@@ -116,12 +122,14 @@ jobs:
           directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           vcs_release: false
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Release root
         id: release-root
         uses: ./.github/actions/semantic-release-calver
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Release dtocean-docs
         id: release-dtocean-docs
@@ -130,12 +138,14 @@ jobs:
           directory: ${{ env.DTOCEAN_DOCS_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           vcs_release: false
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Update poetry lock file
         run: |
           poetry lock
 
       - name: Commit poetry lock file
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: EndBug/add-and-commit@v9
         with:
           add: poetry.lock
@@ -425,6 +435,7 @@ jobs:
         run: poetry build
 
       - name: Publish package distributions to TestPyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.MDO_ENGINE_DIR }}/dist
@@ -470,6 +481,7 @@ jobs:
         run: poetry build
 
       - name: Publish package distributions to TestPyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_CORE_DIR }}/dist
@@ -496,6 +508,7 @@ jobs:
           merge-multiple: true
 
       - name: Publish package distributions to TestPyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_QT_DIR }}/dist
@@ -522,6 +535,7 @@ jobs:
           merge-multiple: true
 
       - name: Publish package distributions to TestPyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_APP_DIR }}/dist
@@ -548,6 +562,7 @@ jobs:
           merge-multiple: true
 
       - name: Publish package distributions to TestPyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}/dist
@@ -617,6 +632,7 @@ jobs:
           merge-multiple: true
 
       - name: Publish package distributions to TestPyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_DOCS_DIR }}/dist
@@ -673,6 +689,7 @@ jobs:
         run: poetry build
 
       - name: Publish package distributions to TestPyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_DIR }}/dist

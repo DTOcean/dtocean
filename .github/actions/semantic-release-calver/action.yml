@@ -4,6 +4,13 @@ inputs:
   github-token:
     description: GitHub token used to push release notes and new commits/tags
     required: true
+  push:
+    description: |
+      Whether or not to push local commits to the Git repository. See
+      the configuration page for defaults of `semantic-release version`
+      for how the default is determined between push, tag, & commit.
+    required: false
+    default: "true"
   python-version:
     description: 'Python version to install (defaults to 3.12)'
     default: "3.12"
@@ -36,4 +43,4 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
-        poetry run python scripts/calver.py version --no-vcs-release
+        poetry run python scripts/calver.py version --no-vcs-release ${{ inputs.push == 'true' && '' || '--no-push' }}
