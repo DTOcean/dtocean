@@ -1,6 +1,11 @@
 name: semantic-release-python calver
 description: 'Use the locally modified version of semantic-release-python modified for calendar versioning'
 inputs:
+  commit:
+    description: Whether or not to commit changes locally. Defaults are handled
+      by python-semantic-release internal version command.
+    required: false
+    default: "true"
   github-token:
     description: GitHub token used to push release notes and new commits/tags
     required: true
@@ -43,4 +48,4 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
-        poetry run python scripts/calver.py version --no-vcs-release ${{ inputs.push == 'true' && '' || '--no-push' }}
+        poetry run python scripts/calver.py version --no-vcs-release ${{ inputs.commit == 'true' && '' || '--no-commit' }} ${{ inputs.push == 'true' && '' || '--no-push' }}
