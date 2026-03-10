@@ -74,60 +74,67 @@ jobs:
         id: release-polite-config
         uses: python-semantic-release/python-semantic-release@v10.5.3
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.POLITE_CONFIG_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          vcs_release: false
           push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
 
       - name: Release mdo-engine
         id: release-mdo-engine
         uses: python-semantic-release/python-semantic-release@v10.5.3
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.MDO_ENGINE_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          vcs_release: false
           push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
 
       - name: Release dtocean-core
         id: release-dtocean-core
         uses: python-semantic-release/python-semantic-release@v10.5.3
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.DTOCEAN_CORE_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          vcs_release: false
           push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
 
       - name: Release dtocean-qt
         id: release-dtocean-qt
         uses: python-semantic-release/python-semantic-release@v10.5.3
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.DTOCEAN_QT_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          vcs_release: false
           push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
 
       - name: Release dtocean-app
         id: release-dtocean-app
         uses: python-semantic-release/python-semantic-release@v10.5.3
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.DTOCEAN_APP_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          vcs_release: false
           push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
 
       - name: Release dtocean-hydrodynamics
         id: release-dtocean-hydrodynamics
         uses: python-semantic-release/python-semantic-release@v10.5.3
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          vcs_release: false
           push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
 
       - name: Release root
         id: release-root
         uses: ./.github/actions/semantic-release-calver
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           push: ${{ github.repository == env.RELEASING_REPO }}
 
@@ -135,16 +142,17 @@ jobs:
         id: release-dtocean-docs
         uses: python-semantic-release/python-semantic-release@v10.5.3
         with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.DTOCEAN_DOCS_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          vcs_release: false
           push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
 
       - name: Update poetry lock file
         run: |
           poetry lock
 
-      - name: Commit poetry lock file
+      - name: Commit and push poetry lock file
         if: ${{ github.repository == env.RELEASING_REPO }}
         uses: EndBug/add-and-commit@v9
         with:
