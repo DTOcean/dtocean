@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mdo-engine"
-version = "1.0.13"
+version = "3.0.0"
 description = "Data management, coupling and execution for MDO problems"
 authors = ["The DTOcean Developers"]
 maintainers = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
