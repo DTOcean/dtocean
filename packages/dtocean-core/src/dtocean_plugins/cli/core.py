@@ -1,7 +1,43 @@
+import warnings
+
+from cartopy.feature import NaturalEarthFeature
+
 from dtocean_core.utils.config import init_config
 from dtocean_core.utils.execute import main
 
 from .shared import SmartFormatter
+
+
+def init(args):
+    print("+ Downloading cartopy plot data...")
+
+    # Automatically scaled country boundaries
+    borders = NaturalEarthFeature(
+        "cultural",
+        "admin_0_boundary_lines_land",
+        "50m",
+    )
+
+    # Automatically scaled coastline, including major islands
+    coastline = NaturalEarthFeature(
+        "physical",
+        "coastline",
+        "50m",
+    )
+
+    # Automatically scaled land polygons, including major islands.
+    land = NaturalEarthFeature(
+        "physical",
+        "land",
+        "50m",
+    )
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+
+        borders.geometries()
+        coastline.geometries()
+        land.geometries()
 
 
 def subcommand(subparser):
@@ -91,7 +127,7 @@ def _setup_config(subparser):
 
         To get help::
 
-            $ dtocean core config -h
+            dtocean core config -h
 
     """
 

@@ -5,7 +5,6 @@ from unittest.mock import MagicMock
 import psycopg
 import psycopg.sql as sql
 import pytest
-from pytest_postgresql.janitor import DatabaseJanitor
 from shapely import Polygon
 from sqlalchemy import Table
 
@@ -38,6 +37,8 @@ def readonly(
     :param psql_proc: postgis process fixture
     :return: psycopg2 connection
     """
+    from pytest_postgresql.janitor import DatabaseJanitor
+
     dbname = f"{postgresql_noproc.dbname}_readonly"
     db_config = {
         "host": postgresql_noproc.host,
@@ -82,6 +83,8 @@ def readwrite(
     :param psql_proc: postgis process fixture
     :return: psycopg2 connection
     """
+    from pytest_postgresql.janitor import DatabaseJanitor
+
     dbname = f"{postgresql_noproc.dbname}_readwrite"
     db_config = {
         "host": postgresql_noproc.host,

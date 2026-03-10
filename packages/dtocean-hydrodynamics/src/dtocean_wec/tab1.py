@@ -81,7 +81,6 @@ class ReadDb(QWidget, Ui_T1):
         data_db["inputs_hydrodynamic"]["general_input"]["data_folder"] = (
             os.path.join(self._wec_db_folder, current_case)
         )
-        print(os.path.join(self._wec_db_folder, current_case))
         stat = check_wec_db_data(data_db)
         self.save_project()
         if stat[0]:

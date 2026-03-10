@@ -1004,7 +1004,7 @@ def convert_array(table_df, array_cols):
     brackets = str.maketrans("[]", "{}")
 
     def _safe_square2curly(x):
-        if x is None:
+        if not isinstance(x, list) and pd.isna(x):
             return
         else:
             y = str(x).translate(brackets)
@@ -1034,7 +1034,7 @@ def revert_array(table_df, array_cols):
 
 def convert_bool(table_df, bool_cols):
     def _safe_bool2str(x):
-        if x is None:
+        if pd.isna(x):
             y = None
         elif x:
             y = "yes"
@@ -1072,7 +1072,7 @@ def revert_bool(table_df, bool_cols):
 
 def convert_geo(table_df, geo_cols):
     def _safe_to_wkt(x):
-        if x is None:
+        if pd.isna(x):
             return
         else:
             srid = get_srid(x)
@@ -1115,7 +1115,7 @@ def revert_geo(table_df: pd.DataFrame, geo_cols: Sequence[str]):
 
 def convert_time(table_df, time_cols):
     def _safe_time2str(x):
-        if x is None:
+        if pd.isna(x):
             return
         else:
             return x.strftime("%H:%M:%S")

@@ -155,15 +155,15 @@ the "Selected Site" variable is shown in :numref:`fig_selected_site`.
     +------------------+----------------------+
     | Variable         | Value                |
     +==================+======================+
-    | Selected Site    | Example Tidal Site   |
+    | Selected Site    | Tacoma Narrows       |
     +------------------+----------------------+
-    | Selected Device  | Example Tidal Device |
+    | Selected Device  | RM1 Device           |
     +------------------+----------------------+
 
 .. _fig_selected_site:
 .. figure:: /images/selected_site.png
 
-   Choose the "Example Tidal Site" in the drop-down menu, then click "OK"
+   Choose the "Tacoma Narrows" in the drop-down menu, then click "OK"
 
 Remember to click "OK" after selecting the values to commit them. The 
 indicators on both variables should be green, as shown in 
@@ -259,13 +259,11 @@ editing mode" button in the main window, as shown in
 
    Use the table to modify the lease area coordinates
 
-Once the editing mode has been enabled, you can double-click on the cells in 
-the table to edit their data. Double-click on the "x" coordinates that have 
-value "586500" and change the value to "588000", as shown in 
-:numref:`fig_edit_lease_area_coordinate`. Click the "OK" button after the two 
-coordinates have been changed to commit the new polygon and then repeat the 
-process for the "Cable Corridor Boundary" boundary. The final coordinates for 
-the lease and cable corridor boundaries are shown below. 
+Once the editing mode has been enabled, you can double-click on the cells in
+the table to edit their data. Double-click on the "x" coordinates that has
+value "533682" and change the value to "533885", as shown in
+:numref:`fig_edit_lease_area_coordinate`. Modify the remaining coordinates for
+the lease area boundary using the values in the table below. 
 
 .. rubric:: Modified Lease Boundary Coordinates
 
@@ -274,39 +272,31 @@ the lease and cable corridor boundaries are shown below.
     +----------+-----------+
     |    x     |     y     |
     +==========+===========+
-    | 588000.0 | 6651000.0 |
+    | 533885.0 | 5234050.0 |
     +----------+-----------+
-    | 588000.0 | 6653000.0 |
+    | 533020.0 | 5234555.0 |
     +----------+-----------+
-    | 588500.0 | 6653000.0 |
+    | 533420.0 | 5235255.0 |
     +----------+-----------+
-    | 588500.0 | 6651000.0 |
-    +----------+-----------+
-    
-.. rubric:: Modified Cable Corridor Boundary Coordinates
-
-.. table::
-
-    +----------+-----------+
-    |    x     |     y     |
-    +==========+===========+
-    | 588000.0 | 6651800.0 |
-    +----------+-----------+
-    | 588000.0 | 6652200.0 |
-    +----------+-----------+
-    | 590175.0 | 6652200.0 |
-    +----------+-----------+
-    | 590175.0 | 6651800.0 |
+    | 534285.0 | 5234745.0 |
     +----------+-----------+
 
-Now return to the plots context and open the "Design Boundaries" plot once 
-more. The lease area and cable corridor should be reduced in size, as seen in 
+
+Click the "OK" button after the coordinate has been changed to commit the new
+polygon. Now return to the plots context and open the "Design Boundaries" plot
+once more. The lease area should have reduced in size, as seen in
 :numref:`fig_design_boundaries_plot_updated` [#f1]_. 
 
 .. _fig_design_boundaries_plot_updated:
 .. figure:: /images/design_boundaries_plot_updated.png
 
    Plot of the updated design boundaries
+
+.. important::
+   The DTOcean suite is currently undergoing conversion from the original 
+   Python 2 code to Python 3 and not all features are available yet.
+   Until the conversion in finished, some of the instructions below can not be
+   completed in full.
 
 Add Modules and Assessment 
 ==========================
@@ -398,31 +388,31 @@ particular simulation, as is the case here.
     +-----------------------+----------------------------+---------+
     |        Branch         |          Variable          |  Value  |
     +=======================+============================+=========+
-    |Hydrodynamics          |Array Rated Power           |      4.8|
+    |Hydrodynamics          |Array Rated Power           |       11|
     +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Tidal Probability Bins      |       12|
+    |Hydrodynamics          |Tidal Probability Bins      |       20|
     +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Lease Area Boundary Padding |       25|
+    |Hydrodynamics          |Lease Area Boundary Padding |       20|
     +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Minimum Q-Factor            |     0.98|
+    |Hydrodynamics          |Minimum Q-Factor            |      0.9|
     +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Power Histogram Bin Width   |     0.04|
+    |Hydrodynamics          |Power Histogram Bin Width   |     0.05|
     +-----------------------+----------------------------+---------+
     |Hydrodynamics          |User Option for Array Layout|Staggered|
     +-----------------------+----------------------------+---------+
     |Electrical Sub-Systems |Network Configuration       |   Radial|
     +-----------------------+----------------------------+---------+
-    |Electrical Sub-Systems |Maximum Seabed Gradient     |       14|
+    |Electrical Sub-Systems |Maximum Seabed Gradient     |    11.25|
     +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Foundation Safety Factor    |        1|
+    |Mooring and Foundations|Foundation Safety Factor    |      3.6|
     +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Grout Strength Safety Factor|        1|
+    |Mooring and Foundations|Grout Strength Safety Factor|      3.6|
     +-----------------------+----------------------------+---------+
     |Mooring and Foundations|Concrete Cost per kg        |     0.05|
     +-----------------------+----------------------------+---------+
     |Mooring and Foundations|Grout Cost per kg           |     0.05|
     +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Steel Cost per kg           |        5|
+    |Mooring and Foundations|Steel Cost per kg           |        4|
     +-----------------------+----------------------------+---------+
 
 When entering the values, ensure that the :ref:`data_context` is active (the 

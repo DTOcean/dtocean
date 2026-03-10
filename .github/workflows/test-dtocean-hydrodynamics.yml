@@ -1,23 +1,28 @@
-name: dtocean-hydrodynamics actions
+name: dtocean-hydrodynamics tests
 on:
   push:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/dtocean-hydrodynamics.yml'
-      - 'packages/dtocean-app/**'
-      - 'packages/dtocean-core/**'
-      - 'packages/dtocean-hydrodynamics/**'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean-hydrodynamics.yml"
+      - "packages/dtocean-app/src/**"
+      - "packages/dtocean-core/src/**"
+      - "packages/dtocean-hydrodynamics/**"
+      - "packages/polite-config/src/**"
+      - "poetry.lock"
   pull_request:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/dtocean-hydrodynamics.yml'
-      - 'packages/dtocean-app/**'
-      - 'packages/dtocean-core/**'
-      - 'packages/dtocean-hydrodynamics/**'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean-hydrodynamics.yml"
+      - "packages/dtocean-app/src/**"
+      - "packages/dtocean-core/src/**"
+      - "packages/dtocean-hydrodynamics/**"
+      - "packages/polite-config/src/**"
+      - "poetry.lock"
+
 jobs:
   pytest:
     name: Unit tests
@@ -26,21 +31,17 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
+        python-version: ["3.14", "3.13", "3.12"]
     defaults:
       run:
         working-directory: packages/dtocean-hydrodynamics
     env:
-      DISPLAY: ':99.0'
+      DISPLAY: ":99.0"
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       # https://github.com/actions/runner-images/issues/7048
       - name: Change Mirror Priorities (Linux)
         run: |
@@ -56,8 +57,12 @@ jobs:
           /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
         if: runner.os == 'Linux'
       - name: Install package
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["dtocean-hydrodynamics", "test", "test-qt"]'
+          python-version: ${{ matrix.python-version }}
+      - name: Download large files
         run: |
-          poetry install --with test
           poetry run dtocean-hydro init
       - name: Run tests
         run: |
@@ -69,21 +74,17 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
+        python-version: ["3.14", "3.13", "3.12"]
     defaults:
       run:
         working-directory: packages/dtocean-hydrodynamics
     env:
-      DISPLAY: ':99.0'
+      DISPLAY: ":99.0"
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       # https://github.com/actions/runner-images/issues/7048
       - name: Change Mirror Priorities (Linux)
         run: |
@@ -99,8 +100,12 @@ jobs:
           /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
         if: runner.os == 'Linux'
       - name: Install package
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["dtocean-app", "dtocean-hydrodynamics", "test", "test-qt"]'
+          python-version: ${{ matrix.python-version }}
+      - name: Download large files
         run: |
-          poetry install --with test --with test-extras
           poetry run dtocean-hydro init
       - name: Run tests
         run: |
@@ -120,14 +125,11 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       - name: Install package
-        run: |
-          poetry install --with audit --with test-extras
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["audit", "dtocean-app", "dtocean-hydrodynamics"]'
+          python-version: 3.14
       - name: Run ruff
         run: |
           poetry run ruff check --output-format github

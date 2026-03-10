@@ -3,20 +3,34 @@ name = "dtocean"
 description = "Design and techno-economic assessment of marine renewable energy arrays."
 license = "GPL-3.0-or-later"
 readme = "README.md"
-requires-python = ">=3.12,<3.13"
-authors = [
-    { name = "The DTOcean Developers"},
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
 ]
-maintainers = [
-    { name = "Mathew Topper", email = "damm_horse@yahoo.co.uk" },
-]
+requires-python = ">=3.12,<3.15"
+authors = [{ name = "The DTOcean Developers" }]
+maintainers = [{ name = "Mathew Topper", email = "damm_horse@yahoo.co.uk" }]
 dynamic = ["version"]
 
+[project.urls]
+homepage = "https://python-poetry.org/"
+repository = "https://github.com/DTOcean/dtocean"
+issues = "https://github.com/DTOcean/dtocean/issues"
+
 [tool.poetry]
-packages = [{include = "dtocean", from = "src"}]
 version = "0.0.0"
 
 [tool.poetry.dependencies]
+
+[tool.poetry.group.main]
+include-groups = ["dtocean"]
+
+[tool.poetry.group.dtocean.dependencies]
 dtocean-app = { path = "../dtocean-app", develop = true }
 dtocean-docs = { path = "../dtocean-docs", develop = true }
 dtocean-hydrodynamics = { path = "../dtocean-hydrodynamics", develop = true }
@@ -35,6 +49,13 @@ optional = true
 ruff = "^0.8.3"
 pyright = "^1.1.396"
 
+[tool.poetry.group.tox]
+optional = true
+
+[tool.poetry.group.tox.dependencies]
+tox = "<4.47"
+tox-uv = "<1.33.0"
+
 [tool.poetry-dynamic-versioning]
 enable = true
 
@@ -45,7 +66,7 @@ pattern = 'version.*=.*"([\d.]+)"'
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
-version-pinning-rule = '~'
+version-pinning-rule = '^'
 
 [tool.pyright]
 typeCheckingMode = "basic"
@@ -53,6 +74,40 @@ typeCheckingMode = "basic"
 [tool.ruff]
 line-length = 80
 
+[tool.tox]
+requires = ["tox>=4.19"]
+env_list = ["3.14", "3.13", "3.12", "audit"]
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+skip_install = true
+allowlist_externals = ["poetry"]
+commands_pre = [["poetry", "sync", "--only", "dtocean", "--only", "test"]]
+commands = [["poetry", "run", "pytest", "tests"]]
+
+[tool.tox.env.audit]
+description = "Run audit check on code base"
+skip_install = true
+allowlist_externals = ["poetry"]
+commands_pre = [["poetry", "sync", "--only", "audit", "--only", "dtocean"]]
+commands = [
+    [
+        "poetry",
+        "run",
+        "ruff",
+        "check",
+    ],
+    [
+        "poetry",
+        "run",
+        "pyright",
+        "src",
+    ],
+]
+
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+requires = [
+    "poetry-core>=2.0.0,<3.0.0",
+    "poetry-dynamic-versioning>=1.0.0,<2.0.0",
+]
 build-backend = "poetry_dynamic_versioning.backend"

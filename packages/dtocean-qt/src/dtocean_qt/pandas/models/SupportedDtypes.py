@@ -38,7 +38,16 @@ class SupportedDtypesTranslator(QObject):
             (np.dtype(np.float64), self.tr("floating point number (64 bit)")),
         ]
 
-        self._datetime = [(np.dtype("<M8[ns]"), self.tr("date and time"))]
+        self._datetime = [
+            (
+                np.dtype("datetime64[us]"),
+                self.tr("date and time (microsecond precision)"),
+            ),
+            (
+                np.dtype("datetime64[ns]"),
+                self.tr("date and time (nanosecond precision)"),
+            ),
+        ]
 
         self._bools = [(np.dtype(bool), self.tr("true/false value"))]
 

@@ -1,4 +1,5 @@
 import os
+from contextlib import contextmanager
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -400,7 +401,15 @@ def test_mesh_bem_mesh_generation_mesh(tmpdir, test_data_folder, mesh_bem):
 
     expected = os.path.join(test_data_folder, "cube2.dat")
 
-    with open(str(files[0])) as f1, open(expected) as f2:
+    @contextmanager
+    def open_and_strip(f_n):
+        with open(f_n, "r") as mesh_f:
+            msg = mesh_f.read()
+
+        msg = strip_comments(msg)
+        yield iter(msg.split("\n"))
+
+    with open(str(files[0])) as f1, open_and_strip(expected) as f2:
         n_vertices = int(next(f1))
 
         assert n_vertices == int(next(f2))

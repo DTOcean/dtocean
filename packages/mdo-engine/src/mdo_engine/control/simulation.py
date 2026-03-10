@@ -13,6 +13,7 @@ import os
 import sys
 from collections import OrderedDict
 from copy import deepcopy
+from pathlib import Path
 from typing import Any
 
 from ..boundary.data import SerialBox
@@ -421,8 +422,7 @@ class Loader:
         with open(file_path, "w") as json_file:
             json.dump(state_dict, json_file)
 
-        load_dict = {"file_path": store_path}
-
+        load_dict = {"file_path": Path(store_path).as_posix()}
         data_box = SerialBox(identifier, load_dict)
 
         return data_box
@@ -434,12 +434,12 @@ class Loader:
             ).format(type(serial_box).__name__)
             raise ValueError(errStr)
 
-        file_path = serial_box.load_dict["file_path"]
+        file_path = Path(serial_box.load_dict["file_path"])
 
         if root_dir is None:
             load_path = file_path
         else:
-            load_path = os.path.join(root_dir, file_path)
+            load_path = Path(root_dir) / file_path
 
         with open(load_path, "rb") as json_file:
             dump_dict = json.load(json_file)

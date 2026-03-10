@@ -38,7 +38,7 @@ def gui_interface():
 
         To get help::
 
-            $ dtocean-wec -h
+            dtocean-wec -h
 
     """
 

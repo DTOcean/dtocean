@@ -141,9 +141,8 @@ class ThreadOpen(QtCore.QThread):
             load_path = str(self._file_path)
             dto_dir_path = None
             prj_file_path = None
-            sco_file_path = None
+            gui_file_path = None
             stg_file_path = None
-            int_file_path = None
 
             # Check the extension
             if os.path.splitext(load_path)[1] == ".dtox":
@@ -152,14 +151,11 @@ class ThreadOpen(QtCore.QThread):
                 tar.extractall(dto_dir_path, filter="data")
 
                 prj_file_path = os.path.join(dto_dir_path, "project.dtop")
-                sco_file_path = os.path.join(dto_dir_path, "scope.json")
+                gui_file_path = os.path.join(dto_dir_path, "gui.json")
                 stg_file_path = os.path.join(dto_dir_path, "strategy.json")
-                int_file_path = os.path.join(dto_dir_path, "interfaces.json")
 
                 if not os.path.isfile(stg_file_path):
                     stg_file_path = None
-                if not os.path.isfile(int_file_path):
-                    int_file_path = None
 
             elif os.path.splitext(load_path)[1] == ".dtop":
                 prj_file_path = load_path
@@ -175,21 +171,29 @@ class ThreadOpen(QtCore.QThread):
             load_project = self._core.load_project(prj_file_path)
             self._project = load_project
 
-            # Load up the scope if one was found
-            if sco_file_path is not None:
-                with open(sco_file_path, "rb") as json_file:
-                    self._current_scope = json.load(json_file)
+            # Load up the scope and activated interfaces if found
+            if gui_file_path is not None:
+                with open(gui_file_path, "rb") as json_file:
+                    gui_load = json.load(json_file)
+
+                if "version" not in gui_load:
+                    raise RuntimeError("GUI config file version not found")
+                elif gui_load["version"] != 1:
+                    msg = (
+                        f"GUI config file version {gui_load["version"]} is not"
+                        "supported"
+                    )
+                    raise RuntimeError(msg)
+
+                self._current_scope = gui_load["current_scope"]
+
+                if "activated_interfaces" in gui_load:
+                    self._activated_interfaces = gui_load[
+                        "activated_interfaces"
+                    ]
 
             else:
                 self._current_scope = "global"
-
-            # Load up the activated interfaces if found
-            if int_file_path is not None:
-                with open(int_file_path, "rb") as json_file:
-                    self._activated_interfaces = json.load(json_file)
-
-            else:
-                self._activated_interfaces = {}
 
             # Load up the strategy if one was found
             if stg_file_path is not None:
@@ -275,26 +279,19 @@ class ThreadSave(QtCore.QThread):
 
                 return
 
-            # Dump the output scope
-            sco_file_path = os.path.join(dto_dir_path, "scope.json")
+            # Dump the output scope and activated interfaces
+            gui_file_path = os.path.join(dto_dir_path, "gui.json")
+            gui_dump = {"current_scope": self._current_scope, "version": 1}
 
-            with open(sco_file_path, "w") as json_file:
-                json.dump(self._current_scope, json_file)
+            if self._activated_interfaces:
+                gui_dump["activated_interfaces"] = self._activated_interfaces
+
+            with open(gui_file_path, "w") as json_file:
+                json.dump(gui_dump, json_file)
 
             # Set the standard archive contents
-            arch_files = [prj_file_path, sco_file_path]
-            arch_paths = ["project.dtop", "scope.json"]
-
-            # Dump the activated interfaces
-            if self._activated_interfaces:
-                int_file_path = os.path.join(dto_dir_path, "interfaces.json")
-
-                with open(int_file_path, "w") as json_file:
-                    json.dump(self._activated_interfaces, json_file)
-
-                # Set the standard archive contents
-                arch_files.append(int_file_path)
-                arch_paths.append("interfaces.json")
+            arch_files = [prj_file_path, gui_file_path]
+            arch_paths = ["project.dtop", "gui.json"]
 
             # Dump the strategy (if there is one)
             if self._strategy is not None:

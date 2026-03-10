@@ -1,19 +1,24 @@
-name: dtocean-dummy-module actions
+name: dtocean-dummy-module tests
 on:
   push:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/dtocean-dummy-module.yml'
-      - 'packages/dtocean-dummy-module/**'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean-dummy-module.yml"
+      - "packages/dtocean-dummy-module/**"
+      - "packages/polite-config/src/**"
+      - "poetry.lock"
   pull_request:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/dtocean-dummy-module.yml'
-      - 'packages/dtocean-dummy-module/**'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean-dummy-module.yml"
+      - "packages/dtocean-dummy-module/**"
+      - "packages/polite-config/src/**"
+      - "poetry.lock"
+
 jobs:
   pytest:
     name: Unit tests
@@ -22,6 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
+        python-version: ["3.14", "3.13", "3.12"]
     defaults:
       run:
         working-directory: packages/dtocean-dummy-module
@@ -30,14 +36,11 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       - name: Install package
-        run: |
-          poetry install --with test
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["dtocean-dummy-module", "test"]'
+          python-version: ${{ matrix.python-version }}
       - name: Run tests
         run: |
           poetry run pytest --cov src --cov-report=xml tests
@@ -56,14 +59,11 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       - name: Install package
-        run: |
-          poetry install --with audit
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["audit", "dtocean-dummy-module"]'
+          python-version: 3.14
       - name: Run ruff
         run: |
           poetry run ruff check --output-format github

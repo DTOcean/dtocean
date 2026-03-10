@@ -423,7 +423,7 @@ def add_Te_interface():
 
         To get help::
 
-            $ add-Te -h
+            add-Te -h
 
     """
 

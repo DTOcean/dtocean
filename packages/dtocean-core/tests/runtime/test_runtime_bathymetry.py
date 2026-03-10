@@ -6,7 +6,6 @@ import psycopg
 import psycopg.sql as sql
 import pytest
 import xarray as xr
-from pytest_postgresql.janitor import DatabaseJanitor
 
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ModuleMenu, ProjectMenu
@@ -180,8 +179,9 @@ def postgresql_path(request):
 
 @pytest.fixture(scope="module")
 def db_config(postgresql_noproc, postgresql_path):
-    dbname = f"{postgresql_noproc.dbname}_bathymetry"
+    from pytest_postgresql.janitor import DatabaseJanitor
 
+    dbname = f"{postgresql_noproc.dbname}_bathymetry"
     janitor = DatabaseJanitor(
         user=postgresql_noproc.user,
         host=postgresql_noproc.host,

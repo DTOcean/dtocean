@@ -7,5 +7,5 @@
     },
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "ruff.configuration": "pyproject.toml",
+  "ruff.configuration": "pyproject.toml"
 }

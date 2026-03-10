@@ -1,0 +1,680 @@
+name: Continuous delivery
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  POLITE_CONFIG_DIR: packages/polite-config
+  MDO_ENGINE_DIR: packages/mdo-engine
+  DTOCEAN_CORE_DIR: packages/dtocean-core
+  DTOCEAN_QT_DIR: packages/dtocean-qt
+  DTOCEAN_APP_DIR: packages/dtocean-app
+  DTOCEAN_HYDRODYNAMICS_DIR: packages/dtocean-hydrodynamics
+  DTOCEAN_DOCS_DIR: packages/dtocean-docs
+  DTOCEAN_DIR: packages/dtocean
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-release-${{ github.ref_name }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    outputs:
+      polite-config-released: ${{ steps.release-polite-config.outputs.released }}
+      polite-config-commit_sha: ${{ steps.release-polite-config.outputs.commit_sha }}
+      mdo-engine-released: ${{ steps.release-mdo-engine.outputs.released }}
+      mdo-engine-commit_sha: ${{ steps.release-mdo-engine.outputs.commit_sha }}
+      dtocean-core-released: ${{ steps.release-dtocean-core.outputs.released }}
+      dtocean-core-commit_sha: ${{ steps.release-dtocean-core.outputs.commit_sha }}
+      dtocean-qt-released: ${{ steps.release-dtocean-qt.outputs.released }}
+      dtocean-qt-commit_sha: ${{ steps.release-dtocean-qt.outputs.commit_sha }}
+      dtocean-app-released: ${{ steps.release-dtocean-app.outputs.released }}
+      dtocean-app-commit_sha: ${{ steps.release-dtocean-app.outputs.commit_sha }}
+      dtocean-hydrodynamics-released: ${{ steps.release-dtocean-hydrodynamics.outputs.released }}
+      dtocean-hydrodynamics-commit_sha: ${{ steps.release-dtocean-hydrodynamics.outputs.commit_sha }}
+      root-released: ${{ steps.release-root.outputs.released }}
+      root-commit_sha: ${{ steps.release-root.outputs.commit_sha }}
+      dtocean-docs-released: ${{ steps.release-dtocean-docs.outputs.released }}
+      dtocean-docs-commit_sha: ${{ steps.release-dtocean-docs.outputs.commit_sha }}
+
+    steps:
+      - name: Wait for all test jobs
+        uses: lewagon/wait-on-check-action@v1.5.0
+        with:
+          ref: ${{ github.sha }}
+          check-regexp: "(?i)^.*(test|audit).*$"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          fail-on-no-checks: false
+
+      # Note: We checkout the repository at the branch that triggered the workflow.
+      # Python Semantic Release will automatically convert shallow clones to full clones
+      # if needed to ensure proper history evaluation. However, we forcefully reset the
+      # branch to the workflow sha because it is possible that the branch was updated
+      # while the workflow was running, which prevents accidentally releasing un-evaluated
+      # changes.
+      - name: Checkout repository on release branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Force release branch to be at workflow sha
+        run: |
+          git reset --hard ${{ github.sha }}
+
+      - name: Release polite-config
+        id: release-polite-config
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          directory: ${{ env.POLITE_CONFIG_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          vcs_release: false
+
+      - name: Release mdo-engine
+        id: release-mdo-engine
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          directory: ${{ env.MDO_ENGINE_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          vcs_release: false
+
+      - name: Release dtocean-core
+        id: release-dtocean-core
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          directory: ${{ env.DTOCEAN_CORE_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          vcs_release: false
+
+      - name: Release dtocean-qt
+        id: release-dtocean-qt
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          directory: ${{ env.DTOCEAN_QT_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          vcs_release: false
+
+      - name: Release dtocean-app
+        id: release-dtocean-app
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          directory: ${{ env.DTOCEAN_APP_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          vcs_release: false
+
+      - name: Release dtocean-hydrodynamics
+        id: release-dtocean-hydrodynamics
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          vcs_release: false
+
+      - name: Release root
+        id: release-root
+        uses: ./.github/actions/semantic-release-calver
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release dtocean-docs
+        id: release-dtocean-docs
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          directory: ${{ env.DTOCEAN_DOCS_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          vcs_release: false
+
+      - name: Update poetry lock file
+        run: |
+          poetry lock
+
+      - name: Commit poetry lock file
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: poetry.lock
+          message: "chore(release): update poetry.lock"
+
+  build-dtocean-qt:
+    needs: release
+    if: needs.release.outputs.dtocean-qt-released == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.14", "3.13", "3.12"]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_QT_DIR }}
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.dtocean-qt-commit_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Install release dependencies
+        run: pip install tomli-w
+
+      - name: Run pre-build script
+        run: python scripts/pre-build.py ${{ env.DTOCEAN_QT_DIR }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Package project
+        run: poetry build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtocean-qt-${{ matrix.os }}-${{ matrix.python-version }}
+          path: ${{ env.DTOCEAN_QT_DIR }}/dist/*.whl
+
+  build-dtocean-app:
+    needs: release
+    if: needs.release.outputs.dtocean-app-released == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.14", "3.13", "3.12"]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_APP_DIR }}
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.dtocean-app-commit_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Install release dependencies
+        run: pip install tomli-w
+
+      - name: Run pre-build script
+        run: python scripts/pre-build.py ${{ env.DTOCEAN_APP_DIR }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Package project
+        run: poetry build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtocean-app-${{ matrix.os }}-${{ matrix.python-version }}
+          path: ${{ env.DTOCEAN_APP_DIR }}/dist/*.whl
+
+  build-dtocean-hydrodynamics:
+    needs: release
+    if: needs.release.outputs.dtocean-hydrodynamics-released == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.14", "3.13", "3.12"]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.dtocean-hydrodynamics-commit_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Install release dependencies
+        run: pip install tomli-w
+
+      - name: Run pre-build script
+        run: python scripts/pre-build.py ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Package project
+        run: poetry build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtocean-hydrodynamics-${{ matrix.os }}-${{ matrix.python-version }}
+          path: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}/dist/*.whl
+
+  build-dtocean-docs:
+    needs: release
+    if: needs.release.outputs.dtocean-docs-released == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.14", "3.13", "3.12"]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_DOCS_DIR }}
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Install release dependencies
+        run: pip install tomli-w
+
+      - name: Run pre-build script
+        run: python scripts/pre-build.py ${{ env.DTOCEAN_DOCS_DIR }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Package project
+        run: poetry build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtocean-docs-${{ matrix.os }}-${{ matrix.python-version }}
+          path: ${{ env.DTOCEAN_DOCS_DIR }}/dist/*.whl
+
+  publish-polite-config:
+    runs-on: ubuntu-latest
+    needs: release
+    if: needs.release.outputs.polite-config-released == 'true'
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.POLITE_CONFIG_DIR }}
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/polite-config/
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.polite-config-commit_sha }}
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Package project
+        run: poetry build
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.POLITE_CONFIG_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+  publish-mdo-engine:
+    runs-on: ubuntu-latest
+    needs: release
+    if: needs.release.outputs.mdo-engine-released == 'true'
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.MDO_ENGINE_DIR }}
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/mdo-engine/
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.mdo-engine-commit_sha }}
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Package project
+        run: poetry build
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.MDO_ENGINE_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+  publish-dtocean-core:
+    runs-on: ubuntu-latest
+    needs: release
+    if: needs.release.outputs.dtocean-core-released == 'true'
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_CORE_DIR }}
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/dtocean-core/
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.dtocean-core-commit_sha }}
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Package project
+        run: poetry build
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.DTOCEAN_CORE_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+  publish-dtocean-qt:
+    runs-on: ubuntu-latest
+    needs: build-dtocean-qt
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_QT_DIR }}
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/dtocean-qt/
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: ${{ env.DTOCEAN_QT_DIR }}/dist
+          pattern: dtocean-qt-*
+          merge-multiple: true
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.DTOCEAN_QT_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+  publish-dtocean-app:
+    needs: build-dtocean-app
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_APP_DIR }}
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/dtocean-app/
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: ${{ env.DTOCEAN_APP_DIR }}/dist
+          pattern: dtocean-app-*
+          merge-multiple: true
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.DTOCEAN_APP_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+  publish-dtocean-hydrodynamics:
+    needs: build-dtocean-hydrodynamics
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/dtocean-hydrodynamics/
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}/dist
+          pattern: dtocean-hydrodynamics-*
+          merge-multiple: true
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+  publish-docs:
+    needs: release
+    if: needs.release.outputs.root-released == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      BUILD_DIR: ""
+    steps:
+      - name: Get branch name
+        run: |
+          branch=$(echo ${{ github.ref }} | sed 's:.*/::')
+          echo "BRANCH=$branch" >> $GITHUB_ENV
+      - name: Checkout repository on release branch
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+      - name: Force release branch to be at commit sha
+        run: |
+          git reset --hard ${{ needs.release.outputs.root-commit_sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+      - name: Install package
+        run: |
+          poetry install --only docs
+      - name: Create build directory
+        run: echo "BUILD_DIR=$(mktemp -d -t pages-XXXXXXXXXX)" >> $GITHUB_ENV
+      - name: Build docs
+        run: |
+          poetry run sphinx-multiversion docs ${{ env.BUILD_DIR }}
+          touch ${{ env.BUILD_DIR }}/.nojekyll
+          cp docs/_assets/gh-pages.gitignore ${{ env.BUILD_DIR }}/.gitignore
+          cp docs/_assets/gh-pages-redirect.html ${{ env.BUILD_DIR }}/index.html
+          cp docs/_assets/gh-pages-readme.md ${{ env.BUILD_DIR }}/README.md
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.BUILD_DIR }}
+          force_orphan: true
+
+  publish-dtocean-docs:
+    runs-on: ubuntu-latest
+    needs: build-dtocean-docs
+    permissions:
+      id-token: write
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/dtocean-docs/
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: ${{ env.DTOCEAN_DOCS_DIR }}/dist
+          pattern: dtocean-docs-*
+          merge-multiple: true
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.DTOCEAN_DOCS_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+  publish-dtocean:
+    runs-on: ubuntu-latest
+    needs: release
+    if: needs.release.outputs.root-released == 'true'
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_DIR }}
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/dtocean/
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v3
+
+      - name: Install poetry plugins
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+          poetry self add poetry-dynamic-versioning
+        working-directory: ${{ github.workspace }}
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Install release dependencies
+        run: pip install tomli-w
+
+      - name: Run pre-build script
+        run: python scripts/pre-build.py ${{ env.DTOCEAN_DIR }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Copy root README
+        run: cp ${{ github.workspace }}/README.md .
+
+      - name: Package project
+        run: poetry build
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.DTOCEAN_DIR }}/dist
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true

@@ -1,17 +1,21 @@
-name: polite-config actions
+name: polite-config tests
 on:
   push:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/polite-config.yml'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-polite-config.yml"
+      - "packages/polite-config/**"
+      - "poetry.lock"
   pull_request:
-    branches: [ next ]
+    branches:
+      - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/polite-config.yml'
-      - 'packages/polite-config/**'
+      - ".codecov.yml"
+      - ".github/workflows/test-polite-config.yml"
+      - "packages/polite-config/**"
+      - "poetry.lock"
 jobs:
   pytest:
     name: Unit tests
@@ -20,6 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
+        python-version: ["3.14", "3.13", "3.12"]
     defaults:
       run:
         working-directory: packages/polite-config
@@ -28,14 +33,11 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       - name: Install package
-        run: |
-          poetry install --with test
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["polite-config", "test"]'
+          python-version: ${{ matrix.python-version }}
       - name: Run tests
         run: |
           poetry run pytest --cov src --cov-report=xml tests
@@ -54,14 +56,11 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
       - name: Install package
-        run: |
-          poetry install --with audit
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["audit", "polite-config"]'
+          python-version: 3.14
       - name: Run ruff
         run: |
           poetry run ruff check --output-format github

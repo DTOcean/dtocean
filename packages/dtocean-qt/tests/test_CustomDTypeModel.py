@@ -106,7 +106,7 @@ class TestColumnDType(object):
         # change all values except datetime
         datetime = ()
         for expected_type, string in language_values:
-            if expected_type == numpy.dtype("<M8[ns]"):
+            if expected_type in SupportedDtypes.datetimeTypes():
                 datetime = (string, expected_type)
                 continue
             else:
@@ -132,7 +132,7 @@ class TestColumnDType(object):
             model = ColumnDtypeModel(dataFrame=df)
             index = model.index(0, 0)
             model.setEditable(True)
-            assert model.setData(index, "date and time")
+            assert model.setData(index, "date and time (microsecond precision)")
 
         # convert datetime to anything else does not work and leave the
         # datatype unchanged. An error message is emitted.

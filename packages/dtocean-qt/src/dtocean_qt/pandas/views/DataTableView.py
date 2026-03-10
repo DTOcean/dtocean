@@ -9,6 +9,7 @@ from PySide6.QtCore import (
 
 from ..models.DataFrameModel import DataFrameModel
 from ..models.mime import MimeData, PandasCellPayload
+from ..views._ui import icons_rc  # noqa: F401
 from ..views.CustomDelegates import createDelegate
 from ..views.EditDialogs import (
     AddAttributesDialog,

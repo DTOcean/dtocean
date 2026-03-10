@@ -299,7 +299,7 @@ class TestDateTimeConversion(object):
         # convert critical datetime column:
         column_model = model_in.columnDtypeModel()
         index = column_model.index(4, 1)
-        column_model.setData(index, "date and time")
+        column_model.setData(index, "date and time (microsecond precision)")
 
         ##
         # now we export the data and load it again
@@ -344,7 +344,7 @@ class TestDateTimeConversion(object):
         assert isinstance(model_out_in, DataFrameModel)
         column_model = model_out_in.columnDtypeModel()
         index = column_model.index(4, 1)
-        column_model.setData(index, "date and time")
+        column_model.setData(index, "date and time (microsecond precision)")
 
         comparator = model_in.dataFrame() == model_out_in.dataFrame()
         assert all(comparator)

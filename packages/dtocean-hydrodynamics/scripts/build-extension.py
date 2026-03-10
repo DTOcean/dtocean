@@ -5,6 +5,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from packaging import tags
+
 ROOT_DIR = Path(__file__).parents[1]
 BUILD_DIR = ROOT_DIR.joinpath("build")
 BUILD_ENV = {
@@ -57,14 +59,16 @@ def _cleanup():
         files += list(ui_dir.glob("ui_*.py"))
 
     # fortran module
+    py = tags.interpreter_version()
+
     if _is_windows():
         files += (
-            list(LIB_DIR.glob("*.pyd"))
+            list(LIB_DIR.glob(f"*{py}*.pyd"))
+            + list(LIB_DIR.glob(f"*{py}*.a"))
             + list(LIB_DIR.glob("*.dll"))
-            + list(LIB_DIR.glob("*.a"))
         )
     else:
-        files += list(LIB_DIR.glob("*.so"))
+        files += list(LIB_DIR.glob(f"*{py}*.so"))
 
     for file in files:
         file.unlink()

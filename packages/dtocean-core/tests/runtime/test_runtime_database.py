@@ -7,7 +7,6 @@ import psycopg
 import psycopg.sql as sql
 import pytest
 from pandas.testing import assert_frame_equal
-from pytest_postgresql.janitor import DatabaseJanitor
 from shapely import from_wkt
 from sqlalchemy.engine import Engine
 
@@ -67,6 +66,8 @@ def postgresql_path(request):
 
 
 def test_get_database_bad_version(postgresql_noproc, postgresql_path):
+    from pytest_postgresql.janitor import DatabaseJanitor
+
     janitor = DatabaseJanitor(
         user=postgresql_noproc.user,
         host=postgresql_noproc.host,
@@ -118,8 +119,9 @@ def static(postgresql_noproc, postgresql_path):
     :param psql_proc: postgres process fixture
     :return: psycopg2 connection
     """
-    dbname = f"{postgresql_noproc.dbname}_static"
+    from pytest_postgresql.janitor import DatabaseJanitor
 
+    dbname = f"{postgresql_noproc.dbname}_static"
     janitor = DatabaseJanitor(
         user=postgresql_noproc.user,
         host=postgresql_noproc.host,
@@ -390,8 +392,9 @@ def empty(postgresql_noproc, postgresql_path):
     :param psql_proc: postgres process fixture
     :return: psycopg2 connection
     """
-    dbname = f"{postgresql_noproc.dbname}_empty"
+    from pytest_postgresql.janitor import DatabaseJanitor
 
+    dbname = f"{postgresql_noproc.dbname}_empty"
     janitor = DatabaseJanitor(
         user=postgresql_noproc.user,
         host=postgresql_noproc.host,

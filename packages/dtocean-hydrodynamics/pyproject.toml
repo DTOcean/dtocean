@@ -1,59 +1,100 @@
 [tool.poetry]
 name = "dtocean-hydrodynamics"
-version = "3.2.0"
+version = "3.3.12"
 description = "Hydrodynamics module for the DTOcean tools"
-authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
+authors = ["The DTOcean Developers"]
+maintainers = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
+repository = "https://github.com/DTOcean/dtocean"
+homepage = "https://dtocean.github.io/dtocean"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+]
 packages = [
-  {include = "dtocean_hydro", from="src"},
-  {include = "dtocean_plugins", from="src"},
-  {include = "dtocean_tidal", from="src"},
-  {include = "dtocean_wave", from="src"},
-  {include = "dtocean_wec", from="src"},
-  ]
+  { include = "dtocean_hydro", from = "src" },
+  { include = "dtocean_plugins", from = "src" },
+  { include = "dtocean_tidal", from = "src" },
+  { include = "dtocean_wave", from = "src" },
+  { include = "dtocean_wec", from = "src" },
+]
+exclude = [
+  "src/dtocean_plugins/strategy_guis/.gitignore",
+  "src/dtocean_plugins/strategy_guis/*.ui",
+  "src/dtocean_tidal/submodel/ParametricWake/read_db.f90",
+  "src/dtocean_wec/designer/.gitignore",
+  "src/dtocean_wec/designer/*.ui",
+]
 include = [
-    { path = "meson.build", format = "sdist" },
-    { path = "src/dtocean_wec/designer/*.ui", format = "sdist" },
-    { path = "src/dtocean_tidal/submodel/ParametricWake/*.so", format = "wheel" },
-    { path = "src/dtocean_tidal/submodel/ParametricWake/*.pyd", format = "wheel"},
-    { path = "src/dtocean_tidal/submodel/ParametricWake/*.dll", format = "wheel"},
-    { path = "src/dtocean_tidal/submodel/ParametricWake/*.dll.a", format = "wheel"},
+  { path = "meson.build", format = "sdist" },
+  { path = "src/dtocean_plugins/strategy_guis/*.ui", format = "sdist" },
+  { path = "src/dtocean_plugins/strategy_guis/ui_*.py", format = "wheel" },
+  { path = "src/dtocean_tidal/submodel/ParametricWake/read_db.f90", format = "sdist" },
+  { path = "src/dtocean_tidal/submodel/ParametricWake/*.so", format = "wheel" },
+  { path = "src/dtocean_tidal/submodel/ParametricWake/*.pyd", format = "wheel" },
+  { path = "src/dtocean_tidal/submodel/ParametricWake/*.dll", format = "wheel" },
+  { path = "src/dtocean_tidal/submodel/ParametricWake/*.dll.a", format = "wheel" },
+  { path = "src/dtocean_wec/designer/*.ui", format = "sdist" },
+  { path = "src/dtocean_wec/designer/ui_*.py", format = "wheel" },
 ]
 
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/DTOcean/dtocean/issues"
+
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
+python = ">=3.12,<3.15"
+
+[tool.poetry.group.main]
+include-groups = ["dtocean-hydrodynamics"]
+
+[tool.poetry.group.dtocean-hydrodynamics.dependencies]
 cma = "^4.4.1"
 h5py = "^3.12.1"
 matplotlib = "^3.10.8"
 natsort = "^8.4.0"
 numpy = "^2.3.5"
-pandas = "^2.2.3"
+pandas = "^3.0.1"
 pyopengl = "^3.1.7"
 scikit-learn = "^1.6.0"
 scipy = "^1.14.1"
 shapely = "^2.0.6"
-polite-config = {path = "../polite-config", develop = true}
+polite-config = { path = "../polite-config", develop = true }
 contourpy = "^1.3.1"
 pyside6 = "^6.9.0"
 shiboken6 = "^6.9.0"
-pillow = "^11.2.1"
+pillow = "^12.1.1"
+
+[tool.poetry.group.test-qt]
+optional = true
+
+[tool.poetry.group.test-qt.dependencies]
+pytest-qt = "^4.5.0"
 
 [tool.poetry.group.test]
 optional = true
+include-groups = ["test-qt"]
 
 [tool.poetry.group.test.dependencies]
 mock = "^5.1.0"
 pytest = "^8.3.4"
 pytest-mock = "^3.14.0"
-pytest-qt = "^4.5.0"
 pytest-cov = "^6.0.0"
+
+[tool.poetry.group.dtocean-app]
+optional = true
+
+[tool.poetry.group.dtocean-app.dependencies]
+dtocean-app = { path = "../dtocean-app", develop = true }
 
 [tool.poetry.group.test-extras]
 optional = true
-
-[tool.poetry.group.test-extras.dependencies]
-dtocean-app = {path = "../dtocean-app", develop = true}
+include-groups = ["dtocean-app"]
 
 [tool.poetry.group.audit]
 optional = true
@@ -62,7 +103,14 @@ optional = true
 ruff = "^0.8.3"
 pyright = "^1.1.396"
 deptry = "^0.21.1"
-pandas-stubs = "^2.2.3.241126"
+pandas-stubs = "^3.0.0.260204"
+
+[tool.poetry.group.tox]
+optional = true
+
+[tool.poetry.group.tox.dependencies]
+tox = "<4.47"
+tox-uv = "<1.33.0"
 
 [tool.poetry.scripts]
 dtocean-hydro = 'dtocean_hydro._cli:run'
@@ -74,23 +122,119 @@ script = "scripts/build-extension.py"
 [tool.poetry-monoranger-plugin]
 enabled = true
 monorepo-root = "../../"
-version-pinning-rule = '~'
+version-pinning-rule = '^'
 
 [tool.pytest.ini_options]
-filterwarnings = [
-    'ignore:numpy.ndarray size changed:RuntimeWarning',
-]
+filterwarnings = ['ignore:numpy.ndarray size changed:RuntimeWarning']
 
 [tool.pyright]
 typeCheckingMode = "basic"
 exclude = [
   "src/dtocean_wec/designer/ui_*.py",
-  "src/dtocean_plugins/strategy_guis/ui_*.py"
+  "src/dtocean_plugins/strategy_guis/ui_*.py",
 ]
 
 [tool.ruff]
 line-length = 80
 
+[tool.semantic_release]
+commit_parser = "../../scripts/dtocean_commit_parser.py:DTOceanCommitParser"
+commit_message = """\
+chore(release): dtocean-hydrodynamics@{version}
+
+Automatically generated by python-semantic-release
+"""
+tag_format = "dtocean-hydrodynamics-v{version}"
+version_toml = ["pyproject.toml:tool.poetry.version"]
+
+[tool.semantic_release.branches.main]
+match = "(main)"
+
+[tool.semantic_release.changelog]
+# Recommended patterns for conventional commits parser that is scope aware
+exclude_commit_patterns = [
+  '''chore(?:\([^)]*?\))?: .+''',
+  '''ci(?:\([^)]*?\))?: .+''',
+  '''refactor(?:\([^)]*?\))?: .+''',
+  '''style(?:\([^)]*?\))?: .+''',
+  '''test(?:\([^)]*?\))?: .+''',
+  '''build\((?!deps\): .+)''',
+  '''Initial [Cc]ommit.*''',
+]
+
+[tool.semantic_release.commit_parser_options]
+scope_prefix = "dtocean-hydrodynamics"
+
+[tool.semantic_release.commit_parser_options.path_filters.main]
+paths = ["."]
+
+[tool.semantic_release.commit_parser_options.path_filters.polite-config]
+paths = ["../polite-config"]
+max_bump_level = 2
+trigger_bump_level = 4
+
+[tool.tox]
+requires = ["tox>=4.19"]
+env_list = ["3.14", "3.13", "3.12", "audit"]
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+skip_install = true
+allowlist_externals = ["poetry"]
+commands_pre = [
+  [
+    "poetry",
+    "sync",
+    "--only",
+    "dtocean-app",
+    "--only",
+    "dtocean-hydrodynamics",
+    "--only",
+    "test",
+    "--only",
+    "test-qt",
+  ],
+]
+commands = [["poetry", "run", "pytest", "tests"]]
+
+[tool.tox.env.audit]
+description = "Run audit check on code base"
+skip_install = true
+allowlist_externals = ["poetry"]
+commands_pre = [
+  [
+    "poetry",
+    "sync",
+    "--only",
+    "audit",
+    "--only",
+    "dtocean-app",
+    "--only",
+    "dtocean-hydrodynamics",
+  ],
+]
+commands = [
+  [
+    "poetry",
+    "run",
+    "ruff",
+    "check",
+  ],
+  [
+    "poetry",
+    "run",
+    "pyright",
+    "src",
+  ],
+]
+
 [build-system]
-requires = ["poetry-core", "meson", "ninja", "numpy~=2.3.5", "pyside6"]
+requires = [
+  "poetry-core",
+  "meson",
+  "ninja",
+  "numpy~=2.3.5",
+  "packaging",
+  "pyside6",
+]
 build-backend = "poetry.core.masonry.api"

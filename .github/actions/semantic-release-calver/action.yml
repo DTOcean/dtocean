@@ -1,0 +1,39 @@
+name: semantic-release-python calver
+description: 'Use the locally modified version of semantic-release-python modified for calendar versioning'
+inputs:
+  github-token:
+    description: GitHub token used to push release notes and new commits/tags
+    required: true
+  python-version:
+    description: 'Python version to install (defaults to 3.12)'
+    default: "3.12"
+outputs:
+  released:
+    description: '"true" if a release was made, "false" otherwise'
+    value: ${{ steps.semantic-release.outputs.released }}
+  commit_sha:
+    description: "The commit SHA of the release if a release was made, otherwise an empty string"
+    value: ${{ steps.semantic-release.outputs.commit_sha }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      id: setup-python
+      with:
+        python-version: ${{ inputs.python-version }}
+        update-environment: false
+    - name: Install poetry
+      shell: bash
+      run: curl -sSL https://install.python-poetry.org | ${{ steps.setup-python.outputs.python-path }} -
+    - name: Install release group
+      shell: bash
+      run: |
+        poetry install --only release
+    - name: Run semantic release
+      id: semantic-release
+      env: 
+        GH_TOKEN: ${{ inputs.github-token }}
+      shell: bash
+      run: |
+        poetry run python scripts/calver.py version --no-vcs-release

@@ -81,7 +81,7 @@ def _database(args):
 
         To get help::
 
-            $ dtocean-database -h
+            dtocean-database -h
 
     """
 

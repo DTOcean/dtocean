@@ -5,7 +5,6 @@ import time
 import traceback
 from io import StringIO
 
-from easygui.boxes.derived_boxes import msgbox
 from PySide6 import QtWidgets
 
 
@@ -17,6 +16,10 @@ def excepthook(excType, excValue, tracebackobj):
     @param excValue exception value
     @param tracebackobj traceback object
     """
+
+    def msgbox(msg, title):
+        print(f"{title}: msg")
+
     separator = "-" * 80
 
     logFile = os.path.join(tempfile.gettempdir(), "error.log")

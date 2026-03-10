@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import numpy as np
 import pandas as pd
 import pytest
 from shapely import Polygon, get_srid, set_srid
@@ -109,7 +110,7 @@ def test_convert_array():
     result = convert_array(df, ["A"])
 
     assert result["A"].iloc[0] == "{1, 2, 3, 4}"
-    assert result["A"].iloc[1] is None
+    assert result["A"].iloc[1] is np.nan
 
 
 def test_revert_array():
@@ -130,7 +131,7 @@ def test_convert_bool():
 
     assert result["A"].iloc[0] == "yes"
     assert result["A"].iloc[1] == "no"
-    assert result["A"].iloc[2] is None
+    assert result["A"].iloc[2] is np.nan
 
 
 def test_revert_bool():
@@ -153,7 +154,7 @@ def test_convert_geo():
     result = convert_geo(df, ["A"])
 
     assert result["A"].iloc[0] == "POINT (0 0)"
-    assert result["A"].iloc[1] is None
+    assert result["A"].iloc[1] is np.nan
 
 
 def test_convert_geo_SRID():
@@ -164,7 +165,7 @@ def test_convert_geo_SRID():
     result = convert_geo(df, ["A"])
 
     assert result["A"].iloc[0] == "SRID=1;POINT (0 0)"
-    assert result["A"].iloc[1] is None
+    assert result["A"].iloc[1] is np.nan
 
 
 def test_revert_geo():
@@ -209,12 +210,12 @@ def test_convert_time():
     df_dict = {"A": [x, None], "B": [1, 2]}
     df = pd.DataFrame(df_dict)
     df2 = df.astype(object)
-    df2 = df2.where(df2.notnull(), None)
+    df2 = df2.where(df2.notnull(), np.nan)
 
     result = convert_time(df2, ["A"])
 
     assert result["A"].iloc[0] == "12:31:05"
-    assert result["A"].iloc[1] is None
+    assert result["A"].iloc[1] is np.nan
 
 
 def test_check_dict():

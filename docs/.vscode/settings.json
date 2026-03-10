@@ -7,7 +7,5 @@
     },
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "[markdown]": {
-    "editor.formatOnSave": true
-  }
+  "ruff.configuration": "ruff.toml"
 }
