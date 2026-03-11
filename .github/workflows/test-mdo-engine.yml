@@ -35,7 +35,7 @@ jobs:
     env:
       DATABASE_URL: https://github.com/DTOcean/dtocean-database-next/releases/download/v2026.01.0/dtocean-database-v2026.01.0.tar.gz
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
           persist-credentials: false
@@ -87,7 +87,7 @@ jobs:
       run:
         working-directory: packages/mdo-engine
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
           persist-credentials: false
@@ -110,7 +110,7 @@ jobs:
       run:
         working-directory: packages/mdo-engine
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
           persist-credentials: false

@@ -4,18 +4,18 @@ on:
     branches:
       - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/test-dtocean.yml'
-      - 'packages/dtocean/**'
-      - 'poetry.lock'
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean.yml"
+      - "packages/dtocean/**"
+      - "poetry.lock"
   pull_request:
     branches:
       - main
     paths:
-      - '.codecov.yml'
-      - '.github/workflows/test-dtocean.yml'
-      - 'packages/dtocean/**'
-      - 'poetry.lock'
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean.yml"
+      - "packages/dtocean/**"
+      - "poetry.lock"
 
 jobs:
   pytest:
@@ -29,11 +29,11 @@ jobs:
       run:
         working-directory: packages/dtocean
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.12
       - name: Install poetry
@@ -59,11 +59,11 @@ jobs:
       run:
         working-directory: packages/dtocean
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.12
       - name: Install poetry

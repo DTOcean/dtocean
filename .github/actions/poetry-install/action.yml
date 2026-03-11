@@ -20,7 +20,7 @@ runs:
            GROUPS_ARG=" --only ${GROUPS_INPUT}";
         fi
         echo "GROUPS_ARG=${GROUPS_ARG}" >> $GITHUB_ENV
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
     - name: Install poetry
