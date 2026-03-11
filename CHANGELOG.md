@@ -8,6 +8,10 @@ and this project adheres to [Calendar Versioning](http://calver.org/).
 
 <!-- version list -->
 
+## v2026.3.1 (2026-03-11)
+
+- Initial Release
+
 ## v2026.3.1 (2026-03-10)
 
 - Initial Release
