@@ -42,6 +42,7 @@ jobs:
       dtocean-hydrodynamics-commit_sha: ${{ steps.release-dtocean-hydrodynamics.outputs.commit_sha }}
       root-released: ${{ steps.release-root.outputs.released }}
       root-commit_sha: ${{ steps.release-root.outputs.commit_sha }}
+      root-tag: ${{ steps.release-root.outputs.tag }}
       dtocean-docs-released: ${{ steps.release-dtocean-docs.outputs.released }}
       dtocean-docs-commit_sha: ${{ steps.release-dtocean-docs.outputs.commit_sha }}
 
@@ -609,8 +610,8 @@ jobs:
           poetry run sphinx-multiversion docs ${{ env.BUILD_DIR }}
           touch ${{ env.BUILD_DIR }}/.nojekyll
           cp docs/_assets/gh-pages.gitignore ${{ env.BUILD_DIR }}/.gitignore
-          cp docs/_assets/gh-pages-redirect.html ${{ env.BUILD_DIR }}/index.html
           cp docs/_assets/gh-pages-readme.md ${{ env.BUILD_DIR }}/README.md
+          python scripts/make_docs_index.py ${{ env.BUILD_DIR }} ${{ needs.release.outputs.root-tag }}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
