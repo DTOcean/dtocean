@@ -48,4 +48,4 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
-        poetry run python scripts/calver.py version --no-vcs-release ${{ inputs.commit == 'true' && '' || '--no-commit' }} ${{ inputs.push == 'true' && '' || '--no-push' }}
+        poetry run python scripts/calver.py version --no-vcs-release ${{ inputs.commit != 'true' && '--no-commit' }} ${{ inputs.push != 'true' && '--no-push' }}
