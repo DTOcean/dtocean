@@ -124,4 +124,4 @@ def test_Help_no_docs(qtbot, mocker):
     qtbot.addWidget(widget)
 
     assert widget._msg_widget is not None
-    assert widget._msg_widget.text == "No manuals installated"
+    assert widget._msg_widget.text == "No manuals installed"
