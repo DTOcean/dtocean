@@ -611,7 +611,7 @@ jobs:
           touch ${{ env.BUILD_DIR }}/.nojekyll
           cp docs/_assets/gh-pages.gitignore ${{ env.BUILD_DIR }}/.gitignore
           cp docs/_assets/gh-pages-readme.md ${{ env.BUILD_DIR }}/README.md
-          python scripts/make_docs_index.py ${{ env.BUILD_DIR }} ${{ needs.release.outputs.root-tag }}
+          poetry run python scripts/make_docs_index.py ${{ env.BUILD_DIR }} ${{ needs.release.outputs.root-tag }}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
