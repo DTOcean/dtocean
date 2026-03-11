@@ -20,20 +20,11 @@ from dtocean_plugins.tools.dtocean_wec import WECSimulatorTool
 
 
 class GUIWECSimulatorTool(GUITool, WECSimulatorTool):
-    """A basic strategy which will run all selected modules and themes in
-    sequence."""
-
     def __init__(self):
         WECSimulatorTool.__init__(self)
         GUITool.__init__(self)
 
     def get_weight(self):
-        """A method for getting the order of priority of the strategy.
-
-        Returns:
-          int
-        """
-
         return 1
 
     def has_widget(self):
