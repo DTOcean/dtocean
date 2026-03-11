@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.1 (2026-03-11)
+
+### Bug Fixes
+
+- Fix WEC Analysis tool not opening in app
+  ([`648673d`](https://github.com/DTOcean/dtocean/commit/648673d71a19e3ad0f34a56d67e28e31bb9d2288))
+
+
 ## v4.0.0 (2026-03-10)
 
 ### Features
