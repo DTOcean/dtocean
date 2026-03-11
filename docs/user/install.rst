@@ -21,10 +21,20 @@ packages are currently not available, but may be reimplemented in the future.
 PyPI
 ----
 
-Ensure that a compatible Python version (see the :ref:`Index <index>` page) is
-available on the command line [#f1]_. Use pip to install the dtocean suite::
+.. only:: web
 
-    pip install dtocean
+    Ensure that a compatible Python version (see the :ref:`Index <index>` page)
+    is available on the command line [#f1]_. Use pip to install the dtocean
+    suite::
+
+        pip install dtocean
+
+.. only:: not web
+    
+    Ensure that a compatible Python version is available on the command line
+    [#f1]_. Use pip to install the dtocean suite::
+
+        pip install dtocean
 
 Once the dtocean packages are installed, an initialization step is required
 to download large files and add a desktop shortcut::
