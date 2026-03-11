@@ -11,7 +11,7 @@ work](https://github.com/sponsors/H0R5E). Many thanks.
 ***
 
 <p align="center">
-  <img width="385" height="125" src="https://media.githubusercontent.com/media/H0R5E/dtocean/refs/heads/main/images/dtocean2plus._padded.png">
+  <img width="350" height="125" src="https://media.githubusercontent.com/media/DTOcean/dtocean/refs/heads/main/images/dtocean_padded_20251712.png">
 </p>
 
 # DTOcean
@@ -108,7 +108,7 @@ up development and how to offer contributions to the project.
 
 ## Credits
 
-<img align="left" width="301" height="159" src="https://media.githubusercontent.com/media/H0R5E/dtocean/refs/heads/main/images/dog_logo_wide_300.png">
+<img align="left" width="301" height="159" src="https://media.githubusercontent.com/media/DTOcean/dtocean/refs/heads/main/images/dog_logo_wide_300.png">
 
 This version of DTOcean was developed and published by Mathew Topper at [Data
 Only Greater](https://www.dataonlygreater.com/) as a continuation of the
