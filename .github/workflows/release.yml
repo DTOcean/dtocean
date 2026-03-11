@@ -62,7 +62,7 @@ jobs:
       # while the workflow was running, which prevents accidentally releasing un-evaluated
       # changes.
       - name: Checkout repository on release branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
@@ -173,13 +173,13 @@ jobs:
         working-directory: ${{ env.DTOCEAN_QT_DIR }}
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-qt-commit_sha }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -223,13 +223,13 @@ jobs:
         working-directory: ${{ env.DTOCEAN_APP_DIR }}
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-app-commit_sha }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -273,13 +273,13 @@ jobs:
         working-directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-hydrodynamics-commit_sha }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -323,13 +323,13 @@ jobs:
         working-directory: ${{ env.DTOCEAN_DOCS_DIR }}
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -374,13 +374,13 @@ jobs:
       url: https://pypi.org/project/polite-config/
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.polite-config-commit_sha }}
 
       - name: Set up Python 3.14
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.14"
 
@@ -419,13 +419,13 @@ jobs:
       url: https://pypi.org/project/mdo-engine/
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.mdo-engine-commit_sha }}
 
       - name: Set up Python 3.14
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.14"
 
@@ -464,13 +464,13 @@ jobs:
       url: https://pypi.org/project/dtocean-core/
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-core-commit_sha }}
 
       - name: Set up Python 3.14
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.14"
 
@@ -587,7 +587,7 @@ jobs:
           branch=$(echo ${{ github.ref }} | sed 's:.*/::')
           echo "BRANCH=$branch" >> $GITHUB_ENV
       - name: Checkout repository on release branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           fetch-depth: 0
@@ -595,7 +595,7 @@ jobs:
       - name: Force release branch to be at commit sha
         run: |
           git reset --hard ${{ needs.release.outputs.root-commit_sha }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Install poetry
@@ -656,13 +656,13 @@ jobs:
       url: https://pypi.org/project/dtocean/
     steps:
       - name: Setup | Checkout repository on commit sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
 
       - name: Set up Python 3.14
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.14"
 
