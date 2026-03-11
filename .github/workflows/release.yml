@@ -613,11 +613,10 @@ jobs:
           cp docs/_assets/gh-pages-readme.md ${{ env.BUILD_DIR }}/README.md
           poetry run python scripts/make_docs_index.py ${{ env.BUILD_DIR }} ${{ needs.release.outputs.root-tag }}
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ env.BUILD_DIR }}
-          force_orphan: true
+          folder: ${{ env.BUILD_DIR }}
+          single-commit: true
 
   publish-dtocean-docs:
     runs-on: ubuntu-latest
