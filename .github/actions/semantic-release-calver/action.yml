@@ -20,12 +20,15 @@ inputs:
     description: 'Python version to install (defaults to 3.12)'
     default: "3.12"
 outputs:
-  released:
-    description: '"true" if a release was made, "false" otherwise'
-    value: ${{ steps.semantic-release.outputs.released }}
   commit_sha:
     description: "The commit SHA of the release if a release was made, otherwise an empty string"
     value: ${{ steps.semantic-release.outputs.commit_sha }}
+  released:
+    description: '"true" if a release was made, "false" otherwise'
+    value: ${{ steps.semantic-release.outputs.released }}
+  tag:
+    description: "The Git tag corresponding to the version output but in the tag format dictated by your configuration"
+    value: ${{ steps.semantic-release.outputs.tag }}
 
 runs:
   using: "composite"
