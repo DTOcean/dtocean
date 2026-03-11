@@ -39,30 +39,28 @@ Using the default settings, the docs should be available to view at
 
 ## Testing
 
-### Current Branch
+### Offline Version
 
-The documentation for the current branch can be built locally for inspection
-prior to publishing. They are built in the `docs/_build` directory. Note,
-unlike the final documentation, version tags and other branches will not be
-available.
-
-To test the current branch from the root directory:
+The documentation used for the offline help uses the currently checked out
+code, and can be built locally for inspection prior to publishing. Note, unlike
+the online documentation, version tags and other branches will not be
+available. To test the current branch from the root directory:
 
 ```sh
-poetry run sphinx-build -a -W --keep-going -b html docs _build/html
+poetry run sphinx-build -a -W -b html docs _build/html
 ```
 
 The front page of the docs can be accessed at `_build/html/index.html`.
 
-### Final Version
+### Online Version
 
-The final documentation can be built locally for inspection prior to
-publishing. They are built in the `docs/_build` directory. Note, docs are built
-from the remote so only pushed changes on branches will be shown. To build the
-docs use the following command from the root directory:
+The online documentation can be built locally for inspection prior to
+publishing. Note, the online docs are built by pulling from the git remote, so
+only pushed changes on branches will be shown. To build the docs use the
+following command from the root directory:
 
 ```sh
-poetry run sphinx-multiversion -a -W --keep-going docs _build/html
+poetry run sphinx-multiversion -a -t=web docs _build/html
 ```
 
 The front page of the docs can be accessed at `_build/html/main/index.html`.

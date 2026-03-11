@@ -10,13 +10,15 @@
 
     Release v\ |release| (:ref:`Installation <install>`)
     
-    .. image:: https://img.shields.io/pypi/pyversions/dtocean
-        :alt: PyPI - Python Version
-        :target: https://pypi.org/project/dtocean/
-    
-    .. image:: https://img.shields.io/pypi/l/dtocean
-        :alt: PyPI - License
-        :target: https://pypi.org/project/dtocean/
+    .. only:: web
+        
+        .. image:: https://img.shields.io/pypi/pyversions/dtocean
+            :alt: PyPI - Python Version
+            :target: https://pypi.org/project/dtocean/
+        
+        .. image:: https://img.shields.io/pypi/l/dtocean
+            :alt: PyPI - License
+            :target: https://pypi.org/project/dtocean/
 
     **DTOcean** is the only open source fully parametric design tool for arrays 
     of ocean energy converters.

@@ -22,6 +22,7 @@ Created on Thu Apr 23 12:51:14 2015
 .. moduleauthor:: Mathew Topper <damm_horse@yahoo.co.uk>
 """
 
+import logging
 import os
 import platform
 import sys
@@ -33,6 +34,7 @@ from typing import TYPE_CHECKING
 import pandas as pd
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QEvent, Qt, QUrl
+from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from shiboken6 import Shiboken
 
@@ -62,6 +64,9 @@ else:
     from ..designer.low.projectproperties import Ui_ProjectProperties
     from ..designer.low.shuttle import Ui_ShuttleDialog
     from ..designer.low.testdatapicker import Ui_TestDataPicker
+
+# Set up logging
+MODULE_LOGGER = logging.getLogger(__name__)
 
 HOME = os.path.expanduser("~")
 PARENT_PATH = Path(__file__).parent
@@ -569,6 +574,11 @@ class Message(QtWidgets.QWidget):
         qp.drawText(event.rect(), Qt.AlignmentFlag.AlignCenter, self.text)
 
 
+class LoggingPage(QWebEnginePage):
+    def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+        MODULE_LOGGER.debug(message)
+
+
 class Help(QtWidgets.QDialog):
     force_quit = QtCore.Signal()
 
@@ -595,12 +605,12 @@ class Help(QtWidgets.QDialog):
         self.setWindowTitle("DTOcean User Manual")
 
     def _init_message(self):
-        text = "No manuals installated"
+        text = "No manuals installed"
         self._msg_widget = Message(self, text)
         self._layout.addWidget(self._msg_widget)
 
     def _init_help(self, index_path):
         url = QUrl.fromLocalFile(index_path)
-        self._url_widget = QWebEngineView(self)
+        self._url_widget = QWebEngineView(LoggingPage(self))
         self._url_widget.load(url)
         self._layout.addWidget(self._url_widget)

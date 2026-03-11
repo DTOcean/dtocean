@@ -385,35 +385,37 @@ particular simulation, as is the case here.
 .. _tab_tidal_example_inputs:
 .. table:: Recommended input values
 
-    +-----------------------+----------------------------+---------+
-    |        Branch         |          Variable          |  Value  |
-    +=======================+============================+=========+
-    |Hydrodynamics          |Array Rated Power           |       11|
-    +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Tidal Probability Bins      |       20|
-    +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Lease Area Boundary Padding |       20|
-    +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Minimum Q-Factor            |      0.9|
-    +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |Power Histogram Bin Width   |     0.05|
-    +-----------------------+----------------------------+---------+
-    |Hydrodynamics          |User Option for Array Layout|Staggered|
-    +-----------------------+----------------------------+---------+
-    |Electrical Sub-Systems |Network Configuration       |   Radial|
-    +-----------------------+----------------------------+---------+
-    |Electrical Sub-Systems |Maximum Seabed Gradient     |    11.25|
-    +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Foundation Safety Factor    |      3.6|
-    +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Grout Strength Safety Factor|      3.6|
-    +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Concrete Cost per kg        |     0.05|
-    +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Grout Cost per kg           |     0.05|
-    +-----------------------+----------------------------+---------+
-    |Mooring and Foundations|Steel Cost per kg           |        4|
-    +-----------------------+----------------------------+---------+
+   +-------------------------+-----------------------------------+-------------------+
+   | Branch                  | Variable                          | Value             |
+   +=========================+===================================+===================+
+   | Hydrodynamics           | Tidal Occurrence Extraction Point | (533750, 5234700) |
+   +-------------------------+-----------------------------------+-------------------+
+   | Hydrodynamics           | Tidal Probability Bins            | 20                |
+   +-------------------------+-----------------------------------+-------------------+
+   | Hydrodynamics           | Array Rated Power                 | 11                |
+   +-------------------------+-----------------------------------+-------------------+
+   | Hydrodynamics           | Lease Area Boundary Padding       | 20                |
+   +-------------------------+-----------------------------------+-------------------+
+   | Hydrodynamics           | Minimum Q-Factor                  | 0.9               |
+   +-------------------------+-----------------------------------+-------------------+
+   | Hydrodynamics           | Power Histogram Bin Width         | 0.05              |
+   +-------------------------+-----------------------------------+-------------------+
+   | Hydrodynamics           | User Option for Array Layout      | Staggered         |
+   +-------------------------+-----------------------------------+-------------------+
+   | Electrical Sub-Systems  | Network Configuration             | Radial            |
+   +-------------------------+-----------------------------------+-------------------+
+   | Electrical Sub-Systems  | Maximum Seabed Gradient           | 11.25             |
+   +-------------------------+-----------------------------------+-------------------+
+   | Mooring and Foundations | Foundation Safety Factor          | 3.6               |
+   +-------------------------+-----------------------------------+-------------------+
+   | Mooring and Foundations | Grout Strength Safety Factor      | 3.6               |
+   +-------------------------+-----------------------------------+-------------------+
+   | Mooring and Foundations | Concrete Cost per kg              | 0.05              |
+   +-------------------------+-----------------------------------+-------------------+
+   | Mooring and Foundations | Grout Cost per kg                 | 0.05              |
+   +-------------------------+-----------------------------------+-------------------+
+   | Mooring and Foundations | Steel Cost per kg                 | 4                 |
+   +-------------------------+-----------------------------------+-------------------+
 
 When entering the values, ensure that the :ref:`data_context` is active (the 
 :ref:`menu_view` menu is used to change contexts). Also, using the variable 
