@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.3 (2026-03-12)
+
+### Bug Fixes
+
+- Repair broken links
+  ([`0ee2bc3`](https://github.com/DTOcean/dtocean/commit/0ee2bc357cf3be9455fc1043dc3a02eb12952db4))
+
+
 ## v4.0.2 (2026-03-11)
 
 ### Bug Fixes
