@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v3.0.1 (2026-03-12)
+
+### Bug Fixes
+
+- Always create parents of target directories
+  ([`2ad4275`](https://github.com/DTOcean/dtocean/commit/2ad4275a4b46dc457f593c74d1f92e39676517fc))
+
+
 ## v3.0.0 (2026-03-10)
 
 ### Features
