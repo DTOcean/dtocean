@@ -101,9 +101,20 @@ def test_configure_logger_dict(logger: Logger):
 )
 def test_configure_logger_prefix(logger: Logger, tmp_path):
     log_dir = tmp_path / "logs"
-    log_dir.mkdir()
-
     logger.configure_logger(file_prefix=log_dir)
+
+    assert "my_logger" in logging.Logger.manager.loggerDict
+    my_logger = logging.Logger.manager.loggerDict["my_logger"]
+    assert isinstance(my_logger, logging.Logger)
+
+    assert len(my_logger.handlers) == 1
+    assert isinstance(my_logger.handlers[0], logging.FileHandler)
+    assert Path(my_logger.handlers[0].baseFilename).parent == log_dir
+
+
+def test_configure_logger_prefix_parents(plain_logger_copied, tmp_path):
+    log_dir = tmp_path / "parent" / "logs"
+    plain_logger_copied.configure_logger(file_prefix=log_dir)
 
     assert "my_logger" in logging.Logger.manager.loggerDict
     my_logger = logging.Logger.manager.loggerDict["my_logger"]
@@ -151,8 +162,6 @@ def test_get_named_logger_level(logger: Logger):
 )
 def test_get_named_logger_message(logger: Logger, tmp_path):
     log_dir = tmp_path / "logs"
-    log_dir.mkdir()
-
     logger.configure_logger(file_prefix=log_dir)
     logger.get_named_logger("my_logger", info_message="mock")
 
@@ -172,8 +181,6 @@ def test_get_named_logger_message(logger: Logger, tmp_path):
 )
 def test_call(logger: Logger, tmp_path):
     log_dir = tmp_path / "logs"
-    log_dir.mkdir()
-
     my_logger = logger("my_logger", "INFO", "mock", log_dir)
 
     assert isinstance(my_logger, logging.Logger)
