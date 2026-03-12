@@ -118,6 +118,3 @@ Logging:
     <https://docs.python.org/3/tutorial/venv.html>`_)
 
 .. _Conda: https://conda-forge.org/
-
-.. |.condarc| replace:: ``.condarc``
-.. _.condarc: https://raw.githubusercontent.com/DTOcean/dtocean-app/master/.condarc

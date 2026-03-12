@@ -35,7 +35,7 @@ jobs:
       run:
         working-directory: packages/dtocean-core
     env:
-      DATABASE_URL: https://github.com/DTOcean/dtocean-database-next/releases/download/v2026.01.0/dtocean-database-v2026.01.0.tar.gz
+      DATABASE_URL: https://github.com/DTOcean/dtocean-database/releases/download/v2026.03.0/dtocean-database-v2026.03.0.tar.gz
       DISPLAY: ":99.0"
     steps:
       - uses: actions/checkout@v6

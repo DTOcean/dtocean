@@ -30,7 +30,7 @@ _VERSION_NEMOH = "v2025.02.0"
 _DIR_DATA = UserDataPath("dtocean_data", "DTOcean", _VERSION_DATA)
 _DIR_NEMOH = UserDataPath("nemoh", "DTOcean", _VERSION_NEMOH)
 _URL_BASE_DATA = (
-    "https://github.com/DTOcean/dtocean-data-next/releases/"
+    "https://github.com/DTOcean/dtocean-data/releases/"
     f"download/{_VERSION_DATA}/dtocean-data-{_VERSION_DATA}"
 )
 _URL_BASE_NEMOH = (

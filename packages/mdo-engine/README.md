@@ -155,7 +155,7 @@ poetry install --with test
 ```
 
 Database integration tests are available upon the installation of the [DTOcean
-database](https://github.com/DTOcean/dtocean-database-next). Once the database
+database](https://github.com/DTOcean/dtocean-database). Once the database
 is installed and running, additional options must be provided to the pytest
 command, with meanings as follows:
 

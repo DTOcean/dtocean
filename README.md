@@ -101,7 +101,7 @@ Various video tutorials can also be found on the Data Only Greater
 ## Contributing
 
 Please see the [contributing
-guidelines](https://github.com/DTOcean/dtocean/blob/master/CONTRIBUTING.md) for
+guidelines](https://github.com/DTOcean/dtocean/blob/main/CONTRIBUTING.md) for
 information regarding the structure of the [DTOcean GitHub
 repository](https://github.com/DTOcean/dtocean), the tools required for setting
 up development and how to offer contributions to the project.
