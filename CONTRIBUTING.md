@@ -340,7 +340,7 @@ created using AI (i.e. using vibe/agentic coding). This is because such code
 [poetry-monoranger-plugin]: https://github.com/ag14774/poetry-monoranger-plugin
 [poetry-dynamic-versioning]: https://github.com/mtkennerly/poetry-dynamic-versioning
 [dtocean-examples]: https://github.com/DTOcean/dtocean-examples
-[DTOcean database]: https://github.com/DTOcean/dtocean-database-next
+[DTOcean database]: https://github.com/DTOcean/dtocean-database
 [Python Semantic Release]: https://python-semantic-release.readthedocs.io
 [monorepo support]: https://python-semantic-release.readthedocs.io/en/latest/configuration/configuration-guides/monorepos.html
 [Conventional Commits]: https://www.conventionalcommits.org/
