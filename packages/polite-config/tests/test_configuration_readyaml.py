@@ -115,3 +115,20 @@ def test_write_yaml(readyaml: ReadYAML, target_dir):
         first_line = f.readline()
 
     assert first_line == "- curly\n"
+
+
+def test_write_yaml_parents(tmp_path):
+    target_dir = tmp_path / "parent" / "config"
+    readyaml = ReadYAML(target_dir, "logging.yaml")
+
+    test_list = ["curly", "larry", "moe"]
+    readyaml.write(test_list)
+
+    yaml_files = list(target_dir.iterdir())
+    assert len(yaml_files) == 1
+    assert yaml_files[0].name == "logging.yaml"
+
+    with open(yaml_files[0]) as f:
+        first_line = f.readline()
+
+    assert first_line == "- curly\n"

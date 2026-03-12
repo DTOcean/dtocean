@@ -298,7 +298,7 @@ class ReadYAML(Config):
         yaml_config_path = self.get_config_path()
 
         # Ensure target directory exists
-        self.target_dir.mkdir(exist_ok=True)
+        self.target_dir.mkdir(parents=True, exist_ok=True)
 
         with open(yaml_config_path, "w") as yaml_file:
             yaml.dump(
@@ -377,7 +377,7 @@ class Logger(ReadYAML):
             updated_handlers[key] = updated_handler
 
         if updated_handlers:
-            file_prefix_path.mkdir(exist_ok=True)
+            file_prefix_path.mkdir(parents=True, exist_ok=True)
             handlers.update(updated_handlers)
 
         dictConfig(log_config_dict)
