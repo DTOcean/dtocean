@@ -8,6 +8,14 @@ and this project adheres to [Calendar Versioning](http://calver.org/).
 
 <!-- version list -->
 
+## v2026.3.3 (2026-03-12)
+
+### Bug Fixes
+
+- Repair broken links
+  ([`0ee2bc3`](https://github.com/DTOcean/dtocean/commit/0ee2bc357cf3be9455fc1043dc3a02eb12952db4))
+
+
 ## v2026.3.2 (2026-03-11)
 
 ### Bug Fixes
