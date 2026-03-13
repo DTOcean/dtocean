@@ -760,7 +760,7 @@ url = "packages/dtocean"
 
 [[package]]
 name = "dtocean-app"
-version = "4.0.1"
+version = "4.0.2"
 description = "Main graphical application for the DTOcean tools"
 optional = false
 python-versions = ">=3.12,<3.14"
@@ -789,7 +789,7 @@ url = "packages/dtocean-app"
 
 [[package]]
 name = "dtocean-core"
-version = "4.0.1"
+version = "4.0.2"
 description = "The main (non-graphical) interface for the DTOcean tools"
 optional = false
 python-versions = ">=3.12,<3.14"
