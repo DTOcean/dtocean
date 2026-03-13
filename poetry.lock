@@ -832,7 +832,7 @@ url = "packages/dtocean-core"
 
 [[package]]
 name = "dtocean-docs"
-version = "4.0.3"
+version = "4.0.4"
 description = "Offline DTOcean documentation for dtocean-app"
 optional = false
 python-versions = ">=3.12,<3.15"
