@@ -1,0 +1,638 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. Getting Started 2: Example Database &mdash; DTOcean 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Graphical User Interface" href="gui.html" />
+    <link rel="prev" title="3. Getting Started 1: Example Project" href="getting_started_1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">2. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_1.html">3. Getting Started 1: Example Project</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Getting Started 2: Example Database</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#initiate-the-project">4.1. Initiate the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connect-the-database">4.2. Connect the Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#select-the-site-and-device">4.3. Select the Site and Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#select-the-bathymetry">4.4. Select the Bathymetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-modules-and-assessment">4.5. Add Modules and Assessment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#initiate-the-dataflow">4.6. Initiate the Dataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-project-data">4.7. Add Project Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execute-the-simulation">4.8. Execute the Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_preparation.html">6. Data Preparation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>Getting Started 2: Example Database</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/getting_started_2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started-2-example-database">
+<span id="getting-started-2"></span><h1><span class="section-number">4. </span>Getting Started 2: Example Database<a class="headerlink" href="#getting-started-2-example-database" title="Link to this heading"></a></h1>
+<p>This section provides a brief demonstration of preparing a DTOcean simulation
+using the example database. Instructions for installing the database are
+provided in the <a class="reference internal" href="install.html#database-installation"><span class="std std-ref">Database</span></a> section. Two site and device
+records are provided, the first being the RM3 example explored in the
+<a class="reference internal" href="getting_started_1.html#getting-started-1"><span class="std std-ref">Getting Started 1: Example Project</span></a> chapter and the second being an artificial tidal
+energy example. We will work with the tidal energy scenario for this tutorial.</p>
+<section id="initiate-the-project">
+<span id="initiate-project"></span><h2><span class="section-number">4.1. </span>Initiate the Project<a class="headerlink" href="#initiate-the-project" title="Link to this heading"></a></h2>
+<p>The first step is to create a new DTOcean project and select the required
+device type, in this case a fixed tidal energy converter. As seen in
+<a class="reference internal" href="#fig-new-action"><span class="std std-numref">Fig. 4.1</span></a>, click the “New” button in the main toolbar to
+create the project.</p>
+<figure class="align-default" id="id2">
+<span id="fig-new-action"></span><img alt="../_images/new_action.png" src="../_images/new_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Left-click the “New” button</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The pipeline header should now display “Define scenario sections…” and a
+single variable will be visible, the “Device Technology Type”. The value of
+this variable will determine the variables required for our simulations and for
+filtering the list of available technologies offered to us from the database.
+As shown in <a class="reference internal" href="#fig-device-technology-type"><span class="std std-numref">Fig. 4.2</span></a>, left click on the variable in
+the pipeline and then set the value to “Tidal Fixed”, as shown in
+<a class="reference internal" href="#fig-select-tidal-fixed"><span class="std std-numref">Fig. 4.3</span></a>.</p>
+<figure class="align-default" id="id3">
+<span id="fig-device-technology-type"></span><img alt="../_images/device_technology_type.png" src="../_images/device_technology_type.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.2 </span><span class="caption-text">Left-click the “Device Technology Type” variable</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id4">
+<span id="fig-select-tidal-fixed"></span><img alt="../_images/select_tidal_fixed.png" src="../_images/select_tidal_fixed.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.3 </span><span class="caption-text">Set the “Device Technology Type” variable to “Tidal Fixed”</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>To commit the chosen value, click the “OK” button in the main window, as shown
+in <a class="reference internal" href="#fig-ok-button-2"><span class="std std-numref">Fig. 4.4</span></a>.</p>
+<figure class="align-default" id="id5">
+<span id="fig-ok-button-2"></span><img alt="../_images/ok_button.png" src="../_images/ok_button.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.4 </span><span class="caption-text">Left-click the “OK” button</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="connect-the-database">
+<h2><span class="section-number">4.2. </span>Connect the Database<a class="headerlink" href="#connect-the-database" title="Link to this heading"></a></h2>
+<p>The next step is to configure and connect the database. Open the database
+selection dialogue by clicking the “Select Database” button in the main
+toolbar, as shown in <a class="reference internal" href="#fig-select-database-action"><span class="std std-numref">Fig. 4.5</span></a>.</p>
+<figure class="align-default" id="id6">
+<span id="fig-select-database-action"></span><img alt="../_images/select_database_action.png" src="../_images/select_database_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.5 </span><span class="caption-text">Left-click the “Select Database” button</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The select database dialogue provides a list of saved credentials for
+databases, the ability to add, delete or modify credentials, a means to apply
+the provided credentials to the current project, and a tool for dumping and
+loading the chosen database to and from structured files. For the purposes of
+this tutorial we will use the predefined “local” database credentials and
+modify them as required. Optionally, we can save the modifications for later
+reuse. First, click the “local” database in the list of available credentials,
+as seen in <a class="reference internal" href="#fig-local-database"><span class="std std-numref">Fig. 4.6</span></a>. Note, if the credentials are different
+to what is shown here, see the <a class="reference internal" href="install.html#configuration-files"><span class="std std-ref">Configuration Files</span></a> section.</p>
+<figure class="align-default" id="id7">
+<span id="fig-local-database"></span><img alt="../_images/local_database.png" src="../_images/local_database.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.6 </span><span class="caption-text">Left-click the “local” database in the list of available databases</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The saved credentials will appear in the “Credentials:” section of the dialogue
+and at this stage the password field (“pwd”) will be empty. Double-click the
+cell in the “Value” column to edit this value and add the password you chose
+when setting up the “dtocean_user” login role for the database. The table
+should look similar to <a class="reference internal" href="#fig-credentials-pwd"><span class="std std-numref">Fig. 4.7</span></a> when finished. Note, if
+you chose a different name for the login role, then you should also edit the
+“user” field.</p>
+<figure class="align-default" id="id8">
+<span id="fig-credentials-pwd"></span><img alt="../_images/credentials_pwd.png" src="../_images/credentials_pwd.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.7 </span><span class="caption-text">Add the password for login role “dtocean_user” to the “pwd” field</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>At this point, you can optionally save the password for later use, by
+left-clicking the “Save” button, as shown in <a class="reference internal" href="#fig-save-credentials"><span class="std std-numref">Fig. 4.8</span></a>.
+As passwords are saved in plain text (in the users AppData folder), you should
+not save your password if you have any security concerns. In this case, add
+you password to the “pwd” field each time you connect to the database.</p>
+<figure class="align-default" id="id9">
+<span id="fig-save-credentials"></span><img alt="../_images/save_credentials.png" src="../_images/save_credentials.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.8 </span><span class="caption-text">Save the credentials by left-clicking the “Save” button</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>When the password (and any other field) has been correctly set, click the apply
+button, as shown in <a class="reference internal" href="#fig-database-apply"><span class="std std-numref">Fig. 4.9</span></a>. The “local” database should
+now be shown as the current database, as in
+<a class="reference internal" href="#fig-current-database-local"><span class="std std-numref">Fig. 4.10</span></a>. The dialogue can now be closed by
+left-clicking the “Close” button.</p>
+<figure class="align-default" id="id10">
+<span id="fig-database-apply"></span><img alt="../_images/database_apply.png" src="../_images/database_apply.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.9 </span><span class="caption-text">Left-click the “Apply” button</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id11">
+<span id="fig-current-database-local"></span><img alt="../_images/current_database_local.png" src="../_images/current_database_local.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.10 </span><span class="caption-text">The currently selected database is displayed</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="select-the-site-and-device">
+<h2><span class="section-number">4.3. </span>Select the Site and Device<a class="headerlink" href="#select-the-site-and-device" title="Link to this heading"></a></h2>
+<p>To collect the list of available sites and the filtered list of devices (based
+on our technology choice), we must initiate the “pipeline” (think of this as
+building the pipework that our data will flow along). Click the “Initiate
+Pipeline” button in the toolbar, as shown in
+<a class="reference internal" href="#fig-initiate-pipeline-action"><span class="std std-numref">Fig. 4.11</span></a>. DTOcean will now open the data
+requirements dialogue and check if the device type has been set. Click “OK” to
+close it if shows “PASSED”, otherwise click “Cancel” and go back to the
+<a class="reference internal" href="#initiate-project"><span class="std std-ref">Initiate the Project</span></a> section. Note, you can initiate the pipeline without
+selecting a database, but a device type must be set.</p>
+<figure class="align-default" id="id12">
+<span id="fig-initiate-pipeline-action"></span><img alt="../_images/initiate_pipeline_action.png" src="../_images/initiate_pipeline_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.11 </span><span class="caption-text">Left-click the “Initiate Pipeline” button</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id13">
+<span id="fig-database-filtering-interface"></span><img alt="../_images/database_filtering_interface.png" src="../_images/database_filtering_interface.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.12 </span><span class="caption-text">The “Database Filtering” variables, ready to be set</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The variables “Selected Site” and “Selected Device” should now appear in the
+“Database Filtering Interface” branch of the pipeline as shown in
+<a class="reference internal" href="#fig-database-filtering-interface"><span class="std std-numref">Fig. 4.12</span></a>. Now set each variable using the
+values given in table <a class="reference internal" href="#tab-database-filtering"><span class="std std-numref">Table 4.1</span></a>. An example of setting
+the “Selected Site” variable is shown in <a class="reference internal" href="#fig-selected-site"><span class="std std-numref">Fig. 4.13</span></a>.</p>
+<span id="tab-database-filtering"></span><table class="docutils align-default" id="id14">
+<caption><span class="caption-number">Table 4.1 </span><span class="caption-text">Database filtering variable values</span><a class="headerlink" href="#id14" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Selected Site</p></td>
+<td><p>Example Tidal Site</p></td>
+</tr>
+<tr class="row-odd"><td><p>Selected Device</p></td>
+<td><p>Example Tidal Device</p></td>
+</tr>
+</tbody>
+</table>
+<figure class="align-default" id="id15">
+<span id="fig-selected-site"></span><img alt="../_images/selected_site.png" src="../_images/selected_site.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.13 </span><span class="caption-text">Choose the “Example Tidal Site” in the drop-down menu, then click “OK”</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Remember to click “OK” after selecting the values to commit them. The
+indicators on both variables should be green, as shown in
+<a class="reference internal" href="#fig-database-filtering-green"><span class="std std-numref">Fig. 4.14</span></a> Once a site is selected, an additional
+step is required to collect bathymetric data.</p>
+<figure class="align-default" id="id16">
+<span id="fig-database-filtering-green"></span><img alt="../_images/database_filtering_green.png" src="../_images/database_filtering_green.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.14 </span><span class="caption-text">The “Database Filtering” variables, after being set</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="select-the-bathymetry">
+<h2><span class="section-number">4.4. </span>Select the Bathymetry<a class="headerlink" href="#select-the-bathymetry" title="Link to this heading"></a></h2>
+<p>In order to choose how much bathymetric data to collect from the database, we
+must initiate the project boundaries interface. From the main toolbar click the
+“Initiate Bathymetry” button, as shown in
+<a class="reference internal" href="#fig-initiate-bathymetry-action"><span class="std std-numref">Fig. 4.15</span></a>.</p>
+<figure class="align-default" id="id17">
+<span id="fig-initiate-bathymetry-action"></span><img alt="../_images/initiate_bathymetry_action.png" src="../_images/initiate_bathymetry_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.15 </span><span class="caption-text">Left-click the “Initiate Bathymetry” button</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>After passing the data check, the “Project Boundaries Interface” branch will
+now appear in the pipeline. This branch contain the variables used to define
+the desired lease area and cable corridor boundaries and the export cable
+landing point (see the <a class="reference internal" href="data_preparation.html#data-preparation"><span class="std std-ref">Data Preparation</span></a> chapter for a full
+explanation of these terms). The initial boundaries cover the extent of all
+bathymetric data for the site, but we are going to use a smaller area for this
+tutorial. To visualise the default boundary positions, select the “Lease
+Boundary” variable from the “Project Boundaries Interface” branch of the
+pipeline, as shown in <a class="reference internal" href="#fig-project-boundaries-interface"><span class="std std-numref">Fig. 4.16</span></a>. Then switch
+the interface to the plots context, using the toolbar button, as shown in
+<a class="reference internal" href="#fig-plots-context-2"><span class="std std-numref">Fig. 4.17</span></a>.</p>
+<figure class="align-default" id="id18">
+<span id="fig-project-boundaries-interface"></span><img alt="../_images/project_boundaries_interface.png" src="../_images/project_boundaries_interface.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.16 </span><span class="caption-text">Left-click the “Lease Boundary” variable</span><a class="headerlink" href="#id18" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id19">
+<span id="fig-plots-context-2"></span><img alt="../_images/plots_context.png" src="../_images/plots_context.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.17 </span><span class="caption-text">The “plots context” is used for viewing plots</span><a class="headerlink" href="#id19" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The default plot shows the lease area boundary polygon and the coordinates of
+its vertices. Further insight can be gained by examining all of the required
+boundaries together and we use a custom plot to achieve this. In the “Plot
+Manager” widget, above the main window, select “Design Boundaries” from the
+drop-down list of plots in the “Plot name:” field, as shown in
+<a class="reference internal" href="#fig-plot-design-boundaries"><span class="std std-numref">Fig. 4.18</span></a>. Now click the “Plot” button, as shown in
+<a class="reference internal" href="#fig-plot-button"><span class="std std-numref">Fig. 4.19</span></a>, to replace the default plot (the default plot can
+be restored by clicking the “Default” button). A digram similar to
+<a class="reference internal" href="#fig-design-boundaries-plot"><span class="std std-numref">Fig. 4.20</span></a> should be displayed.</p>
+<figure class="align-default" id="id20">
+<span id="fig-plot-design-boundaries"></span><img alt="../_images/plot_design_boundaries.png" src="../_images/plot_design_boundaries.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.18 </span><span class="caption-text">Select the “Design Boundaries” plot in the “Plot Manager” widget</span><a class="headerlink" href="#id20" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id21">
+<span id="fig-plot-button"></span><img alt="../_images/plot_button.png" src="../_images/plot_button.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.19 </span><span class="caption-text">Left-click the “Plot” button</span><a class="headerlink" href="#id21" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id22">
+<span id="fig-design-boundaries-plot"></span><img alt="../_images/design_boundaries_plot.png" src="../_images/design_boundaries_plot.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.20 </span><span class="caption-text">Plot of the design boundaries and export cable landing point</span><a class="headerlink" href="#id22" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>We are now going to reduce the extent of the lease area and modify the cable
+corridor to match. This is undertaken in the “Data” context, so switch back
+using the toolbar button, as shown in <a class="reference internal" href="#fig-data-context-2"><span class="std std-numref">Fig. 4.21</span></a>. The data
+table containing the <span class="math notranslate nohighlight">\((x,y)\)</span> coordinates of the lease area boundary
+polygon vertices should now be displayed. To edit the vertices, the table must
+first be placed into editing mode. This is achieved by clicking the “toggle
+editing mode” button in the main window, as shown in
+<a class="reference internal" href="#fig-toggle-editing-mode"><span class="std std-numref">Fig. 4.22</span></a>.</p>
+<figure class="align-default" id="id23">
+<span id="fig-data-context-2"></span><img alt="../_images/data_context.png" src="../_images/data_context.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.21 </span><span class="caption-text">The “data context” is used for entering input data and viewing results</span><a class="headerlink" href="#id23" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id24">
+<span id="fig-toggle-editing-mode"></span><img alt="../_images/toggle_editing_mode.png" src="../_images/toggle_editing_mode.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.22 </span><span class="caption-text">Left-click the “toggle editing mode” button</span><a class="headerlink" href="#id24" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id25">
+<span id="fig-edit-lease-area-coordinate"></span><img alt="../_images/edit_lease_area_coordinate.png" src="../_images/edit_lease_area_coordinate.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.23 </span><span class="caption-text">Use the table to modify the lease area coordinates</span><a class="headerlink" href="#id25" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Once the editing mode has been enabled, you can double-click on the cells in
+the table to edit their data. Double-click on the “x” coordinates that have
+value “586500” and change the value to “588000”, as shown in
+<a class="reference internal" href="#fig-edit-lease-area-coordinate"><span class="std std-numref">Fig. 4.23</span></a>. Click the “OK” button after the two
+coordinates have been changed to commit the new polygon and then repeat the
+process for the “Cable Corridor Boundary” boundary. The final coordinates for
+the lease and cable corridor boundaries are shown below.</p>
+<p class="rubric">Modified Lease Boundary Coordinates</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>x</p></th>
+<th class="head"><p>y</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>588000.0</p></td>
+<td><p>6651000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>588000.0</p></td>
+<td><p>6653000.0</p></td>
+</tr>
+<tr class="row-even"><td><p>588500.0</p></td>
+<td><p>6653000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>588500.0</p></td>
+<td><p>6651000.0</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Modified Cable Corridor Boundary Coordinates</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>x</p></th>
+<th class="head"><p>y</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>588000.0</p></td>
+<td><p>6651800.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>588000.0</p></td>
+<td><p>6652200.0</p></td>
+</tr>
+<tr class="row-even"><td><p>590175.0</p></td>
+<td><p>6652200.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>590175.0</p></td>
+<td><p>6651800.0</p></td>
+</tr>
+</tbody>
+</table>
+<p>Now return to the plots context and open the “Design Boundaries” plot once
+more. The lease area and cable corridor should be reduced in size, as seen in
+<a class="reference internal" href="#fig-design-boundaries-plot-updated"><span class="std std-numref">Fig. 4.24</span></a> <a class="footnote-reference brackets" href="#f1" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<figure class="align-default" id="id26">
+<span id="fig-design-boundaries-plot-updated"></span><img alt="../_images/design_boundaries_plot_updated.png" src="../_images/design_boundaries_plot_updated.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.24 </span><span class="caption-text">Plot of the updated design boundaries</span><a class="headerlink" href="#id26" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="add-modules-and-assessment">
+<h2><span class="section-number">4.5. </span>Add Modules and Assessment<a class="headerlink" href="#add-modules-and-assessment" title="Link to this heading"></a></h2>
+<p>The final stage before collecting the data from the database is to choose which
+design modules and assessments we want for our simulation. In this example,
+we add the first three design modules (hydrodynamics, electrical sub-systems,
+and mooring and foundations) and the economics assessment module. To add design
+modules, click the “Add Modules” button in the main toolbar, as seen in
+<a class="reference internal" href="#fig-add-modules-action"><span class="std std-numref">Fig. 4.25</span></a>.</p>
+<figure class="align-default" id="id27">
+<span id="fig-add-modules-action"></span><img alt="../_images/add_modules_action.png" src="../_images/add_modules_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.25 </span><span class="caption-text">Left-click the “Add Modules” button</span><a class="headerlink" href="#id27" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A shuttle dialogue will open which allows you to select which modules are
+required for the simulation. Select the desired module from the “Available:”
+list, and click the “Add” button, as seen in <a class="reference internal" href="#fig-add-modules-shuttle"><span class="std std-numref">Fig. 4.26</span></a>.
+The figure shows how the dialogue should look once the three modules are
+selected. If you accidentally add the wrong module, select it in the
+“Selected:” list and click the “Remove” button to deselect it. Click the “OK”
+button to accept your choice.</p>
+<figure class="align-default" id="id28">
+<span id="fig-add-modules-shuttle"></span><img alt="../_images/add_modules_shuttle.png" src="../_images/add_modules_shuttle.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.26 </span><span class="caption-text">Add Hydrodynamics”, “Electrical Sub-Systems” and “Mooring and
+Foundations” to the list of selected modules</span><a class="headerlink" href="#id28" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A similar process is used for adding assessments. Click the “Add Assessment”
+button, as shown in <a class="reference internal" href="#fig-add-assessment-action"><span class="std std-numref">Fig. 4.27</span></a> and use the shuttle to
+select the “Economics” assessment, as shown in
+<a class="reference internal" href="#fig-add-assessment-shuttle"><span class="std std-numref">Fig. 4.28</span></a>. Once again, click “OK” to accept the
+choice.</p>
+<figure class="align-default" id="id29">
+<span id="fig-add-assessment-action"></span><img alt="../_images/add_assessment_action.png" src="../_images/add_assessment_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.27 </span><span class="caption-text">Left-click the “Add Assessment” button</span><a class="headerlink" href="#id29" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id30">
+<span id="fig-add-assessment-shuttle"></span><img alt="../_images/add_assessment_shuttle.png" src="../_images/add_assessment_shuttle.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.28 </span><span class="caption-text">Add “Economics” to the list of selected assessments</span><a class="headerlink" href="#id30" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="initiate-the-dataflow">
+<h2><span class="section-number">4.6. </span>Initiate the Dataflow<a class="headerlink" href="#initiate-the-dataflow" title="Link to this heading"></a></h2>
+<p>The system is now ready to determine which variables are required to run the
+chosen modules and assessments and to collect available data from the database
+based on our selections. In DTOcean, this process is referred to as “initiating
+the dataflow”, and the “Initiate Dataflow” button, in the main toolbar as seen
+in <a class="reference internal" href="#fig-initiate-dataflow-action"><span class="std std-numref">Fig. 4.29</span></a>, is used to start the process.</p>
+<figure class="align-default" id="id31">
+<span id="fig-initiate-dataflow-action"></span><img alt="../_images/initiate_dataflow_action.png" src="../_images/initiate_dataflow_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.29 </span><span class="caption-text">Left-click the “Initiate Dataflow” button</span><a class="headerlink" href="#id31" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Once the process has completed the pipeline will populate with the variables
+required to run each module (and assessment) and indicate their status using
+icons with coloured shapes. A green square indicates that the variable contains
+data (satisfied), a blue diamond indicates that the variable contains no data
+but does not have to be satisfied (optional) and a red square indicates that
+the variable does not yet contain data but some must be added before the module
+can execute (required). The variables for the Hydrodynamics module should
+appear like <a class="reference internal" href="#fig-required-project-variables"><span class="std std-numref">Fig. 4.30</span></a>.</p>
+<figure class="align-default" id="id32">
+<span id="fig-required-project-variables"></span><img alt="../_images/required_project_variables.png" src="../_images/required_project_variables.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.30 </span><span class="caption-text">Variables required to run the “Hydrodynamics” module and their status
+indicators</span><a class="headerlink" href="#id32" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="add-project-data">
+<h2><span class="section-number">4.7. </span>Add Project Data<a class="headerlink" href="#add-project-data" title="Link to this heading"></a></h2>
+<p>The DTOcean database does not contain variables that are specific only to the
+project being simulated and these must be added prior to execution of our
+simulation. <a class="reference internal" href="#tab-tidal-example-inputs"><span class="std std-numref">Table 4.2</span></a> provides a list of recommended
+values for all required and some optional variables. Note that satisfying
+optional variables may be required for the module to execute correctly for a
+particular simulation, as is the case here.</p>
+<span id="tab-tidal-example-inputs"></span><table class="docutils align-default" id="id33">
+<caption><span class="caption-number">Table 4.2 </span><span class="caption-text">Recommended input values</span><a class="headerlink" href="#id33" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Branch</p></th>
+<th class="head"><p>Variable</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Hydrodynamics</p></td>
+<td><p>Array Rated Power</p></td>
+<td><p>4.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hydrodynamics</p></td>
+<td><p>Tidal Probability Bins</p></td>
+<td><p>12</p></td>
+</tr>
+<tr class="row-even"><td><p>Hydrodynamics</p></td>
+<td><p>Lease Area Boundary Padding</p></td>
+<td><p>25</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hydrodynamics</p></td>
+<td><p>Minimum Q-Factor</p></td>
+<td><p>0.98</p></td>
+</tr>
+<tr class="row-even"><td><p>Hydrodynamics</p></td>
+<td><p>Power Histogram Bin Width</p></td>
+<td><p>0.04</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hydrodynamics</p></td>
+<td><p>User Option for Array Layout</p></td>
+<td><p>Staggered</p></td>
+</tr>
+<tr class="row-even"><td><p>Electrical Sub-Systems</p></td>
+<td><p>Network Configuration</p></td>
+<td><p>Radial</p></td>
+</tr>
+<tr class="row-odd"><td><p>Electrical Sub-Systems</p></td>
+<td><p>Maximum Seabed Gradient</p></td>
+<td><p>14</p></td>
+</tr>
+<tr class="row-even"><td><p>Mooring and Foundations</p></td>
+<td><p>Foundation Safety Factor</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mooring and Foundations</p></td>
+<td><p>Grout Strength Safety Factor</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>Mooring and Foundations</p></td>
+<td><p>Concrete Cost per kg</p></td>
+<td><p>0.05</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mooring and Foundations</p></td>
+<td><p>Grout Cost per kg</p></td>
+<td><p>0.05</p></td>
+</tr>
+<tr class="row-even"><td><p>Mooring and Foundations</p></td>
+<td><p>Steel Cost per kg</p></td>
+<td><p>5</p></td>
+</tr>
+</tbody>
+</table>
+<p>When entering the values, ensure that the <a class="reference internal" href="gui.html#data-context"><span class="std std-ref">Data Context</span></a> is active (the
+<a class="reference internal" href="gui.html#menu-view"><span class="std std-ref">View</span></a> menu is used to change contexts). Also, using the variable
+<a class="reference internal" href="gui.html#filter"><span class="std std-ref">Filter</span></a> will make finding the variables much easier.</p>
+</section>
+<section id="execute-the-simulation">
+<h2><span class="section-number">4.8. </span>Execute the Simulation<a class="headerlink" href="#execute-the-simulation" title="Link to this heading"></a></h2>
+<p>After the variables have been set, the process described from the
+<a class="reference internal" href="getting_started_1.html#exectute-simulation"><span class="std std-ref">Execute the Simulation</span></a> section of the <a class="reference internal" href="getting_started_1.html#getting-started-1"><span class="std std-ref">Getting Started 1: Example Project</span></a> chapter can
+be used to execute the simulation and inspect the results. The expected total
+CAPEX should be around 12 million Euro.</p>
+<p>This completes this tutorial. For information about preparing and adding new
+data to the database please see the <a class="reference internal" href="data_preparation.html#data-preparation"><span class="std std-ref">Data Preparation</span></a> chapter.</p>
+<p class="rubric">Footnotes</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>The lease area and the cable corridor should always have some
+overlapping grid points.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started_1.html" class="btn btn-neutral float-left" title="3. Getting Started 1: Example Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gui.html" class="btn btn-neutral float-right" title="5. Graphical User Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v2.0.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.3.4/user/getting_started_2.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2026.3.3/user/getting_started_2.html">v2026.3.3</a></dd>
+      <dd><a href="../../root-v2026.3.2/user/getting_started_2.html">v2026.3.2</a></dd>
+      <dd><a href="../../root-v2026.3.1/user/getting_started_2.html">v2026.3.1</a></dd>
+      <dd><a href="getting_started_2.html">v2.0.0</a></dd>
+      <dd><a href="../../root-v1.0.0/index.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/user/getting_started_2.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

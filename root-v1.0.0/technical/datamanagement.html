@@ -1,0 +1,385 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. Data Management and Shared Utilities &mdash; DTOcean 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Main Application and Graphical User Interface" href="mainapp.html" />
+    <link rel="prev" title="3. Requirements for Implementing the Design Tools" href="designreq.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User's Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/abstract.html">1. Abstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/softinstall.html">3. Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/overview.html">4. DTOcean Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/modules.html">6. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/themes.html">7. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/preprocessing.html">8. Preprocessing Steps: Data Requirements and Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/references.html">9. Links, Support and Extra Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Manual</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designreq.html">3. Requirements for Implementing the Design Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Data Management and Shared Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">4.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aneris-framework">4.2. Aneris Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#objectives">4.2.1. Objectives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#definitions-interfaces-and-the-creation-of-data-members">4.2.2. Definitions, interfaces and the creation of data members</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#higher-level-data-grouping-and-execution-ordering">4.2.3. Higher level data grouping and execution ordering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plugins-and-storage">4.2.4. Plugins and Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rd-party-libraries">4.2.5. 3rd Party Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#polite">4.3. Polite</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mainapp.html">5. Main Application and Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">6. Database Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">7. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">8. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datastructures.html">9. Data Structures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>Data Management and Shared Utilities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/technical/datamanagement.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-management-and-shared-utilities">
+<span id="datamanagement"></span><h1><span class="section-number">4. </span>Data Management and Shared Utilities<a class="headerlink" href="#data-management-and-shared-utilities" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2><span class="section-number">4.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>The development of the data management framework for executing the DTOcean
+modules required the development of several supporting python packages.
+Principally a data management framework was created to handle the requirements
+for the Core component which was named “Aneris” and, secondly, a utility
+package that contained a number of functionalities used through all of the
+Python packages was created called “Polite”. The development and use of these
+two modules is discussed in this chapter.</p>
+</section>
+<section id="aneris-framework">
+<h2><span class="section-number">4.2. </span>Aneris Framework<a class="headerlink" href="#aneris-framework" title="Link to this heading"></a></h2>
+<section id="objectives">
+<h3><span class="section-number">4.2.1. </span>Objectives<a class="headerlink" href="#objectives" title="Link to this heading"></a></h3>
+<p>The objective of the Aneris framework is to provide the following functionality:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A single unified collection of scientific data without semantic conflict</p></li>
+<li><p>A method for collecting and delivering this data to and from external
+actors</p></li>
+<li><p>A method to store and recall the evolution of data as different actors are
+interrogated</p></li>
+<li><p>Identification of data requirements of external actors and how other
+actors can satisfy them</p></li>
+<li><p>Allowing the connected actors to be run in order and update the data
+requirements to reflect this</p></li>
+<li><p>Comparing matching data across various stages of execution and between
+simulations</p></li>
+<li><p>Provide utilities to support this functionality and analyse the state of
+the system</p></li>
+</ul>
+</div></blockquote>
+<p><a class="reference internal" href="#fig-aneris"><span class="std std-numref">Fig. 4.2</span></a> shows a UML robustness diagram for the Aneris framework. A
+robustness diagram divides classes into three stereotypes. The green symbols
+are boundary types and show how data is added to and retrieved from the system.
+The blue symbols are entity types and these show the collection and types of
+information that are used. The red symbols are control types and these can
+manufacture and access the entities and interfaces in order to carry out tasks
+required by the user.</p>
+<figure class="align-default" id="id1">
+<span id="fig-aneris"></span><img alt="../_images/aneris.png" src="../_images/aneris.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.2 </span><span class="caption-text">Robustness diagram for the Aneris framework</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="definitions-interfaces-and-the-creation-of-data-members">
+<h3><span class="section-number">4.2.2. </span>Definitions, interfaces and the creation of data members<a class="headerlink" href="#definitions-interfaces-and-the-creation-of-data-members" title="Link to this heading"></a></h3>
+<p>When applying the Aneris framework the lowest level of functionality is provided
+by the Interface and DataDefinition classes. The DataDefinition class is used
+to read the user provided data definition specification and convert it into a
+programmatic form. This interface reads a YAML formatted file that can be
+created directly by the user or using a utility which is available to convert a
+Microsoft Excel file into the required YAML format. The fields specified in the
+YAML file must match those defined in the MetaData class which is associated to
+the DataValidation class. The DataValidation class will check that all fields
+given in the data definitions match the definitions given in this MetaData
+class before creating MetaData objects and storing them in the DataCatalog
+class. An example of data definitions in YAML format is given in
+<a class="reference internal" href="#code-example-yaml"><span class="std std-numref">Listing 4.1</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<span id="code-example-yaml"></span><div class="code-block-caption"><span class="caption-number">Listing 4.1 </span><span class="caption-text">Example of data definitions in YAML format</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">identifier</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo:demo:high&#39;</span>
+<span class="w">  </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;High&#39;</span>
+<span class="w">  </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;UnitData&#39;</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">identifier</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo:demo:low&#39;</span>
+<span class="w">  </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Low&#39;</span>
+<span class="w">  </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;UnitData&#39;</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">identifier</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo:demo:rows&#39;</span>
+<span class="w">  </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Rows&#39;</span>
+<span class="w">  </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;UnitData&#39;</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">identifier</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo:demo:table&#39;</span>
+<span class="w">  </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Table&#39;</span>
+<span class="w">  </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;TableData&#39;</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">identifier</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;trigger.bool&#39;</span>
+<span class="w">  </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Trigger&#39;</span>
+<span class="w">  </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;UnitData&#39;</span>
+</pre></div>
+</div>
+</div>
+<p>The DataCatalog stores all the valid MetaData objects that have been produced
+from reading the data definition specification files. This is used to identify,
+validate and structure all the raw data that is entered through Interface
+classes. The Interface classes are used to connect to various sources of input
+which can either be used to create data members, or use data members to
+undertake a functional task (and possibly alter or create new data members in
+the process). There are several types of interface available depending of what
+source the user wishes to connect to: MapInterfaces for general connection with
+Python packages, QueryInterface for connection with databases, FileInterface
+for connection with files and RawInterface for basic collection of data from
+raw input, among others. Each interface has some abstract methods that must be
+made concrete by the user in order for them to be valid. Note that Interface
+classes can also be used to write data back to certain actors such as formatted
+files.</p>
+<p>Each Interface subclass is associated to a Socket class and further sub-classing
+can be used to subdivide the interfaces as required. Socket classes search
+interfaces to see which data members a class can provide and which it requires
+in order to execute. Sockets will collect Interface classes for Hub and
+Pipeline classes so that they can be executed in a defined sequence.</p>
+<p>Raw data can be extracted from an Interface class. Alongside the data, the
+interface will provide the unique ID for the data matched to the DataCatalog.
+This raw data can then be converted into a data member using the DataStorage
+class. The DataStorage class will take the raw data and its ID, retrieve the
+associated MetaData object from the DataCatalog and build a new Data object
+corresponding to the structure field given in the MetaData object.</p>
+<p>The structure field specifies which subclass of the Structure class should be
+used and it can be sub-classed into as many structures as is required for the
+project being undertaken. It is important that the given raw data matches the
+structures specified in the associated Structure class and some validation
+should be provided within the Structure classes “get_data” method.</p>
+</section>
+<section id="higher-level-data-grouping-and-execution-ordering">
+<h3><span class="section-number">4.2.3. </span>Higher level data grouping and execution ordering<a class="headerlink" href="#higher-level-data-grouping-and-execution-ordering" title="Link to this heading"></a></h3>
+<p>The above process can be used to create a single data member stored within a
+Data object and demonstrates the methods used to ensure there are no semantic
+conflicts whilst communicating between various external actors. Still, the true
+power of the framework is harnessed when considering storing groups of data
+together and defining sequences of execution for particular interfaces.</p>
+<p>For this task it is necessary to use the Controller class to create a Simulation
+object. This Simulation object is the container for numerous DataState and Hub
+or Pipeline objects that are required to facilitate a particular sequence of
+events. DataStates store groups of data members which are considered to exist
+at a particular state (or level) of the system. They do not contain the Data
+objects directly, instead having a reference to the DataPool object which is
+responsible for memory management. Thus the same, or alternative, members can
+be stored in another DataState object to show a later state of the system. This
+structure allows the system to revert to an earlier state or compare between
+states.</p>
+<p>The DataPool class contains all the Data objects created when producing a
+DataState object. This object serves two purposes; firstly it acts as a
+structured collection of all of the data that could be serialised (saved to
+disk) in a single unit. Secondly, because Datastates only contain text based
+references to Data objects in the DataPool, unnecessary copying of Data can be
+avoided by sharing references. This will be particularly important when
+Simulation objects are cloned and share a large percentage of equal valued data.</p>
+<p>A Hub or Pipeline can group, record and sequence the execution of Interface
+objects that are available to a particular Socket. This is particularly useful
+should one interface be dependent on the outputs of another and enforces a
+logical order. The Sequencer class can be used to create the sequencing within
+the Hub or Pipeline and the Controller class can create reports detailing
+whether the inputs for particular interfaces must be satisfied by the sequence
+itself or must be provided by other external actors (like the user or database)
+or whether outputs have been overwritten by later interfaces in the sequence.</p>
+<p>The outcome of these two capabilities is that a record of the evolution of the
+data can be stored within a Simulation object and that record can be recalled,
+modified and re-executed as is required by the system user or optimisation
+sequence, utilising the Controller, Simulation and Hub classes.</p>
+<p>The Loader class is a super class of the Controller class and is used simply for
+examining data and then loading data into interfaces. This is useful for
+dealing with interfaces that only consume data already within the system, such
+as for plotting.</p>
+</section>
+<section id="plugins-and-storage">
+<h3><span class="section-number">4.2.4. </span>Plugins and Storage<a class="headerlink" href="#plugins-and-storage" title="Link to this heading"></a></h3>
+<p>The Aneris framework is designed to allow certain components to be “plugged”
+meaning that particular classes can be added to a module and their
+functionality becomes immediately available to the rest of the system without
+modifying any additional code. The Socket and DataValidation classes are
+subclasses of the Plugin class so that they can discover new Interface classes
+or DataDefinition classes depending on how the user of the framework wishes to
+structure their project.</p>
+<p>The provision for local storage has also been considered within the Aneris
+framework. For robustness, this would require serialising the data pool, using
+the most appropriate technology for the data structures defined (this could be
+Pickle, HDF5, PyTables, etc).  It could also be that only partial serialisation
+of the DataPool is needed in order to conserve RAM space on the host machine.
+The logic for this partial serialisation might be that when a modification of a
+data member occurs and two copies of this member are within the pool, then the
+older member is serialised. Obviously, it must be easy to do the reverse
+action, should the data state with the updated member be discarded.</p>
+<p>The SerialBox class will be used as a wrapper for all serialised data, carrying
+information about the data´s storage location and how it should be
+reconstructed back into RAM memory. Potentially this class could be sub-classed
+to handle differing serialisation technologies.</p>
+<p>For save and load functionality, further structures must be serialised including
+the Simulation and the DataStates, Hubs or Pipelines it contained. The design
+of these entity classes ensure that they can be serialised in a light weight
+text based format, such as JSON or directly using the Python “Pickle” module.</p>
+</section>
+<section id="rd-party-libraries">
+<h3><span class="section-number">4.2.5. </span>3rd Party Libraries<a class="headerlink" href="#rd-party-libraries" title="Link to this heading"></a></h3>
+<p>The following 3rd party Python libraries are leveraged to facilitate the
+development of the Aneris framework:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>attrdict</p></li>
+<li><p>numpy</p></li>
+<li><p>openpyxl</p></li>
+<li><p>pandas</p></li>
+<li><p>pyyaml</p></li>
+<li><p>pywin32</p></li>
+<li><p>sqlalchemy</p></li>
+<li><p>xlrd</p></li>
+<li><p>xlwt</p></li>
+</ul>
+</div></blockquote>
+<p>Additionally, the “polite” module developed alongside Aneris, and discussed
+within the next section, is required.</p>
+</section>
+</section>
+<section id="polite">
+<h2><span class="section-number">4.3. </span>Polite<a class="headerlink" href="#polite" title="Link to this heading"></a></h2>
+<p>Polite is an additional library that has been developed alongside Aneris in
+order reduce replication of code used across the DTOcean project. This library
+offers the following functionality:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Easy file path discovery for installed modules</p></li>
+<li><p>Easy setup of Python logging</p></li>
+<li><p>Easy creation, reading and locating of configuration files (for logging
+and otherwise)</p></li>
+</ul>
+</div></blockquote>
+<p>It utilises the following 3rd party Python libraries:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>configobj</p></li>
+<li><p>pyyaml</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="designreq.html" class="btn btn-neutral float-left" title="3. Requirements for Implementing the Design Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mainapp.html" class="btn btn-neutral float-right" title="5. Main Application and Graphical User Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v1.0.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.3.4/index.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2026.3.3/index.html">v2026.3.3</a></dd>
+      <dd><a href="../../root-v2026.3.2/index.html">v2026.3.2</a></dd>
+      <dd><a href="../../root-v2026.3.1/index.html">v2026.3.1</a></dd>
+      <dd><a href="../../root-v2.0.0/index.html">v2.0.0</a></dd>
+      <dd><a href="datamanagement.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/index.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

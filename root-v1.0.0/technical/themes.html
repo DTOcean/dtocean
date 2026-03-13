@@ -1,0 +1,1247 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8. DTOcean Themes &mdash; DTOcean 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="9. Data Structures" href="datastructures.html" />
+    <link rel="prev" title="7. DTOcean Modules" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User's Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/abstract.html">1. Abstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/softinstall.html">3. Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/overview.html">4. DTOcean Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/modules.html">6. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/themes.html">7. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/preprocessing.html">8. Preprocessing Steps: Data Requirements and Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/references.html">9. Links, Support and Extra Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Manual</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designreq.html">3. Requirements for Implementing the Design Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datamanagement.html">4. Data Management and Shared Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mainapp.html">5. Main Application and Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">6. Database Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">7. DTOcean Modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. DTOcean Themes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#economics-module-em">8.1. Economics Module (EM)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">8.1.1. Requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#user-requirements">8.1.1.1. User Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#software-design-requirements">8.1.1.2. Software Design Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#architecture">8.1.2. Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functional-specification">8.1.3. Functional Specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inputs">8.1.3.1. Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#outputs">8.1.3.2. Outputs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reliability-assessment-module">8.2. Reliability Assessment Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">8.2.1. Requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">8.2.1.1. User Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">8.2.1.2. Software Design Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#component-reliability">8.2.1.3. Component reliability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reliability-of-higher-system-levels">8.2.1.4. Reliability of higher system levels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#component-mttf">8.2.1.5. Component MTTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mttf-of-higher-system-levels">8.2.1.6. MTTF of higher system levels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">8.2.2. Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">8.2.2.1. Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#result-sets-and-the-o-m-module">8.2.2.2. Result sets and the O&amp;M module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">8.2.3. Functional specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">8.2.3.1. Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">8.2.3.2. Outputs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#environmental-impact-assessment-module">8.3. Environmental Impact Assessment Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">8.3.1. Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-concept-of-the-module">8.3.2. Global Concept of the Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environmental-functions-overview">8.3.3. Environmental Functions Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoring-system-principles">8.3.4. Scoring System Principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">8.3.5. Environmental Functions Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#software-requirements">8.3.6. Software requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lists-used-for-calibrations">8.3.6.1. Lists used for Calibrations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#description-of-environmental-functions">8.3.6.2. Description of Environmental Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">8.3.7. Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">8.3.8. Functional Specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-logigram-subclass">8.3.8.1. Creating a Logigram subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initialising-a-logigram-subclass">8.3.8.2. Initialising a Logigram subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#executing-a-single-logigram">8.3.8.3. Executing a Single Logigram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-the-eia-class-to-combine-impacts">8.3.8.4. Using the EIA Class to Combine Impacts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datastructures.html">9. Data Structures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8. </span>DTOcean Themes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/technical/themes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dtocean-themes">
+<span id="tech-themes"></span><h1><span class="section-number">8. </span>DTOcean Themes<a class="headerlink" href="#dtocean-themes" title="Link to this heading"></a></h1>
+<section id="economics-module-em">
+<span id="tech-economics"></span><h2><span class="section-number">8.1. </span>Economics Module (EM)<a class="headerlink" href="#economics-module-em" title="Link to this heading"></a></h2>
+<section id="requirements">
+<h3><span class="section-number">8.1.1. </span>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<section id="user-requirements">
+<h4><span class="section-number">8.1.1.1. </span>User Requirements<a class="headerlink" href="#user-requirements" title="Link to this heading"></a></h4>
+<p>The ‘economic assessment’ module takes the array configuration determined by the
+design modules previously described and estimates the LCOE for the project. The
+LCOE is the indicator used for benchmarking different possible solutions, and
+the global optimization routine objective is to minimize it.</p>
+<p>Within each design module there are economic functions that calculate the
+lifetime costs of the corresponding subsystem. These will be used as input for
+the LCOE calculation.</p>
+<p>The ‘economic assessment’ module is composed of a set of functions that are used
+to calculate the LCOE, which can be called separately or as a whole. It
+requires information from all the other modules, as well as user inputs.</p>
+</section>
+<section id="software-design-requirements">
+<h4><span class="section-number">8.1.1.2. </span>Software Design Requirements<a class="headerlink" href="#software-design-requirements" title="Link to this heading"></a></h4>
+<p>For the total LCOE calculation, a list of components used for the project is to
+be provided from the other com- putation design modules, with the required
+quantities and the related cost, which will have been calculated within each of
+these modules or provided by the database or the end-user.</p>
+<p>The current ‘economic assessment’ module includes four separate functions,
+although “df_lcoe” is the integration of the other three:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>item_total_cost</p></li>
+<li><p>present_value</p></li>
+<li><p>simple_lcoe</p></li>
+<li><p>df_lcoe</p></li>
+</ul>
+</div></blockquote>
+<p>The functions and their interactions with the inputs are presented in a
+diagrammatic form in <a class="reference internal" href="#fig-arch-economic"><span class="std std-numref">Fig. 8.13</span></a>. A more detailed explanation
+of each component can be found further in this document.</p>
+<p>The first three functions can take single or multiple values as inputs, while
+the last one assumes that the inputs are in the format of pandas tables, with
+specific columns.</p>
+<p>For the df_lcoe function, two tables are expected as inputs:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Bill of materials</strong> table, including the following columns:</p>
+<ul>
+<li><p><strong>item</strong>: identifier column, not used in the function</p></li>
+<li><p><strong>quantity</strong>: number of units of item</p></li>
+<li><p><strong>unitary_cost</strong>: cost per unit of the item. It assumes that it
+matches the units of the quantity</p></li>
+<li><p><strong>project_year</strong>: year relative to the start of the project when the
+cost occurs (from year 0 to the end of the project)</p></li>
+</ul>
+</li>
+<li><p><strong>Energy output table</strong>, including the following columns:</p>
+<ul>
+<li><p><strong>project_year</strong>: year relative to the start of the project when the
+cost occurs (from year 0 to the end of the project)</p></li>
+<li><p><strong>energy</strong>: final annual energy output. This value accounts for the
+hydrodynamic interaction, transmis- sion losses and downtime losses</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>The other input of the df_lcoe function is the discount rate, which is assumed
+to remain constant during the lifetime of the project, and is a single float
+value from 0. to 1. to represent the discount rate percentage.</p>
+</section>
+</section>
+<section id="architecture">
+<h3><span class="section-number">8.1.2. </span>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id11">
+<span id="fig-arch-economic"></span><img alt="../_images/arch_economic.png" src="../_images/arch_economic.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.13 </span><span class="caption-text">Detailed flowchart of the economic assessment module</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The function <strong>item_total_cost</strong> takes the information of quantity and unitary
+cost and calculates the total cost within the context of the array in analysis.
+At this stage it is a simple multiplication, but it could be expanded to
+account for scaling factors or bulk discounts.</p>
+<p>Furthermore, the function assumes that all cost data is presented in the right
+units to match the quantities, and that the currency is the same. Further
+functions dealing with units and currency conversion could be developed.</p>
+<p>The cost values can, at most, be grouped by year, as the present value function
+will have to be applied before the LCOE calculation. However, it can be
+interesting for the user and for the other modules to have the total cost
+values detailed by activity (or by design module) or even at an item level.</p>
+<p>The function <strong>present_value</strong> transforms any future value into a present value
+assuming a specific discount rate. The present value function is applied to
+costs and energy output, using the discount rate set by the user. To calculate
+the present value of the costs, this function assumes that the total cost has
+already been calculated using the previous function. If the year-on-year costs
+are equal, the present value can be calculated for lump sums, instead of on an
+item by item basis.</p>
+<p>The function <strong>simple_lcoe</strong> uses the sum of the present values, as in the
+formula below, calculated with the previous function as inputs: sum of all
+costs and sum of all energy outputs.</p>
+<div class="math notranslate nohighlight">
+\[LCOE = \frac{(CAPEX_0 + OPEX_0) + \sum^n_{i=1} \frac{CAPEX_i + OPEX_i}{(1+r)^i}}{\sum^n_{i=1}\frac{AEP_i}{(1+r)^i}}\]</div>
+<p>The function <strong>df_lcoe</strong> takes the preformatted inputs in the format of pandas
+DataFrame tables (bill of materials, energy output), as described in the
+previous section and applies the previous functions.</p>
+<p>For the BoM table, the function creates a new column (‘cost’) for present value
+of the total cost, by applying first the item_total_cost function, and then the
+present_value one. It then sums all the cost calculated, which will be the
+first input for the simple_lcoe function.</p>
+<p>For the energy output table, the function creates a new column
+(‘discounted_energy’) by applying the present_value function. Like in the
+previous table, it then sums all the calculated energy outputs. This sum will
+be the second input for the simple_lcoe function.</p>
+<p>The output of this function is the LCOE, expressed in €/MWh.</p>
+<p>Intermediate or other functions could be developed to evaluate how the LCOE
+changes during the project lifetime as an extension to the base functionality.</p>
+</section>
+<section id="functional-specification">
+<h3><span class="section-number">8.1.3. </span>Functional Specification<a class="headerlink" href="#functional-specification" title="Link to this heading"></a></h3>
+<p>The cost of the OEC devices can be provided by the user as an optional input. As
+with the other costs assumed in the software, these are expected to be given in
+Euro currency.</p>
+<p>The discount rate is also to be provided by the user, as it is dependent on the
+investor’s valuation of risk and investment opportunities. Typical values of
+discount rate for marine energy projects range between 8-15% (Allan et al.,
+2011; Andrés et al., 2014; Carbon Trust, 2011, 2006; Ernst &amp; Young and Black &amp;
+Veatch, 2010; SQWenergy, 2010) but in LCOE evolution analysis is typical to use
+values between 10% and 12% (Carbon Trust, 2006, p. 200; OES, 2015; SI-OCEAN,
+2013). More information on the discount rate can be found elsewhere (DTOcean,
+2015j).</p>
+<p>The dates at which costs are incurred are also required as an input and will be
+an output from the Installation and O&amp;M modules. Alternatively, for capital
+expenditures, it could be assumed that all costs occur in year zero.</p>
+<p>The final input required from the other design modules is the annual energy
+output. To the calculation of the LCOE only the final energy output is needed,
+which to be provided by the operations and maintenance module after the
+downtime has been assessed. However, the input of the LCOE function could also
+be the unconstrained energy, but it should be noted that then the LCOE will be
+underestimated. There is value is calculating this overoptimistic LCOE, as it
+provides a metric on the impact of downtime and other losses calculated by the
+software.</p>
+<p>The main output of the ‘economic assessment module’ is the LCOE, presented in
+terms of €/MWh. Other outputs can be produced from the building blocks of the
+LCOE function, such as total lifetime costs (presented in €) and the total
+expected electricity production (expressed in MWh).</p>
+<section id="inputs">
+<h4><span class="section-number">8.1.3.1. </span>Inputs<a class="headerlink" href="#inputs" title="Link to this heading"></a></h4>
+<p>The Economics module requires inputs from other modules and from the user. The
+inputs from other modules can always be overwritten by the user.</p>
+<p>The Bill of Materials is generated by the core from the outputs of the other
+design modules. It is formatted as a pandas tables, with the following fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>item</strong>: identifier column, not used in the function</p></li>
+<li><p><strong>quantity</strong>: number of units of item</p></li>
+<li><p><strong>unitary_cost</strong>: cost per unit of the item. It assumes that it matches
+the units of the quantity</p></li>
+<li><p><strong>project_year</strong>: year relative to the start of the project when the cost
+occurs (from year 0 to the end of the project)</p></li>
+</ul>
+</div></blockquote>
+<p>The second set of inputs generated by the tool relates to the energy production.
+It also formatted as a pandas table, with the following columns</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>project_year</strong>: year relative to the start of the project when the cost
+occurs (from year 0 to the end of the project)</p></li>
+<li><p><strong>energy</strong>: final annual energy output. This value accounts for the
+hydrodynamic interaction, transmission losses and downtime losses</p></li>
+</ul>
+</div></blockquote>
+<p>The <strong>project_capacity</strong> input, referring to project capacity in MW, is an
+output from the Array Hydrodynamic module, by using the number of devices
+output and the user input on device rating.</p>
+<p>The inputs <strong>a_energy_wo_elosses</strong> and <strong>a_energy_wo_availability</strong> are outputs
+from the the Array hydrodynamic and Electrical sub-systems modules,
+respectively. The input a_energy_wo_elosses indicates the average annual
+unconstrained energy production, before electrical losses; while
+a_energy_wo_availability indicates the average annual energy production
+accounting for electrical losses, but without accounting for availability.</p>
+<p>From the user, the following inputs are required:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>project_lifetime</strong>: duration of the project in number of years</p></li>
+<li><p><strong>discount_rate</strong>: discount rate for the project in analysis. The discount
+rate is dependent on the investor’s valuation of risk and other investment
+opportunities.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="outputs">
+<h4><span class="section-number">8.1.3.2. </span>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h4>
+<p>The main output of the economics theme module is the
+<strong>levelized cost of energy</strong> (LCOE) of the project, expressed in €/MW. The
+building blocks of the LCOE calculation,
+<strong>CAPEX, OPEX and Annual Energy Production</strong>, are also outputs of the module</p>
+<p>This allows for the representation of the contribution of CAPEX and OPEX to the
+LCOE, the contribution of each sub-system/module, or the evaluation per device.</p>
+</section>
+</section>
+</section>
+<section id="reliability-assessment-module">
+<span id="tech-reliability"></span><h2><span class="section-number">8.2. </span>Reliability Assessment Module<a class="headerlink" href="#reliability-assessment-module" title="Link to this heading"></a></h2>
+<p>In this section the requirements, architecture and functional specification of
+the Reliability Assessment sub-module (RAM) are summarised.</p>
+<section id="id1">
+<h3><span class="section-number">8.2.1. </span>Requirements<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>In this section the requirements, architecture and functional specification of
+the Reliability Assessment sub-module (RAM) are summarised.</p>
+<section id="id2">
+<h4><span class="section-number">8.2.1.1. </span>User Requirements<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<p>Reliability assessment is one of the three main thematic assessment requirements
+of the DTOcean software. At first, the design modules (Electrical Sub-Systems
+and Moorings and Foundations) will produce a solution which is unconstrained in
+terms of environmental impact and reliability but focused on achieving the
+lowest possible capital cost. Installation and O&amp;M scheduling will take place
+in the respective module by making use of the logistic functions. The role of
+the RAM sub-module will be to conduct reliability calculations for i) the user
+and ii) to inform operations and maintenance requirements of the O&amp;M module.</p>
+<p>The purpose of the RAM is to:</p>
+<ul class="simple">
+<li><p>Generate a system-level reliability equation based on the
+inter-relationships between sub-systems and components (as specified by the
+Electrical Sub-Systems and Moorings and Foundations component hierarchies and
+by the user)</p></li>
+<li><p>Provide the user with the opportunity to populate sub-systems not covered by
+the DTOcean software (e.g. power take-off, control system) using a GUI-based
+Reliability Block Diagram</p></li>
+<li><p>Consider multiple failure severity classes (i.e. critical and non-critical)
+to inform repair action maintenance scheduling. This will represent a
+simplified approach to Failure Mode and Effects Analysis (FMEA)</p></li>
+<li><p>Carry out normal, optimistic and pessimistic reliability calculations to
+determine estimation sensitivity to failure rate variability and quality
+analysis</p></li>
+<li><p>Provide the time-dependent failure estimation model (in the O&amp;M module) with
+the Time to failure (TTF) of components within the system</p></li>
+</ul>
+<p>It will produce:</p>
+<ul class="simple">
+<li><p>A pass/fail Boolean compared to user-defined threshold</p></li>
+<li><p>Distribution of system reliability (%) from mission start to mission end
+(<span class="math notranslate nohighlight">\(0 \le t \le T\)</span>).</p></li>
+<li><p>Mean time to failure (MTTF) of the system, sub-systems and components
+presented to the user in a tree format</p></li>
+<li><p>Risk Priority Numbers (RPNs)</p></li>
+</ul>
+</section>
+<section id="id3">
+<h4><span class="section-number">8.2.1.2. </span>Software Design Requirements<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<p>The RAM has been developed to calculate reliability metrics for each component
+or sub-system provided by the database and/or user. It is a separate module
+which is fed input specified by the user, database and design modules (via the
+core for the global design) and provides reliability statistics to the O&amp;M
+module and user GUI (again via the Core, see <a class="reference internal" href="#fig-reliability"><span class="std std-numref">Fig. 8.14</span></a>).</p>
+<p>If a proposed design solution is not feasible in terms of reliability (i.e. it
+does not match the threshold set by the user) after the initial run of the
+software, an alternative solution will be sought by initializing a subsequent
+run of the software. For example, if the reliability of a proposed mooring
+system is unacceptable then a constraint could be fed back to the Moorings and
+Foundations module. Therefore, only components with a reliability level above a
+certain threshold (based on the required level of system reliability set by the
+user) would be available for selection when the Moorings and Foundations module
+is re-run.</p>
+<figure class="align-default" id="id12">
+<span id="fig-reliability"></span><img alt="../_images/reliability.png" src="../_images/reliability.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.14 </span><span class="caption-text">Interaction of the Reliability Assessment sub-module with the other components in the software</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The 3rd party Python packages used by the RAM are as follows:</p>
+<ul class="simple">
+<li><p>matplotlib</p></li>
+<li><p>numpy</p></li>
+<li><p>pandas</p></li>
+</ul>
+<p>Starting with the lowest analysed level (component level), the algorithms used
+to calculated reliability at a specified time (i.e. mission time) are
+introduced in the following subsections.</p>
+</section>
+<section id="component-reliability">
+<h4><span class="section-number">8.2.1.3. </span>Component reliability<a class="headerlink" href="#component-reliability" title="Link to this heading"></a></h4>
+<p>Assuming an exponential distribution of failures component reliability is
+calculated as:</p>
+<div class="math notranslate nohighlight">
+\[R(T) = e^{-\lambda T}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\lambda\)</span> is the component failure rate.</p>
+</section>
+<section id="reliability-of-higher-system-levels">
+<h4><span class="section-number">8.2.1.4. </span>Reliability of higher system levels<a class="headerlink" href="#reliability-of-higher-system-levels" title="Link to this heading"></a></h4>
+<p>For higher system levels (sub-system, device, device cluster, string and array)
+reliability at mission time is calculated in several ways depending on the
+relationships between adjacent system elements, as defined by the User,
+Electrical System Architecture and Mooring and Foundation system hierarchies.</p>
+<p>For series relationships comprising n elements:</p>
+<div class="math notranslate nohighlight">
+\[R_{ser}(T) = \prod^n_{i=1} (\exp^{-\lambda_i T} )\]</div>
+<p>For parallel relationships comprising n elements:</p>
+<div class="math notranslate nohighlight">
+\[R_{par}(T) = 1 - \prod^n_{i=1} (1 - R_i (T) )\]</div>
+<p>For the special case of ‘m of n’ relationships, such as multiple mooring lines:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}R_{mn}(T) = \sum^n_{r=k} \left(  \begin{array}{c} n\\i \end{array} \right) R^r_i (T) (1 - R_i (T))^{n-r}\end{split}\]</div>
+<figure class="align-default" id="id13">
+<span id="fig-mooring"></span><img alt="../_images/mooring.png" src="../_images/mooring.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.15 </span><span class="caption-text">Example mooring system comprising 3 lines</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="component-mttf">
+<h4><span class="section-number">8.2.1.5. </span>Component MTTF<a class="headerlink" href="#component-mttf" title="Link to this heading"></a></h4>
+<p>Component MTTF values are calculated as the reciprocal of the specified failure
+rate:</p>
+<div class="math notranslate nohighlight">
+\[MTTF = \frac{1}{\lambda}\]</div>
+</section>
+<section id="mttf-of-higher-system-levels">
+<h4><span class="section-number">8.2.1.6. </span>MTTF of higher system levels<a class="headerlink" href="#mttf-of-higher-system-levels" title="Link to this heading"></a></h4>
+<p>Similarly to the reliability metric described above for higher system levels
+(sub-system, device, device cluster, string and array) the method of
+calculating MTTF is dependent on if adjacent elements are in series, parallel
+or belong to an ‘m of n’ system.</p>
+<p>For series relationships:</p>
+<div class="math notranslate nohighlight">
+\[MTTF_{ser} = \frac{1}{\sum^n_{i=1} \lambda_i}\]</div>
+<p>For parallel relationships binomial expansion of terms is required:</p>
+<div class="math notranslate nohighlight">
+\[MTTF_{par} = \sum^n_{i=1}\frac{1}{\lambda_i} - \sum^{n-1}_{i=1} \sum^n_{j=i+1}\frac{1}{\lambda_i+\lambda_j} + \sum^{n-2}_{i=1} \sum^{n-1}_{j=i+1} \sum^n_{k=j+1} \frac{1}{\lambda_i+\lambda_j+\lambda_k} - \dots + (-1)^{n+1} \frac{1}{\sum^n_{i=1} \lambda_i}\]</div>
+<p>Finally for ‘m of n’ relationships:</p>
+<div class="math notranslate nohighlight">
+\[MTTF_{mn} = \frac{1}{\sum^n_{i=1} i * \lambda_i}\]</div>
+</section>
+</section>
+<section id="id4">
+<h3><span class="section-number">8.2.2. </span>Architecture<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<section id="overview">
+<h4><span class="section-number">8.2.2.1. </span>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h4>
+<p>The RAM comprises two Python modules (<a class="reference internal" href="#fig-ram-tech"><span class="std std-numref">Fig. 8.16</span></a>). RAM_Main.py acts
+as an interface between the user and the module and also calls the functions
+within the RAM. RAM_Core.py comprises the classes and functions required to
+carry out statistical analysis of the system. As can be seen from Figure 7.5
+with RAM_Core.py there is interaction between the functions within the Syshier
+class. The use of result sets by the O&amp;M module is discussed in later sections.</p>
+<figure class="align-default" id="id14">
+<span id="fig-ram-tech"></span><img alt="../_images/RAM.png" src="../_images/RAM.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.16 </span><span class="caption-text">Interaction between the various classes and methods of the Reliability Assessment sub-module</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<img alt="../_images/RAM1.png" id="tab-ram" src="../_images/RAM1.png" />
+<figure class="align-default" id="id15">
+<img alt="../_images/RAM2.png" src="../_images/RAM2.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.17 </span><span class="caption-text">Summary of internal RAM processes</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>SYSTEM HIERARCHY</strong></p>
+<p>In order to generate the reliability equations at each system level, component hierarchies defined by the Electrical Sub-Systems and Moorings and Foundations modules (which specify the inter-relationships between components and sub-systems) are used. In addition, any user-specified sub-systems are included at this stage. At the top level of the hierarchy each device will be identified by its DeviceID number. To implement this structure in Python, nested lists have been used, for example the table below shows a simple device and substation foundation example.</p>
+<figure class="align-default" id="id16">
+<span id="fig-hierarchy"></span><img alt="../_images/hierarchy.png" src="../_images/hierarchy.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.18 </span><span class="caption-text">Example hierarchy configuration from the Moorings and Foundations module</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Assuming that the same components are used for each of the four devices in the
+example array, the Moorings and Foundations hierarchy in Python would appear
+as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;array&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Substation foundation&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">]},</span>
+<span class="s1">&#39;device001&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Foundation&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">]],</span>
+<span class="s1">&#39;Umbilical&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;submarine umbilical cable 6/10kV&#39;</span><span class="p">]},</span>
+<span class="s1">&#39;device002&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Foundation&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">]],</span>
+<span class="s1">&#39;Umbilical&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;submarine umbilical cable 6/10kV&#39;</span><span class="p">]},</span>
+<span class="s1">&#39;device003&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Foundation&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">]],</span>
+<span class="s1">&#39;Umbilical&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;submarine umbilical cable 6/10kV&#39;</span><span class="p">]},</span>
+<span class="s1">&#39;device004&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Foundation&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pile&#39;</span><span class="p">,</span> <span class="s1">&#39;UHS&#39;</span><span class="p">]],</span>
+<span class="s1">&#39;Umbilical&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;submarine umbilical cable 6/10kV&#39;</span><span class="p">]}}</span>
+</pre></div>
+</div>
+<p>It is possible to identify parallel and series relationships from this list
+since the component names are separated: series components are separated by a
+comma whereas parallel relationships are indicated by square brackets. By
+default mooring systems are treated as ‘m of n’ systems (where <span class="math notranslate nohighlight">\(m=n-1\)</span>)
+to represent an Accident Limit State scenario (Det Norske Veritas, 2013a).</p>
+<p><strong>FAILURE RATE DATA</strong></p>
+<p>Reliability calculations performed within the RAM are based on the assumption
+that failures follow an exponential distribution and hence that the hazard rate
+is constant with time. Being open-source software, other distributions could be
+included in the future to incorporate the two other main life stages (burn-in
+and wear-out).</p>
+<p>Based on the component names identified in the hierarchy list, failure rates
+from the database will then be accessed. Failure data for certain components
+may be sparse. A review8 of mooring component failures of production and
+non-production platforms and vessels illustrates this point. Most,
+if not all of these failures can be classified as critical: although redundancy
+is usually taken into account while designing these types of mooring systems,
+immediate intervention would be required to regain system integrity.
+Assumptions will have to be made if data is not available for all components
+(i.e. using the failure rates of similar components or sub-systems).</p>
+<figure class="align-default" id="id17">
+<span id="tab-failures"></span><img alt="../_images/failures.png" src="../_images/failures.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.19 </span><span class="caption-text">Reported non-production mooring failures 1981-2009 and estimated probability of failure (based on a 30 year interval)</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>FAILURE TYPES</strong></p>
+<p>Clearly not all failures will result in system downtime and some may be
+sufficiently minor to warrant delaying replacement until the next maintenance
+interval. The OREDA Offshore Reliability Data Handbook (OREDA, 2009) which is
+widely used in the offshore oil and gas industry defines three failure severity
+levels:</p>
+<ul class="simple">
+<li><p>Critical failure – a failure which causes immediate and complete loss of an
+equipment unit’s capability of providing its output</p></li>
+<li><p>Degraded failure – a failure which is not critical but prevents the unit
+from providing its output within specifications. Such a failure would
+usually, but not necessarily, be gradual or partial, and may develop into a
+critical failure in time</p></li>
+<li><p>Incipient failure – a failure which does not immediately cause loss of an
+equipment unit’s capacity of providing its output, but which, if not attend
+to, could result in a critical or degraded failure in the near future</p></li>
+</ul>
+<p>Within the RAM, two failure mode categories are used to distinguish between the
+different consequences of failure: i) critical and ii) non-critical
+(encompassing failures described by the ‘degraded’ and ‘incipient’ definitions
+above). The corresponding parameters are failratecrit and failratenoncrit.</p>
+<p>Within the O&amp;M module, O&amp;M scheduling will be based on the probability of
+failure, failure mode and required repair action. Two runs of the RAM will be
+conducted using the different failure rates associated with critical or
+non-critical severity levels. This is effectively a simplified version of FMEA,
+but assumes that all failures are independent (i.e. there are no cascade
+failures).</p>
+<p>Furthermore, it is unlikely that failure data will be available for all severity
+classes. Therefore, by default RAM calculations are based on failure rates
+associated with the highest available severity levels, with subsequent runs
+utilising lower severity level values (where available).</p>
+<p><strong>CONFIDENCE LEVELS</strong></p>
+<p>Failure rates are often specified as single values, which usually correspond to
+a calculated mean of many samples, possibly from multiple installations. A
+single value does not provide any information on the variability of component
+reliability over multiple installations (or the presence of outlying failures)
+which could have a significant impact on the overall MTTF of the system and
+associated system downtime and costs. Uncertainty levels provide a measure of
+confidence of the baseline failure rate. If upper and lower uncertainty levels
+are specified, the RAM functions will be called several times using lower, mean
+and upper level failure rates. Therefore failratecrit and failratenoncrit are 1
+x 3 vectors for each component. Three estimation scenarios are hence provided,
+which are ‘optimistic’, ‘normal’ and ‘pessimistic’ from which the sensitivity
+of lifecycle costs over the duration of the project can be analysed.</p>
+<p>In addition to performing calculations with lower, mean and upper uncertainty
+level failure rates, these values will be reported to the user to enable the
+quality of the estimate if the sample population (which the failure rate is
+based upon).</p>
+</section>
+<section id="result-sets-and-the-o-m-module">
+<h4><span class="section-number">8.2.2.2. </span>Result sets and the O&amp;M module<a class="headerlink" href="#result-sets-and-the-o-m-module" title="Link to this heading"></a></h4>
+<p>Considering the two severity levels (ULS, ALS) and three failure rate confidence
+levels (upper, mean andlower) introduced in above, six result sets are
+generated by the RAM. It is highly unlikely, given the current state of the MRE
+sector, that failure rate data will be available for all six factors for all
+components. To cater for the situation where data is limited for some
+components, runs of the RAM for lower and upper uncertainty levels and
+non-critical failures will use mean, critical failure rates for these
+components. This enables full system analysis to be conducted even if a
+complete set of data is not available. The time domain calculations which take
+place within the O&amp;M module are computationally demanding in terms of the time
+required to simulate failure events for all components in a system. To avoid
+the need to analyse all of the six result sets from the RAM, the O&amp;M module
+will only focus on a ‘best’ and ‘worst’ case scenario related to highest and
+lowest calculated TTFs.</p>
+<p>The base design of the module does not contain an optimisation function; it
+simply calculates reliability metrics based on the provided information. An
+extension could be provided so that if the calculated MTTF of the system does
+not meet the user-specified target, the RAM will try to identify which part of
+the system can be improved in terms of reliability (i.e. which sub-system has
+the lowest overall reliability) and request that changes are made by the
+corresponding module (Moorings and Foundations or Electrical Sub-Systems). Once
+changes have been made (i.e. replacing a component with a more reliable, but
+perhaps more costly equivalent) the RAM will be rerun.</p>
+</section>
+</section>
+<section id="id5">
+<h3><span class="section-number">8.2.3. </span>Functional specification<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<section id="id6">
+<h4><span class="section-number">8.2.3.1. </span>Inputs<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<p>The input parameters required by the RAM, their format and source (or
+destination) are provided below:</p>
+<img alt="../_images/RAM_inputs.png" src="../_images/RAM_inputs.png" />
+</section>
+<section id="id7">
+<h4><span class="section-number">8.2.3.2. </span>Outputs<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<p>The output parameters provided to the O&amp;M, Electrical Sub-Systems and Moorings
+and Foundations modules and the user are described here:</p>
+<img alt="../_images/RAM_outputs.png" src="../_images/RAM_outputs.png" />
+<p>Within the following subsections several of the inputs and outputs are explained
+in more detail.  The user-defined hierarchy and BoM will both be empty by
+default (i.e. and hence all device sub-systems apart from the Moorings and
+Foundations and Electrical Sub-Systems are assumed to never fail). If the user
+wishes to populate the system with blocks to represent devices or devices
+comprising multiple sub-systems (i.e. for the power take-off system, structure
+etc.) this is possible via a reliability block diagram.  The minimum required
+data for the RAM to function is a mean failure rate (by default this is assumed
+to represent a critical failure) for each device or sub-system.</p>
+<figure class="align-default" id="id18">
+<span id="fig-parallel"></span><img alt="../_images/parallel.png" src="../_images/parallel.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.20 </span><span class="caption-text">Example parallel configuration including Moorings and Foundations elements and user specified power take off (PTO) sub-systems for two devices. For brevity inter-array cabling and the export cable are not shown</span><a class="headerlink" href="#id18" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>For the example shown in <a class="reference internal" href="#fig-parallel"><span class="std std-numref">Fig. 8.20</span></a> the hierarchy and bill of
+materials for the user-defined PTO systems are shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Hierarchy</span>
+<span class="p">{</span><span class="s1">&#39;device001&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Power take off system&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;generator&#39;</span><span class="p">]},</span>
+<span class="s1">&#39;device002&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Power take off system&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;generator&#39;</span><span class="p">]}}</span>
+
+<span class="n">Bill</span> <span class="n">of</span> <span class="n">materials</span>
+<span class="p">{</span><span class="s1">&#39;device001&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;quantity&#39;</span><span class="p">:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;generator&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})},</span>
+<span class="s1">&#39;device002&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;quantity&#39;</span><span class="p">:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;generator&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})}}</span>
+</pre></div>
+</div>
+<p>In this way the user can specify additional elements down to component level.
+For example if the user wished to include a gearbox the hierarchy and bill of
+materials would become:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Hierarchy
+{&#39;device001&#39;: {&#39;Power take off system&#39;: [&#39;generator&#39;, ‘gearbox’]},
+&#39;device002&#39;: {&#39;Power take off system&#39;: [&#39;generator&#39;, ‘gearbox’]}}
+
+Bill of materials
+{&#39;device001&#39;: {&#39;quantity&#39;: Counter({&#39;generator&#39;: 1, &#39;gearbox&#39;: 1})},
+&#39;device002&#39;: {&#39;quantity&#39;: Counter({&#39;generator&#39;: 1,&#39;gearbox&#39;: 1})}}
+</pre></div>
+</div>
+<p>The main outputs of the RAM are component MTTFs (which are used by the O&amp;M
+module), information for the user and results stored in a log file. Reliability
+information is presented to the user via a tree structure. The tree provides a
+breakdown of the calculated system reliability into sub-system and component
+levels, thereby allowing the user to explore the system (i.e. locate components
+with low reliability). The following information is provided in the tree
+structure:</p>
+<ul class="simple">
+<li><p>System, subsystem or component name</p></li>
+<li><p>MTTF</p></li>
+<li><p>Risk priority numbers</p></li>
+</ul>
+<p>Risk priority numbers are calculated within the RAM based on the frequency of
+failure and severity level of each component. Using the approach suggested in
+(National Renewable Energy Laboratory, 2014) failure frequency bands are
+defined by estimated probability of failure ranges
+(<a class="reference internal" href="#tab-failure-freq"><span class="std std-numref">Fig. 8.21</span></a>). RPNs increase with failure frequency and severity
+level and can be colour-coded (<a class="reference internal" href="#tab-risk"><span class="std std-numref">Fig. 8.22</span></a>).</p>
+<figure class="align-default" id="id19">
+<span id="tab-failure-freq"></span><img alt="../_images/failure_freq.png" src="../_images/failure_freq.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.21 </span><span class="caption-text">Failure frequencies for several probability of failure ranges (from (National Renewable Energy Laboratory, 2014))</span><a class="headerlink" href="#id19" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id20">
+<span id="tab-risk"></span><img alt="../_images/risk.png" src="../_images/risk.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.22 </span><span class="caption-text">Risk Priority Number matrix with possible colour coding scheme (adapted from (National Renewable Energy Laboratory, 2014))</span><a class="headerlink" href="#id20" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>In order for the user to be able to identify high-risk components and
+sub-systems which may require unplanned corrective maintenance, the calculated
+RPNs and time-varying system reliability are also presented here.</p>
+<figure class="align-default" id="id21">
+<span id="fig-rpn"></span><img alt="../_images/RPN.png" src="../_images/RPN.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.23 </span><span class="caption-text">Example (left) RPN and (right) system reliability plots</span><a class="headerlink" href="#id21" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+</section>
+<section id="environmental-impact-assessment-module">
+<span id="tech-environment"></span><h2><span class="section-number">8.3. </span>Environmental Impact Assessment Module<a class="headerlink" href="#environmental-impact-assessment-module" title="Link to this heading"></a></h2>
+<section id="introduction">
+<h3><span class="section-number">8.3.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h3>
+<p>The purpose of the Environmental Impact Assessment (EIA) is to assess the
+environmental impacts generated by the various technological choices taken by
+the design modules when optimising an array of OEC devices.</p>
+<p>The EIA consists of a set of functions that are able to qualify and quantify the
+potential pressures generated by the array of wave or tidal devices on the
+marine environment. It uses two types of inputs. Some data will have to be
+provided by the user; other data will come directly from the other modules
+(e.g. Hydrodynamics, Electrical architecture, Moorings and Foundations etc.).</p>
+<p>The EIA is based on several scoring principles which are detailed in this
+chapter of the Technical Manual. In summary, the use of the environmental
+functions allows the EIA to generate numerical values that will be converted
+into environmental scores (EIS - Environmental Impact Score). The conversion
+from the function’ scores to the environmental scores are made through
+calibration matrices. Each function is associated with one calibration matrix
+(or several depending on the complexity of the function) in order to qualify
+the initial pressure score. Calibration matrices are based on literature data
+or empirical data together with a weighting protocol which is implemented in
+the EIA logic to better qualify the environmental impacts.</p>
+<p>The scoring allocation system developed within the DTOcean framework is generic
+for each environmental function and based in three consecutive main steps. The
+first step consists of qualifying and quantifying the ‘pressure’ generated by
+all components introduced in the the water. This could be, for example, the
+generation of underwater noise or a footprint from the device foundations. The
+second step is to define if there are some ‘receptors’ or not in the area that
+is potentially affected by the pressures generated in the first step. Receptors
+can be mammals, birds or habitats. Within the receptors, some distinctions are
+made depending on their sensitivities to the pressures. Some receptors are also
+identified as ‘very sensitive’ e.g. regulatory protected species. The last step
+consists of a refinement of the receptor’s qualification with the definition of
+their seasonal distribution (occurrence or absence on site during the year).</p>
+<p>The EIA should inform the user about the ‘environmental impact’, including
+adverse but also potentially positive impact, of the technological choices and
+options made during each individual design module, as well as their combined
+effect.</p>
+<p>Recommendations based on the pressure and the receptor’s score are provided to
+the user to help improve the environmental impact of the proposed array using
+more environmental friendly solutions.</p>
+</section>
+<section id="global-concept-of-the-module">
+<h3><span class="section-number">8.3.2. </span>Global Concept of the Module<a class="headerlink" href="#global-concept-of-the-module" title="Link to this heading"></a></h3>
+<p>Environmental risk assessment is a process that estimates the likelihood and
+consequence of adverse (or positive) environmental impacts (United States
+Environmental Protection Agency, 2015). In that regard, conceptual model
+development is critical to assessing the environmental risk. The approach used
+here is based on the concept of environmental effects generated by ‘stressors’
+and the related exposure of ‘receptors’ to these effects. A stressor is any
+physical, chemical, or biological entity that can induce an adverse response.
+Stressors may adversely affect specific natural resources or entire ecosystems,
+including plants and animals, as well as the environment with which they
+interact. A receptor is any environmental feature, usually an ecological
+entity. Examples of stressors and receptors associated with tidal energy
+developments given in <a class="reference internal" href="#fig-stressors"><span class="std std-numref">Fig. 8.24</span></a> (Polagye et al., 2011).</p>
+<figure class="align-default" id="id22">
+<span id="fig-stressors"></span><img alt="../_images/stressors.png" src="../_images/stressors.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.24 </span><span class="caption-text">Example of environmental stressors and receptors associated with tidal energy developments (United States Environmental Protection Agency, 2015)</span><a class="headerlink" href="#id22" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Within this framework, it is therefore a matter to systematically identify and
+evaluate the relationships between all stressors and their impact on receptors.
+In order to achieve this, a set of environmental functions have been
+specifically designed, as well as a scoring system to build a framework of
+scenarios that are able to:</p>
+<ul class="simple">
+<li><p>Qualitatively and quantitatively characterise the effects of the different
+stressors for tidal and wave array developments</p></li>
+<li><p>Quantitatively estimate exposure (and risk) to receptors</p></li>
+<li><p>Provide environmental impact assessment estimates (through the scoring
+system) to inform array design decisions</p></li>
+</ul>
+<p>Based on this conceptual approach, when assessing the environmental impacts the
+array development phases are collection into two groups as follows:</p>
+<ul class="simple">
+<li><p>Installation, O&amp;M and decommissioning phases</p></li>
+<li><p>Exploitation phase</p></li>
+</ul>
+<p>Indeed, the installation, O&amp;M and decommissioning phases often generate
+significant but short-term impacts, whilst the impact of the exploitation phase
+is often lower in magnitude but occur over a longer time period.</p>
+</section>
+<section id="environmental-functions-overview">
+<h3><span class="section-number">8.3.3. </span>Environmental Functions Overview<a class="headerlink" href="#environmental-functions-overview" title="Link to this heading"></a></h3>
+<p>In order to assess the potential environmental impacts of tidal and wave arrays
+for these two phases, a set of generic environmental issues have been
+specifically selected and described. These are shown in
+<a class="reference internal" href="#tab-env-impacts"><span class="std std-numref">Fig. 8.25</span></a>.</p>
+<figure class="align-default" id="id23">
+<span id="tab-env-impacts"></span><img alt="../_images/env_impacts.png" src="../_images/env_impacts.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.25 </span><span class="caption-text">List of environmental impacts assessed by DTOcean</span><a class="headerlink" href="#id23" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Each issue is specifically allocated to the different DTOcean modules
+(Hydrodynamics, Electrical Sub- Systems, Mooring and Foundations…), as each
+module generates different stressors depending on its purpose.
+<a class="reference internal" href="#tab-env-modules"><span class="std std-numref">Fig. 8.26</span></a> shows which issues are assessed for each of the
+DTOcean modules. As can be seen, the computational modules with the highest
+number of issues are the Hydrodynamics and the Electrical Sub-Systems modules.</p>
+<figure class="align-default" id="id24">
+<span id="tab-env-modules"></span><img alt="../_images/env_modules.png" src="../_images/env_modules.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.26 </span><span class="caption-text">Environmental issues associated with each DTOcean modules</span><a class="headerlink" href="#id24" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Considering these issues for all the modules results in 13 specific
+environmental functions, with specific input values depending on the module.
+These functions quantify the pressure generated by the devices and their
+components.</p>
+</section>
+<section id="scoring-system-principles">
+<h3><span class="section-number">8.3.4. </span>Scoring System Principles<a class="headerlink" href="#scoring-system-principles" title="Link to this heading"></a></h3>
+<p>The use of environmental functions allows the EIA to generate numerical values
+(function’s scores) that will be converted to an EIS ranging from +50 to -100
+(scale shown in <a class="reference internal" href="#fig-env-scale-tech"><span class="std std-numref">Fig. 8.27</span></a>).</p>
+<figure class="align-default" id="id25">
+<span id="fig-env-scale-tech"></span><img alt="../_images/env_scale.png" src="../_images/env_scale.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.27 </span><span class="caption-text">Example EIS scale</span><a class="headerlink" href="#id25" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id8">
+<h3><span class="section-number">8.3.5. </span>Environmental Functions Overview<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p>In order for the user to have both a global environmental assessment and
+detailed information when using the DTOcean software, two levels (L1 and L2) of
+results will be available within the software. The relationships between the
+levels will also be made available. At each level, adverse and positive impacts
+are always given separately. The different display levels are defined as follow:</p>
+<ul class="simple">
+<li><p>Level 1: The first level of assessment provides a global (agglomerated) EIS
+given for each module. The result for each module is generated by the
+summation of EIS obtained by each function selected for that specific module
+and normalised on the scal e ranging from +50 to -100. This level also
+contains the range of impacts associated with the EIS for each module. A
+graphical example of the level 1 results is given in
+<a class="reference internal" href="#fig-module-impact-tech"><span class="std std-numref">Fig. 8.28</span></a>.</p></li>
+</ul>
+<figure class="align-default" id="id26">
+<span id="fig-module-impact-tech"></span><img alt="../_images/env_output_global.png" src="../_images/env_output_global.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.28 </span><span class="caption-text">Illustration of the module environmental impact score display</span><a class="headerlink" href="#id26" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<ul class="simple">
+<li><p>Level 2: The second level provides full details at the function level. This
+level also contains the level of confidence associated to the EIS for each
+function. A graphical illustration of this level is shown in
+<a class="reference internal" href="#fig-function-impact-tech"><span class="std std-numref">Fig. 8.29</span></a>.</p></li>
+</ul>
+<figure class="align-default" id="id27">
+<span id="fig-function-impact-tech"></span><img alt="../_images/env_output_function.png" src="../_images/env_output_function.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.29 </span><span class="caption-text">Illustration of the function environmental impact score display</span><a class="headerlink" href="#id27" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>By default for the summation purpose (going from L2 to L1), all
+functions and modules have the same weight. However, the user will have the
+possibility to weight the function differently if needed.</p>
+</section>
+<section id="software-requirements">
+<h3><span class="section-number">8.3.6. </span>Software requirements<a class="headerlink" href="#software-requirements" title="Link to this heading"></a></h3>
+<p>The scoring allocation system developed within the EIA is generic for each
+environmental function and is shown in <a class="reference internal" href="#fig-env-scoring-tech"><span class="std std-numref">Fig. 8.30</span></a>. The main
+principle for the different steps is summarised below and is based on three
+main steps:</p>
+<ul>
+<li><p><strong>STEP 1: quantification of the ‘pressure’ generated by the stressors</strong></p>
+<p>The quantification of the pressure is obtained from the environmental
+functions selected and the produced Pressure Score (PS). The PS is then
+adjusted to a new numerical value called the Pressure Score adjusted (PSa)
+through a ‘weighting protocol’ by multiplying the PS with a coefficient
+ranging from 0 and 1. This happens if local environmental factors exist,
+which are independent from the receptors, and are not included in the
+function’s formula. If no weighting is selected, a default value of 1 used.</p>
+<p>At this stage the level of confidence is at its lowest value of 1.</p>
+</li>
+<li><p><strong>STEP 2: basic qualification of the occurrence (or absence) of receptors</strong></p>
+<p>The second step is triggered if the user is able to indicate the existence
+of receptors onsite. Step 2 uses the score initially generated in step 1 and
+then adjusts it depending on the receptor’s sensitivity by multiplying the
+PSa with the Receptor Sensitivity coefficient (RS), which ranges from 0 to 5,
+unless the user has no receptor data, in which case the RS is assumed to be
+at its maximum value 5. This process leads to the Receptor Sensitivity Score
+(RSS). The different receptors are gathered within main classes reflecting
+their sensitivity to pressure. The user will have to choose between these
+different main classes of receptors that will be characterised by having RS
+values ranging from 0 to 5 for low to high sensitivity, respectively. When
+several receptors are identified onsite, the most sensitive receptors will be
+considered for the EIS calculations. To ultimately obtain the EIS a linear
+mapping is applied and specific calibration tables are used to convert RSS to
+EIS. In the case where the user declares a receptor that is regulatory
+protected (list provided by the database), by default this will automatically
+lead to an EIS of -100.</p>
+<p>If the user is able to provide details about the existence of receptors, the
+level of confidence increases to medium, corresponding to the value 2.</p>
+</li>
+<li><p><strong>STEP 3: qualification of the seasonal distribution of receptors</strong></p>
+<p>The last step is triggered if the user has monthly data for the existence of
+receptors onsite. The step then modulates the final EIS to take into account
+less sensitive receptors when the highest sensitive receptors are declared
+absent. Step 3 is similar to step 2 for each specific receptor declared
+onsite and the EIS is equal to 0 for any receptors absent in a particular
+month. For each month, the EIS is given by the most sensitive species present.</p>
+<p>If the user has such monthly data, the level of confidence is at its highest
+value of 3.</p>
+</li>
+</ul>
+<figure class="align-default" id="id28">
+<span id="fig-env-scoring-tech"></span><img alt="../_images/env_scoring.png" src="../_images/env_scoring.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.30 </span><span class="caption-text">Scoring algorithm for the Environmental Impact Assessment (EIA)</span><a class="headerlink" href="#id28" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="lists-used-for-calibrations">
+<h4><span class="section-number">8.3.6.1. </span>Lists used for Calibrations<a class="headerlink" href="#lists-used-for-calibrations" title="Link to this heading"></a></h4>
+<p>Environmental scores (receptors, weighting, seasonal) have been defined using different lists
+of parameters according to the list presented in <a class="reference internal" href="#tab-env-data"><span class="std std-numref">Fig. 8.31</span></a>.</p>
+<figure class="align-default" id="id29">
+<span id="tab-env-data"></span><img alt="../_images/env_data.png" src="../_images/env_data.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.31 </span><span class="caption-text">List of scoring parameters used in the environmental assessment</span><a class="headerlink" href="#id29" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="description-of-environmental-functions">
+<h4><span class="section-number">8.3.6.2. </span>Description of Environmental Functions<a class="headerlink" href="#description-of-environmental-functions" title="Link to this heading"></a></h4>
+<p>All of the functions are described in this section. The description is based on
+a generic template that includes all of the different items associated to the
+function. <a class="reference internal" href="#tab-detail-function"><span class="std std-numref">Fig. 8.32</span></a> presents the generic items described
+for each function.</p>
+<figure class="align-default" id="id30">
+<span id="tab-detail-function"></span><img alt="../_images/detail_function.png" src="../_images/detail_function.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.32 </span><span class="caption-text">Details on function explanation</span><a class="headerlink" href="#id30" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id31">
+<img alt="../_images/env_functions_hydro.png" src="../_images/env_functions_hydro.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.33 </span><span class="caption-text">Environmental parameters of the array layout module</span><a class="headerlink" href="#id31" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id32">
+<img alt="../_images/env_functions_elec.png" src="../_images/env_functions_elec.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.34 </span><span class="caption-text">Environmental parameters of the electrical sub-system module</span><a class="headerlink" href="#id32" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id33">
+<img alt="../_images/env_functions_moor.png" src="../_images/env_functions_moor.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.35 </span><span class="caption-text">Environmental parameters of the Moorings and Foundations module</span><a class="headerlink" href="#id33" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id34">
+<img alt="../_images/env_functions_inst.png" src="../_images/env_functions_inst.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.36 </span><span class="caption-text">Environmental parameters of the Installation module</span><a class="headerlink" href="#id34" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id35">
+<img alt="../_images/env_functions_om.png" src="../_images/env_functions_om.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.37 </span><span class="caption-text">Environmental parameters of the O&amp;M module</span><a class="headerlink" href="#id35" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="id9">
+<h3><span class="section-number">8.3.7. </span>Architecture<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id36">
+<span id="fig-robustness-env"></span><img alt="../_images/robustness_env.png" src="../_images/robustness_env.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.38 </span><span class="caption-text">Robustness diagram for the environmental assessment module</span><a class="headerlink" href="#id36" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The implementation of the requirements detailed in this section is shown in
+<a class="reference internal" href="#fig-robustness-env"><span class="std std-numref">Fig. 8.38</span></a>. The main component of this system is the Logigram
+class that creates a programmatic representation of the flow chart shown in
+<a class="reference internal" href="#fig-env-scoring-tech"><span class="std std-numref">Fig. 8.30</span></a>. A single subclass of the Logigram class exists
+for each environmental function detailed in the previous section. These are
+loaded from a module containing all the programmatic definitions of the
+function, the module being called the same.</p>
+<p>Each Logigram contains three subclasses of the class Score. A score class
+contains a Python pandas table that carries all the scores which are used to
+amalgamate the result of the environmental function result and the observations
+of receptors or other sensitive items that weight of the function output. The
+column names of the tables in each Score subclass can vary, so it is the
+responsibility of the subclasses to check the format of the entered data.</p>
+<p>The values for these tables are retrieved from files which are stored alongside
+the source code for the module (in JSON format, for instance). It was chosen to
+store these values locally, rather than in the global database as the values
+are extremely sensitively balanced and modification by an unexperienced user
+would be undesirable. A special boundary class called LoadScores is available
+to help collect the scores from the files and load them into Logigram classes.</p>
+<p>The EIA boundary class is used to trigger each Logigram subclass as required. As
+the volume of input data can vary depending on which modules are run, the
+Logigram classes contain an abstract property called “trigger_identifiers”
+which returns a list of identifiers (related to the definitions of the
+functions, not the DDS) that can be accessed by the EIA class. As the input
+data to the EIA is given in the form of a dictionary, it can check the
+identifiers against each of the Logigram subclasses it contains and activate
+them as appropriate.</p>
+<p>Each Logigram produces an Assessment class to store its results and these are
+returned to the EIA class following execution. The EIA class then has methods
+to amalgamate the results related to the type of impact (see Table 7.6) and
+create an overall global assessment. The user of the software can then access
+each of these various levels of information.</p>
+</section>
+<section id="id10">
+<h3><span class="section-number">8.3.8. </span>Functional Specification<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>The following section considers setting up Logigram classes, executing them
+independently and then executing them together through an EIA class.</p>
+<section id="creating-a-logigram-subclass">
+<h4><span class="section-number">8.3.8.1. </span>Creating a Logigram subclass<a class="headerlink" href="#creating-a-logigram-subclass" title="Link to this heading"></a></h4>
+<figure class="align-default" id="id37">
+<span id="fig-logigram-env"></span><img alt="../_images/logigram_env.png" src="../_images/logigram_env.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.39 </span><span class="caption-text">UML class diagram for the Logigram class</span><a class="headerlink" href="#id37" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A single Logigram class can be prepared for completing an isolated assessment
+for one function as defined in Appendix L. A UML class diagram of the abstract
+Logigram class is given in Figure 7.15. To create a concrete class for a
+specific function, four methods must be overloaded. An example of supplying
+these methods for the energy modification function is shown in Figure 7.16.
+Although this process has already been completed for all the functions required
+for the DTOcean software, it is useful to see that extending these functions is
+a straightforward process.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>from .functions import energy_mod
+
+...
+
+def get_impact_name(self):
+   return “Energy Modification”
+
+def get_impact_type(self):
+   return “Energy Modification”
+
+def get_trigger_identifiers(self):
+   indentifiers = [&quot;input_energy&quot;,
+                   &quot;output_energy&quot;,
+                   &quot;seabed_observations&quot;]
+   return identifiers
+
+def get_impact_value(self, inputs_dict):
+   result = energy_mod(inputs_dict[&quot;input_energy&quot;], inputs_dict[&quot;output_energy&quot;])
+   return result
+</pre></div>
+</div>
+</section>
+<section id="initialising-a-logigram-subclass">
+<h4><span class="section-number">8.3.8.2. </span>Initialising a Logigram subclass<a class="headerlink" href="#initialising-a-logigram-subclass" title="Link to this heading"></a></h4>
+<p>Once a concrete subclass of the Logigram class is created it must be initialised
+with data representing the scoring of each component of the flow chart shown in
+figure 7.4.5. These scores are collected in subclasses of the Score class, in
+order to ensure the format of the given data is correct. For example, building
+an ImpactScore class is undertaken as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">impact_score_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;impact&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+                     <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="p">}</span>
+
+<span class="n">impact_score</span> <span class="o">=</span> <span class="n">ImpactScore</span><span class="p">(</span><span class="n">impact_score_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The process is similar for creating the WeightingScore and ReceptorScore
+objects, ensuring that the correct columns are given. Once these three objects
+are created, it is straightforward to initialise the Logigram class, as so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">energy_modification</span> <span class="o">=</span> <span class="n">EnergyModification</span><span class="p">(</span><span class="n">impact_score</span><span class="p">,</span>
+                                         <span class="n">weighting_score</span><span class="p">,</span>
+                                         <span class="n">receptor_score</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As with the definitions of the Logigram subclasses, it is not anticipated that a
+standard user would wish to modify the scores provided alongside the code.
+Should they wish to load a Logigram subclass with the stored values, a helper
+class is provided called LoadScores. The LoadScores class uses a path to the
+location of the stored files. The resulting objects takes an uninitialised
+Logigram subclass and return an initialised object containing the stored score
+values. A default path for the score file will also be stored within the
+LoadScores class, making it very easy to use. For example, to initialise an
+EnergyModification object requires just the following code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loader</span> <span class="o">=</span> <span class="n">LoadScores</span><span class="p">()</span>
+<span class="n">energy_modication</span> <span class="o">=</span> <span class="n">loader</span><span class="p">(</span><span class="n">EnergyModification</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="executing-a-single-logigram">
+<h4><span class="section-number">8.3.8.3. </span>Executing a Single Logigram<a class="headerlink" href="#executing-a-single-logigram" title="Link to this heading"></a></h4>
+<p>Executing a Logigram object is simply a matter of supplying the necessary
+inputs. The input relating to the specific impact is unique to the Logigram
+subclass being used; however the inputs are always entered in a similar manner,
+using a Python dictionary. Additionally, a list of observed protected species
+and a dictionary containing observations for species subclasses can be given.
+The keys of this dictionary relate to the subclass itself, and the values allow
+per month observations. If these monthly observations are not known then the
+value “None” indicates they are known to be present, but it is not known when
+they are present. Using the EnergyModification Logigram subclass as an example
+once again, the process for executing it, using the energy_assessment object
+that was made earlier, would be as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">impacts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;input_energy&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+           <span class="s2">&quot;output_energy&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+           <span class="s2">&quot;seabed_observation&quot;</span><span class="p">:</span> <span class="s2">&quot;Loose sand&quot;</span><span class="p">}</span>
+
+<span class="n">protected_observations</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;clown fish&quot;</span><span class="p">]</span>
+
+<span class="n">subclass_observations</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;soft substrate ecosystem&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="s2">&quot;particular habitats&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Jan&quot;</span><span class="p">,</span> <span class="s2">&quot;Feb&quot;</span><span class="p">,</span> <span class="s2">&quot;Mar&quot;</span><span class="p">,</span> <span class="s2">&quot;Apr&quot;</span><span class="p">],</span>
+                         <span class="s2">&quot;benthos&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Jan&quot;</span><span class="p">,</span> <span class="s2">&quot;Feb&quot;</span><span class="p">,</span> <span class="s2">&quot;Mar&quot;</span><span class="p">,</span> <span class="s2">&quot;Apr&quot;</span><span class="p">]</span> <span class="p">}</span>
+
+<span class="n">energy_assessment</span> <span class="o">=</span> <span class="n">energy_modification</span><span class="p">(</span><span class="n">impacts</span><span class="p">,</span> <span class="n">protected_observations</span><span class="p">,</span> <span class="n">subclass_observations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output of the call to the energy_modication object is an object of the
+Assessment class. This class standardises the outputs of the assessments so
+they can be combined easily. In general, they contain the following attributes:</p>
+<ul class="simple">
+<li><p><strong>impact_type</strong>: the class of impact which contains this function</p></li>
+<li><p><strong>score</strong>: the combined score for the function (+ve or –ve depending on the
+type)</p></li>
+<li><p><strong>confidence_level</strong>: the level of confidence depending on the known data</p></li>
+<li><p><strong>impact_scores</strong>: a dictionary detailing the impact score calculation</p></li>
+<li><p><strong>protected_scores</strong>: a dictionary detailing the scores for protected species</p></li>
+<li><p><strong>basic_receptor_scores</strong>: a table detailing the scores relating to
+non-temporal subspecies observations</p></li>
+<li><p><strong>temporal_receptor_scores</strong>: a table detailing the scores relating to
+temporal subspecies observations</p></li>
+</ul>
+</section>
+<section id="using-the-eia-class-to-combine-impacts">
+<h4><span class="section-number">8.3.8.4. </span>Using the EIA Class to Combine Impacts<a class="headerlink" href="#using-the-eia-class-to-combine-impacts" title="Link to this heading"></a></h4>
+<p>The EIA class allows many Logigram subclasses to be executed at once, in
+response to the data available. It can also combine those assessments to
+produce aggregated scores for impact types and an overall score for all of the
+impacts.</p>
+<p>An EIA class can be initialised with a list of Logigram subclass objects which
+have been initialised as described above. This EIA class is then ready to use
+in a very similar manner to the individual Logigram subclasses, except that the
+impacts dictionary is expanded to include all of the variables that relate to
+impact scores. An example of creating and executing an EIA class object is as
+follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">environmental_assessment</span> <span class="o">=</span> <span class="n">EIA</span><span class="p">([</span><span class="n">energy_assessment</span><span class="p">,</span>
+                                <span class="n">seaborn_impact_risk</span><span class="p">,</span> <span class="o">...</span> <span class="p">])</span>
+
+<span class="n">all_assessments</span> <span class="o">=</span> <span class="n">environmental_assessment</span><span class="p">(</span><span class="n">impacts</span><span class="p">,</span>
+                                           <span class="n">protected_observations</span><span class="p">,</span>
+                                           <span class="n">subclass_observations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output “all_assessments” is a dictionary where the keys are the name of the
+impact (retrieved with the “get_impact_name” method) and the values are the
+Assessment objects related to that particular impact. The EIA class has three
+further functions for amalgamating the assessment scores. These are:</p>
+<ul class="simple">
+<li><p>type_scores: generates scores and confidence levels per impact type</p></li>
+<li><p>local_score: generates a total score and confidence level for a single module</p></li>
+<li><p>global_score: generates a global total score for all the modules</p></li>
+</ul>
+<p>The first two functions take the dictionary output of the EIA call
+(all_assessments), but the last function takes a list of all the local scores
+which are required to be combined into the overall global assessment.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="7. DTOcean Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="datastructures.html" class="btn btn-neutral float-right" title="9. Data Structures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v1.0.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.3.4/index.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2026.3.3/index.html">v2026.3.3</a></dd>
+      <dd><a href="../../root-v2026.3.2/index.html">v2026.3.2</a></dd>
+      <dd><a href="../../root-v2026.3.1/index.html">v2026.3.1</a></dd>
+      <dd><a href="../../root-v2.0.0/index.html">v2.0.0</a></dd>
+      <dd><a href="themes.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/index.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

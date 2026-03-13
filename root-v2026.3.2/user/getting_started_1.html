@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. Getting Started 1: Example Project &mdash; DTOcean 2026.3.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c93c0a8e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. Getting Started 2: Example Database" href="getting_started_2.html" />
+    <link rel="prev" title="2. Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">2. Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Getting Started 1: Example Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#open-the-project">3.1. Open the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-wave-device-model-data">3.2. Add Wave Device Model Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-an-execution-strategy">3.3. Add an Execution Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execute-the-simulation">3.4. Execute the Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspect-the-results">3.5. Inspect the Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#change-the-assessment-scope">3.6. Change the Assessment Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#view-results-evolution">3.7. View Results Evolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clone-and-re-execute">3.8. Clone and Re-Execute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compare-results">3.9. Compare Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#finishing-up">3.10. Finishing Up</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_2.html">4. Getting Started 2: Example Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_preparation.html">6. Data Preparation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>Getting Started 1: Example Project</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/getting_started_1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started-1-example-project">
+<span id="getting-started-1"></span><h1><span class="section-number">3. </span>Getting Started 1: Example Project<a class="headerlink" href="#getting-started-1-example-project" title="Link to this heading"></a></h1>
+<p>This section provides a brief demonstration of executing a fully prepared
+DTOcean simulation. The zip file containing the example files used for this
+exercise can be  downloaded from the <a class="reference external" href="https://github.com/DTOcean/dtocean-examples/releases">dtocean-examples</a> GitHub repository.
+Unzip the archive to your preferred location.</p>
+<section id="open-the-project">
+<h2><span class="section-number">3.1. </span>Open the Project<a class="headerlink" href="#open-the-project" title="Link to this heading"></a></h2>
+<p>The first step is to open the “RM3_10_example.dtox” file. Start DTOcean and
+use the “Open” button from the main toolbar to open the file, as shown in
+<a class="reference internal" href="#fig-open"><span class="std std-numref">Fig. 3.1</span></a>.</p>
+<figure class="align-default" id="id2">
+<span id="fig-open"></span><img alt="../_images/open_action.png" src="../_images/open_action.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.1 </span><span class="caption-text">Left-click the “Open” button</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Locate and select the file using the file dialogue and click the “Open” button.
+The “pipeline” dock should now populate with variables, all of which except one
+will have green (satisfied) or blue (optional) indicators as seen in
+<a class="reference internal" href="#fig-example-pipeline"><span class="std std-numref">Fig. 3.2</span></a>.</p>
+<figure class="align-default" id="id3">
+<span id="fig-example-pipeline"></span><img alt="../_images/example_pipeline.png" src="../_images/example_pipeline.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.2 </span><span class="caption-text">The “Pipeline” dock showing the status of variables</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="add-wave-device-model-data">
+<h2><span class="section-number">3.2. </span>Add Wave Device Model Data<a class="headerlink" href="#add-wave-device-model-data" title="Link to this heading"></a></h2>
+<p>The only variable not satisfied in the example is the “Wave Data Directory”.
+This variable provides the path to the wave device model data generated by the
+“WEC Simulator” pre-processing tool. The output folder for the RM3 device is
+included alongside the example “.dtox” file, so we simply need to set the path
+to its location.</p>
+<p>Firstly, select the “Wave Data Directory” variable in the
+“Modules-&gt;Hydrodynamics” branch of the “Configuration” section of the pipeline,
+as shown in <a class="reference internal" href="#fig-wave-data-directory"><span class="std std-numref">Fig. 3.3</span></a>. The main window will now contain
+a text field for entering the path, as seen in <a class="reference internal" href="#fig-select-directory"><span class="std std-numref">Fig. 3.4</span></a>.
+If the text field is not visible then ensure that the “data context” is
+selected in the main toolbar, as in <a class="reference internal" href="#fig-data-context"><span class="std std-numref">Fig. 3.5</span></a>.</p>
+<figure class="align-default" id="id4">
+<span id="fig-wave-data-directory"></span><img alt="../_images/wave_data_directory.png" src="../_images/wave_data_directory.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.3 </span><span class="caption-text">Left-click the “Wave Data Directory” variable</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id5">
+<span id="fig-select-directory"></span><img alt="../_images/select_directory.png" src="../_images/select_directory.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.4 </span><span class="caption-text">Text field for entering the folder path</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id6">
+<span id="fig-data-context"></span><img alt="../_images/data_context.png" src="../_images/data_context.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.5 </span><span class="caption-text">The “data context” is used for entering input data and viewing results</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Click the “…” button, seen in <a class="reference internal" href="#fig-select-directory"><span class="std std-numref">Fig. 3.4</span></a>, to open a file
+dialogue and select the “<strong>RM3 Model Data</strong>” folder contained in the example
+archive. Finally, you must click the “OK” button at the bottom of the window,
+shown in <a class="reference internal" href="#fig-ok-button"><span class="std std-numref">Fig. 3.6</span></a>, to add the chosen path to the variable. The
+variable’s indicator will now change to a green circle.</p>
+<figure class="align-default" id="id7">
+<span id="fig-ok-button"></span><img alt="../_images/ok_button.png" src="../_images/ok_button.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.6 </span><span class="caption-text">The “OK” button must be clicked to add data to a variable</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="add-an-execution-strategy">
+<h2><span class="section-number">3.3. </span>Add an Execution Strategy<a class="headerlink" href="#add-an-execution-strategy" title="Link to this heading"></a></h2>
+<p>DTOcean divides the design of an OEC array into distinct stages which are
+computed by “modules”. Modules can be run individually or using an “execution
+strategy” which allows more advanced usage, such as conducting sensitivity
+studies. The most basic execution strategy runs all of the modules in a
+simulation in a single action and we will now select this strategy. To begin,
+click the “Select Strategy” button in the main toolbar, as shown in
+<a class="reference internal" href="#fig-select-strategy-button"><span class="std std-numref">Fig. 3.7</span></a>.</p>
+<figure class="align-default" id="id8">
+<span id="fig-select-strategy-button"></span><img alt="../_images/select_strategy_button.png" src="../_images/select_strategy_button.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.7 </span><span class="caption-text">Left-click the “Select Strategy” button</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The “Strategy Manager” dialogue will now open, which is used to select and
+configure execution strategies. As shown in <a class="reference internal" href="#fig-basic-strategy"><span class="std std-numref">Fig. 3.8</span></a>, select
+“Basic” from the “Available strategies” list and then click “Apply” as shown in
+<a class="reference internal" href="#fig-apply-button"><span class="std std-numref">Fig. 3.9</span></a>.</p>
+<figure class="align-default" id="id9">
+<span id="fig-basic-strategy"></span><img alt="../_images/basic_strategy.png" src="../_images/basic_strategy.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.8 </span><span class="caption-text">Select the “Basic” strategy from the list of available strategies</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id10">
+<span id="fig-apply-button"></span><img alt="../_images/apply_button.png" src="../_images/apply_button.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.9 </span><span class="caption-text">Left-click the “Apply” button</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The current execution strategy should now be displayed at the top of the
+strategy manager, as seen in <a class="reference internal" href="#fig-selected-strategy"><span class="std std-numref">Fig. 3.10</span></a>. The Basic
+strategy requires no configuration, so click the “Close” button to leave the
+dialogue.</p>
+<figure class="align-default" id="id11">
+<span id="fig-selected-strategy"></span><img alt="../_images/selected_strategy.png" src="../_images/selected_strategy.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.10 </span><span class="caption-text">The current execution strategy is displayed at the top of the dialogue</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="execute-the-simulation">
+<span id="exectute-simulation"></span><h2><span class="section-number">3.4. </span>Execute the Simulation<a class="headerlink" href="#execute-the-simulation" title="Link to this heading"></a></h2>
+<p>The simulation is now ready to be executed. As an execution strategy has been
+applied we need to click the “Run Strategy” button from the main toolbar, as
+seen in <a class="reference internal" href="#fig-run-strategy-button"><span class="std std-numref">Fig. 3.11</span></a>.</p>
+<figure class="align-default" id="id12">
+<span id="fig-run-strategy-button"></span><img alt="../_images/run_strategy_button.png" src="../_images/run_strategy_button.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.11 </span><span class="caption-text">Left-click the “Run Strategy” button</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A dialogue now opens which informs us if any required variables have not yet
+been set. At this stage, all required variables should be satisfied, so the
+dialogue will return “PASSED”, as seen in
+<a class="reference internal" href="#fig-data-requirements-passed"><span class="std std-numref">Fig. 3.12</span></a>.</p>
+<figure class="align-default" id="id13">
+<span id="fig-data-requirements-passed"></span><img alt="../_images/data_requirements_passed.png" src="../_images/data_requirements_passed.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.12 </span><span class="caption-text">All required variables have been satisfied</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Clicking “OK” in the dialogue will start the execution of the simulation. If you
+want to go back, for any reason, click “Cancel”. Once the simulation has
+started the user interface will not be accessible until the strategy has
+completed or failed. An indicator shows that the simulation is still computing,
+as shown in <a class="reference internal" href="#fig-progress-bar"><span class="std std-numref">Fig. 3.13</span></a>. The “System” dock, at the bottom the
+user-interface, will show any logging information sent from the modules. The
+simulation will require about 30 minutes to complete.</p>
+<figure class="align-default" id="id14">
+<span id="fig-progress-bar"></span><img alt="../_images/progress_bar.png" src="../_images/progress_bar.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.13 </span><span class="caption-text">The progress bar is shown while the strategy is being executed</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="inspect-the-results">
+<h2><span class="section-number">3.5. </span>Inspect the Results<a class="headerlink" href="#inspect-the-results" title="Link to this heading"></a></h2>
+<p>Once the simulation has been executed (and no errors have been encountered) the
+pipeline dock will close the configuration branches and populate the results
+branches. To examine the LCOE for the array, click the “Most Likely Levelised
+Cost of Energy” variable in the “Assessment-&gt;Economics” branch of the “Results”
+section of the pipeline, as shown in <a class="reference internal" href="#fig-most-likely-lcoe"><span class="std std-numref">Fig. 3.14</span></a> (you will
+need to scroll down to find it).</p>
+<figure class="align-default" id="id15">
+<span id="fig-most-likely-lcoe"></span><img alt="../_images/most_likely_lcoe.png" src="../_images/most_likely_lcoe.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.14 </span><span class="caption-text">Left-click the “Most Likely Levelised Cost of Energy” variable</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Assuming that the data context is selected, the value will appear in the main
+window. It should be around 1.13 Euro\kWh, although it can vary slightly due
+to the statistical method used for its calculation.</p>
+<p>DTOcean provides a number of default (based on data type) and customised plots
+for visualising inputs and results. As an example, let’s look at the cable layout
+designed by the electrical sub-sytems module. First, find the “Cable Route
+Data” variable in the “Modules-&gt;Electrical Sub-Sytems” branch of the results
+section of the pipeline, as shown in <a class="reference internal" href="#fig-cable-route-data"><span class="std std-numref">Fig. 3.15</span></a>.</p>
+<figure class="align-default" id="id16">
+<span id="fig-cable-route-data"></span><img alt="../_images/cable_route_data.png" src="../_images/cable_route_data.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.15 </span><span class="caption-text">Left-click the “Cable Route Data” variable</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The main section of the interface will now show the table of raw data which
+describes the cable routes. To view the plot, the interface must be switched to
+the “plots context” by clicking the button in the main toolbar, as shown in
+<a class="reference internal" href="#fig-plots-context"><span class="std std-numref">Fig. 3.16</span></a>.</p>
+<figure class="align-default" id="id17">
+<span id="fig-plots-context"></span><img alt="../_images/plots_context.png" src="../_images/plots_context.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.16 </span><span class="caption-text">The “plots context” is used for viewing plots</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The main window should now show the custom plot of the electrical cable layout,
+as seen in <a class="reference internal" href="#fig-cable-route-plot"><span class="std std-numref">Fig. 3.17</span></a>, which also shows other array
+features such as the devices and lease area. You may need to maximise the
+DTOcean window, or close the System dock to see the plot clearly.</p>
+<figure class="align-default" id="id18">
+<span id="fig-cable-route-plot"></span><img alt="../_images/cable_route_plot.png" src="../_images/cable_route_plot.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.17 </span><span class="caption-text">Plot of the electrical cable routes and related array features</span><a class="headerlink" href="#id18" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="change-the-assessment-scope">
+<span id="assessment-scope"></span><h2><span class="section-number">3.6. </span>Change the Assessment Scope<a class="headerlink" href="#change-the-assessment-scope" title="Link to this heading"></a></h2>
+<p>DTOcean applies “assessments” to the results of each design module, which
+calculates metrics such as the levelised cost of energy (LCOE). The assessments
+are calculated over two scopes, “global” and “module”. The global scope carries
+out the assessment for all results produced so far in the simulation, whilst
+the module scope only uses the results generated by the last executed module
+<a class="footnote-reference brackets" href="#f1" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. The difference can be illustrated by observing the “CAPEX (Excluding
+Externalities)” variable. This is found in the “Assessment-&gt;Economics” branch
+of the “Results” section of the pipeline, as shown in
+<a class="reference internal" href="#fig-capex-excluding-ext"><span class="std std-numref">Fig. 3.18</span></a>.</p>
+<figure class="align-default" id="id19">
+<span id="fig-capex-excluding-ext"></span><img alt="../_images/capex_excluding_ext.png" src="../_images/capex_excluding_ext.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.18 </span><span class="caption-text">Left-click the “CAPEX (Excluding Externalities)” variable</span><a class="headerlink" href="#id19" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Switching back to the data context, a value of about 30 million Euro should be
+visible in the main window. Now use the radio button at the top of the
+pipeline, shown in <a class="reference internal" href="#fig-module-scope"><span class="std std-numref">Fig. 3.19</span></a>, to switch to the module
+assessment scope. Because the last executed module was Operations and
+Maintenance, and the contribution to the CAPEX from maintenance is zero, the
+CAPEX (Excluding Externalities) variable will now also be zero.</p>
+<figure class="align-default" id="id20">
+<span id="fig-module-scope"></span><img alt="../_images/module_scope.png" src="../_images/module_scope.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.19 </span><span class="caption-text">Use the radio button to switch to the “Module” assessment scope</span><a class="headerlink" href="#id20" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="view-results-evolution">
+<h2><span class="section-number">3.7. </span>View Results Evolution<a class="headerlink" href="#view-results-evolution" title="Link to this heading"></a></h2>
+<p>Visualising how results evolved over the course of a simulation is another
+useful feature of DTOcean. We can “inspect” the state of all variables
+following the execution of any module. First, switch back to the global scope,
+as shown in <a class="reference internal" href="#fig-global-scope"><span class="std std-numref">Fig. 3.20</span></a>. Now, right click on one of the
+“Modules-&gt;Mooring and Foundations” branches, in the Configuration or Results
+section, to bring up the context menu and click the “Inspect” command, as shown
+in <a class="reference internal" href="#fig-pipeline-context-inspect"><span class="std std-numref">Fig. 3.21</span></a>. The Inspect command operates the same
+way for a branch in the Configuration or Results section of the pipeline.</p>
+<figure class="align-default" id="id21">
+<span id="fig-global-scope"></span><img alt="../_images/global_scope.png" src="../_images/global_scope.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.20 </span><span class="caption-text">Use the radio button to switch to the “Global” assessment scope</span><a class="headerlink" href="#id21" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id22">
+<span id="fig-pipeline-context-inspect"></span><img alt="../_images/pipeline_context_inspect.png" src="../_images/pipeline_context_inspect.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.21 </span><span class="caption-text">Right-click the “Mooring and Foundations” branch and choose “Inspect” from
+the context menu</span><a class="headerlink" href="#id22" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The variables are now displaying their state following execution of the Mooring
+and Foundations module. Selecting the “CAPEX (Excluding Externalities)”
+variable again, the value shown should be about 28 million Euro. As expected,
+this is less than the final CAPEX, as the value does not include the cost of
+installation.</p>
+<p>Before moving onto the next section, select “Inspect” on the “Operations and
+Maintenance” module, to show the results in their final state once more.</p>
+</section>
+<section id="clone-and-re-execute">
+<h2><span class="section-number">3.8. </span>Clone and Re-Execute<a class="headerlink" href="#clone-and-re-execute" title="Link to this heading"></a></h2>
+<p>DTOcean contains advanced memory management features that make it easy to
+clone, alter, re-execute and compare simulations. Execution strategies may
+also create clones of simulations. To demonstrate this functionality, we
+will clone the default simulation, modify the preferred foundation type
+of the devices, and then re-execute.</p>
+<p>To begin, switch to the “Simulations” dock, by clicking the tab in the top
+left corner of the interface, as shown in <a class="reference internal" href="#fig-simulations-tab"><span class="std std-numref">Fig. 3.22</span></a>. The
+simulations dock should now be shown, containing the “Default” simulation.
+Create a clone of this simulation by right-clicking and selecting “Clone” from
+the menu, as shown in <a class="reference internal" href="#fig-clone-simulation"><span class="std std-numref">Fig. 3.23</span></a>.</p>
+<figure class="align-default" id="id23">
+<span id="fig-simulations-tab"></span><img alt="../_images/simulations_tab.png" src="../_images/simulations_tab.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.22 </span><span class="caption-text">Left-click the “Simulations” tab</span><a class="headerlink" href="#id23" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id24">
+<span id="fig-clone-simulation"></span><img alt="../_images/clone_simulation.png" src="../_images/clone_simulation.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.23 </span><span class="caption-text">Right-click the “Default” simulation and select “Clone”</span><a class="headerlink" href="#id24" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A second simulation will appear in the list of simulations. You can rename
+simulations at any time by double-clicking on the simulation and entering the
+new name. Note, simulations can not currently be deleted or re-ordered. Return
+to the pipeline dock (by left-clicking the “Pipeline” tab). We are going to
+move the state of our new simulation back to prior to execution of the mooring
+and foundation module. To do this, right-click on the “Modules-&gt;Mooring and
+Foundations” branch in the “Configuration” section of the pipeline and select
+“Reset”, as shown in <a class="reference internal" href="#fig-pipeline-context-reset"><span class="std std-numref">Fig. 3.24</span></a>. Always take care
+when using the “Reset” command as all results from the chosen module onwards
+will be deleted.</p>
+<figure class="align-default" id="id25">
+<span id="fig-pipeline-context-reset"></span><img alt="../_images/pipeline_context_reset.png" src="../_images/pipeline_context_reset.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.24 </span><span class="caption-text">Right-click the “Mooring and Foundations” branch and choose “Reset” from
+the context menu</span><a class="headerlink" href="#id25" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Expand the Mooring and Foundations branch and find the “Preferred Foundations
+Type” variable. Ensuring that the data context is active, use the drop-down box
+in the main window to select “Gravity” and then click the “OK” button. The
+current value shown should now update to “Gravity”, as shown in
+<a class="reference internal" href="#fig-preferred-foundation-type"><span class="std std-numref">Fig. 3.25</span></a>.</p>
+<figure class="align-default" id="id26">
+<span id="fig-preferred-foundation-type"></span><img alt="../_images/preferred_foundation_type.png" src="../_images/preferred_foundation_type.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.25 </span><span class="caption-text">Set the “Preferred Foundations Type” variable to “Gravity”</span><a class="headerlink" href="#id26" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The cloned simulation is now ready to be executed, so click the “Run Strategy”
+button again (as shown in <a class="reference internal" href="#fig-run-strategy-button"><span class="std std-numref">Fig. 3.11</span></a>) and the simulation
+will create new results from the mooring and foundations module onwards.</p>
+</section>
+<section id="compare-results">
+<h2><span class="section-number">3.9. </span>Compare Results<a class="headerlink" href="#compare-results" title="Link to this heading"></a></h2>
+<p>By using the simulation and pipeline docks in unison, it’s easy to compare
+results from different simulations. Once the cloned simulation is completed,
+select the Simulations dock and then drag it to a position above the Pipeline
+dock, as shown in <a class="reference internal" href="#fig-redock-simulations"><span class="std std-numref">Fig. 3.26</span></a>, so that both docks can be
+seen together.</p>
+<figure class="align-default" id="id27">
+<span id="fig-redock-simulations"></span><img alt="../_images/redock_simulations.png" src="../_images/redock_simulations.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.26 </span><span class="caption-text">Drag the Simulation dock to a position above the Pipeline dock</span><a class="headerlink" href="#id27" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Now, in the pipeline, find the “CAPEX (Excluding Externalities)” output
+variable again and select it, ensuring that the data context is active (see
+<a class="reference internal" href="#fig-data-context"><span class="std std-numref">Fig. 3.5</span></a>. Using the simulation dock, click on each simulation
+in turn and watch the value in the main window update. The same functionality
+can be used for all other variables and plots and for any number of
+simulations.</p>
+<p>Further insight can be gained by using the “comparisons context”, which can
+be activated by clicking the “Comparisons” button in the toolbar, as shown in
+<a class="reference internal" href="#fig-comparisons-context"><span class="std std-numref">Fig. 3.27</span></a>.</p>
+<figure class="align-default" id="id28">
+<span id="fig-comparisons-context"></span><img alt="../_images/comparisons_context.png" src="../_images/comparisons_context.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.27 </span><span class="caption-text">The “comparisons context” is used for comparing simulations</span><a class="headerlink" href="#id28" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>In the “Module Comparison” window, ensure that the “Mode” is set the “Plot” and
+then start typing “CAPEX (Excluding Externalities)” into the “Variable” field.
+Select the variable from the list that will appear below the search box. The
+correct setup is shown in <a class="reference internal" href="#fig-module-comparison"><span class="std std-numref">Fig. 3.28</span></a>. When ready click the
+“OK” button and a plot will appear showing the recorded CAPEX following each
+module for the two different simulations.</p>
+<figure class="align-default" id="id29">
+<span id="fig-module-comparison"></span><img alt="../_images/module_comparison.png" src="../_images/module_comparison.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.28 </span><span class="caption-text">The “Module Comparison” window, ready to plot for the “CAPEX (Excluding
+Externalities)” variable</span><a class="headerlink" href="#id29" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The differences between the simulations are even clearer when comparing using
+the Module assessment scope (the <a class="reference internal" href="#assessment-scope"><span class="std std-ref">Change the Assessment Scope</span></a> section describes how
+to change the scope). Drawing the comparison plot again, with the module scope
+selected, produces a plot similar to <a class="reference internal" href="#fig-module-comparison-plot"><span class="std std-numref">Fig. 3.29</span></a>.
+Here, it can be seen that not only does the CAPEX increase following the
+Mooring and Foundations module, but also the cost of installation is greater.</p>
+<figure class="align-default" id="id30">
+<span id="fig-module-comparison-plot"></span><img alt="../_images/module_comparison_plot.png" src="../_images/module_comparison_plot.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.29 </span><span class="caption-text">Module comparison plot using the “Module” assessment scope</span><a class="headerlink" href="#id30" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="finishing-up">
+<h2><span class="section-number">3.10. </span>Finishing Up<a class="headerlink" href="#finishing-up" title="Link to this heading"></a></h2>
+<p>DTOcean projects can be easily saved to file. To avoid overwriting the
+tutorial file, chose “Save As…” from the “File” menu, as shown in
+<a class="reference internal" href="#fig-save-as"><span class="std std-numref">Fig. 3.30</span></a>. Use the file dialogue to save the project to a path
+of your choosing.</p>
+<figure class="align-default" id="id31">
+<span id="fig-save-as"></span><img alt="../_images/save_as.png" src="../_images/save_as.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3.30 </span><span class="caption-text">Left click “Save As…” to save the project to a new file</span><a class="headerlink" href="#id31" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p class="rubric">Footnotes</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>The module scope will use all variables which are not an output of
+another module, including, for instance, imported data.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="2. Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="getting_started_2.html" class="btn btn-neutral float-right" title="4. Getting Started 2: Example Database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v2026.3.2
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.3.4/user/getting_started_1.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2026.3.3/user/getting_started_1.html">v2026.3.3</a></dd>
+      <dd><a href="getting_started_1.html">v2026.3.2</a></dd>
+      <dd><a href="../../root-v2026.3.1/user/getting_started_1.html">v2026.3.1</a></dd>
+      <dd><a href="../../root-v2.0.0/user/getting_started_1.html">v2.0.0</a></dd>
+      <dd><a href="../../root-v1.0.0/index.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/user/getting_started_1.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Introduction &mdash; DTOcean 2026.3.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a6cd1e5a"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. Installation" href="install.html" />
+    <link rel="prev" title="DTOcean" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#an-overview-of-dtocean">1.1. An Overview of DTOcean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-terminology">1.2. Key Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dtocean-license">1.3. DTOcean License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">2. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_1.html">3. Getting Started 1: Example Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_2.html">4. Getting Started 2: Example Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_preparation.html">6. Data Preparation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1. </span>Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<span id="id1"></span><h1><span class="section-number">1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
+<section id="an-overview-of-dtocean">
+<h2><span class="section-number">1.1. </span>An Overview of DTOcean<a class="headerlink" href="#an-overview-of-dtocean" title="Link to this heading"></a></h2>
+<p>DTOcean automates the design of an array of ocean energy converters (OECs) for
+a relevant geographical location and technology type. The design process is
+modularised into the following stages:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Hydrodynamics:</dt><dd><p>Design the layout of converters in a chosen region and calculate their
+power output.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Electrical Sub-Systems:</dt><dd><p>Design an electrical layout for the given converter locations and
+calculate the losses from exporting the energy to shore.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Moorings and Foundations:</dt><dd><p>Design the foundations and moorings required to secure the converters
+at their given locations.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Installation:</dt><dd><p>Design the installation plan for the converters, electrical
+sub-systems, moorings and foundations designs.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Operations and Maintenance:</dt><dd><p>Calculate the required maintenance actions and power losses resulting
+from the operation of the converters over the lifetime of the array.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The software can also evaluate each stage of the design, and the design as a
+whole, using three thematic assessments. These are:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Economics:</dt><dd><p>Produce economic indicators for the design, in particular the Levelised
+Cost of Energy (LCOE).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Reliability:</dt><dd><p>Assess the reliability of sub-systems resulting from the components
+chosen in the design stages.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Environmental:</dt><dd><p>Assess the environmental impact of each stage of the design.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="key-terminology">
+<span id="id2"></span><h2><span class="section-number">1.2. </span>Key Terminology<a class="headerlink" href="#key-terminology" title="Link to this heading"></a></h2>
+<p>This section summarises the key terminology used when describing DTOcean.</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Project:</dt><dd><p>A project is the overarching container for a design session
+using the DTOcean software. Projects contain one or many Simulations and
+can be saved and reloaded.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Simulation:</dt><dd><p>A simulation refers to a set of modules, assessments and variable
+values. Multiple simulations can be stored in a single project, using
+different variable values, and compared.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Module:</dt><dd><p>Design modules are the main functional engines of the DTOcean software,
+manipulating existing and creating new data for a particular purpose
+(such as solving the layout and power output of the array of OECs).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Assessment:</dt><dd><p>Assessments are used to provide key metrics to compare the results of
+simulations, such as the LCOE.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variable:</dt><dd><p>Variables refers to the data that is required as inputs to the modules
+and assessments, and the results obtained from them.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Strategy:</dt><dd><p>Strategies are used to automate the execution of modules. Strategies
+have various complexity from simply running the modules in order, to
+searching for optimum input variable values.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Pipeline:</dt><dd><p>The pipeline provides a structure for visualising and preparing
+the variables required for a simulation, visualising the order of
+execution of modules and examining results.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Level:</dt><dd><p>A “level” refers to the state of the data after execution of a
+particular module. The software can recall any level in any
+simulation and compare between them.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Database:</dt><dd><p>The database is a persistent store of data that can be used
+to support the needs of the design process. It stores OEC designs,
+site characteristics and long-standing reference data for components,
+vessels, equipment, etc.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Tool:</dt><dd><p>Tools are functions additional to the design process that can be used
+to inspect, manipulate, or create new data.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="dtocean-license">
+<h2><span class="section-number">1.3. </span>DTOcean License<a class="headerlink" href="#dtocean-license" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>Copyright © 2016-2026 The DTOcean Developers</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="DTOcean" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="install.html" class="btn btn-neutral float-right" title="2. Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v2026.3.4
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="intro.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2026.3.3/user/intro.html">v2026.3.3</a></dd>
+      <dd><a href="../../root-v2026.3.2/user/intro.html">v2026.3.2</a></dd>
+      <dd><a href="../../root-v2026.3.1/user/intro.html">v2026.3.1</a></dd>
+      <dd><a href="../../root-v2.0.0/user/intro.html">v2.0.0</a></dd>
+      <dd><a href="../../root-v1.0.0/index.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/user/intro.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

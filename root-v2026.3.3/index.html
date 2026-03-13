@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DTOcean &mdash; DTOcean 2026.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6d448e97"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Introduction" href="user/intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user/intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/install.html">2. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/getting_started_1.html">3. Getting Started 1: Example Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/getting_started_2.html">4. Getting Started 2: Example Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/data_preparation.html">6. Data Preparation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DTOcean</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dtocean">
+<span id="index"></span><h1>DTOcean<a class="headerlink" href="#dtocean" title="Link to this heading"></a></h1>
+<p><strong>Optimal Design Tools for Ocean Energy Arrays</strong></p>
+<p>Release v2026.3.3 (<a class="reference internal" href="user/install.html#install"><span class="std std-ref">Installation</span></a>)</p>
+<a class="reference external image-reference" href="https://pypi.org/project/dtocean/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/dtocean" />
+</a>
+<a class="reference external image-reference" href="https://pypi.org/project/dtocean/"><img alt="PyPI - License" src="https://img.shields.io/pypi/l/dtocean" />
+</a>
+<p><strong>DTOcean</strong> is the only open source fully parametric design tool for arrays
+of ocean energy converters.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The DTOcean suite is currently undergoing conversion from the original
+Python 2 code to Python 3 and not all features are available yet.
+Please see the footnotes below for features awaiting conversion.</p>
+</div>
+<hr class="docutils" />
+<p><strong>DTOcean</strong> automates the design of an array of ocean energy converters
+(OECs). Automated design helps catch errors early, reduce financial risk
+and encourage innovation in array design and the supply chain.</p>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<p><strong>DTOcean</strong> is accelerating tomorrow’s energy generation technology with
+advanced array design:</p>
+<ul class="simple">
+<li><p>Optimal ocean energy converter (OEC) positioning</p></li>
+<li><p>Cost-effective energy export <a class="footnote-reference brackets" href="#f2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Station keeping designed for device and site conditions <a class="footnote-reference brackets" href="#f2" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Installation planning with weather effects <a class="footnote-reference brackets" href="#f2" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Maintenance needs and OEC downtime <a class="footnote-reference brackets" href="#f2" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>A unique statistical approach to LCOE <a class="footnote-reference brackets" href="#f2" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Influence reliability at component level <a class="footnote-reference brackets" href="#f2" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Environmental impact assessment <a class="footnote-reference brackets" href="#f1" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#f2" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Graphical user interface</p></li>
+<li><p>Persistent database</p></li>
+</ul>
+</section>
+</section>
+<section id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user/intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/install.html">2. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/getting_started_1.html">3. Getting Started 1: Example Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/getting_started_2.html">4. Getting Started 2: Example Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/data_preparation.html">6. Data Preparation</a></li>
+</ul>
+</div>
+<p>Loved and maintained by <a class="reference external" href="mailto:mathew&#46;topper&#37;&#52;&#48;dataonlygreater&#46;com">Mathew Topper</a>
+&#64; <a class="reference external" href="http://www.dataonlygreater.com">Data Only Greater</a></p>
+<p class="rubric">Footnotes</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">1</a><span class="fn-bracket">]</span></span>
+<p>experimental feature</p>
+</aside>
+<aside class="footnote brackets" id="f2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id4">4</a>,<a role="doc-backlink" href="#id5">5</a>,<a role="doc-backlink" href="#id6">6</a>,<a role="doc-backlink" href="#id8">7</a>)</span>
+<p>not currently available, but planned</p>
+</aside>
+</aside>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="user/intro.html" class="btn btn-neutral float-right" title="1. Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v2026.3.3
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../root-v2026.3.4/index.html">v2026.3.4</a></dd>
+      <dd><a href="index.html">v2026.3.3</a></dd>
+      <dd><a href="../root-v2026.3.2/index.html">v2026.3.2</a></dd>
+      <dd><a href="../root-v2026.3.1/index.html">v2026.3.1</a></dd>
+      <dd><a href="../root-v2.0.0/index.html">v2.0.0</a></dd>
+      <dd><a href="../root-v1.0.0/index.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../main/index.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

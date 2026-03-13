@@ -1,0 +1,2465 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7. DTOcean Modules &mdash; DTOcean 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="8. DTOcean Themes" href="themes.html" />
+    <link rel="prev" title="6. Database Design" href="database.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User's Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/abstract.html">1. Abstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/softinstall.html">3. Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/overview.html">4. DTOcean Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/modules.html">6. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/themes.html">7. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/preprocessing.html">8. Preprocessing Steps: Data Requirements and Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/references.html">9. Links, Support and Extra Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Manual</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designreq.html">3. Requirements for Implementing the Design Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datamanagement.html">4. Data Management and Shared Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mainapp.html">5. Main Application and Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">6. Database Design</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">7. DTOcean Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hydrodynamics-module">7.1. Hydrodynamics Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">7.1.1. Requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#user-requirements">7.1.1.1. User Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#software-design-requirements">7.1.1.2. Software Design Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#architecture">7.1.2. Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modules-and-functions-description">7.1.2.1. Modules and functions description</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functional-specification">7.1.3. Functional Specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inputs">7.1.3.1. Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#execution">7.1.3.2. Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#outputs">7.1.3.3. Outputs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#electrical-sub-systems">7.2. Electrical Sub-Systems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">7.2.1. Requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">7.2.1.1. User Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">7.2.1.2. Software Design Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">7.2.2. Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">7.2.2.1. Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#input-data">7.2.2.2. Input data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">7.2.2.3. Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output-data">7.2.2.4. Output data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tables-of-database-fields">7.2.3. Tables of Database Fields</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#moorings-and-foundations">7.3. Moorings and Foundations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">7.3.1. Requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">7.3.1.1. User Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">7.3.1.2. Software Design Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">7.3.2. Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id10">7.3.2.1. Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dataflow-between-the-functions">7.3.2.2. Dataflow between the functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#loads-class">7.3.2.3. Loads class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moor-class">7.3.2.4. Moor class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#found-class">7.3.2.5. Found class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subst-class">7.3.2.6. Subst class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#umbilical-module">7.3.2.7. Umbilical module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">7.3.3. Functional Specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#summary-of-the-modelling-approach">7.3.3.1. Summary of the modelling approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#warnings">7.3.3.2. Warnings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">7.3.3.3. Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">7.3.3.4. Outputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#calculation-time">7.3.3.5. Calculation time</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">7.4. Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">7.4.1. Requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id15">7.4.1.1. User Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">7.4.1.2. Software Design Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">7.4.2. Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#logistic-functions">7.4.2.1. Logistic Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">7.4.3. Functional Specification</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#operations-and-maintenance">7.5. Operations and Maintenance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id19">7.5.1. Requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id20">7.5.1.1. User Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id21">7.5.1.2. Software Design Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">7.5.2. Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">7.5.3. Functional Specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id24">7.5.3.1. Inputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">7.5.4. Execution</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id26">7.5.4.1. Outputs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">8. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datastructures.html">9. Data Structures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">7. </span>DTOcean Modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/technical/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dtocean-modules">
+<span id="tech-modules"></span><h1><span class="section-number">7. </span>DTOcean Modules<a class="headerlink" href="#dtocean-modules" title="Link to this heading"></a></h1>
+<section id="hydrodynamics-module">
+<span id="tech-hydro"></span><h2><span class="section-number">7.1. </span>Hydrodynamics Module<a class="headerlink" href="#hydrodynamics-module" title="Link to this heading"></a></h2>
+<section id="requirements">
+<h3><span class="section-number">7.1.1. </span>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<section id="user-requirements">
+<h4><span class="section-number">7.1.1.1. </span>User Requirements<a class="headerlink" href="#user-requirements" title="Link to this heading"></a></h4>
+<p>The scope of the Hydrodynamics module is the identification of an array
+configuration that maximizes the AEP of the array, while holding the average
+q-factor of the array above a user specified threshold. The q-factor is an
+energy losses index, definable as the modification of the absorbed energy due
+to the hydrodynamic interaction between bodies. It is calculated as the AEP of
+the array over the AEP of the same array without considering the interaction.</p>
+<p>The package solves the hydrodynamic interaction between OEC devices in the array
+and, based on the solution of the hydrodynamic problem, the energy extracted by
+each device. The latter is in turn used to estimate the q-factor for the array.</p>
+<p>The AEP is used as the convergence criterion within the optimization loop. The
+optimization parameter space is defined by the array parameters, such as device
+inter-distance, rows and columns angles, etc. The parameter space is continuous
+and real-valued.</p>
+<p>The optimum search is constrained by the following variables: the no-go areas,
+the minimum distance between devices, the maximum number of devices and the
+q-factor.</p>
+</section>
+<section id="software-design-requirements">
+<h4><span class="section-number">7.1.1.2. </span>Software Design Requirements<a class="headerlink" href="#software-design-requirements" title="Link to this heading"></a></h4>
+<p>The core of the package is divided into two sub-packages, namely tidal and wave.
+This subdivision is driven by the different way of solving the hydrodynamic
+interaction.</p>
+<p>The tidal sub-package solves the hydrodynamic interaction between
+turbines using a parametrized look-up table to describe the wake shape and
+solving the wake interaction based on the semi-empirical models inherited from
+the wind sector. The wakes are placed in the array area based on the estimation
+of the streamlines evaluated using Lagrangian drifters at the turbines
+locations. The wake shape look-up table is populated from CFD runs.</p>
+<p>The wav esub-package solves the hydrodynamic interaction within the array using
+the so-called direct matrix method. The method uses the cylindrical coordinate
+description of the wave field generated by the presence of the moving device,
+and maps it to the global array coordinate system. The solution of the
+hydrodynamic problem in the cylindrical coordinate system is obtained by
+solving the Laplace equation in the fluid domain, using a boundary element
+method solvers.</p>
+<p>For a detailed description of the mathematical formulation of
+the hydrodynamics algorithms see (Silva, et al., 2015).</p>
+</section>
+</section>
+<section id="architecture">
+<h3><span class="section-number">7.1.2. </span>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h3>
+<p>At a high level the Hydrodynamics module is divided into two blocks: the main
+routine where the pre-processing is carried out and an optimization routine
+where the actual array optimization is performed. The top level view of the
+code is simplified in <a class="reference internal" href="#fig-hydrodynamics-tech"><span class="std std-numref">Fig. 7.38</span></a>.</p>
+<figure class="align-default" id="id27">
+<span id="fig-hydrodynamics-tech"></span><img alt="../_images/hydrodynamics.png" src="../_images/hydrodynamics.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.38 </span><span class="caption-text">Hydrodynamic model top level view.</span><a class="headerlink" href="#id27" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The main routine collects the inputs and evaluates the following quantities:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The Active Area is defined as the no-go areas subtracted from the lease
+area</p></li>
+<li><p>WEC hydrodynamic (only for wave energy converters) evaluates the
+hydrodynamic properties of the device in the local cylindrical coordinate
+system</p></li>
+<li><p>WEC fitting (only for wave energy converters) tunes the numerical model
+to the user provided power performance of the device. It corresponds to the
+green box “single body performance fit” in <a class="reference internal" href="#fig-hydrodynamics-tech"><span class="std std-numref">Fig. 7.38</span></a></p></li>
+</ul>
+</div></blockquote>
+<p>Additionally, the routine requires two objects; a Hydro and an Array class
+object:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The Hydro class object collects the metocean conditions that describe the
+features of the site, i.e. bathymetry, sea state description, etc.</p></li>
+<li><p>The Array class object is used to generate the grid layout given the array
+type and the parameters value, and to identify which devices are inside the
+active area. A check on the minimum distance constraint is performed too</p></li>
+</ul>
+</div></blockquote>
+<p>The optimization routine calls either the tidal or wave submodule, for the
+resolution of the array interaction problem, given the required inputs.</p>
+<section id="modules-and-functions-description">
+<h4><span class="section-number">7.1.2.1. </span>Modules and functions description<a class="headerlink" href="#modules-and-functions-description" title="Link to this heading"></a></h4>
+<p>The detailed description of the programmatic structure of the Hydrodynamic
+module is given hereafter; a graphical representation is given in the Unified
+Modelling Language (UML) diagram presented in <a class="reference internal" href="#fig-hydrodynamics-uml"><span class="std std-numref">Fig. 7.39</span></a>.</p>
+<figure class="align-default" id="id28">
+<span id="fig-hydrodynamics-uml"></span><img alt="../_images/hydrodynamics_uml.png" src="../_images/hydrodynamics_uml.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.39 </span><span class="caption-text">UML diagram of the Hydrodynamic model.</span><a class="headerlink" href="#id28" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>WP2input</strong>:</p>
+<p>The WP2input class is composed of two further classes, WP2_SiteData and
+WP2_MachineData.</p>
+<p>These classes contain the features of the development site and the actual
+machine, respectively. Their role is passive since they are used as structured
+data containers. The WP2_SiteData and the WP2_MachineData objects will be
+initialised independently and so a line could be drawn between those objects
+and WP2input (see <a class="reference internal" href="#fig-hydrodynamics-uml"><span class="std std-numref">Fig. 7.39</span></a>) illustrating the starting
+point for the WP2.</p>
+<p>On the contrary, a WP2input object will perform a series of tasks at the
+initialisation.</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Check if the inputs conformed to the input requirements. If step (a)
+returns 0, i.e. inputs are correct, then:</p></li>
+<li><p>Map the angles into the hydrodynamic model format. The wave metocean
+conditions are given with angles defined in the reference system: South –
+West, while for the sake of simplicity the</p></li>
+</ol>
+</div></blockquote>
+<p>Hydrodynamics module uses the convention East – North. The conversion is made at
+the input level in order to avoid any confusion later in the process</p>
+<blockquote>
+<div><ol class="loweralpha" start="3">
+<li><p>Identify the main angle, which is used for the array orientation. This will
+define the rotation matrix around the vertical axis. The main angle is
+extracted from the MainDirection, which is in turn given by the user in form
+of Easting-Northing components, or calculated from the sea state with the
+highest probability of occurrence. For the wave case the probability of
+occurrence is ranked applying the summation over the wave height and wave
+period axis</p></li>
+<li><p>Identify the polygons where the devices cannot be installed due to
+installation constraints dictated by the water depth. The method first checks
+for two trivial solutions, such as no feasible installation points and all
+feasible installation points. If none of the trivial solutions are present,
+the algorithm will:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Identify the feasible and unfeasible installation points in the given
+bathymetry</p></li>
+<li><p>Cluster the unfeasible installation points using a density based method</p></li>
+<li><p>Identify the bounding polygons for each cluster (no-go area)</p></li>
+<li><p>Test if the polygon has some feasible point inside, and if that is the
+case identify the bounding polygon of the feasible area inside the unfeasible
+area</p></li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>The generated WP2input object is then using to create a WP2 object at the
+instantiation using a composition scheme.</p>
+<p><strong>WP2</strong>:</p>
+<p>The WP2 class is the main controller class of the hydrodynamic model. It
+initializes the Hydro class as well as the Array class (aggregation), which are
+used all the way through the output generation. For the case of an array of
+WECs, the WEC class is also instantiated. The WEC class is used to assess the
+hydrodynamic features of a single WEC, which define the base for the solution
+of the array interaction problem. Within the optimisationLoop method, the WP2
+class conditionally instantiates a search optimum object that encapsulates the
+optimization algorithm or generates a solution for the given array layout. The
+type of array grid specified by the user leads the decision. This option gives
+the user the freedom to specify an array layout or let the software decides the
+best one.</p>
+<p>At the completion of the work the WP2 class returns a WP2output object.</p>
+<p><strong>Hydro_pkg</strong>:</p>
+<p>The Hydro_pkg class collects the information about the sea states of the site,
+their probability of occurrence as well as the bathymetry and the sea surface
+height at the given grid points.</p>
+<p>The class can be considered to have an entity stereotype since it is used as a
+structured data container.</p>
+<p><strong>Array_pkg</strong>:</p>
+<p>The Array_pkg class collects the information of the active area, the main
+orientation angle, and the minimum allowable distance between devices. The
+active area is built from a Boolean intersection between the Lease Area and the
+no-go areas.</p>
+<p>An object is used in the optimization call, to generate an array layout, to
+check on the feasibility of the given layout and to mute all devices that do
+not belong to the Active Area.</p>
+<p>The generation of the array layouts is based on the input grid structure type;
+possible alternatives are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Rectangular grid: perpendicular angle between rows and columns, and
+variable rows and columns distances</p></li>
+<li><p>Staggered grid: equal distance and angle between rows and columns; the
+angle can vary in the range 0-90 degrees</p></li>
+<li><p>Full grid: variable rows and columns distance and variable rows and column
+angles</p></li>
+</ul>
+</div></blockquote>
+<p>Prior to the evaluation of the array interaction the array layout is verified
+against the minimum distance parameter, in order to avoid violation of that
+constraint. For the above-mentioned grids the check is performed on a single
+cell of the grid, while for a user given array layout, the check is performed
+sequentially for every point.</p>
+<p>Lastly, each grid vertex is tagged with a Boolean value based on its position
+with respect to the Active Area. Due to the irregularity of the Active Area,
+the process is performed sequentially for each grid vertex.</p>
+<p><strong>WEC</strong>:</p>
+<p>The WEC class is only instantiated for the case of an array of WECs and is used
+to load and manage the numerical model of the isolated Wave Energy.</p>
+<p><strong>search_optimum</strong>:</p>
+<p>The main objective of the search_optimum class is to generate the “best” array
+layout given the specification of the deployment site and the single machine
+properties.</p>
+<p>“Best” is defined in agreement with the cost function built into the class,
+which is targeted to maximize the AEP of the array, given some constraints of
+the feasible solutions, such as the q-factor, the minimum distance between
+devices or the maximum number of devices.</p>
+<p>The search_optimum class uses (as a default option) a heuristic optimization
+approach, of the Evolutionary Strat- egy type, to identify the array layout
+that maximises the given cost function.</p>
+<p>The parameter space order depends on the type of grid layout specified;
+therefore a mapping rule between full and reduced order spaces is generated.
+Then, the reduced parameter space is scaled so that the range of values is the
+same regardless of the parameter.</p>
+<p>The search algorithm is based on the concept of natural genetic evolution, where
+the actual population holds the genes of the previous winner elements, and
+additional randomness is brought by introducing random seeds in the generation
+process. This is achieved by searching the optimum in the region defined by the
+mean value plus and minus three standard deviations of the current population.
+The mean and the standard deviation are weighted so that the best specimens
+have more weight than the rest.</p>
+<p>Each element of the population represents a different array layout, which
+hydrodynamic interaction needs to be solved. The search_optimum class
+instantiates either a CallTidal (in the tidal case) or a MultiBody (in the wave
+case) object. The objects use the information of the array layout stored in the
+Array object and the features of the single device to generate an array of
+devices and solve their interaction.</p>
+<p>For a more detailed description of the optimization algorithm the reader is
+referred to (Silva, et al., 2015).</p>
+<p><strong>CallTidal</strong>:</p>
+<p>The CallTidal class is an interface class used to query the wp2_tidal function,
+given the device position, the machine specification and the site
+specification. Superimposing the site velocity field with the single machine
+one solves the hydrodynamic interaction. The single machine velocity field is
+based on a parameterized wake database (distributed along with the Hydrodynamic
+module), and the wake is located in the global coordinate system based on the
+device position and the calculated streamline. The wp2_tidal method
+instantiates an Array, a Hydro, a WakeInteraction, an ArrayYeld and a
+HydroImpact object, which solve the interaction problem.</p>
+<p><strong>Array</strong>:</p>
+<p>The Array class contains the information about the spatial distribution and the
+hub velocity of the devices in the array and calculates the shape of the
+streamlines for each device based on the velocity field of the area. The class
+aggregates a number of streamline objects, one for each device, used to
+calculate the streamline shape from the device position.</p>
+<p><strong>Stramlines</strong>:</p>
+<p>The Streamlines class is used to calculate the streamline shape, giving the
+velocity field of the area and the initial position. The algorithm uses a
+Lagrangian drifter approach to evaluate the streamline shape.</p>
+<p><strong>Hydro</strong>:</p>
+<p>The Hydro class contains the features of the site, such as velocity field,
+bathymetry and geophysical information of the seabed.</p>
+<p>The Hydro class has an entity stereotype since it is used primarily as a
+structured container for the site data. WAKEINTERACTION:</p>
+<p>The WakeInteraction class encapsulates the main algorithm to assess the
+hydrodynamic interaction in the array. It uses the Wake and the WakeShape
+classes to store and to map the single machine shape into the global ve- locity
+field of the area. The resultant velocity field is obtained through an
+iterative process, which involves the superimposition of the wakes and the
+recalculation of the wake shapes for the new velocity field.</p>
+<p><strong>Wake</strong>:</p>
+<p>The Wake class stores the 2D map of the velocity field around the machine, for
+the given input conditions. The Wake queries a precompiled database with the
+following entry points: thrust coefficients, turbulence intensity, yaw angle
+and blockage ratio. The query is handled by FORTRAN code which is precompiled
+as a Python extension module.</p>
+<p><strong>WakeShape</strong>:</p>
+<p>The WakeShape class calculates the wake shape in the global coordinate system,
+given a Wake object, the machine features and the streamlines previously
+calculated.</p>
+<p><strong>ArrayYeld</strong>:</p>
+<p>The ArrayYeld class is instantiated after the solution of the array interaction
+and is used to calculate the power performance of each machine, given the
+machine features and the hub velocity. It also assesses the dissipated mass
+flow rate through the machine.</p>
+<p><strong>HydroImpact</strong>:</p>
+<p>The HydroImpact class is instantiated after the solution of the array
+interaction and the calculation of the array yield. It uses the dissipated mass
+flow rate through the machine to assess the modification of the velocity field
+induced by the array. This parameter is used to assess the environmental impact
+of the array.</p>
+<p><strong>Multibody</strong>:</p>
+<p>The Multibody class is the wave counterpart of the CallTidal object. It is used
+to build an array of WECs and to solve the hydrodynamic interaction within the
+array.</p>
+<p>The generation of the array of WECs is based on the array layout coordinates and
+on the single machine features, which are stored in the WEC object. The WEC
+object is a prerequisite of the Multibody and is generated by the WP2 object in
+the pre-processing phase. The Multibody class generates a numerical model of
+the array using the direct matrix method, and evaluates the energy production
+of the array based on the site features; in particular the definition of the
+sea states and their probability of occurrence are used in this step.</p>
+<p>During the energy assessment the Multibody class generates an instance of the
+Wave_spec class.</p>
+<p><strong>Wave_spec</strong>:</p>
+<p>The Wave_spec class is used to generate a parameterised wave energy distribution
+over the spectrum of frequency and directions. It supports all the commonly
+used types of frequency spectral models, such as the JONSWAP and
+Pierson-Moskowitz (PM) spectra.</p>
+<p><strong>WP2output</strong>:</p>
+<p>The WP2 class issues the WP2output object after the search of the “best” array
+configuration is completed. The class has an entity stereotype.</p>
+</section>
+</section>
+<section id="functional-specification">
+<h3><span class="section-number">7.1.3. </span>Functional Specification<a class="headerlink" href="#functional-specification" title="Link to this heading"></a></h3>
+<section id="inputs">
+<h4><span class="section-number">7.1.3.1. </span>Inputs<a class="headerlink" href="#inputs" title="Link to this heading"></a></h4>
+<p>In order to use the Hydrodynamics module the first step is the generation of
+WP2_SiteData and WP2_MachineData objects, which contains all the information
+needed by the module to run.</p>
+<p>The WP2_SiteData object has a series of ten inputs listed hereafter:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>LeaseArea (numpy.ndarray) [m]: the area where the machines can be installed</p></li>
+<li><p>NogoAreas (list) [m]: the area where the machines can NOT be installed
+within the “LeaseArea”</p></li>
+<li><p>MetoceanConditions (dict): sea state definitions: the format is strictly
+related to the machine type (wave or tidal)</p></li>
+<li><p>VelocityShear (numpy.ndarray) [-]: the power law exponent to be used in
+the definition of the vertical velocity profile</p></li>
+<li><p>Main_Direction (numpy.ndarray, optional) [m]: the main direction of the
+array. The array will be aligned with this direction and the optimization
+parameter space will be defined around it. If a None value is passed, the
+model evaluates the main direction from the probability of occurrence of the
+different sea states</p></li>
+<li><p>Bathymetry (numpy.ndarray) [m]: the seabed profile of the lease area, the
+datum is not important but it needs to be in agreement with the SSH
+parameter specified in the MetoceanConditions parameter</p></li>
+<li><p>Geophysics (numpy.ndarray): the Manning number of the area, specified at
+each grid point. The value is used along with the VelocityShear to assess
+the vertical velocity profile.</p></li>
+<li><p>BR (float) [-]: the horizontal blockage ratio, the ratio between the lease
+area and the channel area. A BR of 1 identifies a closed boundary lease
+area, while a BR of 0 identifies an open water scenario</p></li>
+<li><p>electrical_connection_point (numpy.ndarray) [m]: UTM coordinates of the
+electrical connection point at the shore line, expressed as
+[X(Northing),Y(Easting)].</p></li>
+<li><p>boundary_padding (float, optional) [m]: Padding added to inside of the
+lease area in which devices may not be placed</p></li>
+</ul>
+</div></blockquote>
+<p>Similarly the WP2_MachineData object contains a list of nineteen inputs, of
+which eight are optional, listed hereafter:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Type (str) [-]: either “wave” or “tidal”. The variable will trigger the
+different routines in the model</p></li>
+<li><p>lCS (numpy.ndarray) [m]: position of the local representative point of the
+machine in the 3D space. For a wave case it is the position of the device
+centre of gravity seen from the mesh coordinate system. For a tidal case
+only the third (vertictal) coordinate is used to identify the position of
+the hub from the reference point. For a floating machine the reference point
+is the sea surface elevation, while for a bottom fixed machine it is the
+seabed</p></li>
+<li><p>Clen (numpy.ndarray) [m]: (used only for a tidal case) the rotor diameter
+and the distance from the centre line. If the distance from the centre line
+is bigger than zero, a double rotor machine will be considered</p></li>
+<li><p>YawAngle (float) [rad]: the yawing angle span of the machine, which
+describes the self-orienting capability of the device</p></li>
+<li><p>Float_flag (bool): whether the machine is bottom fixed or floating</p></li>
+<li><p>InstallDepth (list) [m]: the water depth range where the machine can be
+installed. All the points in the lease area which are not contained within
+the given range are grouped into nogo areas</p></li>
+<li><p>MinDist (tuple) [m]: the minimum distance between devices in the array.
+For the wave case, the minimum distance is given by the circle that
+inscribed the machine, and this condition is enforced if the user specifies
+a smaller distance</p></li>
+<li><p>OpThreshold (float) [-]: is the minimum q-factor allowable. The input is
+used during the optimum search to identify the maximum accepted value of the
+hydrodynamic losses. Any array layout that generates a q-factor smaller than
+the OpThreshold will be disregarded</p></li>
+<li><p>UserArray (dict): identify the type of array layout to be evaluated, based
+on the Option parameter. If option 1 is chosen, one of the specified array
+layouts will be optimised. Possible choices are ‘Rectangular’, ‘Staggered’
+and ‘Full’. If option 2 is selected, the given array layout, specified in
+the value variable, is solved without optimisation. If option 3 is selected
+then the given array layout is optimised based on a simple homogeneous
+compression/expansion</p></li>
+<li><p>RatedPowerArray (float) [W]: the target rated power of the array. This is
+used to bound the optimisation search</p></li>
+<li><p>RatedPowerDevice (float) [W]: the rated power of the machine</p></li>
+<li><p>wave_data_folder (string, optional): path name of the hydrodynamic results
+generate by the wave external module</p></li>
+<li><p>tidal_power_curve (numpy.ndarray, optional)[W]: Power curve function of
+the stream velocity</p></li>
+<li><p>tidal_trust_curve (numpy.ndarray, optional)[Nm]: Trust curve function of
+the stream velocity</p></li>
+<li><p>tidal_velocity_curve (numpy.ndarray, optional)[m/s]: Vector containing the
+stream velocity</p></li>
+<li><p>tidal_cutinout (numpy.ndarray, optional): contain the cut_in and cut_out
+velocity of the turbine.  Outside the cut IN/OUT velocity range the machine
+will not produce. The generator is shut down, but the machine will still
+interact with the others.</p></li>
+<li><p>tidal_bidirectional (bool, optional): bidirectional working principle of
+the turbine</p></li>
+<li><p>tidal_data_folder (string, optional): Path to tidal device CFD data files</p></li>
+<li><p>UserOutputTable (dict, optional): dictionary of dictionaries where all the
+array layouts inputed and analysed by the user are collected. Using this
+option the internal WP2 calculation is skipped, and the optimisaton is
+performed in the given data. The dictionaies keys are the arguments of the
+WP2 Output class.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="execution">
+<h4><span class="section-number">7.1.3.2. </span>Execution<a class="headerlink" href="#execution" title="Link to this heading"></a></h4>
+<p>In the following, the sequence of commands to run the WP2 is given:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i</span> <span class="o">=</span> <span class="n">WP2input</span><span class="p">(</span><span class="n">Machine</span><span class="p">,</span> <span class="n">Site</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">WPobj</span> <span class="o">=</span> <span class="n">WP2</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Out</span> <span class="o">=</span> <span class="n">WPobj</span><span class="o">.</span><span class="n">optimisationLoop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Machine is an instance of WP2_MachineData and Site is an instance of
+WP2_SiteData, both must be initialized before WP2 can take place.</p>
+<p>The variable Out is an instance of the class WP2output, with attributes the ones
+listed in the previous section.</p>
+</section>
+<section id="outputs">
+<h4><span class="section-number">7.1.3.3. </span>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h4>
+<p>As introduced previously the Hydrodynamic module will return an output object at
+the end of the run with the following attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>AEP_array (float)[Wh]: annual energy production of the whole array</p></li>
+<li><p>power_prod_perD_perS (numpy.ndarray)[W]: average power production of each
+device within the array for each sea state</p></li>
+<li><p>AEP_perD (numpy.ndarray)[Wh]: annual energy production of each device
+within the array</p></li>
+<li><p>power_prod_perD (numpy.ndarray)[W]: average power production of each
+device within the array</p></li>
+<li><p>Device_Positon (numpy.ndarray)[m]: UTM coordinates of each device in the
+array. NOTE: the UTM coordinates do not consider different UTM zones. The
+maping in the real UTM coordinates is done at a higher level.</p></li>
+<li><p>Nbodies (float)[]: number of devices in the array</p></li>
+<li><p>Resource_reduction (float)[]: ratio between absorbed and incoming energy.</p></li>
+<li><p>Device_Model (dictionary)[WAVE ONLY]: Simplified model of the wave energy
+converter. The dictionary keys are:</p>
+<ul>
+<li><p>wave_fr (numpy.ndarray)[Hz]: wave frequencies used to discretise the
+frequency space</p></li>
+<li><p>wave_dir (numpy.ndarray)[deg]: wave directions used to discretise the
+directional space</p></li>
+<li><p>mode_def (list)[]: description of the degree of freedom of the system
+in agreement with the definition used in WAMIT taking in consideration
+only translational degrees of freedom</p></li>
+<li><p>f_ex (numpy.ndarray)[]: excitation force as a function of frequency,
+direction and total degree of freedoms, normalised by the wave height. The
+degree of freedoms need are only the three translation defined in the mode
+keys.</p></li>
+</ul>
+</li>
+<li><p>q_perD (numpy.ndarray)[]: q-factor for each device, calculated as energy
+produced by the device within the array over the energy produced by the
+device without interaction</p></li>
+<li><p>q_array (float)[]: q-factor for the array, calculated as energy produced
+by the array over the energy produced by the device without interaction
+times the number of devices.</p></li>
+<li><p>TI (float)[TIDAL ONLY]: turbulence intensity within the array</p></li>
+<li><p>power_matrix_machine (numpy.ndarray) [WAVE ONLY]: power matrix of the
+single WEC.</p></li>
+<li><p>main_direction (numpy.ndarray): Easing and Northing coordinate of the main
+direction vector.</p></li>
+</ul>
+</div></blockquote>
+<p>Independently from the type of machine or simulation selected, the results
+summarise the array layout and the power/energy performance of each machine. In
+the following figures the results of the optimisation routine are illustrated.</p>
+<p><a class="reference internal" href="#fig-array-layout"><span class="std std-numref">Fig. 7.40</span></a> shows the resultant array layout along with much
+other information. The results are generated for a WEC array, composed of
+heaving cylinders. The waves are travelling from West to East.</p>
+<p>The red lines identify the lease area polygon, and the blue shaded areas
+identify the nogo areas specified by the user. As mentioned previously the
+active area is the Boolean difference between the two areas.</p>
+<p>The installed machines are represented by blue dots and tagged with the
+corresponding ID number. The grey crosses represent grid points that are not
+inside the active area. The Array_pkg object generates those points, but they
+are not considered in the array interaction.</p>
+<p>The arrow identifies the main direction, which corresponds to the wave direction
+for this case; in fact the main direction input has been set to None, in which
+case the software will calculate the orientation.</p>
+<p><a class="reference internal" href="#fig-mean-aep"><span class="std std-numref">Fig. 7.41</span></a> represents the AEP per each device installed in the
+array. On the x-axis the device ID is given to define relation between the
+array layout and productivity in the array.</p>
+<p>The first two rows of devices face a clean energy source, where the wave energy
+content has been only slightly modified. This results in a higher energy
+production for the first 11 devices. On the other hand, the rest of the devices
+receive reduced energy content and their productivity tends to be lower.</p>
+<p>It is important to bear in mind that the WECs are not only shadowing the
+“down-wave” devices, therefore it can be possible to have devices in the centre
+of the array that benefit from the energy radiated from the circumscribing
+devices.</p>
+<p>As shown in <a class="reference internal" href="#fig-q-factor"><span class="std std-numref">Fig. 7.42</span></a>, the q-factors of the different machines are
+not monotonically decreasing in the Easting direction, as one could expect from
+a shadowing model. The figure presents the q-factor for each device as an
+additional vertical axis superimposed on the array layout plot presented in
+<a class="reference internal" href="#fig-array-layout"><span class="std std-numref">Fig. 7.40</span></a>.</p>
+<p>In simple words, the second rows of devices are taking advantage of a clean
+energy source that has been boosted by the waves radiated by the first row of
+devices. On the contrary, the rear rows of devices receive a scattered wave
+field, which reduced their hydrodynamic efficiency if compared with the
+isolated case.</p>
+<figure class="align-default" id="id29">
+<span id="fig-array-layout"></span><img alt="../_images/array_layout.png" src="../_images/array_layout.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.40 </span><span class="caption-text">Array layout. Installed machines (blue dots), unfeasible installation points (grey crosses), lease area (read polygon), user given nogo areas (blue area), main direction (blue arrow).</span><a class="headerlink" href="#id29" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id30">
+<span id="fig-mean-aep"></span><img alt="../_images/mean_AEP.png" src="../_images/mean_AEP.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.41 </span><span class="caption-text">Mean AEP for each device expressed in kWh.</span><a class="headerlink" href="#id30" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id31">
+<span id="fig-q-factor"></span><img alt="../_images/q_factor.png" src="../_images/q_factor.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.42 </span><span class="caption-text">q-factor variation in the array.</span><a class="headerlink" href="#id31" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><em>References</em></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Silva, M., Raventos, A., Teillant, B., Ferri, F., Roc, T., Minns, N., et al. (2015). Deliverable 2.4: Algorithms providing effects of array changes on economics. WaveEC, AAU, ITP, SNL, FEM. Lisbon: EU - Commision.</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+</section>
+<section id="electrical-sub-systems">
+<span id="tech-electric"></span><h2><span class="section-number">7.2. </span>Electrical Sub-Systems<a class="headerlink" href="#electrical-sub-systems" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3><span class="section-number">7.2.1. </span>Requirements<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<section id="id2">
+<h4><span class="section-number">7.2.1.1. </span>User Requirements<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<p>The purpose of the Electrical Sub-Systems module is to identify and compare
+technically feasible offshore electrical network configurations for a given
+device, site and array layout. The scope covers all electrical sub-systems from
+the OEC array coupling up to the onshore landing point, including: the
+umbilical cable, static subsea intra-array cables, electrical connectors,
+offshore collection points and the transmission cables to the onshore grid.</p>
+<p>Ultimately, the network design process is defined by the following factors:</p>
+<ul class="simple">
+<li><p>The transmission voltage, capacity and number of transmission cables;</p></li>
+<li><p>The number, location and type of offshore collection points;</p></li>
+<li><p>The intra-array network topology, i.e. number of OEC devices per string,
+number of strings, voltage level, and umbilical geometry (for floating
+devices);</p></li>
+<li><p>Optimal cable routing and protection for the transmission system and
+intra-array cable networks.</p></li>
+</ul>
+<p>These design criteria must be constrained by the physical environment, power
+flow constraints and available components. Once the solutions have been
+produced, a local best solution should be obtained by calculating and comparing
+the overall network efficiency (i.e. network losses) and component costs. The
+DTOcean tool remit does not consider the capital cost of onshore electrical
+infrastructure, but, if so desired, the user can enter a cost of these
+subsystems to be included when assessing the system LCOE.</p>
+</section>
+<section id="id3">
+<h4><span class="section-number">7.2.1.2. </span>Software Design Requirements<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<p>An offshore electrical network can be represented by a number of connected
+subsystems, shown in <a class="reference internal" href="#fig-elec-network-tech"><span class="std std-numref">Fig. 7.43</span></a>.</p>
+<figure class="align-default" id="id32">
+<span id="fig-elec-network-tech"></span><img alt="../_images/elec_network.png" src="../_images/elec_network.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.43 </span><span class="caption-text">Simplified generic offshore electrical network for OEC arrays</span><a class="headerlink" href="#id32" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Network design will typically proceed from onshore to the offshore array,
+although some iteration between possible designs can be expected. Following
+this approach allows the design process to be broken down and requirements
+clearly defined:</p>
+<ul class="simple">
+<li><p>Seabed processing for cable routes</p></li>
+<li><p>Selection of suitable transmission and array voltages</p></li>
+<li><p>Design of feasible intra-array networks</p></li>
+<li><p>Power flow analysis of networks</p></li>
+</ul>
+<p>The flow chart in <a class="reference internal" href="#fig-elec-model-tech"><span class="std std-numref">Fig. 7.44</span></a> , based on [IET], summarises the
+design process.</p>
+<figure class="align-default" id="id33">
+<span id="fig-elec-model-tech"></span><img alt="../_images/elec_model.png" src="../_images/elec_model.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.44 </span><span class="caption-text">Electrical Sub-Systems model top level view.</span><a class="headerlink" href="#id33" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="id4">
+<h3><span class="section-number">7.2.2. </span>Architecture<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>The structure of the Electrical Sub-Systems module reflects the modular design
+approach. Seabed processing is performed prior to any electrical design in
+order prepare design areas. The network design stage is separated into two,
+with specific design processes defined for radial and star network topologies.
+The design work flow is unified again when preparing networks for power flow
+and analysis.</p>
+<p>An overview of the structure of the Electrical Sub-Systems module is presented
+in <a class="reference internal" href="#fig-electrical-uml"><span class="std std-numref">Fig. 7.45</span></a>.</p>
+<figure class="align-default" id="id34">
+<span id="fig-electrical-uml"></span><img alt="../_images/electrical_uml_large.png" src="../_images/electrical_uml_large.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.45 </span><span class="caption-text">UML diagram of the Electrical Sub-Systems model.</span><a class="headerlink" href="#id34" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The python package is structured accordingly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dtocean_electrical</span><span class="o">/</span>
+<span class="o">|--</span> <span class="n">dtocean_electrical</span><span class="o">/</span>
+<span class="o">|</span>
+<span class="o">|</span>  <span class="o">|--</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|--</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|--</span> <span class="n">inputs</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|--</span> <span class="n">grid</span><span class="o">/</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">grid</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">grid_processing</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|--</span> <span class="n">network</span><span class="o">/</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">cable</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">collection_point</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">connector</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">network</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|--</span> <span class="n">optim_codes</span><span class="o">/</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span><span class="n">_</span> <span class="n">_init__</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">array_layout</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">optimiser</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">power_flow</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="o">|--</span> <span class="n">umbilical</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|</span>
+<span class="o">|--</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+<span class="o">|--</span> <span class="n">README</span>
+</pre></div>
+</div>
+<section id="overview">
+<h4><span class="section-number">7.2.2.1. </span>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h4>
+<p><strong>Electrical</strong>:
+The Electrical class is composed of six input classes:
+ElectricalComponentDatabase, ElectricalMachineData, ElectricalArrayData,
+ConfigurationOptions, ElectricalSiteData, ElectricalExportData. The input
+classes contain all data and data processes required to create and run an
+instance of the Electrical class. Upon initialisation the Electrical class
+will run a number of input data checks (contained in input_tests) and also
+align the device layout and landing point with the x-y grid.</p>
+<p>The Electrical class also initialises the Grid class and the GridPoint class
+via the grid_processing utility class. Once the data has been prepared and
+checked, the Electrical class creates and executes an instance of the
+Optimiser class.</p>
+<p><strong>ElectricalComponentDatabase</strong>: This is a structured data container for the
+electrical component database. This consists of eight individual component
+tables for the main electrical components of an offshore network: static
+cables, dynamic cables, wet-mate connectors, dry-mate connectors, collection
+points, switchgear, transformers and power quality equipment. Each component
+table is stored as a pandas DataFrame object. Details of the individual fields
+are included in APPENDIX.</p>
+<p><strong>ElectricalSiteData</strong>: Define the electrical systems site data object. This
+includes all geotechnical and geophysical data.</p>
+<p><strong>ElectricalExportData</strong>: Define the electrical systems export data object. This
+includes all geotechnical and geophysical data.</p>
+<p><strong>ElectricalMachineData</strong>: Container class to carry the OEC device object.</p>
+<p><strong>ElectricalArrayData</strong>: Container class to carry the array object. The
+ElectricalMachineData object is included within this class.</p>
+<p><strong>ConfigurationOptions</strong>: Container class for the configuration options.</p>
+<p><strong>Grid</strong>: Data structure for the grid. This is composed of a number of GridPoint
+objects. While a GridPoint object contains only local information, a Grid
+object contains more useful information of the area as a complete entity.
+Special methods allow for creating specific design areas by removing
+constraints and filtering the seabed based on installation equipment
+functionality.</p>
+<p><strong>GridPoint</strong>: Data structure for grid point data. A GridPoint is created to
+carry the information of every x-y coordinate in the lease area and the cable
+corridor. For each point, neighbours are defined in either four or eight
+directions, with four taken by default. Spatial distances and gradients for all
+neighbours are calculated in order to create a series of edges and vertices for
+graph analysis.</p>
+<p><strong>grid_processing</strong>: This is utility class controls the data flow and
+manipulation required to convert the input geophysical and geotechnical data
+into the coherent dataset required by the cable routing algorithms. The
+processes in grid_processing are divided into three main tasks: collecting all
+exclusion zones, merging the lease area and cable corridor bathymetry data and
+creating a NetworkX graph object for cable routing analysis. The GridPoint and
+Grid objects are also created during this final stage, and the graph object is
+assigned to an attribute of the Grid class.</p>
+<p><strong>Optimiser</strong>: Controller class to define search space and find the network
+solution. This takes configuration options as constraints and searches within a
+predefined search space for a best solution. The search space is realised as
+look-up table developed with respect to the maximum power transfer of an
+electrical system a function of voltage and distance. These static values are
+compared against the spatial characteristics of the array to be designed in
+order to construct technically feasible voltage levels for the network. More
+than one voltage level is proposed for each section of the network to produce
+variation in the solutions. This process is controlled by the
+set_design_limits() method.</p>
+<p>This class also extracts data from the ElectricalComponentDatabase object and
+creates a number of component sets for analysis. This is realised in the
+Optimiser class by creating and executing instances of the PyPower class. The
+final role of the Optimiser class is to create Network objects to analyse and
+store detailed information of the designed networks.</p>
+<p><strong>RadialNetwork</strong>: Special instance of the Optimiser class. This contains
+methods which handle the connection of devices within the array to produce a
+radial network. Most of this work is outsourced to the array_layout utility
+class. In the radial network, a maximum of two voltage levels are considered,
+with a shared voltage level between the devices and the array systems.</p>
+<p><strong>StarNetwork</strong>: Special instance of the Optimiser class. This contains methods
+which handle the connection of devices to a number of offshore collection
+points to produce a star network. The devices are clustered and connected to a
+local collection point before . Methods to set voltage levels and component
+values are inherited from the Optimiser class. In the StarNetwork, a maximum of
+three voltage levels are considered, i.e. the export, array and device systems
+can have a different voltage.</p>
+<p><strong>UmbilicalDesign</strong>: This class acts as an interface to the Umbilical object,
+which must be instantiated prior to execution. The umbilical seabed connection
+point is defined by terminating a projected static cable route at a given
+distance (1.5 x sea depth) from the device. This termination point is used to
+reduce the distance paths of the static cable between the umbilical seabed
+connection and the downstream component in the update_static_cables() method of
+the Optimiser class.</p>
+<p><strong>array_layout</strong>: The array_layout utility class provides a series of functions
+to connect a number of objects to a single target point and is based on the
+hop-indexed integer programming method described in [Bauer]. This applies
+vehicle routing approaches to provide the shortest distance travelled, i.e.
+cable distance, while avoid path crossing. Although cable crossing may be
+acceptable it has inherent impacts on installation and reliability, as well as
+on heat characteristics during operation.</p>
+<p>This set of functions is realised in two environments: one which utilises the
+gridded nature of the seabed bathymetry provided by the input data to place the
+cables along the seabed and one which operates in an empty space using only the
+Euclidean distance between the points represented by the devices. To retain the
+best representation of the real world considerations of this stage of the
+design process the cable routing algorithms default to using the gridded seabed
+bathymetry. All routing functionalities are implemented using Dijkstra’s
+algorithm, a widely applied shortest path routine, which is available from the
+NetworkX library.</p>
+<p><strong>PyPower</strong>: RadialNetwork and StarNetwork have their own methods, denoted
+convert_to_pypower(), for converting the network configuration into a unified
+format for converting into PyPower data structures. This is achieved using a
+collection of Boolean matrices, representing connections between the onshore
+landing point, the collection point(s) and device(s). Four matrices define
+these connections:</p>
+<ul class="simple">
+<li><p>shore_to_device;</p></li>
+<li><p>shore_to_cp;</p></li>
+<li><p>cp_to_cp;</p></li>
+<li><p>device_to_device.</p></li>
+</ul>
+<p>The dimensions are set by the number of devices and collections in network.</p>
+<p>The PyPower object is instantiated by the create_pypower_object() method of the
+Optimiser class. The distance matrices also produced in RadialNetwork and
+StarNetwork are combined with the Boolean matrices by the PyPower object to
+produce an impedance matrix and then simulated by a steady-state three-phase ac
+power flow solver. Access to a full three-phase power flow solver allows for
+accurate analysis of the electrical performance of the network.</p>
+<p>Further details of the PyPower methods and data structures is available at:
+<a class="reference external" href="http://www.pserc.cornell.edu/matpower/MATPOWER-manual.pdf">http://www.pserc.cornell.edu/matpower/MATPOWER-manual.pdf</a></p>
+<p><strong>ComponentLoading</strong>: Utilises the power flow results to assess component
+loading. Current flow values are calculated from the power flow results as they
+are not directly available.</p>
+<p><strong>Network</strong>: Data structure for the network description. This is composed of a
+number of network component objects and contains all data required to describe
+the network structure and performance. It is created by the Optimiser class
+object and its main role is to store and process the network data into both
+human readable form and the data structures required for further analysis
+within the DTOCEAN tool.</p>
+<p><strong>Cable</strong>: Class to define all attributes of a cable object. StaticCable and
+UmbilicalCable are defined as subclasses; ArrayCable and ExportCable are
+instances of StaticCable.</p>
+<p><strong>CollectionPoint</strong>: Class to define all properties of the offshore collection
+point. This assumes that switchgear and transformers are included as part of
+the input data. PassiveHub and Substation are subclasses.</p>
+<p><strong>Connector</strong>: Class to define all properties of connectors. WetMateConnector
+and DryMateConnector are subclasses.</p>
+</section>
+<section id="input-data">
+<h4><span class="section-number">7.2.2.2. </span>Input data<a class="headerlink" href="#input-data" title="Link to this heading"></a></h4>
+<p>The inputs are listed in <a class="reference internal" href="#tab-wp3-technical-inputs"><span class="std std-numref">Fig. 7.46</span></a>.</p>
+<figure class="align-default" id="id35">
+<span id="tab-wp3-technical-inputs"></span><img alt="../_images/wp3_technical_inputs.png" src="../_images/wp3_technical_inputs.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.46 </span><span class="caption-text">Inputs</span><a class="headerlink" href="#id35" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Some users options available to constrain the solution are shown in
+<a class="reference internal" href="#tab-wp3-technical-options"><span class="std std-numref">Fig. 7.47</span></a>. In this table, the name of the
+ConfigurationOptions attribute is also included for completeness.</p>
+<figure class="align-default" id="id36">
+<span id="tab-wp3-technical-options"></span><img alt="../_images/wp3_technical_options.png" src="../_images/wp3_technical_options.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.47 </span><span class="caption-text">Options</span><a class="headerlink" href="#id36" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id5">
+<h4><span class="section-number">7.2.2.3. </span>Execution<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<p>The sequence of commands to run the Electrical Sub-Systems moduleis as follows:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">electrical_instance</span> <span class="o">=</span> <span class="n">Electrical</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">export</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
+<span class="go">database) &gt;&gt;&gt; solution = electrical_instance.run_module(plot = True)</span>
+</pre></div>
+</div>
+<p>The inputs to Electrical are the classes described in the previous section. The
+solution returned is an instance of the Network class, which corresponds to the
+best obtained network.</p>
+<p>A basic plot of cable routes and collection point locations is available for
+display when running outwith the DTOCEAN tool. The visibility of this is
+controlled by the plot argument of run_module() method.</p>
+<p>As part of the global optimisation process, it is necessary to pass control of a
+number of design variables to the core. This workflow is handled within the
+core and, if necessary, will constrain certain electrical options in response
+to the outputs of other modules and overall assessment of array performance
+(with respect to economic, reliability and environmental thematic indices).</p>
+<p>The parameters of influence in the Electrical Sub-Systems module are defined in
+Table 6.8. In normal execution, these variables form part of the Electrical
+Sub-Systems module output and should be not constrained; however, they must be
+defined at the module interface for use in the global optimisation process.
+Accordingly, these are considered optional, with default None values, and the
+Electrical Sub-Systems module is designed to check the status and value of
+these parameters at initiation. It should be noted that this parameter list is
+not finalised and is subject to further research, both at a local and global
+optimisation level.</p>
+<p>Other parameters which may have an influence on the electrical network, e.g. OEC
+rated voltage, are already defined as project specific variables. As such,
+modifying these parameters is considered only as part of the process of
+creating a new project.</p>
+</section>
+<section id="output-data">
+<h4><span class="section-number">7.2.2.4. </span>Output data<a class="headerlink" href="#output-data" title="Link to this heading"></a></h4>
+<p>As the solution returned by the Electical Sub-Systems modules is an instance of
+the Network class, specific results can be accessed using the Network object
+attributes. A printed summary is available by using the print_result() method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solution</span><span class="o">.</span><span class="n">print_result</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The values included in this display are:</p>
+<ul class="simple">
+<li><p>Annual Yield: The annual yield at the onshore landing point;</p></li>
+<li><p>Bill of materials: A summary of the economic data;</p></li>
+<li><p>Component Data: A table which includes x and y coordinates of all components
+and quantity/length values. A database reference is included to allow the
+user to access additional information. The marker can be used in combination
+with the Hierarchy and Network design data structures to locate the component
+within the network layout;</p></li>
+<li><p>Hierarchy: A dictionary structure representing the connections between the
+different sub-systems. Nested lists are used to denote series and parallel
+combinations of components/sub-systems: components at the same level are in
+series with each other and in parallel with components at other levels. The
+in this structure are the database keys from the Component Data table. This
+should be read from the array level down;</p></li>
+<li><p>Network design: Similar to Hierarchy data structure but using component
+markers to allow identification of specific components;</p></li>
+<li><p>Cable routes: A summary table of the cable routes;</p></li>
+<li><p>Collection points: A summary table of the collection point data;</p></li>
+<li><p>Umbilical cables: A summary table of the umbilical cable designs.</p></li>
+</ul>
+<p>A high level overview of the output data is included in
+<a class="reference internal" href="#tab-wp3-technical-outputs"><span class="std std-numref">Fig. 7.48</span></a>, which matches the parameter from the output
+display with the Network class attribute.</p>
+<figure class="align-default" id="id37">
+<span id="tab-wp3-technical-outputs"></span><img alt="../_images/wp3_technical_outputs.png" src="../_images/wp3_technical_outputs.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.48 </span><span class="caption-text">Outputs</span><a class="headerlink" href="#id37" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="tables-of-database-fields">
+<h3><span class="section-number">7.2.3. </span>Tables of Database Fields<a class="headerlink" href="#tables-of-database-fields" title="Link to this heading"></a></h3>
+<p>Electrical component description tables</p>
+<figure class="align-default" id="id38">
+<img alt="../_images/elec1.png" src="../_images/elec1.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.49 </span><span class="caption-text">Static and dynamic cable component database fields.</span><a class="headerlink" href="#id38" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id39">
+<img alt="../_images/elec2.png" src="../_images/elec2.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.50 </span><span class="caption-text">Wet and dry-mate connector component database fields.</span><a class="headerlink" href="#id39" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id40">
+<img alt="../_images/elec3.png" src="../_images/elec3.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.51 </span><span class="caption-text">Transformer component database fields.</span><a class="headerlink" href="#id40" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id41">
+<img alt="../_images/elec4.png" src="../_images/elec4.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.52 </span><span class="caption-text">Collection point component database fields.</span><a class="headerlink" href="#id41" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id42">
+<img alt="../_images/elec5.png" src="../_images/elec5.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.53 </span><span class="caption-text">Switchgear component database fields.</span><a class="headerlink" href="#id42" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id43">
+<img alt="../_images/elec6.png" src="../_images/elec6.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.54 </span><span class="caption-text">Power quality equipment component database fields.</span><a class="headerlink" href="#id43" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><em>References</em></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>R. Alcorn and D. O’Sullivan, Electrical Design for Ocean Wave and Tidal
+Energy Systems, vol. 1, London: IET, 2013.</p></li>
+<li><p>J. Bauer, J. Lysgaard, “The offshore wind farm array cable layout
+problem: a planar open vehicle routing problem,” J Oper Res Soc (2015) 66: 360</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="moorings-and-foundations">
+<span id="tech-moorings"></span><h2><span class="section-number">7.3. </span>Moorings and Foundations<a class="headerlink" href="#moorings-and-foundations" title="Link to this heading"></a></h2>
+<p>In this section, the requirements, architecture and functional specification of
+the Moorings and Foundations module are summarized. For further information the
+reader is directed towards Deliverable 4.5 (DTOcean, 2015e).</p>
+<section id="id6">
+<h3><span class="section-number">7.3.1. </span>Requirements<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<section id="id7">
+<h4><span class="section-number">7.3.1.1. </span>User Requirements<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<p>The main aim of the DTOcean Moorings and Foundations design module is to perform
+static and quasi-static analysis to inform or develop mooring and foundation
+solutions that:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>are suitable for a given site, the OEC device (and substation), and
+expected loading conditions</p></li>
+<li><p>retain the integrity of the electrical umbilical that connects the OEC
+device to the subsea cable</p></li>
+<li><p>are compatible with the array layout (i.e., prevents clashing of
+neighboring devices) and subsea cable layout</p></li>
+<li><p>fulfil requirements and/or constraints determined by the user and/or in
+terms of reliability and/or environ- mental concerns; and</p></li>
+<li><p>possess the lowest capital cost</p></li>
+</ul>
+</div></blockquote>
+<p>By default the module identifies a suitable mooring and foundation configuration
+based on the supplied characteristics of the site and devices which make up the
+array. However it is possible for the user to shortcut certain decisions that
+would be made by the module in order to constrain the design space to a
+preferred set of pre-selected parameters, such as mooring or foundation type
+and foundation locations. Furthermore, whilst the database will be preloaded
+with a set of mooring and foundation components it will be possible for the
+user to constrain the component selection process to a desired set of
+components.</p>
+</section>
+<section id="id8">
+<h4><span class="section-number">7.3.1.2. </span>Software Design Requirements<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<p>The design of the moorings and foundations design module is outlined in this
+section. At first, dataflow through the module will be linear, utilizing inputs
+originating from:</p>
+<ol class="arabic simple">
+<li><p>the user (via the graphical user interface or GUI),</p></li>
+<li><p>the Hydrodynamics and Electrical Sub-Systems modules (umbilical requirements
+and subsea infrastructure details) and</p></li>
+<li><p>from the global database. As part of the global design process, all these
+inputs will be passed to the Moorings and Foundations module through the core.
+In addition the Moorings and Foundations module also interacts with the
+Umbilical module. The priority in the first instance will be to select a
+solution with the lowest capital cost and to pass this (via the core) to the
+O&amp;M module to determine configuration reliability and LCOE (see economics
+module section below for more information). The environmental impact of the
+configuration will also be assessed (see environmental module section for more
+information), albeit externally to the module.</p></li>
+</ol>
+<figure class="align-default" id="id44">
+<img alt="../_images/dataflow_moorings.png" src="../_images/dataflow_moorings.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.55 </span><span class="caption-text">High-level dataflow to and from the Moorings and Foundations module showing constraint feedback</span><a class="headerlink" href="#id44" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>If the solution is not feasible in terms of its economic, reliability or
+environmental impact metrics or logistical feasibility, an alternative mooring
+or foundation solution will be sought by initializing a subsequent run of the
+DTOcean software. Subsequent runs of the Moorings and Foundations module will
+be constrained by feedback provided by the O&amp;M module and the environmental
+impact algorithms (e.g. setting a reliability constraint so that only
+components with reliabilities above a certain threshold can be selected).</p>
+<p>The Moorings and Foundations module comprises four interlinked sub-modules
+including: the System and environmental loads sub-module, Substation
+sub-module, Mooring sub-module and Foundation sub-module. In addition the
+Mooring sub-module communicates with the Umbilical module located outside of
+the Moorings and Foundations module (with communication occurring via the
+core). The class of the Umbilical module is described below. The figure below
+shows the general dataflow between these sub-modules. The module operates on a
+device-by-device basis until all of the devices within the array have been
+analyzed.</p>
+<figure class="align-default" id="id45">
+<img alt="../_images/dataflow_external_moorings.png" src="../_images/dataflow_external_moorings.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.56 </span><span class="caption-text">High-level dataflow within and external to the Moorings and Foundations module</span><a class="headerlink" href="#id45" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The calculation procedure invoked within the Moorings and Foundations module
+will depend on whether the system is floating or fixed. Floating systems
+require a mooring system and anchors to keep the system on station. It can be
+seen in the dataflow graphic that dataflow occurs between the Mooring
+sub-module and Foundation sub-module to allow suitable anchors to be selected.
+Fixed systems require a foundation to provide a permanent connection between
+the system support structure and seafloor. Both fixed and floating systems
+require an umbilical, whilst an array may require a substation. The type of
+system is therefore a specific input defined by the user and hence determines
+which of the sub-modules within the Moorings and Foundations module will be
+used (e.g. in the case of a fixed system the mooring sub-module is redundant
+and therefore not used).</p>
+<p>Each potential design within the Moorings and Foundations module is assessed in
+order to make an informed decision regarding its suitability. Several
+standardized design approaches have been adopted for this, drawing from
+certification guidance, recommended practices and published literature (e.g.
+(Det Norske Veritas, 2010; Det Norske Veritas, 1992; Det Norske Veritas, 2013a;
+Det Norske Veritas, 2013b; Bureau Veritas, 2015; Health and Safety Executive,
+2001), see also <a class="reference internal" href="#tab-documentation-moorings"><span class="std std-numref">Fig. 7.57</span></a>). Further discussion of
+limit states used in mooring and foundation design and the applicability of
+existing standards can be found in Deliverable 4.5 (DTOcean, 2015e).</p>
+<figure class="align-default" id="id46">
+<span id="tab-documentation-moorings"></span><img alt="../_images/documentation_moorings.png" src="../_images/documentation_moorings.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.57 </span><span class="caption-text">Guidance documentation used to develop the Moorings and Foundations module</span><a class="headerlink" href="#id46" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The external Python libraries employed by the Moorings and Foundations module
+are as follows:</p>
+<ul class="simple">
+<li><p>numpy</p></li>
+<li><p>pandas</p></li>
+<li><p>scipy</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h3><span class="section-number">7.3.2. </span>Architecture<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<section id="id10">
+<h4><span class="section-number">7.3.2.1. </span>Overview<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<p>The Moorings and Foundations module comprises two main Python modules.
+MoorFound_Main.py acts as an interface between the user or core and the module
+and also calls the classes within the Moorings and Foundations module.
+MoorFound_Core.py comprises the classes and functions required to carry out
+design and analysis of the Moorings and Foundations sub-system. As can be seen
+from the following figure with MoorFound_Core.py there is interaction between
+the classes within the Loads, Moor, Subst and Found classes. These processes
+are summarized in the module processes table.</p>
+<figure class="align-default" id="id47">
+<img alt="../_images/interaction_moorings.png" src="../_images/interaction_moorings.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.58 </span><span class="caption-text">Interaction between the various classes and functions of the Moorings and Foundations module</span><a class="headerlink" href="#id47" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id48">
+<img alt="../_images/internal_moorings.png" src="../_images/internal_moorings.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.59 </span><span class="caption-text">Summary of internal Moorings and Foundations module processes</span><a class="headerlink" href="#id48" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="dataflow-between-the-functions">
+<h4><span class="section-number">7.3.2.2. </span>Dataflow between the functions<a class="headerlink" href="#dataflow-between-the-functions" title="Link to this heading"></a></h4>
+<p>Dataflow between the internal Moorings and Foundations functions is shown in
+detail in the above figure. A discussion of the submodules within the Mooring
+and Foundation module is provided in the following subsections.</p>
+<p>All calculations performed within the Moorings and Foundations module are
+associated to a Device ID number (e.g. device0001) which is utilized by all of
+the modules within the software. The Main class within Moor- Found_Main.py has
+a global for loop to sequentially analyze each device, starting at device0001
+and ending at deviceN.</p>
+</section>
+<section id="loads-class">
+<h4><span class="section-number">7.3.2.3. </span>Loads class<a class="headerlink" href="#loads-class" title="Link to this heading"></a></h4>
+<p>The global position of the device (from the Hydrodynamics module), site
+parameters (i.e. bathymetry and tidal range), in addition to the system
+properties (i.e. mass, centre of gravity and geometry) as specified by the
+user, are used to determine the static loads experienced by the device and any
+eccentric loading. These results are utilised by the Moor and Found classes.
+For the Subst class the same static, steady and wave calculations are carried
+out for the substation using information provided by the user or Electrical
+Sub-Systems module.</p>
+<p>Calculation of the design loads is carried out according to the general
+methodology outlined in (Det Norske Veritas, 2013b) and (Det Norske Veritas,
+2011) (Det Norske Veritas, 2011). Two simplified geometries are considered by
+the Moorings and Foundations module for devices and support structures; cuboids
+and vertical cylinders. If the device is a tidal turbine, the thrust
+experienced by the support structure is estimated based on the prescribed
+surface current, the rotor swept area, hub height and either a thrust
+coefficient or the maximum value of the user-supplied thrust curve. By default,
+a 1/7 power law depth distribution is used. This result contributes to the
+calculation of steady loads on the system.</p>
+<p>Static loads are calculated in the sysstat function. In the sysstead function
+the specified wind and wave conditions3 in addition to current are used to
+estimate the steady loads on the system. These calculations utilise drag and
+inertia coefficients stored in the database4 as well as the user-specified wet
+and dry frontal areas. Mean drift loads are estimated using appropriate
+analytical approaches.</p>
+<p>The next stage is the syswave function, which for floating devices is used by
+the Moor class to estimate displacement of the device about the mean offset
+position. The approach used to calculate wave loads on the device or structure
+depends on whether diffraction is important, and this is judged by the size of
+the structure in relation to the incident wave parameters and water depth at
+the device location. If diffraction should be considered, hydrodynamic
+parameters calculated by the Hydrodynamics module, including added mass,
+radiation damping and first- order wave load RAOs are used (if available for
+the translation mode being analysed. If the diffraction regime is not relevant,
+wave loads on the structure are estimated using the Morison equation and the
+aforementioned drag and inertia coefficients. Slow drift wave forces are also
+estimated using the approach given in Chakrabarti (Chakrabarti, 2005).</p>
+</section>
+<section id="moor-class">
+<h4><span class="section-number">7.3.2.4. </span>Moor class<a class="headerlink" href="#moor-class" title="Link to this heading"></a></h4>
+<p>If the device is floating, mooring systems with anchors are considered. The user
+may have a particular mooring system type in mind, perhaps from laboratory
+experiments or field trials of a single device.</p>
+<p>If the location of the anchors or a maximum footprint radius has been specified
+by the user then these values are used in the definition of the mooring system
+geometry. Alternatively, an anchor radius is set by the Moor class using a
+relationship between the mooring line length and water depth (Fitzgerald &amp;
+Bergdahl, 2007), based on the supplied site bathymetry as well as maximum and
+minimum water level values.</p>
+<p>The moorsel function determines if a catenary or taut moored system is most
+suitable for the application, based on the maximum tidal range of the site and
+whether the device must remain at the same specified level in the water column
+throughout all states of tide.</p>
+<p>The moordes function first considers a mooring system comprising chain only
+using the user-supplied fairlead locations. The umbilical will be included in
+the analysis as an additional line. For comparative purposes chain- synthetic
+rope configurations will also be considered. The selection of components which
+make up each configuration will be based on connecting sizes accessed from the
+database to prevent incompatible components from being selected.</p>
+<p>The first calculation step determines the static equilibrium and pretension of
+the lines without the device in place. The geometry in combination with the
+static system loads calculated by the Loads class is used to determine the
+equilibrium position and mooring system tensions. The moorcompret function is
+used to generate an initial mooring system configuration. If the mooring line
+tensions exceed any of the component minimum break loads (with a factor of
+safety applied) alternative components are sought. The moorcompret function
+also ensures that connecting components are compatible by only selecting
+components of the same nominal size from the database.</p>
+<p>Once static equilibrium has been achieved, the steady wind, current and mean
+drift loads calculated in the Loads class are used to determine the new
+equilibrium position and line tensions. A check is made to ensure that the
+calculated horizontal offset (surge/sway) is within the maximum displacement
+amplitude limits set by the user and compatible with the specified array
+layout. Again if the configuration is unsuitable in terms of line tensions,
+alternative components will be sought from the database function. Two main
+calculation steps are carried out by the moordes function, corresponding to
+Ultimate Limit State (ULS) and Accidental Limit State (ALS) analyses. The line
+with the highest tension calculated in the ULS run is removed for ALS analysis.</p>
+<p>The quasi-static calculations performed by mooreqav are inherently simple and do
+not consider the dynamic behaviour of the mooring lines. Therefore a fully
+coupled dynamic calculation is not carried out by the module. Instead the
+module provides a first approximation to mooring system loads and configuration
+suitability by approximating the (quasi-static) limits of motion and mooring
+tensions due to a first-order wave excitation and second-order wave drift
+forces. The criteria which will be used to determine the suitability of the
+mooring configuration are listed in Deliverable 4.5 (DTOcean, 2015e). The Moor
+class includes an iterative scheme to specify alternative mooring components if
+the mooring configuration is unsuitable.</p>
+</section>
+<section id="found-class">
+<h4><span class="section-number">7.3.2.5. </span>Found class<a class="headerlink" href="#found-class" title="Link to this heading"></a></h4>
+<p>If the device is fixed, foundations instead of anchors are considered. The user
+may have a particular foundation type in mind in order for the foundation to be
+compatible with the support structure and in this case the decision tree in the
+foundsel function is not used. For a fixed system it will be necessary for the
+user to specify the location of the foundation points with respect to the local
+system origin and orientation.</p>
+<p>The foundation type decision tree uses site information (i.e. bathymetry, soil
+type, soil depth and layering) specified by the user as well as accessing the
+database for available foundation and anchor components to determine the most
+suitable range of foundation or anchor technologies. The decision tree
+comprises a number of matrices to aid the selection process and exclude
+unsuitable technologies (for further details see Deliverable 4.5 (DTOcean,
+2015e)).</p>
+<p>In the case of a moored device, anchor positions and maximum load vectors are
+used to determine suitable anchoring systems, which are determined based on
+soil type, soil depth and layering in addition to load direction (with the
+latter originating from the Moor class). If shared anchoring points are deemed
+to be feasible by the Moor class then this will also limit the selection of
+anchor types to those which are compatible with multi-directional loads. For
+fixed structures, soil type (including depth and layering) is the main deciding
+factor. Soil heterogeneity across the site could result in several different
+foundation or anchor solutions. For an array of devices a large selection of
+foundation or anchor types will not be practical nor economically viable, and
+hence the free selection will probably have to be constrained as part of the
+global optimization process, particularly for large footprint, spread mooring
+systems.</p>
+<p>Within the founddes function each foundation type has its own calculation
+procedure. Most approaches involve first determining the applied loads,
+applying safety factors and then based on the supplied soil parameters, the
+size and/or penetration depth of the foundation are adjusted iteratively to
+suit the application. Basic structural (stress) analysis is only conducted for
+pile foundations.</p>
+</section>
+<section id="subst-class">
+<h4><span class="section-number">7.3.2.6. </span>Subst class<a class="headerlink" href="#subst-class" title="Link to this heading"></a></h4>
+<p>This operates in a similar way to the Found class, albeit it considers only pile
+foundations (i.e. monopiles for above-water substations gravity foundations for
+substations mounted directly on the seafloor). The location and features of the
+substation are determined by the Electrical Sub-Systems module, with static,
+steady and wave induced loads calculated within the Loads class. To avoid
+repetition of code the Subst class calls the same functions used for device
+analysis.</p>
+</section>
+<section id="umbilical-module">
+<h4><span class="section-number">7.3.2.7. </span>Umbilical module<a class="headerlink" href="#umbilical-module" title="Link to this heading"></a></h4>
+<p>Within the external Umbilical module the umbilical geometry is defined based on
+the location of the subsea cable (as specified by the Electrical Sub-Systems
+module) and required umbilical properties and the bathymetry of the site
+(stored within the database). The equilibrium geometry of the umbilical is
+determined iteratively. Two options are available depending on whether the
+device is fixed (a ‘hang-off’-type geometry from the subsea cable up to the
+J-tube) (Det Norske Veritas, 2014) or floating (‘Lazy-wave’ geometry) (Ruan,
+Bai, &amp; Cheng, 2014).</p>
+<p>The calculated geometry and umbilical constraints (minimum break load and
+minimum bend radius) are used by the Moor and Found classes.</p>
+</section>
+</section>
+<section id="id11">
+<h3><span class="section-number">7.3.3. </span>Functional Specification<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p>User interaction with the Moorings and Foundations module is described within
+this section.</p>
+<section id="summary-of-the-modelling-approach">
+<h4><span class="section-number">7.3.3.1. </span>Summary of the modelling approach<a class="headerlink" href="#summary-of-the-modelling-approach" title="Link to this heading"></a></h4>
+<blockquote>
+<div><ul class="simple">
+<li><p>By default the module operates in an optimised mode based on the
+user-supplied site and device parameters. It is possible for the user to
+manually constrain the design space by specifying certain parameters (e.g.
+the pre-selectable foundation and mooring system technology parameters:
+prefound and premoor)</p></li>
+<li><p>At first, the solution with the lowest capital cost is identified and
+passed on to the other modules</p></li>
+<li><p>A similar approach to mooring (floating devices) or foundation (fixed
+devices) design is used for WECs and TECs</p></li>
+<li><p>Only static and quasi-static analyses are conducted by the module</p></li>
+<li><p>Only catenary or taut moored configurations are modelled for floating
+systems</p></li>
+<li><p>Only load cases for ULS and ALS are considered</p></li>
+<li><p>With the exception of pile foundations, structural analysis of foundations
+or anchors is not carried out and instead these components are assumed to be
+rigid. The focus of the Found class is instead the interaction between the
+foundation or anchor and soil for lateral and axial load analysis</p></li>
+<li><p>The user will be able to select a series of safety factors based on their
+preference and/or the requirements of the relevant certification agency
+(i.e. API, DNV, IEC etc.)</p></li>
+<li><p>Within the limits of the module the identified solution will be, in
+quasi-static terms, fit-for-purpose for the application. Using the
+configuration output data, the user will then be able to carry out dynamic
+systems analysis to confirm configuration suitability using external
+third-party software</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="warnings">
+<h4><span class="section-number">7.3.3.2. </span>Warnings<a class="headerlink" href="#warnings" title="Link to this heading"></a></h4>
+<p>The moorings and foundations module will output warning messages to the user in
+situations where either the tool is unable to successfully produce a solution
+or where the tool is making assumptions that the user needs to be aware of.  In
+the case that the tool is unable to produce a solution then the warning message
+will assist the user in locating where the issue lies and which input
+parameters need to be adjusted.  A list of the warning messages is included
+below:</p>
+<img alt="../_images/warn_moor.png" src="../_images/warn_moor.png" />
+</section>
+<section id="id12">
+<h4><span class="section-number">7.3.3.3. </span>Inputs<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<p>The following table gives a comprehensive list of all inputs required by the
+moorings and foundations module:</p>
+<img alt="../_images/input_moor1.png" src="../_images/input_moor1.png" />
+<img alt="../_images/input_moor2.png" src="../_images/input_moor2.png" />
+<img alt="../_images/input_moor3.png" src="../_images/input_moor3.png" />
+<img alt="../_images/input_moor4.png" src="../_images/input_moor4.png" />
+<img alt="../_images/input_moor5.png" src="../_images/input_moor5.png" />
+</section>
+<section id="id13">
+<h4><span class="section-number">7.3.3.4. </span>Outputs<a class="headerlink" href="#id13" title="Link to this heading"></a></h4>
+<p>The mooring and foundation solution is details in a number of tables. To
+elucidate further, the Moor, Found and Subst classes all output the following
+variables:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Configuration hierarchy</p></li>
+</ul>
+</div></blockquote>
+<p>Nested list comprising main component names for the mooring and foundation
+systems. This is used by the Reliability Assessment sub-module.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Configuration bill of materials</p></li>
+</ul>
+</div></blockquote>
+<p>Bill of materials in dictionary format comprising mooring and foundation
+elements for N foundation/anchor points:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>foundation type (str) [-],</p></li>
+<li><p>foundation subtype (str) [-],</p></li>
+<li><p>dimensions (list):</p>
+<ul>
+<li><p>width (float) [m],</p></li>
+<li><p>length (float) [m],</p></li>
+<li><p>height (float) [m],</p></li>
+<li><p>cost (float) [euros],</p></li>
+<li><p>total weight (float) [kg],</p></li>
+<li><p>quantity (int) [-]</p></li>
+<li><p>grout type (str) [-],</p></li>
+<li><p>grout volume (float) [m3],</p></li>
+<li><p>component identification numbers (list) [-]</p></li>
+</ul>
+</li>
+<li><p>Configuration installation parameters (including key seafloor parameters
+at installation locations) in pandas table format for N foundation/anchor
+points:</p>
+<ul>
+<li><p>device number (int) [-],</p></li>
+<li><p>foundation number (int) [-],</p></li>
+<li><p>foundation type (str) [-]’,</p></li>
+<li><p>foundation subtype (str) [-],</p></li>
+<li><p>x coord (float) [-],</p></li>
+<li><p>y coord (float) [-],</p></li>
+<li><p>length (float) [m],</p></li>
+<li><p>width (float) [m],</p></li>
+<li><p>height (float) [m],</p></li>
+<li><p>installation depth (float) [m],</p></li>
+<li><p>dry mass (float) [kg],</p></li>
+<li><p>grout type [-],</p></li>
+<li><p>grout volume (float) [m3]</p></li>
+<li><p>cost (float) [euros],</p></li>
+<li><p>total weight (float) [kg],</p></li>
+<li><p>quantity (int) [-]</p></li>
+<li><p>grout type (str) [-],</p></li>
+<li><p>grout volume (float) [m3],</p></li>
+<li><p>component identification numbers (list) [-]</p></li>
+</ul>
+</li>
+<li><p>Configuration installation parameters (including key seafloor parameters
+at installation locations) in pandas table format for N foundation/anchor
+points:</p>
+<ul>
+<li><p>device number (int) [-],</p></li>
+<li><p>foundation number (int) [-],</p></li>
+<li><p>foundation type (str) [-]’,</p></li>
+<li><p>foundation subtype (str) [-],</p></li>
+<li><p>x coord (float) [-],</p></li>
+<li><p>y coord (float) [-],</p></li>
+<li><p>length (float) [m],</p></li>
+<li><p>width (float) [m],</p></li>
+<li><p>height (float) [m],</p></li>
+<li><p>installation depth (float) [m],</p></li>
+<li><p>dry mass (float) [kg],</p></li>
+<li><p>grout type [-],</p></li>
+<li><p>grout volume (float) [m3]</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="calculation-time">
+<h4><span class="section-number">7.3.3.5. </span>Calculation time<a class="headerlink" href="#calculation-time" title="Link to this heading"></a></h4>
+<p>Calculation times are dependent on the system in question. Indicative values for
+one device are provided in <a class="reference internal" href="#tab-calculation-moorings"><span class="std std-numref">Fig. 7.60</span></a>.</p>
+<figure class="align-default" id="id49">
+<span id="tab-calculation-moorings"></span><img alt="../_images/calculation_moorings.png" src="../_images/calculation_moorings.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.60 </span><span class="caption-text">Indicative calculation times for a single device subjected to several wave conditions</span><a class="headerlink" href="#id49" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+</section>
+<section id="installation">
+<span id="tech-installation"></span><h2><span class="section-number">7.4. </span>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>As any other computational module, the Installation module aims to solve a given
+physical problem and return the required outputs. However, unlike the upstream
+computational modules, no physical array sub-component is selected nor designed
+as part of the BoM. In contrast, the Installation module provides optimal
+logistic solutions by selecting feasible vessels, ports and equipment to
+accomplish the installation phase. The optimal logistic solutions are those
+minimising the overall cost of each logistic phase.</p>
+<section id="id14">
+<h3><span class="section-number">7.4.1. </span>Requirements<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<section id="id15">
+<h4><span class="section-number">7.4.1.1. </span>User Requirements<a class="headerlink" href="#id15" title="Link to this heading"></a></h4>
+<p>The Installation module seeks to minimise the cost of installing all
+components/sub-systems chosen by the three upstream computational modules (i.e.
+Hydrodynamics, the Electrical Sub-Systems and Moorings and Foundations). In
+other words, the Installation module covers the following elements:</p>
+<ul class="simple">
+<li><p>Installation of wave or tidal devices; as positioned by the Hydrodynamics
+module</p></li>
+<li><p>Installation of the electrical infrastructure components; as designed by the
+Electrical Sub-Systems module</p></li>
+<li><p>Installation of the moorings &amp; foundations; as designed by the Moorings and
+Foundations module</p></li>
+</ul>
+<p>There are nine logistic phases under consideration which cover the OEC device
+and the entire BoM as compiled by upstream computational modules, as listed
+below:</p>
+<ul class="simple">
+<li><p>Installation of OEC devices</p></li>
+<li><p>Installation of driven pile foundations</p></li>
+<li><p>Installation of gravity based structures</p></li>
+<li><p>Installation of mooring systems</p></li>
+<li><p>Installation of static export power cables</p></li>
+<li><p>Installation of static inter-array power cables</p></li>
+<li><p>Installation of dynamic power cables</p></li>
+<li><p>Installation of offshore collection points</p></li>
+<li><p>Installation of cable external protection</p></li>
+</ul>
+<p>It should be noted that if the user wishes to use the Installation module to
+assess the installation of only a restricted part of the entire BoM (comprising
+devices, moorings &amp; foundations and the electrical infrastructure), then the
+quantity of the item to be ignored by the Installation module should be set to
+“None”. For example, this allows the user to evaluate only the installation of
+the devices while disregarding the installation of the other components. In
+this mode of operation, the commissioning date will be given as the moment when
+all the components required to be installed, have been completed. There is no
+estimation of the duration of installation phases that have not been requested
+for simulation.</p>
+</section>
+<section id="id16">
+<h4><span class="section-number">7.4.1.2. </span>Software Design Requirements<a class="headerlink" href="#id16" title="Link to this heading"></a></h4>
+<p>As for the logistic functions, details of the algorithms embedded in the
+Installation module can be found in Deliverable 5.6 (DTOcean, 2015h). Only
+minor features extend the logistic functions to form the Installation module,
+which are:</p>
+<ul class="simple">
+<li><p>an installation procedure definition sub-module</p></li>
+<li><p>the selection of the base installation port corresponding to the port from
+which all marine operations necessary to complete the installation phase will
+be departing from and</p></li>
+<li><p>an optimisation routine to find the most economically attractive logistic
+solution to carry out all steps of the installation phase</p></li>
+</ul>
+</section>
+</section>
+<section id="id17">
+<h3><span class="section-number">7.4.2. </span>Architecture<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<p>The working principle of the Installation module progresses from the collection
+of all inputs until the generation of the formatted outputs.</p>
+<p>In summary, the Installation module comprises the following components:</p>
+<ul>
+<li><p>An external logistic phase sub-module: this is where the operation sequences
+and vessels &amp; equipment combinations are defined for all logistic phases</p></li>
+<li><p>An installation procedure definition sub-module which is divided into two
+functions;</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>One defining the scheduling rules to determine the sequence of the
+logistic phases; this function makes use of default “Gant chart” rules to
+establish the relationship between logistic phases in terms of
+requirements to have some components of the bill of material already
+installed prior to install another one. For instance, this function
+assumes by default that the OECs must always be installed only once the
+entire electrical infrastructure and the moorings/foundations have been
+deployed at site</p></li>
+<li><p>Another function selecting the base installation port; the selection
+of the base installation port follows a twofold sequence. First, only
+ports having at least one quay that can accommodate the largest item from
+the bill of material are kept (it is also verified that the port possesses
+a dry dock if it is a requirement for the device assembly/load out).
+Secondly, the nearest port to the centre of the lease area specified by
+the user is selected</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Logistic functions assessment sub-module: it contains the core assessment of
+all marine operations required to complete the installation phase and must
+complete two roles:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The selection of suitable maritime infrastructure: characterises the
+logistic requirements associated with the port, vessel(s) and equipment
+for each logistic phase and subsequently filters out only the technically
+feasible solutions</p></li>
+<li><p>The performance assessment of logistic phases: performs the assessment
+of each logistic phase respectively in terms of time scheduling, cost,
+environmental impact and risk value</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>An optimisation routine: the most inexpensive feasible logistic solution is
+chosen for each logistic phase. Ultimately, the combination of the optimal
+solutions for each logistic phase forms the overall optimal installation
+phase solution</p></li>
+</ul>
+<p>The optimisation routine internal to the Installation module simply consists of
+isolating the feasible logistic solutions which returned the minimum total cost
+for a given logistic phase <span class="math notranslate nohighlight">\(C_{lp}\)</span>. At the end of the Installation
+module, the outputs are sorted and formatted in the most convenient way for
+future results presentations. Full details of the calculation of <span class="math notranslate nohighlight">\(C_{lp}\)</span>
+can be found in (DTOcean, 2015h). Furthermore, the default values tables are
+also available in the same deliverable.</p>
+<section id="logistic-functions">
+<h4><span class="section-number">7.4.2.1. </span>Logistic Functions<a class="headerlink" href="#logistic-functions" title="Link to this heading"></a></h4>
+<p>The purpose of the logistic functions is to provide both the Installation module and the Operations and Maintenance module with the means to evaluate marine operations that are called “logistic phases”. For each logistic phase, a common set of logistic functions are designed. These logistic functions consist of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Defining the default operation sequences (breakdown of the logistic phase into individual task starting from mobilisation until demobilisation) as well as defining the default vessel(s) &amp; equipment combinations that can carry out the logistic phase</p></li>
+<li><p>Characterizing the logistic requirements in terms of port, vessel(s) and equipment</p></li>
+<li><p>Selecting technically and physically feasible solutions of port/vessel(s)/equipment</p></li>
+<li><p>Assessing the performance of these feasible solutions in terms of:</p>
+<ul>
+<li><p>Schedule (or time efficiency)</p></li>
+<li><p>Cost</p></li>
+<li><p>Environmental impact</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>It is not expected for the calling computational modules to define the default operation sequences and vessel(s) &amp; equipment combinations, thus the first scientific operations underlying the logistic functions is the characterization of the logistic requirements and subsequent selection of the feasible maritime infrastructure. This process is governed by the “feasibility functions”. For each logistic phase, a set of dedicated feasibility functions, responding to the specific characteristics of the logistic operations to be conducted, are defined. It should be noted that a large number of feasibility functions are shared across logistic phases.</p>
+<p>Table 6.14 below exemplifies how such feasibility functions are implemented for the port, vessel and equipment, respectively.</p>
+<p>In essence, the feasibility functions consist of Boolean operations and inequalities relating array design inputs (typically provided by the end-user or computed by upstream computational modules) to parameters of the mar- itime infrastructure database (ports, vessels and equipment).</p>
+<p>In this manual, the comprehensive list of all feasibility functions will
+not be depicted. For further information, the reader is invited to refer to
+Deliverable 5.4 for the Installation module (DTOcean, 2015f) and Deliverable
+6.5 for the O&amp;M module (DTOcean, 2015g).</p>
+<p>Nevertheless, for illustration the tables below exemplify how such
+feasibility functions are implemented for the port, vessel and equipment,
+respectively.</p>
+<p>In essence, the feasibility functions consist of Boolean operations and
+inequalities relating array design inputs (typically provided by the end-user
+or computed by upstream computational modules) to parameters of the maritime
+infrastructure database (ports, vessels and equipment).</p>
+<figure class="align-default" id="id50">
+<img alt="../_images/port_feasibility.png" src="../_images/port_feasibility.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.61 </span><span class="caption-text">Port feasibility functions during the installation of wave or tidal energy devices</span><a class="headerlink" href="#id50" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id51">
+<img alt="../_images/vessel_feasibility.png" src="../_images/vessel_feasibility.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.62 </span><span class="caption-text">Crane barge or vessel feasibility functions for the installation of wave or tidal energy devices</span><a class="headerlink" href="#id51" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id52">
+<img alt="../_images/rov_feasibility.png" src="../_images/rov_feasibility.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.63 </span><span class="caption-text">ROV feasibility functions for the installation of a mooring system</span><a class="headerlink" href="#id52" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A subset of feasibility functions are also defined in order to ensure the
+compatibility of the port/vessel(s)/equipment combinations. These functions are
+also inequalities and Boolean operations which essentially verify that the
+vessel(s) can be accommodated by the port and that the equipment will fit in
+the corresponding vessel(s).</p>
+<p>In addition to the feasibility functions, there exists a second category of
+algorithms which are named the “performance functions”. Once technically and
+physically suitable combinations of port/vessel(s)/equipment have been
+identified, the purpose of the performance functions to discriminate between
+them based on performance.</p>
+<p>The first executed performance function provides a time duration estimate of the
+logistic phase, denoted <span class="math notranslate nohighlight">\(T_{lp}\)</span>. The total time <span class="math notranslate nohighlight">\(T_{lp}\)</span> is the
+sum of the time spend at port <span class="math notranslate nohighlight">\(T_{port}\)</span>, the waiting time for a
+satisfactory weather window <span class="math notranslate nohighlight">\(T_{wind}\)</span> and the time spent at sea
+<span class="math notranslate nohighlight">\(T_{sea}\)</span>, as summarised in (9) below:</p>
+<div class="math notranslate nohighlight">
+\[T_{lp} = T_{port} + T_{wait} + T_{sea}\]</div>
+<p>To access the details of how each element introduced in (9) is calculated, the
+reader is encouraged to read through the section about the “scheduling
+functions” in Deliverable 5.6 (DTOcean, 2015h).</p>
+<p>The second performance function concerns the cost estimation. In its generic
+form, the cost of a logistic phase <span class="math notranslate nohighlight">\(C_{lp}\)</span> simply aggregates the port
+charges <span class="math notranslate nohighlight">\(C_{port}\)</span> and the expenses due to the marine operations
+<span class="math notranslate nohighlight">\(C_{sea}\)</span>. This can be expressed as shown in (10):</p>
+<div class="math notranslate nohighlight">
+\[C_{lp} = C_{port} + C_{sea}\]</div>
+<p>A description of each element of (10) can be found in Deliverable 5.6 (DTOcean,
+2015h). It also details the requirements for the environmental functions, the
+last item of the performance functions. Five environmental impacts are assessed
+by the logistic functions, the results of which are delivered to the
+environmental impact assessment thematic algorithm.</p>
+<p>The logistic functions are required to:</p>
+<ul class="simple">
+<li><p>Define the logistic phase in terms of operation sequencing and default
+vessel(s) &amp; equipment combinations</p></li>
+<li><p>Characterise the logistic requirements (first step of the feasibility
+functions)</p></li>
+<li><p>Select suitable maritime infrastructure (second step of the feasibility
+functions)</p></li>
+<li><p>Conduct a performance assessment of all feasible logistic solutions in terms
+of time efficiency, cost and environmental impact</p></li>
+</ul>
+<p>The inputs, outputs and internal dataflow of the logistic functions are
+schematically represented in Appendix E. On the left side, all “external”
+inputs, originating from the end-user or generated by upstream computational
+modules (including the Hydrodynamics, the Electrical sub-system and the
+Moorings &amp; Foundations modules), are shown. On the right side, the “internal”
+inputs, accounting for the maritime infrastructure database and default values,
+are placed. Unlike “external” inputs, “internal” inputs are established by the
+developers of the logistic functions and the Installation module, i.e. they
+will not be exposed to the user.</p>
+<p>In addition to the external inputs, there are a number of “internal” inputs
+within the logistic functions. The maritime infrastructure is a core object
+that must be accessed when running the logistic functions. While the
+comprehensive list of the inputs can be found in Deliverable 5.3, these can be
+summarised as:</p>
+<ul>
+<li><p>Port database: detailed information about European ports with the following
+parameter categories:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>General Information (13 parameters)</p></li>
+<li><p>Port Terminal Specification (17 parameters)</p></li>
+<li><p>Port Cranes, Support, Accessibilities and Certifications (16
+parameters)</p></li>
+<li><p>Manufacturing Capabilities (8 parameters)</p></li>
+<li><p>Economic Assessment (8 parameters)</p></li>
+<li><p>Contact Details (4 parameters)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Vessel database: detailed information about each vessel type considered in
+DTOcean with the following parameter categories:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>General Information (9 parameters)</p></li>
+<li><p>Main Dimensions and Technical Capabilities (18 parameters)</p></li>
+<li><p>Maximum Operational Working Conditions (8 parameters)</p></li>
+<li><p>On-board Equipment Specifications (~34 parameters)</p></li>
+<li><p>Economic Assessment (4 parameters)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Equipment database: detailed information about each equipment types
+considered in DTOcean with the following parameter categories (the number of
+parameters varies from one equipment type to another):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Metrology (min. 4 parameters)</p></li>
+<li><p>Performance (min. 2 parameters)</p></li>
+<li><p>Support Systems (min. 2 parameters)</p></li>
+<li><p>Economic Assessment (min. 2 parameters)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Finally, default input values must also be provided to the logistic functions.
+It is import that the user is aware of these default values and so they should
+be made available to them prior to using the sub-module or by any module that
+interfaces with it. Common default values pertaining to logistic phases
+associated with both the installation and O&amp;M modules include:</p>
+<ul class="simple">
+<li><p>Average fixed duration values of individual logistic operations</p></li>
+<li><p>Safety factors relating to selected feasibility functions</p></li>
+<li><p>Operational Limit Condition (OLC) values for specific individual logistic
+operations</p></li>
+</ul>
+<p>Once all inputs are correctly passed into the logistic functions, the evaluation
+of the feasible logistic solutions and performance assessment will
+approximately consume between 2 to 10 seconds for a single logistic phase. It
+should be noted that this rough wall-clock time estimation is based on
+preliminary test run cases which do not represent the full scope (i.e. not all
+logistic phases covered in the installation and O&amp;M modules have been tested
+to-date). The more feasible logistic solutions (i.e. the number of suitable
+combinations of port/vessel(s)/equipment) and the more OLC, the more time is
+required for the logistic functions to run for a given logistic phase. Finally,
+it should be noted that this computational time estimate excludes the estimate
+of the time spent at sea.</p>
+<p>The outputs of the logistic functions are:</p>
+<ul class="simple">
+<li><p>The list of all logistic requirements associated with the logistic phase</p></li>
+<li><p>The selected suitable combinations of port/vessel(s)/equipment associated
+with the logistic phase</p></li>
+<li><p>The schedule assessment (including the total time <span class="math notranslate nohighlight">\(T_{lp}\)</span>) of each
+feasible logistic solution associated with the logistic phase</p></li>
+<li><p>The cost assessment (including the total cost <span class="math notranslate nohighlight">\(C_{lp}\)</span>) of each
+feasible logistic solution associated with the logistic phase</p></li>
+<li><p>The environmental impact assessment (including the final score of the five
+environmental functions concerned with the logistic functions) of each
+feasible logistic solution associated with the logistic phase</p></li>
+</ul>
+<p>These outputs are assembled in a dictionary with the characteristics shown in the next table.</p>
+<figure class="align-default" id="id53">
+<img alt="../_images/output_logistic.png" src="../_images/output_logistic.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.64 </span><span class="caption-text">Output dictionary of the logistic functions</span><a class="headerlink" href="#id53" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="id18">
+<h3><span class="section-number">7.4.3. </span>Functional Specification<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<p>In essence, the list of inputs for the Installation module is the same as the
+one for the logistic functions provided before with only three
+additional pandas DataFrame tables:</p>
+<ul class="simple">
+<li><p>Vertical penetration rates for all piling equipment in all soil types
+considered in the scope of the DTOcean project</p></li>
+<li><p>Horizontal progress rates for all cable trenching/laying equipment in all
+soil types considered in the scope of the DTOcean project</p></li>
+<li><p>Default Gantt chart rules for the installation planning</p></li>
+</ul>
+<p>Similar to the logistic functions, the main effort to get the Installation
+module running resides in the preparation of the numerous inputs. Further to
+the four pandas DataFrames (‘site’, ‘metocean’, ’device’, ‘sub_device’ as
+depicted in Appendix F) the user must enter, it is also strongly recommended
+that the user overrides the default values when more accurate data concerning
+the ocean energy project is available.</p>
+<p>Assuming all upstream computational modules have successfully generated the
+outputs required to feed the Installation module, no intervention from the user
+is required other than inputting the aforementioned four tables. The
+Installation module terminates with the formatting of the outputs. Results
+obtained through the feasibility functions for the nine installation logistic
+phases convene in a predicted installation plan which contains:</p>
+<ul class="simple">
+<li><p>starting and ending dates of all sub-array components installation phases
+together with the estimated waiting time</p></li>
+<li><p>selected maritime infrastructure per marine operation</p></li>
+<li><p>cost breakdown per logistic phase, and</p></li>
+<li><p>environmental scores per logistic phase</p></li>
+</ul>
+<p>The Installation module returns the dictionary output of the logistic functions
+presented in Section 6.5.3 for each logistic phase the user wishes to be
+considered by the Installation module.</p>
+</section>
+</section>
+<section id="operations-and-maintenance">
+<span id="tech-operations"></span><h2><span class="section-number">7.5. </span>Operations and Maintenance<a class="headerlink" href="#operations-and-maintenance" title="Link to this heading"></a></h2>
+<p>The purpose of the “Operations and Maintenance” (O&amp;M) module is to minimise the
+impact of the O&amp;M activities on the LCOE. This will be done by calculation /
+simulation of a cost optimised full operational cycle O&amp;M approach, where
+different strategies are combined and the actual dates of performance for the
+individual O&amp;M actions (inspections, maintenance, repair) are optimised with
+respect to the starting dates and the possibility of parallel scheduling. In an
+early stage of the DTOcean project, it was decided to perform this optimisation
+process on a time based approached. Therefore, the module is designed to
+simulate the full O&amp;M life cycle of an OEC device array by distributing the
+possible maintenance operations over the entire operational phase (e. g. 25
+years) of the array.</p>
+<p>The following sections describe the required setup steps and the data to be
+provided by the user.  Furthermore, the implementation of the module with a
+description of the developed algorithms, the software structure and the
+definition of the interface for data exchange with other modules (via the core
+module) is given.</p>
+<section id="id19">
+<h3><span class="section-number">7.5.1. </span>Requirements<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<section id="id20">
+<h4><span class="section-number">7.5.1.1. </span>User Requirements<a class="headerlink" href="#id20" title="Link to this heading"></a></h4>
+<p>The purpose of the O&amp;M module is to simulate the time domain based full life
+cycle O&amp;M activities of an OEC array. For this purpose, a maintenance plan will
+be generated for each relevant component as defined by the user. Everything
+inside the array will be handled as a component, i.e. a component can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>an infra structure item, e. g. the export cable, the sub-station(s),
+subsea connectors, switch gear, cable sections in the internal array grid,
+etc.</p></li>
+<li><p>an entire device (if no deeper level of detail is required)</p></li>
+<li><p>components of a device (level of detail will be restricted to the Equimar
+(Ingram et al., 2011) definition with the four major sub-systems:
+hydrodynamic converter, PTO, reaction and controller)</p></li>
+</ul>
+</div></blockquote>
+<p>The user is can select one of three desired maintenance approaches
+(“corrective”, “calendar based”, “condition based” (DTOcean, 2014a)) or
+meaningful combinations of it. The individual maintenance approaches will be
+further detailed by use of a few parameters, which are described in the
+following sections. For each component a maintenance plan is generated, and an
+example can be seen in the <a class="reference internal" href="#fig-maintenance-plan-tech"><span class="std std-numref">Fig. 7.65</span></a>.</p>
+<figure class="align-default" id="id54">
+<span id="fig-maintenance-plan-tech"></span><img alt="../_images/maintenance_plan.png" src="../_images/maintenance_plan.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.65 </span><span class="caption-text">The Schematic overview of a maintenance plan</span><a class="headerlink" href="#id54" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id21">
+<h4><span class="section-number">7.5.1.2. </span>Software Design Requirements<a class="headerlink" href="#id21" title="Link to this heading"></a></h4>
+<p>The purpose of the O&amp;M module is the modelling of the time domain lifecycle O&amp;M
+methodology. The O&amp;M module simulates all operation and maintenance activities
+of the OEC array over its lifetime in the time domain. Costs related to the O&amp;M
+activities will be calculated and added to the overall LCOE figure. The O&amp;M
+module can be used to understand and optimise the O&amp;M strategy of OEC array in
+the planning phase of a project. The minimisation of the maintenance cost will
+help the decision maker to choose cost-optimal solutions.</p>
+<p>Maintenance is defined as the combination of all technical and administrative
+actions intended to retain an item in, or restore it to, a state in which it
+can perform its required function (IEEE, 2000). The
+<a class="reference internal" href="#fig-maintenance-strategies"><span class="std std-numref">Fig. 7.66</span></a> illustrates a common classification of
+maintenance strategies, which is based on the standard SS-EN 13306 (SIS Forlag,
+2001).</p>
+<figure class="align-default" id="id55">
+<span id="fig-maintenance-strategies"></span><img alt="../_images/maintenance_strategies.png" src="../_images/maintenance_strategies.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.66 </span><span class="caption-text">Types of maintenance strategies, partly adapted from (SIS Forlag, 2001).</span><a class="headerlink" href="#id55" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The maintenance strategies considered in the DTOcean project are defined as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Corrective maintenance</strong> is due to an unexpected failure and is intended to
+restore an item/component to a state in which it can perform its required
+function (IEEE, 2000)</p></li>
+<li><p><strong>Condition-based maintenance</strong> is a type of preventive maintenance based on a
+response to the monitoring information available (SIS Forlag, 2001). It
+consists of all maintenance strategies involving inspections (noise, visual,
+etc.) or permanently installed Condition Monitoring Systems (CMS) to decide
+on the main- tenance actions</p></li>
+<li><p><strong>Calendar-based (Time-based) maintenance</strong> is a type of preventive
+maintenance carried out in accordance with established intervals of time or
+number of units independent of any conditioning investigation (SIS Forlag,
+2001). It is suitable for failures that are age-related and for which the
+probability distribution of failure can be established based on fixed time
+intervals</p></li>
+</ul>
+</div></blockquote>
+<p>The O&amp;M costs are known to be an important part of the life cycle OPEX cost of
+MRE projects. In offshore wind farms, O&amp;M contributes 15-30 % of the total LCOE
+(Engels et al., 2009). Therefore it is important to develop cost-effective O&amp;M
+concepts to help MRE projects to be competitive with offshore wind. The
+optimisation of these concepts addresses the overall resources (personnel and
+equipment) required to execute the maintenance activities, which inherently
+include the logistical support.</p>
+<p>To model the individual behaviour of components of OEC array devices, the
+following items need to be considered:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Component annual failure rate</p></li>
+<li><p>Effect of the failure of the component to other components or devices</p></li>
+<li><p>The optimised mixture of maintenance strategies to keep the array devices
+operational</p></li>
+<li><p>The requirements of the maintenance processes of all components with
+respect to time/duration, ves- sels/equipment, spare parts and personnel</p></li>
+</ul>
+</div></blockquote>
+<p>A typical maintenance process is depicted schematically in the
+<a class="reference internal" href="#fig-maintenance-process"><span class="std std-numref">Fig. 7.67</span></a> below. All maintenance strategies can be
+simulated with this process plan. The difference in handling the strategies is
+mostly setting the time parameters to the respective values. For example, for a
+calendar/condition based maintenance activity, the “T_Organisation” will be
+significantly shorter, since the organisational and preparatory tasks (booking
+of vessels &amp; equipment, mobilising personnel, ordering of spare parts, etc.)
+can be done before the scheduled operation starts. Another example is a simple
+inspection, for which the “T_Logistic” can be set to zero because there is no
+need for ordering spare parts.</p>
+<figure class="align-default" id="id56">
+<span id="fig-maintenance-process"></span><img alt="../_images/maintenance_process.png" src="../_images/maintenance_process.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.67 </span><span class="caption-text">Typical maintenance process</span><a class="headerlink" href="#id56" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The definition of calendar based maintenance is simply done by setting the
+interval (e. g. “annual”, “semi-annual”, etc.). Condition based maintenance
+requires the definition of a “state of health” (SOH) threshold, below which
+maintenance is mandatory for the component. For this, it is assumed that at the
+installation / commissioning of an OEC device or after repair / replacement
+activities, the SOH of a component will be 100%. A linear interpolation
+simulates the SOH of the considered component. The SOH limit in % that triggers
+the condition based maintenance is a parameter of the O&amp;M module and will be
+set by user. The slope of the SOH degradation curve is also defined by the user
+(see <a class="reference internal" href="#fig-automated-maintenance"><span class="std std-numref">Fig. 7.68</span></a>).</p>
+<p>In time domain simulation the occurrence of a failure has to be estimated over
+the lifetime of the device. To translate the statistical based failure rates
+back to the time domain, a Binomial or Poisson process can be used. A Poisson
+process is a stochastic process that counts the number of events and the time
+points at which these events occur in a given time interval. The time between
+each pair of consecutive events has an exponential distribution with parameter
+λ (intensity) and each of the inter-arrival times is assumed to be independent
+of other inter-arrival times. <a class="reference internal" href="#fig-poisson-process"><span class="std std-numref">Fig. 7.69</span></a> depicts an example
+for the given random parameters.</p>
+<figure class="align-default" id="id57">
+<span id="fig-automated-maintenance"></span><img alt="../_images/automated_maintenance.png" src="../_images/automated_maintenance.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.68 </span><span class="caption-text">Handling of automated inspection in case of condition-based maintenance</span><a class="headerlink" href="#id57" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id58">
+<span id="fig-poisson-process"></span><img alt="../_images/poisson_process.png" src="../_images/poisson_process.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.69 </span><span class="caption-text">Paths of Poisson process for a 30 year period and a number of 44 events</span><a class="headerlink" href="#id58" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The optimisation algorithm used to minimise the cost of the O&amp;M for the OEC
+array has to fulfil the following case:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Optimisation in case of corrective maintenance</p></li>
+<li><p>Optimisation in case of condition-based maintenance</p></li>
+<li><p>Optimisation in case of calendar-based maintenance</p></li>
+<li><p>Optimisation of the interaction between different maintenance strategies
+(mix strategies)</p></li>
+</ul>
+</div></blockquote>
+<p>The user has the option to define different combinations of maintenance
+strategies. The user may only be interested in the cost optimisation of
+“unplanned corrective maintenance”, for instance. In this case, no optimisation
+of mixed maintenance strategy is necessary because the user is required to
+enforce such a choice. In a second example, the user may be interested in the
+cost optimisation of a mix of “Unplanned corrective maintenance” and “Calendar-
+based maintenance” strategy, in which case the module will calculate the
+optimised solution for the mixed strategy.</p>
+<p><strong>Optimisation in case of corrective maintenance</strong></p>
+<p>The optimisation approach is based on the clustering of corrective maintenance
+events with those of the two other strategies considered in scope, i.e.
+calendar based and condition based. A criterion will be defined by the user as
+the number of days, which will be the time distance to allow clustering. For
+example, if a corrective maintenance action is followed by a calendar based
+maintenance action and/or a foreseeable condition based maintenance action
+within the next “K” days, the two/three operations will be combined to save
+costs for logistics (vessel(s) &amp; equipment charges, transportation, etc.).
+Parameter “K” is user defined.</p>
+<p><strong>Optimisation in case of condition-based maintenance</strong></p>
+<p>In addition to the above mentioned clustering, the value for the SOH threshold,
+at which the condition based main- tenance will be triggered, is an
+optimisation issue. The reason for this is that from a certain SOH on
+downwards, the power output of an OEC will be reduced (“de-rating”) to extend
+the remaining life time of the OEC and its components. This will result in less
+power production and, therefore, reduced energy revenue.</p>
+<p>The de-rating process and the condition based maintenance trigger threshold are
+controlled by user defined pa- rameters. For example, from a SOH value of “X”
+(in “%”) the power output set point will be reduced linearly from rated power
+to zero. At a value of “Y” % SOH, the device will be shut down to avoid serious
+consequential damages. It is 100% &gt; X &gt; Y (Y should be at least 25%).</p>
+<p><strong>Optimisation in case of calendar-based</strong></p>
+<p>To optimise the calendar based maintenance, either the time interval between two
+maintenance actions (when a scalar parameter is defined) or the fixed dates for
+the start of all calendar based maintenance actions during the operational
+phase can be defined (vector parameter). In principle, a smaller interval for
+the calendar based main- tenance reduces the probability for the occurrence of
+device faults and resulting shut downs. On the other hand, it requires more
+frequent maintenance actions and, therefore, causes higher costs. The parameter
+for controlling the calendar based maintenance interval is defined by the user.
+The vector parameter option allows to model individ- ual maintenance
+approaches/intervals, e. g. the first calendar based maintenance after five
+years and then every two years.</p>
+<p><strong>Optimisation of the interaction between different maintenance strategies (mixed strategies)</strong></p>
+<p>In order to handle the interaction between different maintenance strategies
+(mixed strategies), the following con- cepts are integrated into the
+optimisation process:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Priority definition of maintenance activities</p></li>
+<li><p>Priority definition of OEC devices</p></li>
+<li><p>Time shifting (postponing) of maintenance action on time axis</p></li>
+<li><p>Parallel shift, number of crew</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Priority definition of maintenance activities</strong></p>
+<p>Some priorities for maintenance actions will be defined due to the limitation of
+resources (e.g. vessels, crews). Some examples are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>All maintenance tasks that have already started have highest priority</p></li>
+<li><p>Corrective maintenance has the highest priority, then condition-based
+maintenance, and then calendar-based maintenance</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Priority definition of OEC devices</strong></p>
+<p>A priority parameter controls which device will be repaired first when there is
+only limited resources or time (weather) windows to perform maintenance
+activities.  For example, if there is a problem with the electrical connection
+(circuit break) at two OEC devices, the one which is closer to the hub /
+transformer will be repaired with higher priority since all the following
+devices in the electrical string will also be affected from the damage. The
+priority value for an OEC device will be calculated with respect to its
+position in the electrical string (see <a class="reference internal" href="#fig-failure-occurrence"><span class="std std-numref">Fig. 7.70</span></a>).</p>
+<p>Another item to be considered when calculating the priority is the
+availability of spare parts. If a spare part for the component to be repaired
+in device 1 is higher than for another component in device 2, than device 2
+will get a higher priority and will be maintained first.</p>
+<p><strong>Time shifting</strong></p>
+<p>Shifting of a repair action in case of corrective maintenance to the planned
+calendar based maintenance is an optimisation task and is not trivial. Calendar
+based maintenance will be done in a defined time section in a year (start and
+end date are user parameters). For a shifting of the repair action in case of
+corrective maintenance the device downtime due to the time shifting and,
+therefore, the revenue losses have to be calculated depending on the position
+of device in the electrical grid cable string (see
+<a class="reference internal" href="#fig-failure-occurrence"><span class="std std-numref">Fig. 7.70</span></a> and <a class="reference internal" href="#fig-time-shifting"><span class="std std-numref">Fig. 7.71</span></a>). These losses
+should be compared with the cost advantage of time shifting (e.g. mobilisation
+cost). The result of this comparison controls if time shifting is required.</p>
+<p><strong>Parallel shift, number of crew</strong></p>
+<p>Working with parallel shifts means increasing the number of crew required to
+carry out the work. This results in less time for performing the maintenance
+action (and, consequently, reduced device downtimes) but will result in higher
+personnel costs. The optimisation task is to find the minimum LCOE between the
+loss of energy revenue and the additional personnel costs.</p>
+<figure class="align-default" id="id59">
+<span id="fig-failure-occurrence"></span><img alt="../_images/failure_occurrence.png" src="../_images/failure_occurrence.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.70 </span><span class="caption-text">Failure occurrence in n.2 device</span><a class="headerlink" href="#id59" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id60">
+<span id="fig-time-shifting"></span><img alt="../_images/time_shifting.png" src="../_images/time_shifting.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.71 </span><span class="caption-text">Time shifting of maintenance action</span><a class="headerlink" href="#id60" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="id22">
+<h3><span class="section-number">7.5.2. </span>Architecture<a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
+<p>The functional structure of the O&amp;M module is shown in figure “O&amp;M module
+functional structure”. Inputs to the module are represented by the grey “User
+Definitions” block. Such user definitions can be stored in the database (to be
+read by the core) or provided by the user and then passed to the O&amp;M module.
+Any output calculated in the O&amp;M module will be passed back to the user or the
+core (“Results” block), depending on the mode of operation.</p>
+<p>The module uses embedded code, i.e. it reads the array configuration and the
+failure rates for all components from the Reliability Assessment module (see
+section <a class="reference internal" href="themes.html#tech-reliability"><span class="std std-ref">Reliability Assessment Module</span></a>), which is an external module providing
+information about the array layout and the failure probability (as annual
+failure rates).</p>
+<p>For each of the components in scope, an individual maintenance plans will be
+initialised. In a first request, the logistic functions will be called to
+retrieve the availability of vessels and equipment. If required, the
+maintenance plans will be updated. In a second step, the optimisation loop(s)
+will be performed.</p>
+<p>In the “Maintenance Strategies” block, the array structure will be translated
+into several module objects. With these objects, each representing one
+component, all relevant elements will be generated as class instances in the
+executable code.</p>
+<figure class="align-default" id="id61">
+<span id="fig-om-structure"></span><img alt="../_images/om_structure.png" src="../_images/om_structure.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.72 </span><span class="caption-text">O&amp;M module functional structure</span><a class="headerlink" href="#id61" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Once all of the required classes are initialised, the optimisation loop
+(“Calculation” block) runs and sequentially calls several logistic functions to
+execute the O&amp;M cost calculation. The loop will run until the minimum LCOE is
+achieved. The optimisation process is rather complex and is described in
+(DTOcean, 2015i) in detail.</p>
+<p><strong>Module structure</strong></p>
+<p>The software structure of the O&amp;M module is developed in an object oriented form
+and is depicted in the <a class="reference internal" href="#fig-om-module"><span class="std std-numref">Fig. 7.73</span></a> below.</p>
+<figure class="align-default" id="id62">
+<span id="fig-om-module"></span><img alt="../_images/om_module.png" src="../_images/om_module.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.73 </span><span class="caption-text">O&amp;M module structure</span><a class="headerlink" href="#id62" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Class LCOE_Optimiser</strong>: This class is reserved for the implementation of the
+optimisation strategy of the O&amp;M module. The function “executeOptim()” contains
+the optimisation code which will be called by “ call  ” func- tion of
+LCOE_Optimiser. The class LCOE_Optimiser contains an instance of class
+LCOE_Calculator. The outputs of the O&amp;M module are collected in a Python
+dictionary labelled “outputWP6”.</p>
+<p><strong>Class LCOE_Calculator</strong>: This class is the realisation of the LCOE
+calculation. The function “executeCalc()” will contain the calculation code of
+LCOE which will be called by the “ call  ” function of LCOE_Calculator. The
+class LCOE_Calculator contains an instance of array class.</p>
+<p><strong>Class array (arrayClass.py)</strong>: the class array contains all of the information
+concerning the failure rates, Poisson events etc. in the form of a Python
+dictionary.</p>
+<p><strong>Included Libraries and DTOcean packages</strong></p>
+<p>To calculate of optimal LCOE relating to the O&amp;M activities, the
+dtocean-operation-maintenance package (as the Python package name for the O&amp;M
+module) requires the estimation of the logistic efforts which will be carried
+out in the dtocean-logistics package. For the estimation of the down time of
+the devices the failure rates of components are required which will be
+calculated in dtocean-reliability package.</p>
+<p>Additionally, dtocean-operation-maintenance requires a number of external Python
+libraries for its operation. These include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>pandas</p></li>
+<li><p>numpy</p></li>
+<li><p>SciPy</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id23">
+<h3><span class="section-number">7.5.3. </span>Functional Specification<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<section id="id24">
+<h4><span class="section-number">7.5.3.1. </span>Inputs<a class="headerlink" href="#id24" title="Link to this heading"></a></h4>
+<p>To execute the module, the following information is required:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the array layout with the number of devices, the exact absolute positions of the devices and the total energy yield for each device;</p></li>
+<li><p>the internal grid layout (star, loop, etc.), the type of the substation (simple connector or transformer, switch gear, etc.) and the export cable specification</p></li>
+<li><p>the information about the implementation of the reaction/station-keeping subsystem</p></li>
+<li><p>the information about the availability, cost and access time of any logistic items, i.e. vessels, jack-up barges, cable laying vessels, etc., but also including specialised equipment (ROVs) and expert personnel (special technicians, divers, etc.)</p></li>
+<li><p>the annual failure rates for all components for the OEC of interest</p></li>
+</ul>
+</div></blockquote>
+<p>To run the O&amp;M module, the user needs to define the information describing all relevant maintenance operations which can be applied to the devices in the array. Possible maintenance operations include simple inspections with maintenance technicians using a small crew transfer vessel (CTV) up to the replacement of a nacelle of a tidal turbine using a jack-up barge and a 100t crane. The required parameters are listed in the table below:</p>
+<figure class="align-default" id="id63">
+<img alt="../_images/om_inputs.png" src="../_images/om_inputs.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.74 </span><span class="caption-text">Required user inputs for the Operations and Maintenance module</span><a class="headerlink" href="#id63" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The full list of the O&amp;M module input parameters with their individual key
+values is in the following tables. To help define this data, a respective input
+mask as a template file (Excel format) will be provided on the following pages.
+This template will allow the user to collect all the required information as
+mentioned above.</p>
+<p>The following table contains the description of the parameters which are common
+for all components in the array.</p>
+<img alt="../_images/commonWP6.png" src="../_images/commonWP6.png" />
+<p>The following tables contain the description of the parameters for definition of
+the electrical components in the array’s balance of plant. There are four
+parameter categories to be considered:</p>
+<p>Category 1: “Component”</p>
+<img alt="../_images/cat1component.png" src="../_images/cat1component.png" />
+<p>Category 2: “FailureModes”</p>
+<img alt="../_images/cat2failure.png" src="../_images/cat2failure.png" />
+<p>Category 3: “RepairActions”</p>
+<img alt="../_images/cat3repair.png" src="../_images/cat3repair.png" />
+<p>Category 4: “Inspections”</p>
+<img alt="../_images/cat4inspections.png" src="../_images/cat4inspections.png" />
+<p><strong>Notes</strong>:</p>
+<ol class="arabic simple">
+<li><p>allowed values are “Substation”, “Export Cable”, “Subhub”</p></li>
+<li><p>Definition of FM IDs</p></li>
+</ol>
+<img alt="../_images/fm_id.png" src="../_images/fm_id.png" />
+<ol class="arabic simple" start="3">
+<li><p>CAPEX costs for condition monitoring hardware: it is assumed that the
+hardware is not installed in the component/device during production. If the
+device is purchased with an already installed condition monitoring hardware,
+set value(s) to “0”;</p></li>
+<li><dl class="simple">
+<dt>allowed values for component type</dt><dd><ul class="simple">
+<li><p>Hydrodynamic</p></li>
+<li><p>Pto</p></li>
+<li><p>Control</p></li>
+<li><p>Support structure</p></li>
+<li><p>Mooring line</p></li>
+<li><p>Foundation</p></li>
+<li><p>Dynamic cable</p></li>
+<li><p>Array elec sub-System</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</section>
+</section>
+<section id="id25">
+<h3><span class="section-number">7.5.4. </span>Execution<a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
+<p>Class inputOM: The interface of the dtocean-operation-maintenance package is
+implemented as a Python class. The int function of this class takes the defined
+interface parameters and saves them in internal class parameters. The
+initialisation of the class is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">Farm_OM</span><span class="p">,</span>
+             <span class="n">Component</span><span class="p">,</span>
+             <span class="n">Failure_Mode</span><span class="p">,</span>
+             <span class="n">Repair_Action</span><span class="p">,</span>
+             <span class="n">Inspection</span><span class="p">,</span>
+             <span class="n">RAM_Param</span><span class="p">,</span>
+             <span class="n">Logistic_Param</span><span class="p">,</span>
+             <span class="n">Simu_Param</span><span class="p">,</span>
+             <span class="n">Control_Param</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Farm_OM</span> <span class="o">=</span> <span class="n">Farm_OM</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Component</span> <span class="o">=</span> <span class="n">Component</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Failure_Mode</span> <span class="o">=</span> <span class="n">Failure_Mode</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Repair_Action</span> <span class="o">=</span> <span class="n">Repair_Action</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Inspection</span> <span class="o">=</span> <span class="n">Inspection</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__RAM_Param</span> <span class="o">=</span> <span class="n">RAM_Param</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Logistic_Param</span> <span class="o">=</span> <span class="n">Logistic_Param</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Simu_Param</span> <span class="o">=</span> <span class="n">Simu_Param</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">__Control_Param</span> <span class="o">=</span> <span class="n">Control_Param</span>
+</pre></div>
+</div>
+<p>To run the dtocean-operation-maintenance package the user should make two
+different instances:</p>
+<p>1: An instance of class inputOM:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">inputOMPtr</span> <span class="o">=</span> <span class="n">inputOM</span><span class="p">(</span><span class="n">Farm_OM</span><span class="p">,</span>
+                     <span class="n">Component</span><span class="p">,</span>
+                     <span class="n">Failure_Mode</span><span class="p">,</span>
+                     <span class="n">Repair_Action</span><span class="p">,</span>
+                     <span class="n">Inspection</span><span class="p">,</span>
+                     <span class="n">RAM_Param</span><span class="p">,</span>
+                     <span class="n">Logistic_Param</span><span class="p">,</span>
+                     <span class="n">Simu_Param</span><span class="p">,</span>
+                     <span class="n">Control_Param</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>2: An instance of class LCOE_Optimiser(inputOMPtr): This class contains an
+instance of class inputOM in order to read the model parameters via this
+pointer.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ptrOptim</span> <span class="o">=</span> <span class="n">LCOE_Optimiser</span><span class="p">(</span><span class="n">inputOMPtr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For reading the model parameters different getter functions are defined in class
+inputOM, for instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_Farm_OM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Farm_OM</span>
+</pre></div>
+</div>
+<section id="id26">
+<h4><span class="section-number">7.5.4.1. </span>Outputs<a class="headerlink" href="#id26" title="Link to this heading"></a></h4>
+<p>The execution of the dtocean-operation-maintenance package model is carried out
+by the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">outputOfWP6</span> <span class="o">=</span> <span class="n">ptrOptim</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>outputOfWP6 is the result of the calculations in the O&amp;M module and is a
+dictionary with the keys defined in <a class="reference internal" href="#tab-ptroptim"><span class="std std-numref">Fig. 7.75</span></a>. The grey shaded
+variables are combined in the “oputputWP6” structure.</p>
+<figure class="align-default" id="id64">
+<span id="tab-ptroptim"></span><img alt="../_images/ptrOptim.png" src="../_images/ptrOptim.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.75 </span><span class="caption-text">Dictionary keys for the output of the ptrOptim class</span><a class="headerlink" href="#id64" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Interpretation of env_assess</strong></p>
+<p>The env_assess key is formatted as a pandas Series object. Each index (int
+value) indicates a repair action or an inspection and contains a dictionary
+with keys seen in <a class="reference internal" href="#tab-env-assess"><span class="std std-numref">Fig. 7.76</span></a>. The number of indexes in env_assess
+will match the necessary actions (inspections or repair actions) during the O&amp;M
+module calculations.</p>
+<figure class="align-default" id="id65">
+<span id="tab-env-assess"></span><img alt="../_images/env_assess.png" src="../_images/env_assess.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7.76 </span><span class="caption-text">Keys of the env_assess Series object</span><a class="headerlink" href="#id65" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Interpretation of “outputWP6”</strong></p>
+<p>The table  below gives some examples for values resulting from a test run with
+two devices defined in an array.</p>
+<figure class="align-default">
+<img alt="../_images/outputWP6.png" src="../_images/outputWP6.png" />
+</figure>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="database.html" class="btn btn-neutral float-left" title="6. Database Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="themes.html" class="btn btn-neutral float-right" title="8. DTOcean Themes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v1.0.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.3.4/index.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2026.3.3/index.html">v2026.3.3</a></dd>
+      <dd><a href="../../root-v2026.3.2/index.html">v2026.3.2</a></dd>
+      <dd><a href="../../root-v2026.3.1/index.html">v2026.3.1</a></dd>
+      <dd><a href="../../root-v2.0.0/index.html">v2.0.0</a></dd>
+      <dd><a href="modules.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/index.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
