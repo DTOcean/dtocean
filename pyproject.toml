@@ -127,12 +127,13 @@ scope_prefix = '(docs|root)'
 [tool.semantic_release.commit_parser_options.path_filters.docs]
 paths = ["docs"]
 
+[tool.semantic_release.commit_parser_options.path_filters.dtocean]
+paths = ["packages/dtocean"]
+
 [tool.semantic_release.commit_parser_options.path_filters.dtocean-app]
 paths = ["packages/dtocean-app"]
-max_bump_level = 2
 trigger_bump_level = 4
 
 [tool.semantic_release.commit_parser_options.path_filters.dtocean-hydrodynamics]
 paths = ["packages/dtocean-hydrodynamics"]
-max_bump_level = 2
 trigger_bump_level = 4
