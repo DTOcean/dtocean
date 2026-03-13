@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.2 (2026-03-13)
+
+### Bug Fixes
+
+- Drop support for Python 3.14
+  ([`7bd730c`](https://github.com/DTOcean/dtocean/commit/7bd730c288dbf227e5a6985d7ccbd647173cff4a))
+
+
 ## v4.0.1 (2026-03-12)
 
 ### Bug Fixes
