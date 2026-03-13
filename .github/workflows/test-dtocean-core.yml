@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.14", "3.13", "3.12"]
+        python-version: ["3.13", "3.12"]
     defaults:
       run:
         working-directory: packages/dtocean-core
@@ -99,7 +99,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.14", "3.13", "3.12"]
+        python-version: ["3.13", "3.12"]
     defaults:
       run:
         working-directory: packages/dtocean-core
@@ -135,7 +135,7 @@ jobs:
         uses: ./.github/actions/poetry-install
         with:
           groups: '["audit", "dtocean-app", "dtocean-core"]'
-          python-version: 3.14
+          python-version: 3.13
       - name: Run ruff
         run: |
           poetry run ruff check --output-format github
@@ -162,7 +162,7 @@ jobs:
         uses: ./.github/actions/poetry-install
         with:
           groups: '["dtocean-core"]'
-          python-version: 3.14
+          python-version: 3.13
       - name: Make test project file
         run: poetry run python scripts/make_test_project.py
       - name: Upload artifact
@@ -192,7 +192,7 @@ jobs:
         uses: ./.github/actions/poetry-install
         with:
           groups: '["dtocean-core", "test"]'
-          python-version: 3.14
+          python-version: 3.13
       - name: Download artifacts
         uses: actions/download-artifact@v5
         with:

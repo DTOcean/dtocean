@@ -216,7 +216,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.14", "3.13", "3.12"]
+        python-version: ["3.13", "3.12"]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -379,7 +379,7 @@ jobs:
           lfs: true
           ref: ${{ needs.release.outputs.polite-config-commit_sha }}
 
-      - name: Set up Python 3.14
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.14"
@@ -424,7 +424,7 @@ jobs:
           lfs: true
           ref: ${{ needs.release.outputs.mdo-engine-commit_sha }}
 
-      - name: Set up Python 3.14
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.14"
@@ -469,10 +469,10 @@ jobs:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-core-commit_sha }}
 
-      - name: Set up Python 3.14
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.14"
+          python-version: "3.13"
 
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
@@ -660,10 +660,10 @@ jobs:
           lfs: true
           ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
 
-      - name: Set up Python 3.14
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.14"
+          python-version: "3.13"
 
       - name: Install poetry
         uses: abatilo/actions-poetry@v3
