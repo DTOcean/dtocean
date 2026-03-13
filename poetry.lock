@@ -77,6 +77,7 @@ description = "A Python library for cartographic visualizations with Matplotlib"
 optional = false
 python-versions = ">=3.10"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "cartopy-0.25.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:59c85c83816fa4ba5109726d7d80737bc3871c28c1e25f7b577123d80209e8f2"},
     {file = "cartopy-0.25.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:4ea8d992c21896c498b01258ead30d3c6e9c05466ecf46db55d11d4d96cd24f2"},
@@ -124,6 +125,7 @@ files = [
     {file = "certifi-2026.2.25-py3-none-any.whl", hash = "sha256:027692e4402ad994f1c42e52a4997a9763c646b73e4096e4d5d6db8af1d6f0fa"},
     {file = "certifi-2026.2.25.tar.gz", hash = "sha256:e887ab5cee78ea814d3472169153c2d12cd43b14bd03329a39a9c6e2e80bfba7"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "cftime"
@@ -132,6 +134,7 @@ description = "Time-handling functionality from netcdf4-python"
 optional = false
 python-versions = ">=3.10"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "cftime-1.6.5-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:8ad81e8cb0eb873b33c3d1e22c6168163fdc64daa8f7aeb4da8092f272575f4d"},
     {file = "cftime-1.6.5-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:12d95c6af852114a13301c5a61e41afdbd1542e72939c1083796f8418b9b8b0e"},
@@ -190,6 +193,7 @@ files = [
     {file = "chardet-5.2.0-py3-none-any.whl", hash = "sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970"},
     {file = "chardet-5.2.0.tar.gz", hash = "sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\""}
 
 [[package]]
 name = "charset-normalizer"
@@ -313,6 +317,7 @@ files = [
     {file = "charset_normalizer-3.4.4-py3-none-any.whl", hash = "sha256:7a32c560861a02ff789ad905a2fe94e3f840803362c84fecf1851cb4cf3dc37f"},
     {file = "charset_normalizer-3.4.4.tar.gz", hash = "sha256:94537985111c35f28720e43603b8e7b43a6ecfb2ce1d3058bbe955b73404e21a"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\""}
 
 [[package]]
 name = "click"
@@ -361,6 +366,7 @@ files = [
     {file = "cma-4.4.4-py3-none-any.whl", hash = "sha256:edb6d02eb2aac2d54650f16a8f0c70711ff17445957de7c9de92ff7fd4b7ef38"},
     {file = "cma-4.4.4.tar.gz", hash = "sha256:632bd654b5dce04c0eaa3166679d3e4773ce7a79eab7934e7f363c341b9a8170"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 numpy = "*"
@@ -377,6 +383,7 @@ description = "Colormaps for Oceanography"
 optional = false
 python-versions = ">=3.8"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "cmocean-4.0.3-py3-none-any.whl", hash = "sha256:f2fc1d5e349db122ee0c9eac80bba969aa92dd2806548fce58dc8bef962f309e"},
     {file = "cmocean-4.0.3.tar.gz", hash = "sha256:37868399fb5f41b4eac596e69803f9bfaea49946514dfb2e7f48886854250d7c"},
@@ -414,6 +421,7 @@ files = [
     {file = "configobj-5.0.9-py2.py3-none-any.whl", hash = "sha256:1ba10c5b6ee16229c79a05047aeda2b55eb4e80d7c7d8ecf17ec1ca600c79882"},
     {file = "configobj-5.0.9.tar.gz", hash = "sha256:03c881bbf23aa07bccf1b837005975993c4ab4427ba57f959afdd9d1a2386848"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "contourpy"
@@ -496,6 +504,7 @@ files = [
     {file = "contourpy-1.3.3-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:3d1a3799d62d45c18bafd41c5fa05120b96a28079f2393af559b843d1a966a77"},
     {file = "contourpy-1.3.3.tar.gz", hash = "sha256:083e12155b210502d0bca491432bb04d56dc3432f95a979b429f2848c3dbe880"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 numpy = ">=1.25"
@@ -637,6 +646,7 @@ files = [
     {file = "cycler-0.12.1-py3-none-any.whl", hash = "sha256:85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30"},
     {file = "cycler-0.12.1.tar.gz", hash = "sha256:88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.extras]
 docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
@@ -733,8 +743,9 @@ name = "dtocean"
 version = "0.0.0"
 description = "Design and techno-economic assessment of marine renewable energy arrays."
 optional = false
-python-versions = ">=3.12,<3.15"
+python-versions = ">=3.12,<3.14"
 groups = ["dtocean"]
+markers = "python_version < \"3.14\""
 files = []
 develop = true
 
@@ -752,8 +763,9 @@ name = "dtocean-app"
 version = "4.0.1"
 description = "Main graphical application for the DTOcean tools"
 optional = false
-python-versions = ">=3.12,<3.15"
+python-versions = ">=3.12,<3.14"
 groups = ["dtocean", "dtocean-app"]
+markers = "python_version < \"3.14\""
 files = []
 develop = true
 
@@ -780,8 +792,9 @@ name = "dtocean-core"
 version = "4.0.1"
 description = "The main (non-graphical) interface for the DTOcean tools"
 optional = false
-python-versions = ">=3.12,<3.15"
+python-versions = ">=3.12,<3.14"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = []
 develop = true
 
@@ -826,6 +839,7 @@ python-versions = ">=3.12,<3.15"
 groups = ["dtocean", "dtocean-docs"]
 files = []
 develop = true
+markers = {dtocean = "python_version < \"3.14\""}
 
 [package.source]
 type = "directory"
@@ -863,6 +877,7 @@ python-versions = ">=3.12,<3.15"
 groups = ["dtocean", "dtocean-hydrodynamics"]
 files = []
 develop = true
+markers = {dtocean = "python_version < \"3.14\""}
 
 [package.dependencies]
 cma = "^4.4.1"
@@ -894,6 +909,7 @@ python-versions = ">=3.12,<3.15"
 groups = ["dtocean", "dtocean-app", "dtocean-qt"]
 files = []
 develop = true
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\""}
 
 [package.dependencies]
 chardet = "^5.2.0"
@@ -916,6 +932,7 @@ files = [
     {file = "et_xmlfile-2.0.0-py3-none-any.whl", hash = "sha256:7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa"},
     {file = "et_xmlfile-2.0.0.tar.gz", hash = "sha256:dab3f4764309081ce75662649be815c4c9081e88f0837825f90fd28317d4da54"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "filelock"
@@ -988,6 +1005,7 @@ files = [
     {file = "fonttools-4.61.1-py3-none-any.whl", hash = "sha256:17d2bf5d541add43822bcf0c43d7d847b160c9bb01d15d5007d84e2217aaa371"},
     {file = "fonttools-4.61.1.tar.gz", hash = "sha256:6675329885c44657f826ef01d9e4fb33b9158e9d93c537d84ad8399539bc6f69"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.extras]
 all = ["brotli (>=1.0.1) ; platform_python_implementation == \"CPython\"", "brotlicffi (>=0.8.0) ; platform_python_implementation != \"CPython\"", "lxml (>=4.0)", "lz4 (>=1.7.4.2)", "matplotlib", "munkres ; platform_python_implementation == \"PyPy\"", "pycairo", "scipy ; platform_python_implementation != \"PyPy\"", "skia-pathops (>=0.5.0)", "sympy", "uharfbuzz (>=0.45.0)", "unicodedata2 (>=17.0.0) ; python_version <= \"3.14\"", "xattr ; sys_platform == \"darwin\"", "zopfli (>=0.1.4)"]
@@ -1013,6 +1031,7 @@ files = [
     {file = "geoalchemy2-0.18.4-py3-none-any.whl", hash = "sha256:89e6680dcbb6b8d8c784dcaa889e48ab2783aa42487ee5730fdbd7a7c7ddf6ec"},
     {file = "geoalchemy2-0.18.4.tar.gz", hash = "sha256:5719e2bb040d5c406d5d03425fec87997ce9351843b053ca11373a0f5a31971b"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 packaging = "*"
@@ -1062,7 +1081,6 @@ description = "Lightweight in-process concurrent programming"
 optional = false
 python-versions = ">=3.10"
 groups = ["dtocean", "dtocean-app", "dtocean-core", "mdo-engine"]
-markers = "platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\""
 files = [
     {file = "greenlet-3.3.2-cp310-cp310-macosx_11_0_universal2.whl", hash = "sha256:9bc885b89709d901859cf95179ec9f6bb67a3d2bb1f0e88456461bd4b7f8fd0d"},
     {file = "greenlet-3.3.2-cp310-cp310-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:b568183cf65b94919be4438dc28416b234b678c608cafac8874dfeeb2a9bbe13"},
@@ -1118,6 +1136,7 @@ files = [
     {file = "greenlet-3.3.2-cp314-cp314t-win_amd64.whl", hash = "sha256:c04c5e06ec3e022cbfe2cd4a846e1d4e50087444f875ff6d2c2ad8445495cf1a"},
     {file = "greenlet-3.3.2.tar.gz", hash = "sha256:2eaf067fc6d886931c7962e8c6bede15d2f01965560f3359b27c80bde2d151f2"},
 ]
+markers = {dtocean = "python_version < \"3.14\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")", dtocean-app = "python_version < \"3.14\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")", dtocean-core = "python_version < \"3.14\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")", mdo-engine = "platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\""}
 
 [package.extras]
 docs = ["Sphinx", "furo"]
@@ -1184,6 +1203,7 @@ files = [
     {file = "h5py-3.15.1-cp314-cp314-win_arm64.whl", hash = "sha256:a6d8c5a05a76aca9a494b4c53ce8a9c29023b7f64f625c6ce1841e92a362ccdf"},
     {file = "h5py-3.15.1.tar.gz", hash = "sha256:c86e3ed45c4473564de55aa83b6fc9e5ead86578773dfbd93047380042e26b69"},
 ]
+markers = {dtocean = "python_version < \"3.14\""}
 
 [package.dependencies]
 numpy = ">=1.21.2"
@@ -1276,6 +1296,7 @@ files = [
     {file = "joblib-1.5.3-py3-none-any.whl", hash = "sha256:5fc3c5039fc5ca8c0276333a188bbd59d6b7ab37fe6632daa76bc7f9ec18e713"},
     {file = "joblib-1.5.3.tar.gz", hash = "sha256:8561a3269e6801106863fd0d6d84bb737be9e7631e33aaed3fb9ce5953688da3"},
 ]
+markers = {dtocean = "python_version < \"3.14\""}
 
 [[package]]
 name = "kiwisolver"
@@ -1387,6 +1408,7 @@ files = [
     {file = "kiwisolver-1.4.9-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:fb940820c63a9590d31d88b815e7a3aa5915cad3ce735ab45f0c730b39547de1"},
     {file = "kiwisolver-1.4.9.tar.gz", hash = "sha256:c3b22c26c6fd6811b0ae8363b95ca8ce4ea3c202d3d0975b2914310ceb1bcc4d"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "markdown-it-py"
@@ -1575,6 +1597,7 @@ files = [
     {file = "matplotlib-3.10.8-pp311-pypy311_pp73-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:1ae029229a57cd1e8fe542485f27e7ca7b23aa9e8944ddb4985d0bc444f1eca2"},
     {file = "matplotlib-3.10.8.tar.gz", hash = "sha256:2299372c19d56bcd35cf05a2738308758d32b9eaed2371898d8f5bd33f084aa3"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 contourpy = ">=1.0.1"
@@ -1599,6 +1622,7 @@ python-versions = ">=3.12,<3.15"
 groups = ["dtocean", "dtocean-app", "dtocean-core", "mdo-engine"]
 files = []
 develop = true
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 geoalchemy2 = "^0.18.4"
@@ -1673,6 +1697,7 @@ files = [
     {file = "natsort-8.4.0-py3-none-any.whl", hash = "sha256:4732914fb471f56b5cce04d7bae6f164a592c7712e1c85f9ef585e197299521c"},
     {file = "natsort-8.4.0.tar.gz", hash = "sha256:45312c4a0e5507593da193dedd04abb1469253b601ecaf63445ad80f0a1ea581"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.extras]
 fast = ["fastnumbers (>=2.0.0)"]
@@ -1685,6 +1710,7 @@ description = "Provides an object-oriented python interface to the netCDF versio
 optional = false
 python-versions = ">=3.10"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "netcdf4-1.7.4-cp310-cp310-macosx_13_0_x86_64.whl", hash = "sha256:b1c1a7ea3678db76bf33d14f7e202385d634db38c5e70d8cf4895971023eebb9"},
     {file = "netcdf4-1.7.4-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:d3f9497873454207f9480847d02b1b19a4bc81ad6e9166e1c17d4e2f8f3555d1"},
@@ -1817,6 +1843,7 @@ files = [
     {file = "numpy-2.3.5-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:f16417ec91f12f814b10bafe79ef77e70113a2f5f7018640e7425ff979253425"},
     {file = "numpy-2.3.5.tar.gz", hash = "sha256:784db1dcdab56bf0517743e746dfb0f885fc68d948aba86eeec2cba234bdf1c0"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "openpyxl"
@@ -1829,6 +1856,7 @@ files = [
     {file = "openpyxl-3.1.5-py2.py3-none-any.whl", hash = "sha256:5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2"},
     {file = "openpyxl-3.1.5.tar.gz", hash = "sha256:cf0e3cf56142039133628b5acffe8ef0c12bc902d2aadd3e0fe5878dc08d1050"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 et-xmlfile = "*"
@@ -1844,6 +1872,7 @@ files = [
     {file = "packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484"},
     {file = "packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "pandas"
@@ -1902,6 +1931,7 @@ files = [
     {file = "pandas-3.0.1-cp314-cp314t-win_arm64.whl", hash = "sha256:108dd1790337a494aa80e38def654ca3f0968cf4f362c85f44c15e471667102d"},
     {file = "pandas-3.0.1.tar.gz", hash = "sha256:4186a699674af418f655dbd420ed87f50d56b4cd6603784279d9eef6627823c8"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 numpy = [
@@ -1948,6 +1978,7 @@ files = [
     {file = "pandas_stubs-3.0.0.260204-py3-none-any.whl", hash = "sha256:5ab9e4d55a6e2752e9720828564af40d48c4f709e6a2c69b743014a6fcb6c241"},
     {file = "pandas_stubs-3.0.0.260204.tar.gz", hash = "sha256:bf9294b76352effcffa9cb85edf0bed1339a7ec0c30b8e1ac3d66b4228f1fbc3"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 numpy = ">=1.23.5"
@@ -2052,6 +2083,7 @@ files = [
     {file = "pillow-12.1.1-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:cb9bb857b2d057c6dfc72ac5f3b44836924ba15721882ef103cecb40d002d80e"},
     {file = "pillow-12.1.1.tar.gz", hash = "sha256:9ad8fa5937ab05218e2b6a4cff30295ad35afd2f83ac592e68c0d871bb0fdbc4"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.extras]
 docs = ["furo", "olefile", "sphinx (>=8.2)", "sphinx-autobuild", "sphinx-copybutton", "sphinx-inline-tabs", "sphinxext-opengraph"]
@@ -2098,6 +2130,7 @@ python-versions = ">=3.12,<3.15"
 groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-hydrodynamics", "mdo-engine", "polite-config"]
 files = []
 develop = true
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 configobj = "^5.0.9"
@@ -2166,6 +2199,7 @@ files = [
     {file = "psycopg-3.3.3-py3-none-any.whl", hash = "sha256:f96525a72bcfade6584ab17e89de415ff360748c766f0106959144dcbb38c698"},
     {file = "psycopg-3.3.3.tar.gz", hash = "sha256:5e9a47458b3c1583326513b2556a2a9473a1001a56c9efe9e587245b43148dd9"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 psycopg-binary = {version = "3.3.3", optional = true, markers = "implementation_name != \"pypy\" and extra == \"binary\""}
@@ -2187,7 +2221,6 @@ description = "PostgreSQL database adapter for Python -- C optimisation distribu
 optional = false
 python-versions = ">=3.10"
 groups = ["dtocean", "dtocean-app", "dtocean-core", "mdo-engine"]
-markers = "implementation_name != \"pypy\""
 files = [
     {file = "psycopg_binary-3.3.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:b3385b58b2fe408a13d084c14b8dcf468cd36cbbe774408250facc128f9fa75c"},
     {file = "psycopg_binary-3.3.3-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1bef235a50a80f6aba05147002bc354559657cb6386dbd04d8e1c97d1d7cbe84"},
@@ -2245,6 +2278,7 @@ files = [
     {file = "psycopg_binary-3.3.3-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:e7800e6c6b5dc4b0ca7cc7370f770f53ac83886b76afda0848065a674231e856"},
     {file = "psycopg_binary-3.3.3-cp314-cp314-win_amd64.whl", hash = "sha256:165f22ab5a9513a3d7425ffb7fcc7955ed8ccaeef6d37e369d6cc1dff1582383"},
 ]
+markers = {dtocean = "python_version < \"3.14\" and implementation_name != \"pypy\"", dtocean-app = "python_version < \"3.14\" and implementation_name != \"pypy\"", dtocean-core = "python_version < \"3.14\" and implementation_name != \"pypy\"", mdo-engine = "implementation_name != \"pypy\""}
 
 [[package]]
 name = "pydantic"
@@ -2428,6 +2462,7 @@ files = [
     {file = "pyopengl-3.1.10-py3-none-any.whl", hash = "sha256:794a943daced39300879e4e47bd94525280685f42dbb5a998d336cfff151d74f"},
     {file = "pyopengl-3.1.10.tar.gz", hash = "sha256:c4a02d6866b54eb119c8e9b3fb04fa835a95ab802dd96607ab4cdb0012df8335"},
 ]
+markers = {dtocean = "python_version < \"3.14\""}
 
 [[package]]
 name = "pyparsing"
@@ -2440,6 +2475,7 @@ files = [
     {file = "pyparsing-3.3.2-py3-none-any.whl", hash = "sha256:850ba148bd908d7e2411587e247a1e4f0327839c40e2e5e6d05a007ecc69911d"},
     {file = "pyparsing-3.3.2.tar.gz", hash = "sha256:c777f4d763f140633dcb6d8a3eda953bf7a214dc4eff598413c070bcdc117cbc"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.extras]
 diagrams = ["jinja2", "railroad-diagrams"]
@@ -2451,6 +2487,7 @@ description = "Python interface to PROJ (cartographic projections and coordinate
 optional = false
 python-versions = ">=3.11"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "pyproj-3.7.2-cp311-cp311-macosx_13_0_x86_64.whl", hash = "sha256:2514d61f24c4e0bb9913e2c51487ecdaeca5f8748d8313c933693416ca41d4d5"},
     {file = "pyproj-3.7.2-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:8693ca3892d82e70de077701ee76dd13d7bca4ae1c9d1e739d72004df015923a"},
@@ -2559,6 +2596,7 @@ description = "Create desktop and Start Menu shortcuts for python scripts"
 optional = false
 python-versions = ">=3.10"
 groups = ["dtocean", "dtocean-app"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "pyshortcuts-1.9.7-py3-none-any.whl", hash = "sha256:b5ab1d02717e8b93b3e26b56ffc9c2cb3a1e91fe3138c93dc5727c2f6c1bed9b"},
     {file = "pyshortcuts-1.9.7.tar.gz", hash = "sha256:bf2f28d5e7e5e5d825366ff63251be5518946f1e31a672b5d17fc19909b789fb"},
@@ -2582,6 +2620,7 @@ description = "Pure Python read/write support for ESRI Shapefile format"
 optional = false
 python-versions = ">=2.7"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "pyshp-2.3.1-py2.py3-none-any.whl", hash = "sha256:67024c0ccdc352ba5db777c4e968483782dfa78f8e200672a90d2d30fd8b7b49"},
     {file = "pyshp-2.3.1.tar.gz", hash = "sha256:4caec82fd8dd096feba8217858068bacb2a3b5950f43c048c6dc32a3489d5af1"},
@@ -2601,6 +2640,7 @@ files = [
     {file = "pyside6-6.10.2-cp39-abi3-win_amd64.whl", hash = "sha256:032bad6b18a17fcbf4dddd0397f49b07f8aae7f1a45b7e4de7037bf7fd6e0edf"},
     {file = "pyside6-6.10.2-cp39-abi3-win_arm64.whl", hash = "sha256:65a59ad0bc92525639e3268d590948ce07a80ee97b55e7a9200db41d493cac31"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\""}
 
 [package.dependencies]
 PySide6_Addons = "6.10.2"
@@ -2621,6 +2661,7 @@ files = [
     {file = "pyside6_addons-6.10.2-cp39-abi3-win_amd64.whl", hash = "sha256:c20150068525a17494f3b6576c5d61c417cf9a5870659e29f5ebd83cd20a78ea"},
     {file = "pyside6_addons-6.10.2-cp39-abi3-win_arm64.whl", hash = "sha256:3d18db739b46946ba7b722d8ad4cc2097135033aa6ea57076e64d591e6a345f3"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\""}
 
 [package.dependencies]
 PySide6_Essentials = "6.10.2"
@@ -2640,6 +2681,7 @@ files = [
     {file = "pyside6_essentials-6.10.2-cp39-abi3-win_amd64.whl", hash = "sha256:0741018c2b6395038cad4c41775cfae3f13a409e87995ac9f7d89e5b1fb6b22a"},
     {file = "pyside6_essentials-6.10.2-cp39-abi3-win_arm64.whl", hash = "sha256:db5f4913648bb6afddb8b347edae151ee2378f12bceb03c8b2515a530a4b38d9"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\""}
 
 [package.dependencies]
 shiboken6 = "6.10.2"
@@ -2787,6 +2829,7 @@ files = [
     {file = "python_box-7.4.1-py3-none-any.whl", hash = "sha256:a3b0d84d003882fb6abe505b1b883b3a5dcbf226b0fe168d24bc5ff75d9826e5"},
     {file = "python_box-7.4.1.tar.gz", hash = "sha256:e412e36c25fca8223560516d53ef6c7993591c3b0ec8bb4ec582bf7defdd79f0"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.extras]
 all = ["msgpack", "ruamel.yaml (>=0.19.1)", "toml"]
@@ -2808,6 +2851,7 @@ files = [
     {file = "python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3"},
     {file = "python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 six = ">=1.5"
@@ -2928,7 +2972,7 @@ files = [
     {file = "pywin32-311-cp39-cp39-win_amd64.whl", hash = "sha256:e0c4cfb0621281fe40387df582097fd796e80430597cb9944f0ae70447bacd91"},
     {file = "pywin32-311-cp39-cp39-win_arm64.whl", hash = "sha256:62ea666235135fee79bb154e695f3ff67370afefd71bd7fea7512fc70ef31e3d"},
 ]
-markers = {dtocean = "platform_system == \"Windows\" or sys_platform == \"win32\"", dtocean-app = "platform_system == \"Windows\" or sys_platform == \"win32\"", dtocean-core = "sys_platform == \"win32\""}
+markers = {dtocean = "(platform_system == \"Windows\" or sys_platform == \"win32\") and python_version < \"3.14\"", dtocean-app = "(platform_system == \"Windows\" or sys_platform == \"win32\") and python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\" and sys_platform == \"win32\""}
 
 [[package]]
 name = "pyyaml"
@@ -3012,6 +3056,7 @@ files = [
     {file = "pyyaml-6.0.3-cp39-cp39-win_amd64.whl", hash = "sha256:2e71d11abed7344e42a8849600193d15b6def118602c4c176f748e4583246007"},
     {file = "pyyaml-6.0.3.tar.gz", hash = "sha256:d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "requests"
@@ -3118,6 +3163,7 @@ description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip pres
 optional = false
 python-versions = ">=3.9"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "ruamel_yaml-0.19.1-py3-none-any.whl", hash = "sha256:27592957fedf6e0b62f281e96effd28043345e0e66001f97683aa9a40c667c93"},
     {file = "ruamel_yaml-0.19.1.tar.gz", hash = "sha256:53eb66cd27849eff968ebf8f0bf61f46cdac2da1d1f3576dd4ccee9b25c31993"},
@@ -3136,6 +3182,7 @@ description = "C version of reader, parser and emitter for ruamel.yaml derived f
 optional = false
 python-versions = ">=3.9"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "ruamel_yaml_clib-0.2.15-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:88eea8baf72f0ccf232c22124d122a7f26e8a24110a0273d9bcddcb0f7e1fa03"},
     {file = "ruamel_yaml_clib-0.2.15-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9b6f7d74d094d1f3a4e157278da97752f16ee230080ae331fcc219056ca54f77"},
@@ -3274,6 +3321,7 @@ files = [
     {file = "scikit_learn-1.8.0-cp314-cp314t-win_arm64.whl", hash = "sha256:f28dd15c6bb0b66ba09728cf09fd8736c304be29409bd8445a080c1280619e8c"},
     {file = "scikit_learn-1.8.0.tar.gz", hash = "sha256:9bccbb3b40e3de10351f8f5068e105d0f4083b1a65fa07b6634fbc401a6287fd"},
 ]
+markers = {dtocean = "python_version < \"3.14\""}
 
 [package.dependencies]
 joblib = ">=1.3.0"
@@ -3360,6 +3408,7 @@ files = [
     {file = "scipy-1.17.1-cp314-cp314t-win_arm64.whl", hash = "sha256:200e1050faffacc162be6a486a984a0497866ec54149a01270adc8a59b7c7d21"},
     {file = "scipy-1.17.1.tar.gz", hash = "sha256:95d8e012d8cb8816c226aef832200b1d45109ed4464303e997c5b13122b297c0"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 numpy = ">=1.26.4,<2.7"
@@ -3435,6 +3484,7 @@ files = [
     {file = "shapely-2.1.2-cp314-cp314t-win_amd64.whl", hash = "sha256:0036ac886e0923417932c2e6369b6c52e38e0ff5d9120b90eef5cd9a5fc5cae9"},
     {file = "shapely-2.1.2.tar.gz", hash = "sha256:2ed4ecb28320a433db18a5bf029986aa8afcfd740745e78847e330d5d94922a9"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 numpy = ">=1.21"
@@ -3469,6 +3519,7 @@ files = [
     {file = "shiboken6-6.10.2-cp39-abi3-win_amd64.whl", hash = "sha256:10f3c8c5e1b8bee779346f21c10dbc14cff068f0b0b4e62420c82a6bf36ac2e7"},
     {file = "shiboken6-6.10.2-cp39-abi3-win_arm64.whl", hash = "sha256:20c671645d70835af212ee05df60361d734c5305edb2746e9875c6a31283f963"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\""}
 
 [[package]]
 name = "six"
@@ -3481,6 +3532,7 @@ files = [
     {file = "six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"},
     {file = "six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [[package]]
 name = "smmap"
@@ -3791,6 +3843,7 @@ files = [
     {file = "sqlalchemy-2.0.47-py3-none-any.whl", hash = "sha256:e2647043599297a1ef10e720cf310846b7f31b6c841fee093d2b09d81215eb93"},
     {file = "sqlalchemy-2.0.47.tar.gz", hash = "sha256:e3e7feb57b267fe897e492b9721ae46d5c7de6f9e8dee58aacf105dc4e154f3d"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.dependencies]
 greenlet = {version = ">=1", markers = "platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\""}
@@ -3851,6 +3904,7 @@ files = [
     {file = "threadpoolctl-3.6.0-py3-none-any.whl", hash = "sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb"},
     {file = "threadpoolctl-3.6.0.tar.gz", hash = "sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e"},
 ]
+markers = {dtocean = "python_version < \"3.14\""}
 
 [[package]]
 name = "tomli-w"
@@ -3927,7 +3981,7 @@ files = [
     {file = "typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"},
     {file = "typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"},
 ]
-markers = {docs = "python_version == \"3.12\"", test-postgresql = "python_version == \"3.12\""}
+markers = {docs = "python_version == \"3.12\"", dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\"", test-postgresql = "python_version == \"3.12\""}
 
 [[package]]
 name = "typing-inspection"
@@ -3955,7 +4009,7 @@ files = [
     {file = "tzdata-2025.3-py2.py3-none-any.whl", hash = "sha256:06a47e5700f3081aab02b2e513160914ff0694bce9947d6b76ebd6bf57cfc5d1"},
     {file = "tzdata-2025.3.tar.gz", hash = "sha256:de39c2ca5dc7b0344f2eba86f49d614019d29f060fc4ebc8a417896a620b56a7"},
 ]
-markers = {dtocean = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-app = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-core = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-dummy-module = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-hydrodynamics = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-qt = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", mdo-engine = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", test-postgresql = "sys_platform == \"win32\""}
+markers = {dtocean = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-app = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-core = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-dummy-module = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-hydrodynamics = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-qt = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", mdo-engine = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", test-postgresql = "sys_platform == \"win32\""}
 
 [[package]]
 name = "urllib3"
@@ -3982,6 +4036,7 @@ description = "Bidirectional UTM-WGS84 converter for python"
 optional = false
 python-versions = ">=3.8"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "utm-0.8.1-py3-none-any.whl", hash = "sha256:e3d5e224082af138e40851dcaad08d7f99da1cc4b5c413a7de34eabee35f434a"},
     {file = "utm-0.8.1.tar.gz", hash = "sha256:634d5b6221570ddc6a1e94afa5c51bae92bcead811ddc5c9bc0a20b847c2dafa"},
@@ -4339,6 +4394,7 @@ description = "N-D labeled arrays and datasets in Python"
 optional = false
 python-versions = ">=3.11"
 groups = ["dtocean", "dtocean-app", "dtocean-core"]
+markers = "python_version < \"3.14\""
 files = [
     {file = "xarray-2026.2.0-py3-none-any.whl", hash = "sha256:e927d7d716ea71dea78a13417970850a640447d8dd2ceeb65c5687f6373837c9"},
     {file = "xarray-2026.2.0.tar.gz", hash = "sha256:978b6acb018770554f8fd964af4eb02f9bcc165d4085dbb7326190d92aa74bcf"},
@@ -4369,6 +4425,7 @@ files = [
     {file = "xlrd-2.0.2-py2.py3-none-any.whl", hash = "sha256:ea762c3d29f4cca48d82df517b6d89fbce4db3107f9d78713e48cd321d5c9aa9"},
     {file = "xlrd-2.0.2.tar.gz", hash = "sha256:08b5e25de58f21ce71dc7db3b3b8106c1fa776f3024c54e45b45b374e89234c9"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [package.extras]
 build = ["twine", "wheel"]
@@ -4386,8 +4443,9 @@ files = [
     {file = "xlwt-1.3.0-py2.py3-none-any.whl", hash = "sha256:a082260524678ba48a297d922cc385f58278b8aa68741596a87de01a9c628b2e"},
     {file = "xlwt-1.3.0.tar.gz", hash = "sha256:c59912717a9b28f1a3c2a98fd60741014b06b043936dcecbc113eaaada156c88"},
 ]
+markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version < \"3.14\"", dtocean-core = "python_version < \"3.14\""}
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "265505906da7549d535e1fa3894d3f540659339513c1f7c0ddb28ed8c0b7390c"
+content-hash = "470541ce692af7e2203dfe1e6dcbfe144e58aa7b2ee6cd3199935aa8e63f1908"

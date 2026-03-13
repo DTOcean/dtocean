@@ -6,13 +6,13 @@ package-mode = false
 python = ">=3.12,<3.15"
 
 [tool.poetry.group.dtocean.dependencies]
-dtocean = { path = "packages/dtocean", develop = true }
+dtocean = { path = "packages/dtocean", develop = true, python = "<3.14" }
 
 [tool.poetry.group.dtocean-app.dependencies]
-dtocean-app = { path = "packages/dtocean-app", develop = true }
+dtocean-app = { path = "packages/dtocean-app", develop = true, python = "<3.14" }
 
 [tool.poetry.group.dtocean-core.dependencies]
-dtocean-core = { path = "packages/dtocean-core", develop = true }
+dtocean-core = { path = "packages/dtocean-core", develop = true, python = "<3.14" }
 
 [tool.poetry.group.dtocean-docs.dependencies]
 dtocean-docs = { path = "packages/dtocean-docs", develop = true }

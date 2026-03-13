@@ -5,14 +5,13 @@ license = "GPL-3.0-or-later"
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
 ]
-requires-python = ">=3.12,<3.15"
+requires-python = ">=3.12,<3.14"
 authors = [{ name = "The DTOcean Developers" }]
 maintainers = [{ name = "Mathew Topper", email = "damm_horse@yahoo.co.uk" }]
 dynamic = ["version"]
@@ -76,7 +75,7 @@ line-length = 80
 
 [tool.tox]
 requires = ["tox>=4.19"]
-env_list = ["3.14", "3.13", "3.12", "audit"]
+env_list = ["3.13", "3.12", "audit"]
 
 [tool.tox.env_run_base]
 description = "Run test under {base_python}"
