@@ -99,10 +99,17 @@ jobs:
           sudo apt-get install libegl1 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 x11-utils
           /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
         if: runner.os == 'Linux'
-      - name: Install package
+      - name: Install package (Python<3.14)
+        if: ${{ matrix.python-version != '3.14' }}
         uses: ./.github/actions/poetry-install
         with:
           groups: '["dtocean-app", "dtocean-hydrodynamics", "test", "test-qt"]'
+          python-version: ${{ matrix.python-version }}
+      - name: Install package (Python==3.14)
+        if: ${{ matrix.python-version == '3.14' }}
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["dtocean-hydrodynamics", "test", "test-qt"]'
           python-version: ${{ matrix.python-version }}
       - name: Download large files
         run: |
@@ -129,7 +136,7 @@ jobs:
         uses: ./.github/actions/poetry-install
         with:
           groups: '["audit", "dtocean-app", "dtocean-hydrodynamics"]'
-          python-version: 3.14
+          python-version: 3.13
       - name: Run ruff
         run: |
           poetry run ruff check --output-format github
