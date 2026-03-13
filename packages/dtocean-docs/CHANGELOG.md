@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.4 (2026-03-13)
+
+### Bug Fixes
+
+- Trigger root release on changes to dtocean
+  ([`b4b369a`](https://github.com/DTOcean/dtocean/commit/b4b369a998024149e18c0d8d0eb5d4e6924e9fe0))
+
+
 ## v4.0.3 (2026-03-12)
 
 ### Bug Fixes
