@@ -2,11 +2,92 @@
 name = "dtocean-economics"
 version = "2.0.0"
 description = "Economic assessment module for the DTOcean tools"
-authors = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
+authors = ["The DTOcean Developers"]
+maintainers = ["Mathew Topper <damm_horse@yahoo.co.uk>"]
+license = "GPL-3.0-or-later"
 readme = "README.md"
+repository = "https://github.com/DTOcean/dtocean"
+homepage = "https://dtocean.github.io/dtocean"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/DTOcean/dtocean/issues"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = ">=3.12,<3.15"
+
+[tool.poetry.group.main]
+include-groups = ["dtocean-economics"]
+
+[tool.poetry.group.dtocean-economics.dependencies]
+pandas = "^3.0.1"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+
+[tool.poetry.group.audit]
+optional = true
+
+[tool.poetry.group.audit.dependencies]
+pyright = "^1.1.390"
+ruff = "^0.8.3"
+
+[tool.poetry.group.tox]
+optional = true
+
+[tool.poetry.group.tox.dependencies]
+tox = "<4.47"
+tox-uv = "<1.33.0"
+
+[tool.poetry-monoranger-plugin]
+enabled = true
+monorepo-root = "../../"
+version-pinning-rule = '^'
+
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.ruff]
+line-length = 80
+
+[tool.tox]
+requires = ["tox>=4.19"]
+env_list = ["3.14", "3.13", "3.12", "audit"]
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+skip_install = true
+allowlist_externals = ["poetry"]
+commands_pre = [
+    ["poetry", "sync", "--only", "dtocean-economics", "--only", "test"]
+]
+commands = [
+    ["poetry", "run", "pytest", "tests"]
+]
+
+[tool.tox.env.audit]
+description = "Run audit check on code base"
+skip_install = true
+allowlist_externals = ["poetry"]
+commands_pre = [
+    ["poetry", "sync", "--only", "dtocean-economics", "--only", "audit"]
+]
+commands = [
+    ["poetry", "run", "ruff", "check"],
+    ["poetry", "run", "pyright", "src"]
+]
 
 [build-system]
 requires = ["poetry-core"]
