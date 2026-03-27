@@ -869,6 +869,23 @@ type = "directory"
 url = "packages/dtocean-dummy-module"
 
 [[package]]
+name = "dtocean-economics"
+version = "2.0.0"
+description = "Economic assessment module for the DTOcean tools"
+optional = false
+python-versions = ">=3.12,<3.15"
+groups = ["dtocean-economics"]
+files = []
+develop = true
+
+[package.dependencies]
+pandas = "^3.0.1"
+
+[package.source]
+type = "directory"
+url = "packages/dtocean-economics"
+
+[[package]]
 name = "dtocean-hydrodynamics"
 version = "4.0.2"
 description = "Hydrodynamics module for the DTOcean tools"
@@ -1766,7 +1783,7 @@ version = "2.3.5"
 description = "Fundamental package for array computing in Python"
 optional = false
 python-versions = ">=3.11"
-groups = ["audit", "dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
+groups = ["audit", "dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-economics", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
 files = [
     {file = "numpy-2.3.5-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:de5672f4a7b200c15a4127042170a694d4df43c992948f5e1af57f0174beed10"},
     {file = "numpy-2.3.5-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:acfd89508504a19ed06ef963ad544ec6664518c863436306153e13e94605c218"},
@@ -1880,7 +1897,7 @@ version = "3.0.1"
 description = "Powerful data structures for data analysis, time series, and statistics"
 optional = false
 python-versions = ">=3.11"
-groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
+groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-economics", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
 files = [
     {file = "pandas-3.0.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:de09668c1bf3b925c07e5762291602f0d789eca1b3a781f99c1c78f6cac0e7ea"},
     {file = "pandas-3.0.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:24ba315ba3d6e5806063ac6eb717504e499ce30bd8c236d8693a5fd3f084c796"},
@@ -2846,7 +2863,7 @@ version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
-groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
+groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-economics", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
 files = [
     {file = "python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3"},
     {file = "python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427"},
@@ -3527,7 +3544,7 @@ version = "1.17.0"
 description = "Python 2 and 3 compatibility utilities"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
-groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
+groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-economics", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine"]
 files = [
     {file = "six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"},
     {file = "six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"},
@@ -4004,12 +4021,12 @@ version = "2025.3"
 description = "Provider of IANA time zone data"
 optional = false
 python-versions = ">=2"
-groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine", "test-postgresql"]
+groups = ["dtocean", "dtocean-app", "dtocean-core", "dtocean-dummy-module", "dtocean-economics", "dtocean-hydrodynamics", "dtocean-qt", "mdo-engine", "test-postgresql"]
 files = [
     {file = "tzdata-2025.3-py2.py3-none-any.whl", hash = "sha256:06a47e5700f3081aab02b2e513160914ff0694bce9947d6b76ebd6bf57cfc5d1"},
     {file = "tzdata-2025.3.tar.gz", hash = "sha256:de39c2ca5dc7b0344f2eba86f49d614019d29f060fc4ebc8a417896a620b56a7"},
 ]
-markers = {dtocean = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-app = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-core = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-dummy-module = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-hydrodynamics = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-qt = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", mdo-engine = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", test-postgresql = "sys_platform == \"win32\""}
+markers = {dtocean = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-app = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-core = "python_version < \"3.14\" and (sys_platform == \"win32\" or sys_platform == \"emscripten\")", dtocean-dummy-module = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-economics = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-hydrodynamics = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", dtocean-qt = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", mdo-engine = "sys_platform == \"win32\" or sys_platform == \"emscripten\"", test-postgresql = "sys_platform == \"win32\""}
 
 [[package]]
 name = "urllib3"
@@ -4448,4 +4465,4 @@ markers = {dtocean = "python_version < \"3.14\"", dtocean-app = "python_version 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "470541ce692af7e2203dfe1e6dcbfe144e58aa7b2ee6cd3199935aa8e63f1908"
+content-hash = "f39c3d735b2b0216fd6c744497868e79771534839baa6d9bb5c4464129bb792b"
