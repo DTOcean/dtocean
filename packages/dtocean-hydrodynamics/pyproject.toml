@@ -62,7 +62,7 @@ numpy = "^2.3.5"
 pandas = "^3.0.1"
 pyopengl = "^3.1.7"
 scikit-learn = "^1.6.0"
-scipy = "^1.14.1"
+scipy = "^1.17.0"
 shapely = "^2.0.6"
 polite-config = { path = "../polite-config", develop = true }
 contourpy = "^1.3.1"

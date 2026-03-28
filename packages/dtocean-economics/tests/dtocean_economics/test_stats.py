@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from scipy.stats import norm
 
-from dtocean_core.utils.stats import (
+from dtocean_economics.stats import (
     BiVariateKDE,
     UniVariateKDE,
     get_standard_error,
