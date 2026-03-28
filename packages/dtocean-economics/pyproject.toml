@@ -9,13 +9,13 @@ readme = "README.md"
 repository = "https://github.com/DTOcean/dtocean"
 homepage = "https://dtocean.github.io/dtocean"
 classifiers = [
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.14",
-  "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.12",
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-  "Operating System :: Microsoft :: Windows",
-  "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
 ]
 
 [tool.poetry.urls]
@@ -29,6 +29,7 @@ include-groups = ["dtocean-economics"]
 
 [tool.poetry.group.dtocean-economics.dependencies]
 pandas = "^3.0.1"
+scipy = "^1.17.0"
 
 [tool.poetry.group.test]
 optional = true
@@ -36,6 +37,16 @@ optional = true
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
+
+[tool.poetry.group.dtocean-core]
+optional = true
+
+[tool.poetry.group.dtocean-core.dependencies]
+dtocean-core = { path = "../dtocean-core", develop = true }
+
+[tool.poetry.group.test-extras]
+optional = true
+include-groups = ["dtocean-core"]
 
 [tool.poetry.group.audit]
 optional = true
@@ -71,22 +82,48 @@ description = "Run test under {base_python}"
 skip_install = true
 allowlist_externals = ["poetry"]
 commands_pre = [
-    ["poetry", "sync", "--only", "dtocean-economics", "--only", "test"]
+    [
+        "poetry",
+        "sync",
+        "--only",
+        "dtocean-core",
+        "--only",
+        "dtocean-economics",
+        "--only",
+        "test",
+    ],
 ]
-commands = [
-    ["poetry", "run", "pytest", "tests"]
-]
+commands = [["poetry", "run", "pytest", "tests"]]
 
 [tool.tox.env.audit]
 description = "Run audit check on code base"
 skip_install = true
 allowlist_externals = ["poetry"]
 commands_pre = [
-    ["poetry", "sync", "--only", "dtocean-economics", "--only", "audit"]
+    [
+        "poetry",
+        "sync",
+        "--only",
+        "dtocean-core",
+        "--only",
+        "dtocean-economics",
+        "--only",
+        "audit",
+    ],
 ]
 commands = [
-    ["poetry", "run", "ruff", "check"],
-    ["poetry", "run", "pyright", "src"]
+    [
+        "poetry",
+        "run",
+        "ruff",
+        "check",
+    ],
+    [
+        "poetry",
+        "run",
+        "pyright",
+        "src",
+    ],
 ]
 
 [build-system]
