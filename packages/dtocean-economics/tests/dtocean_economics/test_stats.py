@@ -84,7 +84,7 @@ def test_UniVariateKDE_ppf(gaussian):
 
 def test_UniVariateKDE_ppf_nan(mocker, gaussian):
     mocker.patch(
-        "dtocean_core.utils.stats.optimize.fsolve",
+        "dtocean_economics.stats.optimize.fsolve",
         return_value=[0, 0, 0],
         autospec=True,
     )

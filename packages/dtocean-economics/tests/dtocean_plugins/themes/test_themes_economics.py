@@ -70,7 +70,13 @@ def test_economics_inputs(theme_menu, core, tidal_project, var_tree):
     assert "project.estimate_energy_record" in economics_input_status
 
 
-def test_get_economics_interface(theme_menu, core, tidal_project, var_tree):
+def test_get_economics_interface(
+    inputs_economics,
+    theme_menu,
+    core,
+    tidal_project,
+    var_tree,
+):
     theme_name = "Economics"
 
     project_menu = ProjectMenu()
@@ -79,9 +85,7 @@ def test_get_economics_interface(theme_menu, core, tidal_project, var_tree):
     project_menu.initiate_dataflow(core, project)
 
     economics_branch = var_tree.get_branch(core, project, theme_name)
-    economics_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_economics.pkl")
-    )
+    economics_branch.read_test_data(core, project, inputs_economics)
     economics_branch.read_auto(core, project)
 
     can_execute = theme_menu.is_executable(core, project, theme_name)
@@ -97,7 +101,13 @@ def test_get_economics_interface(theme_menu, core, tidal_project, var_tree):
     assert interface.data.electrical_bom is not None
 
 
-def test_economics_interface_entry(theme_menu, core, tidal_project, var_tree):
+def test_economics_interface_entry(
+    inputs_economics,
+    theme_menu,
+    core,
+    tidal_project,
+    var_tree,
+):
     theme_name = "Economics"
 
     project_menu = ProjectMenu()
@@ -106,9 +116,7 @@ def test_economics_interface_entry(theme_menu, core, tidal_project, var_tree):
     project_menu.initiate_dataflow(core, project)
 
     economics_branch = var_tree.get_branch(core, project, theme_name)
-    economics_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_economics.pkl")
-    )
+    economics_branch.read_test_data(core, project, inputs_economics)
     economics_branch.read_auto(core, project)
 
     can_execute = theme_menu.is_executable(core, project, theme_name)
@@ -127,7 +135,11 @@ def test_economics_interface_entry(theme_menu, core, tidal_project, var_tree):
 
 
 def test_get_economics_interface_estimate(
-    theme_menu, core, tidal_project, var_tree
+    inputs_economics_estimate,
+    theme_menu,
+    core,
+    tidal_project,
+    var_tree,
 ):
     theme_name = "Economics"
 
@@ -137,9 +149,7 @@ def test_get_economics_interface_estimate(
     project_menu.initiate_dataflow(core, project)
 
     economics_branch = var_tree.get_branch(core, project, theme_name)
-    economics_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_economics_estimate.pkl")
-    )
+    economics_branch.read_test_data(core, project, inputs_economics_estimate)
     economics_branch.read_auto(core, project)
 
     can_execute = theme_menu.is_executable(core, project, theme_name)
@@ -156,7 +166,11 @@ def test_get_economics_interface_estimate(
 
 
 def test_economics_interface_entry_estimate(
-    theme_menu, core, tidal_project, var_tree
+    inputs_economics_estimate,
+    theme_menu,
+    core,
+    tidal_project,
+    var_tree,
 ):
     theme_name = "Economics"
 
@@ -166,9 +180,7 @@ def test_economics_interface_entry_estimate(
     project_menu.initiate_dataflow(core, project)
 
     economics_branch = var_tree.get_branch(core, project, theme_name)
-    economics_branch.read_test_data(
-        core, project, os.path.join(DIR_PATH, "inputs_economics_estimate.pkl")
-    )
+    economics_branch.read_test_data(core, project, inputs_economics_estimate)
     economics_branch.read_auto(core, project)
 
     can_execute = theme_menu.is_executable(core, project, theme_name)
