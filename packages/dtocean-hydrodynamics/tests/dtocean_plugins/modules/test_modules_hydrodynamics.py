@@ -284,7 +284,6 @@ def test_tidal_interface_entry_fail(
 
     with pytest.raises(ValueError):
         interface.connect(debug_entry=True)
-        interface.connect(debug_entry=True)
 
 
 def test_convert_results(outputs_wp2_wave):

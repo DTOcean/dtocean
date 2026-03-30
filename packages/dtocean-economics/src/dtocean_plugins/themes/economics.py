@@ -28,6 +28,8 @@ Note:
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
+from typing import Any, Optional
+
 import numpy as np
 import pandas as pd
 
@@ -481,7 +483,14 @@ class EconomicInterface(ThemeInterface):
             energy_record,
             self.data.discount_rate,
         )
+        self._process_result(result, opex_bom, energy_record)
 
+    def _process_result(
+        self,
+        result: dict[str, Optional[Any]],
+        opex_bom: pd.DataFrame,
+        energy_record: pd.DataFrame,
+    ):
         discounted_capex = result["Discounted CAPEX"]
         assert discounted_capex is not None
 
@@ -494,40 +503,9 @@ class EconomicInterface(ThemeInterface):
                 self.data.capex_total - self.data.externalities_capex
             )
 
-        # Build metrics table if possible
-        n_rows = None
-
-        if not opex_bom.empty:
-            n_rows = len(opex_bom.columns) - 1
-        elif not energy_record.empty:
-            n_rows = len(energy_record.columns) - 1
-        else:
+        metrics_table = _get_metrics_table(result, opex_bom, energy_record)
+        if metrics_table is None:
             return
-
-        table_cols = [
-            "LCOE",
-            "LCOE CAPEX",
-            "LCOE OPEX",
-            "OPEX",
-            "Energy",
-            "Discounted OPEX",
-            "Discounted Energy",
-        ]
-
-        metrics_dict = {}
-
-        for col_name in table_cols:
-            col_result = result[col_name]
-            if col_result is not None:
-                values = col_result.values
-                if "Energy" in col_name:
-                    values /= 1e3
-            else:
-                values = [None] * n_rows
-
-            metrics_dict[col_name] = values
-
-        metrics_table = pd.DataFrame(metrics_dict)
 
         self.data.economics_metrics = metrics_table
 
@@ -545,46 +523,11 @@ class EconomicInterface(ThemeInterface):
                 continue
 
             data = metrics_table[key].values
+            assert isinstance(data, np.ndarray)
+            arg_stats = _get_metric_stats(data, arg_root)
 
-            mean = None
-            mode = None
-            lower = None
-            upper = None
-
-            # Catch one or two data points
-            if len(data) == 1:
-                mean = data[0]
-
-            elif len(data) == 2:
-                assert isinstance(data, np.ndarray)
-                mean = data.mean()
-
-            else:
-                assert isinstance(data, np.ndarray)
-
-                try:
-                    distribution = UniVariateKDE(data)
-                    mean = distribution.mean()
-                    mode = distribution.mode()
-
-                    intervals = distribution.confidence_interval(95)
-
-                    if intervals is not None:
-                        lower = intervals[0]
-                        upper = intervals[1]
-
-                except np.linalg.LinAlgError:
-                    mean = data.mean()
-
-            arg_mean = "{}_mean".format(arg_root)
-            arg_mode = "{}_mode".format(arg_root)
-            arg_lower = "{}_lower".format(arg_root)
-            arg_upper = "{}_upper".format(arg_root)
-
-            self.data[arg_mean] = mean
-            self.data[arg_mode] = mode
-            self.data[arg_lower] = lower
-            self.data[arg_upper] = upper
+            for k, v in arg_stats:
+                self.data[k] = v
 
         # Calculate total costs
         lifetime_cost_mean = result["CAPEX"]
@@ -625,63 +568,24 @@ class EconomicInterface(ThemeInterface):
         ):
             return
 
-        energy = metrics_table["Discounted Energy"]
-        opex = metrics_table["Discounted OPEX"] / 1000.0
+        lcoe_metrics = _get_lcoe(metrics_table, discounted_capex)
+        if lcoe_metrics is None:
+            return
 
-        if len(metrics_table["Discounted Energy"]) < 3:
-            mean_lcoe = (discounted_capex / 1000.0 + np.mean(opex)) / np.mean(
-                energy
-            )
+        self.data.lcoe_mean = lcoe_metrics["lcoe_mean"]
+        discounted_opex_base = lcoe_metrics["discounted_opex_base"]
+        discounted_energy_base = lcoe_metrics["discounted_energy_base"]
 
-            self.data.lcoe_mean = mean_lcoe
-            discounted_opex_base = np.mean(opex) * 1000.0
-            discounted_energy_base = np.mean(energy) * 10.0
+        if "lcoe_mode" in lcoe_metrics:
+            self.data.lcoe_mode = lcoe_metrics["lcoe_mode"]
+            self.data.lcoe_mode_opex = lcoe_metrics["lcoe_mode_opex"]
+            self.data.lcoe_mode_energy = lcoe_metrics["lcoe_mode_energy"]
+            self.data.lcoe_pdf = lcoe_metrics["lcoe_pdf"]
 
-        else:
-            try:
-                distribution = BiVariateKDE(opex, energy)
-            except np.linalg.LinAlgError:
-                return
-
-            mean_coords = distribution.mean()
-            self.data.lcoe_mean = (
-                discounted_capex / 1000.0 + mean_coords[0]
-            ) / mean_coords[1]
-
-            mode_coords = distribution.mode()
-            lcoe_mode = (
-                discounted_capex / 1000.0 + mode_coords[0]
-            ) / mode_coords[1]
-
-            self.data.lcoe_mode_opex = mode_coords[0] * 1000
-            self.data.lcoe_mode_energy = mode_coords[1]
-            self.data.lcoe_mode = lcoe_mode
-
-            xx, yy, pdf = distribution.pdf()
-            clevels = pdf_confidence_densities(pdf)
-
-            if clevels:
-                cx, cy = pdf_contour_coords(xx, yy, pdf, clevels[0])
-
-                lcoes = []
-
-                for discounted_opex, discounted_energy in zip(cx, cy):
-                    lcoe = (
-                        discounted_capex / 1000.0 + discounted_opex
-                    ) / discounted_energy
-                    lcoes.append(lcoe)
-
-                self.data.confidence_density = clevels[0]
-                self.data.lcoe_lower = min(lcoes)
-                self.data.lcoe_upper = max(lcoes)
-
-            # LCOE distribution
-            raw = {"values": pdf, "coords": [xx, yy]}
-
-            self.data.lcoe_pdf = raw
-
-            discounted_opex_base = mode_coords[0] * 1000.0
-            discounted_energy_base = mode_coords[1] * 10.0
+        if "confidence_density" in lcoe_metrics:
+            self.data.confidence_density = lcoe_metrics["confidence_density"]
+            self.data.lcoe_lower = lcoe_metrics["lcoe_lower"]
+            self.data.lcoe_upper = lcoe_metrics["lcoe_upper"]
 
         # Calculate values using most likely OPEX / Energy combination
 
@@ -695,23 +599,16 @@ class EconomicInterface(ThemeInterface):
 
         if self.data.externalities_opex is None:
             discounted_maintenance = discounted_opex_base
-
         else:
-            years = range(1, len(opex_bom) + 1)
-
-            discounted_externals = [
-                self.data.externalities_opex
-                / (1 + self.data.discount_rate) ** i
-                for i in years
-            ]
-
-            discounted_external = np.array(discounted_externals).sum()
-            discounted_maintenance = discounted_opex_base - discounted_external
-
-            self.data.opex_breakdown = {
-                "Maintenance": discounted_external,
-                "Externalities": discounted_maintenance,
-            }
+            opex_breakdown = _get_opex_breakdown(
+                opex_bom,
+                self.data.externalities_opex,
+                discounted_opex_base,
+                self.data.discount_rate,
+            )
+            self.data.opex_breakdown = opex_breakdown
+            discounted_maintenance = opex_breakdown["Maintenance"]
+            discounted_external = opex_breakdown["Externalities"]
 
         # LCOE Breakdowns in cent/kWh
 
@@ -746,3 +643,170 @@ class EconomicInterface(ThemeInterface):
         self.data.lcoe_breakdown = {"CAPEX": total_capex, "OPEX": total_opex}
 
         return
+
+
+def _get_metrics_table(
+    result: dict[str, Optional[Any]],
+    opex_bom: pd.DataFrame,
+    energy_record: pd.DataFrame,
+) -> Optional[pd.DataFrame]:
+    # Build metrics table if possible
+    n_rows = None
+
+    if not opex_bom.empty:
+        n_rows = len(opex_bom.columns) - 1
+    elif not energy_record.empty:
+        n_rows = len(energy_record.columns) - 1
+    else:
+        return
+
+    table_cols = [
+        "LCOE",
+        "LCOE CAPEX",
+        "LCOE OPEX",
+        "OPEX",
+        "Energy",
+        "Discounted OPEX",
+        "Discounted Energy",
+    ]
+
+    metrics_dict = {}
+
+    for col_name in table_cols:
+        col_result = result[col_name]
+        if col_result is not None:
+            values = col_result.values
+            if "Energy" in col_name:
+                values /= 1e3
+        else:
+            values = [None] * n_rows
+
+        metrics_dict[col_name] = values
+
+    return pd.DataFrame(metrics_dict)
+
+
+def _get_metric_stats(data: np.ndarray, arg_root: str):
+    mean = None
+    mode = None
+    lower = None
+    upper = None
+
+    # Catch one or two data points
+    if len(data) == 1:
+        mean = data[0]
+
+    elif len(data) == 2:
+        assert isinstance(data, np.ndarray)
+        mean = data.mean()
+
+    else:
+        assert isinstance(data, np.ndarray)
+
+        try:
+            distribution = UniVariateKDE(data)
+            mean = distribution.mean()
+            mode = distribution.mode()
+
+            intervals = distribution.confidence_interval(95)
+
+            if intervals is not None:
+                lower = intervals[0]
+                upper = intervals[1]
+
+        except np.linalg.LinAlgError:
+            mean = data.mean()
+
+    arg_mean = "{}_mean".format(arg_root)
+    arg_mode = "{}_mode".format(arg_root)
+    arg_lower = "{}_lower".format(arg_root)
+    arg_upper = "{}_upper".format(arg_root)
+
+    return {
+        arg_mean: mean,
+        arg_mode: mode,
+        arg_lower: lower,
+        arg_upper: upper,
+    }
+
+
+def _get_lcoe(metrics_table, discounted_capex):
+    result = {}
+
+    energy = metrics_table["Discounted Energy"]
+    opex = metrics_table["Discounted OPEX"] / 1000.0
+
+    if len(metrics_table["Discounted Energy"]) < 3:
+        mean_lcoe = (discounted_capex / 1000.0 + np.mean(opex)) / np.mean(
+            energy
+        )
+
+        result["lcoe_mean"] = mean_lcoe
+        result["discounted_opex_base"] = np.mean(opex) * 1000.0
+        result["discounted_energy_base"] = np.mean(energy) * 10.0
+
+        return result
+
+    try:
+        distribution = BiVariateKDE(opex, energy)
+    except np.linalg.LinAlgError:
+        return
+
+    mean_coords = distribution.mean()
+    result["lcoe_mean"] = (
+        discounted_capex / 1000.0 + mean_coords[0]
+    ) / mean_coords[1]
+
+    mode_coords = distribution.mode()
+    result["lcoe_mode"] = (
+        discounted_capex / 1000.0 + mode_coords[0]
+    ) / mode_coords[1]
+
+    result["lcoe_mode_opex"] = mode_coords[0] * 1000
+    result["lcoe_mode_energy"] = mode_coords[1]
+
+    xx, yy, pdf = distribution.pdf()
+    clevels = pdf_confidence_densities(pdf)
+
+    if clevels:
+        cx, cy = pdf_contour_coords(xx, yy, pdf, clevels[0])
+
+        lcoes = []
+
+        for discounted_opex, discounted_energy in zip(cx, cy):
+            lcoe = (
+                discounted_capex / 1000.0 + discounted_opex
+            ) / discounted_energy
+            lcoes.append(lcoe)
+
+        result["confidence_density"] = clevels[0]
+        result["lcoe_lower"] = min(lcoes)
+        result["lcoe_upper"] = max(lcoes)
+
+    # LCOE distribution
+    result["lcoe_pdf"] = {"values": pdf, "coords": [xx, yy]}
+    result["discounted_opex_base"] = mode_coords[0] * 1000.0
+    result["discounted_energy_base"] = mode_coords[1] * 10.0
+
+    return result
+
+
+def _get_opex_breakdown(
+    opex_bom,
+    externalities_opex,
+    discounted_opex_base,
+    discount_rate,
+):
+    years = range(1, len(opex_bom) + 1)
+
+    discounted_externals = [
+        externalities_opex / (1 + discount_rate) ** i for i in years
+    ]
+
+    discounted_external = np.array(discounted_externals).sum()
+    discounted_maintenance = discounted_opex_base - discounted_external
+
+    return {
+        "Maintenance": discounted_maintenance,
+        "Externalities": discounted_external,
+    }

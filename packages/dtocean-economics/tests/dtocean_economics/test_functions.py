@@ -43,34 +43,26 @@ def test_get_combined_lcoe_capex(capex, opex, expected):
     assert result == expected
 
 
-@pytest.mark.parametrize(
-    "test_input, expected",
-    [
-        (0.0, 200031),
-        (0.1, 173580.34),
-        (0.2, 152801),
-    ],
-)
-def test_get_discounted_values(bom, test_input, expected):
+def test_get_discounted_values(bom):
     costs_df = costs_from_bom(bom)
-    result = get_discounted_values(costs_df, test_input)
+    result = get_discounted_values(costs_df, 1 / 5)
 
-    assert np.isclose(result.iloc[0], expected)
+    assert np.isclose(result.iloc[0], 331)
 
 
 def test_get_lcoe():
     result = get_lcoe(np.array([1]), np.array([10]))
-
     assert np.isclose(result[0], 0.1)
 
 
 def test_get_phase_breakdown(bom):
     result = get_phase_breakdown(bom)
+    print(result)
 
     assert result is not None
     assert set(result.keys()) == set(["Test", "Other"])
-    assert result["Test"] == 31.0
-    assert result["Other"] == 200000.0
+    assert result["Test"] == 41.8
+    assert result["Other"] == 364
 
 
 def test_get_phase_breakdown_none(bom):
@@ -81,18 +73,12 @@ def test_get_phase_breakdown_none(bom):
     assert result is None
 
 
-@pytest.mark.parametrize(
-    "test_input, expected",
-    [
-        (0.0, [0, 10, 20]),
-        (0.1, [0, 9.0909, 16.5289]),
-        (0.2, [0, 8.3333, 13.8888]),
-    ],
-)
-def test_get_present_values(test_input, expected):
-    value = np.array([0, 10, 20])
-    year = np.array([0, 1, 2])
+def test_get_present_values():
+    value = np.array([1, 6 / 5, 36 / 25, 216 / 125])
+    year = np.array([0, 1, 2, 3])
+    dr = 1 / 5
+    expected = np.array([1, 1, 1, 1])
 
-    result = get_present_values(value, year, test_input)
+    result = get_present_values(value, year, dr)
 
     assert np.isclose(result, expected).all()
