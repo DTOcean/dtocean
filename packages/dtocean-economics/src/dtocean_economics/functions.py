@@ -56,7 +56,6 @@ def get_discounted_values(values_df: pd.DataFrame, discount_rate):
 
     for _, value_series in values_df.items():
         present_values = get_present_values(value_series, years, discount_rate)
-
         discounted_value = present_values.sum()
         discounted_values.append(discounted_value)
 
@@ -64,9 +63,7 @@ def get_discounted_values(values_df: pd.DataFrame, discount_rate):
 
 
 def get_lcoe(discounted_cost, discounted_energy):
-    lcoe = discounted_cost.astype(float) / discounted_energy
-
-    return lcoe
+    return discounted_cost.astype(float) / discounted_energy
 
 
 def get_phase_breakdown(bom):
