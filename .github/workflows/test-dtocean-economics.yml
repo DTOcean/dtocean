@@ -1,0 +1,96 @@
+name: dtocean-economics tests
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean-economics.yml"
+      - "packages/dtocean-core/src/**"
+      - "packages/dtocean-economics/**"
+      - "poetry.lock"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".codecov.yml"
+      - ".github/workflows/test-dtocean-economics.yml"
+      - "packages/dtocean-core/src/**"
+      - "packages/dtocean-economics/**"
+      - "poetry.lock"
+
+jobs:
+  pytest:
+    name: Unit tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ["3.14", "3.13", "3.12"]
+    defaults:
+      run:
+        working-directory: packages/dtocean-economics
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+          persist-credentials: false
+      - name: Install package
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["dtocean-economics", "test"]'
+          python-version: ${{ matrix.python-version }}
+      - name: Run tests
+        run: |
+          poetry run pytest
+  pytest-extras:
+    name: Unit tests with plugins
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ["3.13", "3.12"]
+    defaults:
+      run:
+        working-directory: packages/dtocean-economics
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+          persist-credentials: false
+      - name: Install package
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["dtocean-core", "dtocean-economics", "test"]'
+          python-version: ${{ matrix.python-version }}
+      - name: Run tests
+        run: |
+          poetry run pytest -v --cov src --cov-report=xml tests
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          flags: dtocean-economics
+  audit:
+    name: Code audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/dtocean-economics
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+          persist-credentials: false
+      - name: Install package
+        uses: ./.github/actions/poetry-install
+        with:
+          groups: '["audit", "dtocean-core", "dtocean-economics"]'
+          python-version: 3.13
+      - name: Run ruff
+        run: |
+          poetry run ruff check --output-format github
+      - name: Run pyright
+        run: |
+          poetry run pyright src
