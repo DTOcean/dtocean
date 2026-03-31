@@ -41,11 +41,8 @@ def get_combined_lcoe(lcoe_capex=None, lcoe_opex=None):
 
 def costs_from_bom(bom):
     costs = bom["quantity"] * bom["unitary_cost"]
-
     costs_dict = {"project_year": bom["project_year"].values, "costs": costs}
-    costs_df = pd.DataFrame(costs_dict)
-
-    return costs_df
+    return pd.DataFrame(costs_dict)
 
 
 def get_discounted_values(values_df: pd.DataFrame, discount_rate):
@@ -96,13 +93,8 @@ def get_present_values(value, yr, dr):
     Costs could be calculated with the above function.
     It can be applied in an item by item basis, or on the sum by year
     """
-
-    present_value = value / ((1 + dr) ** yr)
-
-    return present_value
+    return value / ((1 + dr) ** yr)
 
 
 def get_total_cost(bom):
-    result = (bom["unitary_cost"] * bom["quantity"]).sum()
-
-    return result
+    return (bom["unitary_cost"] * bom["quantity"]).sum()

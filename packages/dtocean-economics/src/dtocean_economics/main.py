@@ -27,6 +27,8 @@ Main economic analysis used within DTOcean tool
 
 from typing import Any, Optional
 
+import pandas as pd
+
 from .functions import (
     costs_from_bom,
     get_combined_lcoe,
@@ -116,3 +118,50 @@ def main(capex, opex, energy, discount_rate=None):
     result["LCOE"] = lcoe
 
     return result
+
+
+def get_capex(bom: pd.DataFrame, discount_rate=0.0):
+    if bom.empty:
+        return
+
+    breakdown = get_phase_breakdown(bom)
+    total = get_total_cost(bom)
+
+    costs_df = costs_from_bom(bom)
+    discounted = get_discounted_values(costs_df, discount_rate)
+
+    result = {}
+    if breakdown is not None:
+        result["CAPEX breakdown"] = breakdown
+
+    result["CAPEX"] = total
+    result["Discounted CAPEX"] = discounted.iloc[0]
+
+    return result
+
+
+def get_opex(bom: pd.DataFrame, discount_rate=0.0):
+    if bom.empty:
+        return
+
+    opex_by_year = bom.set_index("project_year")
+    total = opex_by_year.sum()
+    discounted = get_discounted_values(bom, discount_rate)
+
+    result = {}
+    result["OPEX"] = total
+    result["Discounted OPEX"] = discounted
+
+    return result
+
+
+def get_energy():
+    if energy.empty:
+        return result
+
+    energy_by_year = energy.set_index("project_year")
+    total = energy_by_year.sum()
+    discounted = get_discounted_values(energy, discount_rate)
+
+    result["Energy"] = total
+    result["Discounted Energy"] = discounted
