@@ -33,7 +33,12 @@ from typing import Any, Optional
 import numpy as np
 import pandas as pd
 
-from dtocean_economics import main
+from dtocean_economics import (
+    costs_from_bom,
+    get_discounted_values,
+    get_phase_breakdown,
+    get_total_cost,
+)
 from dtocean_economics.preprocessing import (
     estimate_cost_per_power,
     estimate_energy,
@@ -483,7 +488,7 @@ class EconomicInterface(ThemeInterface):
         if debug_entry:
             return
 
-        result = main(
+        outputs = _get_outputs(
             capex_bom,
             opex_bom,
             energy_record,
@@ -557,126 +562,183 @@ class EconomicInterface(ThemeInterface):
 
         self.data.lcoe_mean = lcoe_metrics["lcoe_mean"]
 
-    def _process_result(
-        self,
-        result: dict[str, Optional[Any]],
-        opex_bom: pd.DataFrame,
-        energy_record: pd.DataFrame,
-    ):
-        lcoe_metrics = _get_lcoe(metrics_table, discounted_capex)
-        if lcoe_metrics is None:
-            return
 
-        self.data.lcoe_mean = lcoe_metrics["lcoe_mean"]
-        discounted_opex_base = lcoe_metrics["discounted_opex_base"]
-        discounted_energy_base = lcoe_metrics["discounted_energy_base"]
+def _get_outputs(
+    capex_bom: pd.DataFrame,
+    opex_bom: pd.DataFrame,
+    energy_record: pd.DataFrame,
+    discount_rate: float,
+):
+    outputs: dict[str, Any] = {
+        "capex_breakdown": None,
+        "capex_total": None,
+        "discounted_capex": None,
+        "economics_metrics": None,
+    }
 
-        if "lcoe_mode" in lcoe_metrics:
-            self.data.lcoe_mode = lcoe_metrics["lcoe_mode"]
-            self.data.lcoe_mode_opex = lcoe_metrics["lcoe_mode_opex"]
-            self.data.lcoe_mode_energy = lcoe_metrics["lcoe_mode_energy"]
-            self.data.lcoe_pdf = lcoe_metrics["lcoe_pdf"]
+    discounted_capex = None
+    discounted_opex = None
+    lcoe_capex = None
+    lcoe_opex = None
+    lcoe_total = None
 
-        if "confidence_density" in lcoe_metrics:
-            self.data.confidence_density = lcoe_metrics["confidence_density"]
-            self.data.lcoe_lower = lcoe_metrics["lcoe_lower"]
-            self.data.lcoe_upper = lcoe_metrics["lcoe_upper"]
-
-        # Calculate values using most likely OPEX / Energy combination
-
-        # CAPEX vs OPEX Breakdown and OPEX Breakdown if externalities
-        breakdown = {
-            "Discounted CAPEX": discounted_capex,
-            "Discounted OPEX": discounted_opex_base,
-        }
-
-        self.data.cost_breakdown = breakdown
-
-        if self.data.externalities_opex is None:
-            discounted_maintenance = discounted_opex_base
-        else:
-            opex_breakdown = _get_opex_breakdown(
-                opex_bom,
-                self.data.externalities_opex,
-                discounted_opex_base,
-                self.data.discount_rate,
-            )
-            self.data.opex_breakdown = opex_breakdown
-            discounted_maintenance = opex_breakdown["Maintenance"]
-            discounted_external = opex_breakdown["Externalities"]
-
-        # LCOE Breakdowns in cent/kWh
-
-        if self.data.capex_breakdown is not None:
-            capex_lcoe_breakdown = {}
-
-            for k, v in self.data.capex_breakdown.iteritems():
-                capex_lcoe_breakdown[k] = round(v / discounted_energy_base, 2)
-
-            self.data.capex_lcoe_breakdown = capex_lcoe_breakdown
-
-        lcoe_maintenance = round(
-            discounted_maintenance / discounted_energy_base, 2
+    if not capex_bom.empty:
+        costs_df = costs_from_bom(capex_bom)
+        discounted_capex = get_discounted_values(
+            costs_df,
+            discount_rate,
         )
 
-        if self.data.externalities_opex is None:
-            lcoe_external = 0
+        outputs["capex_total"] = get_total_cost(capex_bom)
+        outputs["capex_breakdown"] = get_phase_breakdown(capex_bom)
+        outputs["discounted_capex"] = discounted_capex.iloc[0]
 
-        else:
-            lcoe_external = round(
-                discounted_external / discounted_energy_base, 2
-            )
+    if not opex_bom.empty:
+        opex_by_year = opex_bom.set_index("project_year")
+        opex_total = opex_by_year.sum()
+        discounted_opex = get_discounted_values(opex_bom, discount_rate)
 
-            self.data.opex_lcoe_breakdown = {
-                "Maintenance": lcoe_maintenance,
-                "Externalities": lcoe_external,
-            }
+    if not energy_record.empty:
+        energy_by_year = energy_record.set_index("project_year")
+        energy_total = energy_by_year.sum()
+        discounted_energy = get_discounted_values(energy_record, discount_rate)
 
-        total_capex = sum(capex_lcoe_breakdown.values())
-        total_opex = lcoe_maintenance + lcoe_external
+        if discounted_capex is not None:
+            lcoe_capex = discounted_capex / discounted_energy
+            lcoe_total = lcoe_capex
 
-        self.data.lcoe_breakdown = {"CAPEX": total_capex, "OPEX": total_opex}
+        if discounted_opex is not None:
+            lcoe_opex = discounted_opex / discounted_energy
+            if lcoe_total is None:
+                lcoe_total = lcoe_opex
+            else:
+                lcoe_total += lcoe_opex
 
+    metrics_table = _get_metrics_table(
+        opex_total,
+        discounted_opex,
+        energy_total,
+        discounted_energy,
+        lcoe_capex,
+        lcoe_opex,
+        lcoe_total,
+    )
+
+    if metrics_table is None:
         return
+
+    outputs["economics_metrics"] = metrics_table
+
+    lcoe_metrics = _get_lcoe(metrics_table, discounted_capex)
+    if lcoe_metrics is None:
+        return
+
+    self.data.lcoe_mean = lcoe_metrics["lcoe_mean"]
+    discounted_opex_base = lcoe_metrics["discounted_opex_base"]
+    discounted_energy_base = lcoe_metrics["discounted_energy_base"]
+
+    if "lcoe_mode" in lcoe_metrics:
+        self.data.lcoe_mode = lcoe_metrics["lcoe_mode"]
+        self.data.lcoe_mode_opex = lcoe_metrics["lcoe_mode_opex"]
+        self.data.lcoe_mode_energy = lcoe_metrics["lcoe_mode_energy"]
+        self.data.lcoe_pdf = lcoe_metrics["lcoe_pdf"]
+
+    if "confidence_density" in lcoe_metrics:
+        self.data.confidence_density = lcoe_metrics["confidence_density"]
+        self.data.lcoe_lower = lcoe_metrics["lcoe_lower"]
+        self.data.lcoe_upper = lcoe_metrics["lcoe_upper"]
+
+    # Calculate values using most likely OPEX / Energy combination
+
+    # CAPEX vs OPEX Breakdown and OPEX Breakdown if externalities
+    breakdown = {
+        "Discounted CAPEX": discounted_capex,
+        "Discounted OPEX": discounted_opex_base,
+    }
+
+    self.data.cost_breakdown = breakdown
+
+    if self.data.externalities_opex is None:
+        discounted_maintenance = discounted_opex_base
+    else:
+        opex_breakdown = _get_opex_breakdown(
+            opex_bom,
+            self.data.externalities_opex,
+            discounted_opex_base,
+            self.data.discount_rate,
+        )
+        self.data.opex_breakdown = opex_breakdown
+        discounted_maintenance = opex_breakdown["Maintenance"]
+        discounted_external = opex_breakdown["Externalities"]
+
+    # LCOE Breakdowns in cent/kWh
+
+    if self.data.capex_breakdown is not None:
+        capex_lcoe_breakdown = {}
+
+        for k, v in self.data.capex_breakdown.iteritems():
+            capex_lcoe_breakdown[k] = round(v / discounted_energy_base, 2)
+
+        self.data.capex_lcoe_breakdown = capex_lcoe_breakdown
+
+    lcoe_maintenance = round(discounted_maintenance / discounted_energy_base, 2)
+
+    if self.data.externalities_opex is None:
+        lcoe_external = 0
+
+    else:
+        lcoe_external = round(discounted_external / discounted_energy_base, 2)
+
+        self.data.opex_lcoe_breakdown = {
+            "Maintenance": lcoe_maintenance,
+            "Externalities": lcoe_external,
+        }
+
+    total_capex = sum(capex_lcoe_breakdown.values())
+    total_opex = lcoe_maintenance + lcoe_external
+
+    self.data.lcoe_breakdown = {"CAPEX": total_capex, "OPEX": total_opex}
+
+    return
 
 
 def _get_metrics_table(
-    result: dict[str, Optional[Any]],
-    opex_bom: pd.DataFrame,
-    energy_record: pd.DataFrame,
+    opex_total: Optional[pd.Series],
+    discounted_opex: Optional[pd.Series],
+    energy_total: Optional[pd.Series],
+    discounted_energy: Optional[pd.Series],
+    lcoe_capex: Optional[pd.Series],
+    lcoe_opex: Optional[pd.Series],
+    lcoe_total: Optional[pd.Series],
 ) -> Optional[pd.DataFrame]:
-    # Build metrics table if possible
-    n_rows = None
-
-    if not opex_bom.empty:
-        n_rows = len(opex_bom.columns) - 1
-    elif not energy_record.empty:
-        n_rows = len(energy_record.columns) - 1
-    else:
-        return
-
     table_cols_and_conversion = [
-        ("LCOE", 1e-3),  # from Euro/Wh to Euro/kWh
-        ("LCOE CAPEX", 1e-3),  # from Euro/Wh to Euro/kWh
-        ("LCOE OPEX", 1e-3),  # from Euro/Wh to Euro/kWh
-        ("OPEX", 1),
-        ("Energy", 1e-6),  # from Wh to MWh
-        ("Discounted OPEX", 1),
-        ("Discounted Energy", 1e-6),  # from Wh to MWh
+        ("LCOE", lcoe_total, 1e-3),  # from Euro/Wh to Euro/kWh
+        ("LCOE CAPEX", lcoe_capex, 1e-3),  # from Euro/Wh to Euro/kWh
+        ("LCOE OPEX", lcoe_opex, 1e-3),  # from Euro/Wh to Euro/kWh
+        ("OPEX", opex_total, 1),
+        ("Energy", energy_total, 1e-6),  # from Wh to MWh
+        ("Discounted OPEX", discounted_opex, 1),
+        ("Discounted Energy", discounted_energy, 1e-6),  # from Wh to MWh
     ]
-
+    missing_cols = []
     metrics_dict = {}
 
-    for col_name, factor in table_cols_and_conversion:
-        col_result = result[col_name]
-        if col_result is not None:
-            values = col_result.values * factor
-        else:
-            values = [None] * n_rows
+    for col_name, col_result, factor in table_cols_and_conversion:
+        if col_result is None:
+            missing_cols.append(col_name)
+            continue
 
-        metrics_dict[col_name] = values
+        metrics_dict[col_name] = col_result.values * factor
 
-    return pd.DataFrame(metrics_dict)
+    metrics = pd.DataFrame(metrics_dict)
+    if len(metrics) is None:
+        return
+
+    # Set columns with missing data
+    for col_name in missing_cols:
+        metrics[missing_cols] = np.nan
+
+    return metrics
 
 
 def _get_metric_stats(data: np.ndarray, arg_root: str):
