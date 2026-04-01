@@ -633,6 +633,26 @@ def _get_outputs(
     if lcoe_metrics is None:
         return
 
+    # Do univariate stats on discounted metrics and optionally LCOE
+    args_table = {"Discounted Energy": "discounted_energy"}
+
+    if result["Discounted OPEX"] is None:
+        args_table["LCOE"] = "lcoe"
+    else:
+        args_table["Discounted OPEX"] = "discounted_opex"
+        args_table["OPEX"] = "lifetime_opex"
+
+    for key, arg_root in args_table.items():
+        if result[key] is None:
+            continue
+
+        data = metrics_table[key].values
+        assert isinstance(data, np.ndarray)
+        arg_stats = _get_metric_stats(data, arg_root)
+
+        for k, v in arg_stats:
+            self.data[k] = v
+
     self.data.lcoe_mean = lcoe_metrics["lcoe_mean"]
     discounted_opex_base = lcoe_metrics["discounted_opex_base"]
     discounted_energy_base = lcoe_metrics["discounted_energy_base"]
@@ -741,7 +761,7 @@ def _get_metrics_table(
     return metrics
 
 
-def _get_metric_stats(data: np.ndarray, arg_root: str):
+def _get_metric_stats(data: np.ndarray):
     mean = None
     mode = None
     lower = None
@@ -772,17 +792,7 @@ def _get_metric_stats(data: np.ndarray, arg_root: str):
         except np.linalg.LinAlgError:
             mean = data.mean()
 
-    arg_mean = "{}_mean".format(arg_root)
-    arg_mode = "{}_mode".format(arg_root)
-    arg_lower = "{}_lower".format(arg_root)
-    arg_upper = "{}_upper".format(arg_root)
-
-    return {
-        arg_mean: mean,
-        arg_mode: mode,
-        arg_lower: lower,
-        arg_upper: upper,
-    }
+    return {mean, mode, lower, upper}
 
 
 def _get_lcoe_basic(capex, opex, energy):
