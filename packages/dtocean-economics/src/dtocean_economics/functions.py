@@ -25,8 +25,6 @@ Functions to be used within DTOcean tool
 .. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
-import pandas as pd
-
 
 def get_combined_lcoe(lcoe_capex=None, lcoe_opex=None):
     if lcoe_capex is not None and lcoe_opex is not None:
@@ -37,64 +35,3 @@ def get_combined_lcoe(lcoe_capex=None, lcoe_opex=None):
         lcoe = lcoe_opex
 
     return lcoe
-
-
-def costs_from_bom(bom):
-    costs = bom["quantity"] * bom["unitary_cost"]
-    costs_dict = {"project_year": bom["project_year"].values, "costs": costs}
-    return pd.DataFrame(costs_dict)
-
-
-def get_discounted_values(values_df: pd.DataFrame, discount_rate):
-    years = values_df["project_year"]
-    values_df = values_df.set_index("project_year")
-
-    discounted_values = []
-
-    for _, value_series in values_df.items():
-        present_values = get_present_values(value_series, years, discount_rate)
-        discounted_value = present_values.sum()
-        discounted_values.append(discounted_value)
-
-    return pd.Series(discounted_values)
-
-
-def get_lcoe(discounted_cost, discounted_energy):
-    return discounted_cost.astype(float) / discounted_energy
-
-
-def get_phase_breakdown(bom):
-    # Check for null phases
-    null_phases = pd.isnull(bom["phase"])
-
-    # No breakdown available
-    if null_phases.all():
-        return None
-
-    # Replace any null phase values
-    bom.loc[pd.isnull(bom["phase"]), "phase"] = "Other"
-
-    phase_groups = bom.groupby("phase")
-
-    phase_breakdown = {}
-
-    for phase_name, phase_bom in phase_groups:
-        phase_cost = get_total_cost(phase_bom)
-        phase_breakdown[phase_name] = phase_cost
-
-    return phase_breakdown
-
-
-def get_present_values(value, yr, dr):
-    """
-    Function to calculate present value
-    It should be applied to a table with costs and year cost occurs, and to
-      energy output table
-    Costs could be calculated with the above function.
-    It can be applied in an item by item basis, or on the sum by year
-    """
-    return value / ((1 + dr) ** yr)
-
-
-def get_total_cost(bom):
-    return (bom["unitary_cost"] * bom["quantity"]).sum()
