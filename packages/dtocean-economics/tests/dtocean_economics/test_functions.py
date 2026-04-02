@@ -18,10 +18,6 @@
 import numpy as np
 import pandas as pd
 
-YEAR_ONE = 6 / 5
-YEAR_TWO = 36 / 25
-YEAR_THREE = 216 / 125
-
 from dtocean_economics import (
     costs_from_bom,
     get_discounted_values,
@@ -29,6 +25,10 @@ from dtocean_economics import (
     get_present_values,
     get_total_cost,
 )
+
+YEAR_ONE = 6 / 5
+YEAR_TWO = 36 / 25
+YEAR_THREE = 216 / 125
 
 
 def test_get_discounted_values(bom):
