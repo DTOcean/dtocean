@@ -17,30 +17,18 @@
 
 import numpy as np
 import pandas as pd
-import pytest
 
-from dtocean_economics.functions import (
+YEAR_ONE = 6 / 5
+YEAR_TWO = 36 / 25
+YEAR_THREE = 216 / 125
+
+from dtocean_economics import (
     costs_from_bom,
-    get_combined_lcoe,
     get_discounted_values,
-    get_lcoe,
     get_phase_breakdown,
     get_present_values,
+    get_total_cost,
 )
-
-
-@pytest.mark.parametrize(
-    "capex, opex, expected",
-    [
-        (1, None, 1),
-        (None, 1, 1),
-        (1, 1, 2),
-    ],
-)
-def test_get_combined_lcoe_capex(capex, opex, expected):
-    result = get_combined_lcoe(capex, opex)
-
-    assert result == expected
 
 
 def test_get_discounted_values(bom):
@@ -48,11 +36,6 @@ def test_get_discounted_values(bom):
     result = get_discounted_values(costs_df, 1 / 5)
 
     assert np.isclose(result.iloc[0], 331)
-
-
-def test_get_lcoe():
-    result = get_lcoe(np.array([1]), np.array([10]))
-    assert np.isclose(result[0], 0.1)
 
 
 def test_get_phase_breakdown(bom):
@@ -82,3 +65,8 @@ def test_get_present_values():
     result = get_present_values(value, year, dr)
 
     assert np.isclose(result, expected).all()
+
+
+def test_get_total_cost(bom):
+    expected = 101 + (YEAR_ONE * 110) + (YEAR_TWO * 120)
+    assert np.isclose(get_total_cost(bom), expected)
