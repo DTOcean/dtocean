@@ -16,11 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from typing import Optional
 
 import pandas as pd
-
-from .main import main
 
 
 def costs_from_bom(bom):
@@ -78,41 +75,3 @@ def get_present_values(value, yr, dr):
 
 def get_total_cost(bom):
     return (bom["unitary_cost"] * bom["quantity"]).sum()
-
-
-def get_metrics_table(
-    opex_bom: pd.DataFrame,
-    energy_record: pd.DataFrame,
-) -> Optional[pd.DataFrame]:
-    # Build metrics table if possible
-    n_rows = None
-
-    if not opex_bom.empty:
-        n_rows = len(opex_bom.columns) - 1
-    elif not energy_record.empty:
-        n_rows = len(energy_record.columns) - 1
-    else:
-        return
-
-    table_cols_and_conversion = [
-        ("LCOE", 1e-3),  # from Euro/Wh to Euro/kWh
-        ("LCOE CAPEX", 1e-3),  # from Euro/Wh to Euro/kWh
-        ("LCOE OPEX", 1e-3),  # from Euro/Wh to Euro/kWh
-        ("OPEX", 1),
-        ("Energy", 1e-6),  # from Wh to MWh
-        ("Discounted OPEX", 1),
-        ("Discounted Energy", 1e-6),  # from Wh to MWh
-    ]
-
-    metrics_dict = {}
-
-    for col_name, factor in table_cols_and_conversion:
-        col_result = result[col_name]
-        if col_result is not None:
-            values = col_result.values * factor
-        else:
-            values = [None] * n_rows
-
-        metrics_dict[col_name] = values
-
-    return pd.DataFrame(metrics_dict)

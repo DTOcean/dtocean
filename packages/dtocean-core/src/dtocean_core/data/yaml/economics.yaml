@@ -134,24 +134,6 @@
   - float
   units:
   - Euro/kWh
-- description: Most likely discounted OPEX from the combination of discounted OPEX
-    and energy used to determine the most likely LCOE.
-  identifier: project.lcoe_mode_opex
-  structure: SimpleData
-  title: Most Likely Discounted OPEX (OPEX & Energy)
-  types:
-  - float
-  units:
-  - Euro
-- description: Most likely discounted energy from the combination of discounted OPEX
-    and energy used to determine the most likely LCOE.
-  identifier: project.lcoe_mode_energy
-  structure: SimpleData
-  title: Most Likely Discounted Energy (OPEX & Energy)
-  types:
-  - float
-  units:
-  - MWh
 - description: Most likely levelised cost of energy in Euro/kWh
   identifier: project.lcoe_mode
   structure: SimpleData
