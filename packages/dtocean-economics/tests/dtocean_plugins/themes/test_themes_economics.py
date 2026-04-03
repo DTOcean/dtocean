@@ -1,7 +1,9 @@
 import os
 from copy import deepcopy
 from pprint import pprint
+from unittest.mock import MagicMock
 
+import pandas as pd
 import pytest
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ProjectMenu, ThemeMenu
@@ -102,16 +104,23 @@ def test_get_economics_interface(
 
 
 def test_economics_interface_entry(
+    mocker,
     inputs_economics,
     theme_menu,
     core,
     tidal_project,
     var_tree,
 ):
-    theme_name = "Economics"
+    _get_outputs: MagicMock = mocker.patch(
+        "dtocean_plugins.themes.economics._get_outputs",
+        autospec=True,
+        return_value={},
+    )
 
     project_menu = ProjectMenu()
     project = deepcopy(tidal_project)
+
+    theme_name = "Economics"
     theme_menu.activate(core, project, theme_name)
     project_menu.initiate_dataflow(core, project)
 
@@ -129,9 +138,42 @@ def test_economics_interface_entry(
     connector = _get_connector(project, "themes")
     interface = connector.get_interface(core, project, theme_name)
 
-    interface.connect(debug_entry=True)
+    interface.connect()
 
-    assert True
+    _get_outputs.assert_called_once()
+    _get_outputs_args = _get_outputs.call_args[0]
+
+    capex_bom = _get_outputs_args[0]
+    opex_bom = _get_outputs_args[1]
+    energy_record = _get_outputs_args[2]
+    print(capex_bom)
+
+    capex_bom_elec = capex_bom[
+        capex_bom["phase"] == "Electrical Sub-Systems"
+    ].drop("phase", axis=1)
+    assert len(capex_bom_elec) == 1
+    assert capex_bom_elec.iloc[0]["quantity"] == 5
+
+    expected_bom_mandf_dict = {
+        "quantity": [5, 10],
+        "unitary_cost": [100, 50],
+        "project_year": [0, 0],
+    }
+    expected_bom_mandf = pd.DataFrame(expected_bom_mandf_dict).astype(
+        pd.Int64Dtype
+    )
+
+    capex_bom_mandf = (
+        capex_bom[capex_bom["phase"] == "Mooring and Foundations"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    )
+    pd.testing.assert_frame_equal(expected_bom_mandf, capex_bom_mandf)
+
+    print(opex_bom)
+    print(energy_record)
+
+    assert False
 
 
 def test_get_economics_interface_estimate(
