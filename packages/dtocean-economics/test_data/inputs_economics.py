@@ -15,15 +15,17 @@ capex_oandm = 100.0
 externalities_capex = 1e6
 
 zero_bom_dict = {
-    "Key Identifier": [0, 1],
     "Quantity": [5, 10],
     "Cost": [100, 50],
     "Year": [0, 0],
 }
 zero_bom = pd.DataFrame(zero_bom_dict)
 
-electrical_bom = zero_bom.copy()
-moorings_bom = zero_bom.copy()
+electrical_bom_dict = {"Key Identifier": [0, 1]} | zero_bom_dict
+electrical_bom = pd.DataFrame(electrical_bom_dict)
+
+moorings_bom_dict = {"Key Identifier": [1, 2]} | zero_bom_dict
+moorings_bom = pd.DataFrame(moorings_bom_dict)
 
 install_bom_dict = {
     "Key Identifier": [0, 1],

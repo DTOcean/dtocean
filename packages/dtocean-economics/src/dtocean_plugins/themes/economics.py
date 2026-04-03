@@ -431,6 +431,7 @@ class EconomicInterface(ThemeInterface):
             ignore_index=True,
             sort=False,
         )
+        capex_bom = capex_bom.convert_dtypes()
 
         if self.data.opex_per_year is not None:
             opex_bom = self.data.opex_per_year.copy()
