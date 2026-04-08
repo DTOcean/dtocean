@@ -146,13 +146,16 @@ def test_economics_interface_entry(
     capex_bom = _get_outputs_args[0]
     opex_bom = _get_outputs_args[1]
     energy_record = _get_outputs_args[2]
-    print(capex_bom)
 
     capex_bom_elec = capex_bom[
         capex_bom["phase"] == "Electrical Sub-Systems"
     ].drop("phase", axis=1)
     assert len(capex_bom_elec) == 1
-    assert capex_bom_elec.iloc[0]["quantity"] == 5
+    capex_bom_elec_i = capex_bom_elec.iloc[0]
+
+    assert capex_bom_elec_i["quantity"] == 5
+    assert capex_bom_elec_i["unitary_cost"] == 100
+    assert capex_bom_elec_i["project_year"] == 0
 
     expected_bom_mandf_dict = {
         "quantity": [5, 10],
@@ -170,10 +173,62 @@ def test_economics_interface_entry(
     )
     pd.testing.assert_frame_equal(expected_bom_mandf, capex_bom_mandf)
 
-    print(opex_bom)
-    print(energy_record)
+    expected_bom_inst_dict = {
+        "quantity": [1, 1],
+        "unitary_cost": [1000, 2000],
+        "project_year": [1, 2],
+    }
+    expected_bom_inst = pd.DataFrame(expected_bom_inst_dict).astype(
+        pd.Int64Dtype
+    )
 
-    assert False
+    capex_bom_inst = (
+        capex_bom[capex_bom["phase"] == "Installation"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    )
+    pd.testing.assert_frame_equal(expected_bom_inst, capex_bom_inst)
+
+    capex_bom_cond = (
+        capex_bom[capex_bom["phase"] == "Condition Monitoring"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    )
+    assert len(capex_bom_cond) == 1
+    capex_bom_cond_i = capex_bom_cond.iloc[0]
+
+    assert capex_bom_cond_i["quantity"] == 1
+    assert capex_bom_cond_i["unitary_cost"] == 100
+    assert capex_bom_cond_i["project_year"] == 0
+
+    capex_bom_ext = (
+        capex_bom[capex_bom["phase"] == "Externalities"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    )
+    assert len(capex_bom_ext) == 1
+    capex_bom_ext_i = capex_bom_ext.iloc[0]
+
+    assert capex_bom_ext_i["quantity"] == 1
+    assert capex_bom_ext_i["unitary_cost"] == 1e6
+    assert capex_bom_ext_i["project_year"] == 0
+
+    expected_opex_bom_dict = {
+        "project_year": [3, 4],
+        "Cost": [1000.0, 2000.0],
+    }
+    expected_opex_bom = pd.DataFrame(expected_opex_bom_dict)
+    pd.testing.assert_frame_equal(expected_opex_bom, opex_bom)
+
+    expected_energy_record_dict = {
+        "project_year": [3, 4],
+        "Energy": [10000.0, 20000.0],
+    }
+    expected_energy_record = pd.DataFrame(expected_energy_record_dict)
+    expected_energy_record["Energy"] = (
+        expected_energy_record["Energy"] * 0.99 * 1e6
+    )
+    pd.testing.assert_frame_equal(expected_energy_record, energy_record)
 
 
 def test_get_economics_interface_estimate(
