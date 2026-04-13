@@ -34,7 +34,7 @@ import numpy as np
 import pandas as pd
 
 from dtocean_economics import (
-    costs_from_bom,
+    add_costs_to_bom,
     get_discounted_values,
     get_phase_breakdown,
     get_total_cost,
@@ -547,7 +547,7 @@ def _get_outputs(
 
     capex_total = 0
     discounted_capex_total = 0
-    capex_breakdown = None
+    phase_breakdown = None
     discounted_capex = None
     discounted_opex = None
     lcoe_capex = None
@@ -555,14 +555,19 @@ def _get_outputs(
     lcoe_total = None
 
     if not capex_bom.empty:
-        costs_df = costs_from_bom(capex_bom)
+        add_costs_to_bom(capex_bom, discount_rate)
+        costs_df = capex_bom[["project_year", "costs"]]
+
         discounted_capex = get_discounted_values(
             costs_df,
             discount_rate,
         )
+
         discounted_capex_total = discounted_capex.iloc[0]
         capex_total = get_total_cost(capex_bom)
-        capex_breakdown = get_phase_breakdown(capex_bom)
+        phase_breakdown = get_phase_breakdown(capex_bom)
+        assert phase_breakdown is not None
+        capex_breakdown = {k: v["costs"] for k, v in phase_breakdown.iterrows()}
 
         outputs["capex_total"] = capex_total
         outputs["capex_breakdown"] = capex_breakdown
@@ -585,7 +590,7 @@ def _get_outputs(
 
         if discounted_capex is not None:
             lcoe_capex = discounted_capex / discounted_energy
-            lcoe_total = lcoe_capex
+            lcoe_total = lcoe_capex.copy()
 
         if discounted_opex is not None:
             lcoe_opex = discounted_opex / discounted_energy
@@ -608,112 +613,16 @@ def _get_outputs(
         return outputs
 
     outputs["economics_metrics"] = metrics_table
-
-    if len(metrics_table) < 3:
-        if opex_total is not None:
-            outputs["lifetime_opex_mean"] = opex_total.mean()
-
-        if discounted_opex is not None:
-            outputs["discounted_opex_mean"] = discounted_opex.mean()
-
-        if discounted_energy is not None:
-            # From W to MW
-            outputs["discounted_energy_mean"] = discounted_energy.mean() / 1e6
-
-        if lcoe_total is not None:
-            # From Euro/Wh to Euro/kWh
-            outputs["lcoe_mean"] = lcoe_total.mean() * 1000
-
-    else:
-        if discounted_opex is not None and discounted_energy is not None:
-            try:
-                distribution = BiVariateKDE(discounted_opex, discounted_energy)
-
-                mean_coords = distribution.mean()
-                lcoe_mean = (capex_total + mean_coords[0]) / mean_coords[1]
-                outputs["lcoe_mean"] = lcoe_mean * 1000  # Euro/Wh to Euro/kWh
-                outputs["discounted_opex_mean"] = mean_coords[0]
-                outputs["discounted_energy_mean"] = (
-                    mean_coords[1] / 1e6
-                )  # W to MW
-
-                mode_coords = distribution.mode()
-                lcoe_mode = (capex_total + mean_coords[0]) / mean_coords[1]
-                outputs["lcoe_mode"] = lcoe_mode * 1000  # Euro/Wh to Euro/kWh
-                outputs["discounted_opex_mode"] = mode_coords[0]
-                outputs["discounted_energy_mode"] = (
-                    mode_coords[1] / 1e6
-                )  # W to MW
-
-                xx, yy, pdf = distribution.pdf()
-                clevels = pdf_confidence_densities(pdf)
-
-                # LCOE distribution
-                outputs["lcoe_pdf"] = {"values": pdf, "coords": [xx, yy]}
-
-                if clevels:
-                    outputs["confidence_density"] = clevels[0]
-                    cx, cy = pdf_contour_coords(xx, yy, pdf, clevels[0])
-
-                    outputs["discounted_opex_lower"] = min(cx)
-                    outputs["discounted_energy_lower"] = (
-                        min(cy) / 1e6
-                    )  # W to MW
-                    outputs["discounted_opex_upper"] = max(cx)
-                    outputs["discounted_energy_upper"] = (
-                        max(cy) / 1e6
-                    )  # W to MW
-
-                    lcoes = [
-                        (capex_total + discounted_opex) / discounted_energy
-                        for discounted_opex, discounted_energy in zip(cx, cy)
-                    ]
-
-                    # Euro/Wh to Euro/kWh
-                    outputs["lcoe_lower"] = min(lcoes) * 1000
-                    outputs["lcoe_upper"] = max(lcoes) * 1000
-
-            except np.linalg.LinAlgError:
-                _get_discounted_opex_stats(outputs, discounted_opex)
-                _get_discounted_energy_stats(outputs, discounted_energy)
-
-                assert lcoe_total is not None
-
-                # Euro/Wh to Euro/kWh
-                try:
-                    distribution = UniVariateKDE(lcoe_total)
-                    outputs["lcoe_mean"] = distribution.mean() * 1000
-                    outputs["lcoe_mode"] = distribution.mode() * 1000
-
-                    intervals = distribution.confidence_interval(95)
-
-                    if intervals is not None:
-                        outputs["lcoe_lower"] = intervals[0] * 1000
-                        outputs["lcoe_upper"] = intervals[1] * 1000
-
-                except np.linalg.LinAlgError:
-                    outputs["lcoe_mean"] = lcoe_total.mean() * 1000
-
-        if discounted_opex is not None:
-            _get_discounted_opex_stats(outputs, discounted_opex)
-
-        if discounted_energy is not None:
-            _get_discounted_energy_stats(outputs, discounted_energy)
-
-        if opex_total is not None:
-            try:
-                distribution = UniVariateKDE(opex_total)
-                outputs["lifetime_opex_mean"] = distribution.mean()
-                outputs["lifetime_opex_mode"] = distribution.mode()
-
-                intervals = distribution.confidence_interval(95)
-
-                if intervals is not None:
-                    outputs["lifetime_opex_lower"] = intervals[0]
-                    outputs["lifetime_opex_upper"] = intervals[1]
-
-            except np.linalg.LinAlgError:
-                outputs["lifetime_opex_mean"] = opex_total.mean()
+    outputs.update(
+        _get_outputs_stats(
+            metrics_table,
+            opex_total,
+            discounted_opex,
+            discounted_energy,
+            lcoe_total,
+            capex_total,
+        )
+    )
 
     # Calculate total costs
     if not capex_bom.empty or outputs["lifetime_opex_mean"] is not None:
@@ -724,7 +633,7 @@ def _get_outputs(
 
         outputs["lifetime_cost_mean"] = lifetime_cost_mean
 
-    if not capex_bom.empty or outputs["lifetime_opex_mode"] is not None:
+    if not capex_bom.empty and outputs["lifetime_opex_mode"] is not None:
         lifetime_cost_mode = capex_total
 
         if outputs["lifetime_opex_mode"] is not None:
@@ -740,10 +649,10 @@ def _get_outputs(
 
         outputs["discounted_lifetime_cost_mean"] = lifetime_discounted_cost_mean
 
-    if not capex_bom.empty or outputs["discounted_opex_mode"] is not None:
+    if not capex_bom.empty and outputs["discounted_opex_mode"] is not None:
         lifetime_discounted_cost_mode = discounted_capex_total
 
-        if outputs["discounted_opex_mean"] is not None:
+        if outputs["discounted_opex_mode"] is not None:
             lifetime_discounted_cost_mode += outputs["discounted_opex_mode"]
 
         outputs["discounted_lifetime_cost_mode"] = lifetime_discounted_cost_mode
@@ -762,10 +671,11 @@ def _get_outputs(
         discounted_energy_base = outputs["discounted_energy_mean"]
 
     assert discounted_energy_base is not None
+    discounted_energy_base = discounted_energy_base * 1e6  # MW to W
 
     # CAPEX vs OPEX Breakdown and OPEX Breakdown if externalities
     breakdown = {
-        "Discounted CAPEX": discounted_capex,
+        "Discounted CAPEX": discounted_capex_total,
         "Discounted OPEX": discounted_opex_base,
     }
 
@@ -787,10 +697,10 @@ def _get_outputs(
     # LCOE Breakdowns in cent/kWh (i.e. Euro/Wh * 1e5)
     factor = 1e5
 
-    if capex_breakdown is not None:
+    if phase_breakdown is not None:
         capex_lcoe_breakdown = {
-            k: round(factor * v / discounted_energy_base, 2)
-            for k, v in capex_breakdown.items()
+            k: round(factor * v["discounted_costs"] / discounted_energy_base, 2)
+            for k, v in phase_breakdown.iterrows()
         }
         outputs["capex_lcoe_breakdown"] = capex_lcoe_breakdown
 
@@ -856,6 +766,139 @@ def _get_metrics_table(
     return metrics
 
 
+def _get_outputs_stats(
+    metrics_table,
+    opex_total,
+    discounted_opex,
+    discounted_energy,
+    lcoe_total,
+    capex_total,
+):
+    outputs: dict[str, Any] = {
+        "lifetime_opex_mean": None,
+        "lifetime_opex_mode": None,
+        "lifetime_opex_lower": None,
+        "lifetime_opex_upper": None,
+        "discounted_opex_mean": None,
+        "discounted_opex_mode": None,
+        "discounted_opex_lower": None,
+        "discounted_opex_upper": None,
+        "discounted_energy_mean": None,
+        "discounted_energy_mode": None,
+        "discounted_energy_lower": None,
+        "discounted_energy_upper": None,
+        "lcoe_mean": None,
+        "lcoe_mode": None,
+        "lcoe_lower": None,
+        "lcoe_upper": None,
+        "lcoe_pdf": None,
+        "confidence_density": None,
+    }
+
+    if len(metrics_table) < 3:
+        if opex_total is not None:
+            outputs["lifetime_opex_mean"] = opex_total.mean()
+
+        if discounted_opex is not None:
+            outputs["discounted_opex_mean"] = discounted_opex.mean()
+
+        if discounted_energy is not None:
+            # From W to MW
+            outputs["discounted_energy_mean"] = discounted_energy.mean() / 1e6
+
+        if lcoe_total is not None:
+            # From Euro/Wh to Euro/kWh
+            outputs["lcoe_mean"] = lcoe_total.mean() * 1000
+
+        return outputs
+
+    if opex_total is not None:
+        try:
+            distribution = UniVariateKDE(opex_total)
+            outputs["lifetime_opex_mean"] = distribution.mean()
+            outputs["lifetime_opex_mode"] = distribution.mode()
+
+            intervals = distribution.confidence_interval(95)
+
+            if intervals is not None:
+                outputs["lifetime_opex_lower"] = intervals[0]
+                outputs["lifetime_opex_upper"] = intervals[1]
+
+        except np.linalg.LinAlgError:
+            outputs["lifetime_opex_mean"] = opex_total.mean()
+
+    if discounted_opex is not None and discounted_energy is not None:
+        try:
+            distribution = BiVariateKDE(discounted_opex, discounted_energy)
+
+            mean_coords = distribution.mean()
+            lcoe_mean = (capex_total + mean_coords[0]) / mean_coords[1]
+            outputs["lcoe_mean"] = lcoe_mean * 1000  # Euro/Wh to Euro/kWh
+            outputs["discounted_opex_mean"] = mean_coords[0]
+            outputs["discounted_energy_mean"] = mean_coords[1] / 1e6  # W to MW
+
+            mode_coords = distribution.mode()
+            lcoe_mode = (capex_total + mean_coords[0]) / mean_coords[1]
+            outputs["lcoe_mode"] = lcoe_mode * 1000  # Euro/Wh to Euro/kWh
+            outputs["discounted_opex_mode"] = mode_coords[0]
+            outputs["discounted_energy_mode"] = mode_coords[1] / 1e6  # W to MW
+
+            xx, yy, pdf = distribution.pdf()
+            clevels = pdf_confidence_densities(pdf)
+
+            # LCOE distribution
+            outputs["lcoe_pdf"] = {"values": pdf, "coords": [xx, yy]}
+
+            if clevels:
+                outputs["confidence_density"] = clevels[0]
+                cx, cy = pdf_contour_coords(xx, yy, pdf, clevels[0])
+
+                outputs["discounted_opex_lower"] = min(cx)
+                outputs["discounted_energy_lower"] = min(cy) / 1e6  # W to MW
+                outputs["discounted_opex_upper"] = max(cx)
+                outputs["discounted_energy_upper"] = max(cy) / 1e6  # W to MW
+
+                lcoes = [
+                    (capex_total + discounted_opex) / discounted_energy
+                    for discounted_opex, discounted_energy in zip(cx, cy)
+                ]
+
+                # Euro/Wh to Euro/kWh
+                outputs["lcoe_lower"] = min(lcoes) * 1000
+                outputs["lcoe_upper"] = max(lcoes) * 1000
+
+        except np.linalg.LinAlgError:
+            _get_discounted_opex_stats(outputs, discounted_opex)
+            _get_discounted_energy_stats(outputs, discounted_energy)
+
+            assert lcoe_total is not None
+
+            # Euro/Wh to Euro/kWh
+            try:
+                distribution = UniVariateKDE(lcoe_total)
+                outputs["lcoe_mean"] = distribution.mean() * 1000
+                outputs["lcoe_mode"] = distribution.mode() * 1000
+
+                intervals = distribution.confidence_interval(95)
+
+                if intervals is not None:
+                    outputs["lcoe_lower"] = intervals[0] * 1000
+                    outputs["lcoe_upper"] = intervals[1] * 1000
+
+            except np.linalg.LinAlgError:
+                outputs["lcoe_mean"] = lcoe_total.mean() * 1000
+
+        return outputs
+
+    if discounted_opex is not None:
+        _get_discounted_opex_stats(outputs, discounted_opex)
+
+    if discounted_energy is not None:
+        _get_discounted_energy_stats(outputs, discounted_energy)
+
+    return outputs
+
+
 def _get_discounted_opex_stats(outputs: dict[str, Any], discounted_opex):
     try:
         distribution = UniVariateKDE(discounted_opex)
@@ -895,12 +938,11 @@ def _get_opex_breakdown(
     discounted_opex_base,
     discount_rate,
 ):
-    years = range(1, len(opex_bom) + 1)
+    years = range(len(opex_bom))
 
     discounted_externals = [
         externalities_opex / (1 + discount_rate) ** i for i in years
     ]
-
     discounted_external = np.array(discounted_externals).sum()
     discounted_maintenance = discounted_opex_base - discounted_external
 
