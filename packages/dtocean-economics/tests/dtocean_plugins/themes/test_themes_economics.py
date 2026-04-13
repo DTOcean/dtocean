@@ -3,11 +3,14 @@ from copy import deepcopy
 from pprint import pprint
 from unittest.mock import MagicMock
 
+import numpy as np
 import pandas as pd
 import pytest
 from dtocean_core.core import Core
 from dtocean_core.menu import DataMenu, ProjectMenu, ThemeMenu
 from dtocean_core.pipeline import Tree, _get_connector
+
+from dtocean_plugins.themes.economics import _get_outputs
 
 DIR_PATH = os.path.dirname(__file__)
 
@@ -114,7 +117,6 @@ def test_economics_interface_entry(
     _get_outputs: MagicMock = mocker.patch(
         "dtocean_plugins.themes.economics._get_outputs",
         autospec=True,
-        return_value={},
     )
 
     project_menu = ProjectMenu()
@@ -273,7 +275,6 @@ def test_economics_interface_entry_estimate(
     _get_outputs: MagicMock = mocker.patch(
         "dtocean_plugins.themes.economics._get_outputs",
         autospec=True,
-        return_value={},
     )
 
     theme_name = "Economics"
@@ -353,7 +354,7 @@ def test_economics_interface_entry_estimate(
     assert len(opex_bom_costs) == 1
 
     opex_bom_cost = opex_bom_costs.pop()
-    assert opex_bom_cost == 30000.0
+    assert opex_bom_cost == 10000.0 + 2 * 10000.0
 
     assert energy_record["energy"].iloc[0] == 0
     energy_record_one = energy_record[energy_record["project_year"] != 0]
@@ -363,3 +364,250 @@ def test_economics_interface_entry_estimate(
 
     energy_record_energy = energy_record_energies.pop()
     assert energy_record_energy == 10000 * 1e6 * 0.95
+
+
+# These factors become 1 when used with a 1 / 5 discount rate in the respective
+# year
+YEAR_ONE = 6 / 5
+YEAR_TWO = 36 / 25
+YEAR_THREE = 216 / 125
+
+
+@pytest.fixture()
+def bom():
+    bom_dict = {
+        "phase": [
+            "Devices",
+            "Electrical Sub-Systems",
+            "Installation",
+            "Installation",
+            "Condition Monitoring",
+            "Condition Monitoring",
+            "Externalities",
+        ],
+        "unitary_cost": [
+            1e6,
+            5e6,
+            YEAR_ONE * 1e5,
+            YEAR_TWO * 1e5,
+            YEAR_ONE * 1e4,
+            YEAR_TWO * 1e4,
+            1e6,
+        ],
+        "project_year": [0, 0, 1, 2, 1, 2, 0],
+        "quantity": [10, 1, 1, 1, 1, 1, 1],
+    }
+
+    bom_df = pd.DataFrame(bom_dict)
+
+    return bom_df
+
+
+@pytest.fixture()
+def opex_costs_0_externalities():
+    opex_externalities = 216
+    opex_dict = {
+        "project_year": [0, 1, 2, 3],
+        "cost 0": [
+            1 + opex_externalities,
+            YEAR_ONE + opex_externalities,
+            YEAR_TWO + opex_externalities,
+            YEAR_THREE + opex_externalities,
+        ],
+    }
+
+    opex_df = pd.DataFrame(opex_dict)
+
+    return opex_df
+
+
+@pytest.fixture()
+def energy_record_0():
+    energy_dict = {
+        "project_year": [0, 1, 2, 3],
+        "energy 0": [1e6, YEAR_ONE * 1e6, YEAR_TWO * 1e6, YEAR_THREE * 1e6],
+    }
+
+    energy_df = pd.DataFrame(energy_dict)
+
+    return energy_df
+
+
+def test_get_outputs_0_externalities(
+    bom,
+    opex_costs_0_externalities,
+    energy_record_0,
+):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        bom,
+        opex_costs_0_externalities,
+        energy_record_0,
+        discount_rate,
+        1e6,
+        216,
+    )
+
+    none_outputs = [
+        "confidence_density",
+        "discounted_energy_lower",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "discounted_lifetime_cost_mode",
+        "discounted_opex_lower",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "lcoe_lower",
+        "lcoe_mode",
+        "lcoe_pdf",
+        "lcoe_upper",
+        "lifetime_cost_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_mode",
+        "lifetime_opex_upper",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+    capex_breakdown = outputs["capex_breakdown"]
+
+    assert capex_breakdown["Devices"] == 10 * 1e6
+    assert capex_breakdown["Electrical Sub-Systems"] == 5e6
+    assert capex_breakdown["Externalities"] == 1e6
+    assert np.isclose(
+        capex_breakdown["Installation"],
+        (YEAR_ONE + YEAR_TWO) * 1e5,
+    )
+    assert np.isclose(
+        capex_breakdown["Condition Monitoring"],
+        (YEAR_ONE + YEAR_TWO) * 1e4,
+    )
+
+    capex_total = outputs["capex_total"]
+    capex_no_externalities = outputs["capex_no_externalities"]
+
+    expected_capex_no_externalities = (
+        10 * 1e6
+        + 5e6
+        + (YEAR_ONE + YEAR_TWO) * 1e5
+        + (YEAR_ONE + YEAR_TWO) * 1e4
+    )
+    assert capex_no_externalities == expected_capex_no_externalities
+    assert capex_total == expected_capex_no_externalities + 1e6
+
+    discounted_capex = outputs["discounted_capex"]
+    discounted_capex_expected = 10 * 1e6 + 5e6 + 1e6 + 2 * (1e5 + 1e4)
+    assert discounted_capex == discounted_capex_expected
+
+    economics_metrics = outputs["economics_metrics"]
+    economics_metric = economics_metrics.iloc[0]
+
+    opex_metric = economics_metric["OPEX"]
+    opex_metric_expected = 1 + YEAR_ONE + YEAR_TWO + YEAR_THREE + 4 * 216
+    assert np.isclose(opex_metric, opex_metric_expected)
+
+    discounted_opex_metric = economics_metric["Discounted OPEX"]
+    discounted_opex_metric_expected = 4 + 216 + 180 + 150 + 125
+    assert discounted_opex_metric == discounted_opex_metric_expected
+
+    energy_metric = economics_metric["Energy"]
+    energy_metric_expected = 1 + YEAR_ONE + YEAR_TWO + YEAR_THREE
+    assert np.isclose(energy_metric, energy_metric_expected)
+
+    discounted_energy_metric = economics_metric["Discounted Energy"]
+    discounted_energy_metric_expected = 4
+    assert discounted_energy_metric == discounted_energy_metric_expected
+
+    lcoe_capex_metric = economics_metric["LCOE CAPEX"]
+    lcoe_capex_metric_expected = (
+        discounted_capex / discounted_energy_metric / 1000
+    )
+    assert np.isclose(lcoe_capex_metric, lcoe_capex_metric_expected)
+
+    lcoe_opex_metric = economics_metric["LCOE OPEX"]
+    lcoe_opex_metric_expected = (
+        discounted_opex_metric / discounted_energy_metric / 1000
+    )
+    assert np.isclose(lcoe_opex_metric, lcoe_opex_metric_expected)
+
+    lcoe_metric = economics_metric["LCOE"]
+    lcoe_metric_expected = (
+        lcoe_capex_metric_expected + lcoe_opex_metric_expected
+    )
+    assert np.isclose(lcoe_metric, lcoe_metric_expected)
+
+    assert outputs["lifetime_cost_mean"] == capex_total + opex_metric_expected
+    assert (
+        outputs["discounted_lifetime_cost_mean"]
+        == discounted_capex_expected + discounted_opex_metric_expected
+    )
+
+    assert np.isclose(outputs["lifetime_opex_mean"], opex_metric_expected)
+    assert outputs["discounted_opex_mean"] == discounted_opex_metric_expected
+
+    assert (
+        outputs["discounted_energy_mean"] == discounted_energy_metric_expected
+    )
+    assert outputs["lcoe_mean"] == lcoe_metric_expected
+
+    cost_breakdown = outputs["cost_breakdown"]
+    assert cost_breakdown["Discounted CAPEX"] == discounted_capex_expected
+    assert cost_breakdown["Discounted OPEX"] == discounted_opex_metric_expected
+
+    opex_breakdown = outputs["opex_breakdown"]
+    assert opex_breakdown["Externalities"] == 216 + 180 + 150 + 125
+    assert opex_breakdown["Maintenance"] == 4
+
+    capex_lcoe_breakdown = outputs["capex_lcoe_breakdown"]
+
+    # Factor of 1e-1 to get to cent/kWh from Euro/MWh
+    assert (
+        capex_lcoe_breakdown["Devices"]
+        == 10 * 1e6 / discounted_energy_metric_expected * 1e-1
+    )
+    assert (
+        capex_lcoe_breakdown["Electrical Sub-Systems"]
+        == 5e6 / discounted_energy_metric_expected * 1e-1
+    )
+    assert (
+        capex_lcoe_breakdown["Externalities"]
+        == 1e6 / discounted_energy_metric_expected * 1e-1
+    )
+    assert (
+        capex_lcoe_breakdown["Installation"]
+        == 2e5 / discounted_energy_metric_expected * 1e-1
+    )
+    assert (
+        capex_lcoe_breakdown["Condition Monitoring"]
+        == 2e4 / discounted_energy_metric_expected * 1e-1
+    )
+
+    opex_lcoe_breakdown = outputs["opex_lcoe_breakdown"]
+
+    # TODO: fix this rounding error
+    expected = round(
+        (216 + 180 + 150 + 125) / discounted_energy_metric_expected * 1e-1,
+        2,
+    )
+    assert abs(opex_lcoe_breakdown["Externalities"] - expected) < 0.02
+
+    expected = round(
+        4 / discounted_energy_metric_expected * 1e-1,
+        2,
+    )
+    assert opex_lcoe_breakdown["Maintenance"] == expected
+
+    lcoe_breakdown = outputs["lcoe_breakdown"]
+    assert np.isclose(lcoe_breakdown["CAPEX"], lcoe_capex_metric * 100)
+
+    # TODO: fix this rounding error
+    expected = round(lcoe_opex_metric * 100, 2)
+    assert abs(lcoe_breakdown["OPEX"] - expected) < 0.02

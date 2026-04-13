@@ -17,9 +17,10 @@
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from dtocean_economics import (
-    costs_from_bom,
+    add_costs_to_bom,
     get_discounted_values,
     get_phase_breakdown,
     get_present_values,
@@ -31,28 +32,65 @@ YEAR_TWO = 36 / 25
 YEAR_THREE = 216 / 125
 
 
+@pytest.fixture()
+def bom():
+    bom_dict = {
+        "phase": [None, None, None, "Test", "Test", "Test"],
+        "unitary_cost": [
+            100,
+            YEAR_ONE * 100,
+            YEAR_TWO * 100,
+            1,
+            YEAR_ONE,
+            YEAR_TWO,
+        ],
+        "project_year": [0, 1, 2, 0, 1, 2],
+        "quantity": [1, 1, 1, 1, 10, 20],
+    }
+
+    bom_df = pd.DataFrame(bom_dict)
+
+    return bom_df
+
+
+def test_add_costs_to_bom(bom):
+    add_costs_to_bom(bom)
+    assert (bom["costs"] == bom["unitary_cost"] * bom["quantity"]).all()
+
+
+def test_add_costs_to_bom_discounted(bom):
+    add_costs_to_bom(bom, 1 / 5)
+    assert bom["discounted_costs"].sum() == 3 * 100 + 31 * 1
+
+
 def test_get_discounted_values(bom):
-    costs_df = costs_from_bom(bom)
+    add_costs_to_bom(bom)
+    costs_df = bom[["project_year", "costs"]]
     result = get_discounted_values(costs_df, 1 / 5)
 
     assert np.isclose(result.iloc[0], 331)
 
 
 def test_get_phase_breakdown(bom):
+    add_costs_to_bom(bom)
     result = get_phase_breakdown(bom)
-    print(result)
 
     assert result is not None
-    assert set(result.keys()) == set(["Test", "Other"])
-    assert result["Test"] == 41.8
-    assert result["Other"] == 364
+    assert set(result.index.values) == set(["Test", "Other"])
+
+    test = result.loc["Test"]
+    assert isinstance(test, pd.Series)
+    assert test["costs"] == 41.8
+
+    other = result.loc["Other"]
+    assert isinstance(other, pd.Series)
+    assert other["costs"] == 364
 
 
 def test_get_phase_breakdown_none(bom):
     none_bom = bom[pd.isnull(bom["phase"])]
-
+    add_costs_to_bom(none_bom)
     result = get_phase_breakdown(none_bom)
-
     assert result is None
 
 

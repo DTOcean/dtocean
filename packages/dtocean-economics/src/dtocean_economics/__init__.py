@@ -17,52 +17,66 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import numpy as np
 import pandas as pd
 
 
-def costs_from_bom(bom):
+def add_costs_to_bom(bom, discount_rate=None):
     costs = bom["quantity"] * bom["unitary_cost"]
-    costs_dict = {"project_year": bom["project_year"].values, "costs": costs}
-    return pd.DataFrame(costs_dict)
+    bom["costs"] = costs
+
+    if discount_rate is None:
+        return
+
+    present_values = get_present_values(
+        costs.to_numpy(),
+        bom["project_year"].to_numpy(),
+        discount_rate,
+    )
+
+    bom["discounted_costs"] = present_values
 
 
-def get_discounted_values(values_df: pd.DataFrame, discount_rate):
+def get_discounted_values(values_df: pd.DataFrame, discount_rate: float):
     years = values_df["project_year"]
     values_df = values_df.set_index("project_year")
-
     discounted_values = []
 
     for _, value_series in values_df.items():
-        present_values = get_present_values(value_series, years, discount_rate)
+        present_values = get_present_values(
+            value_series.to_numpy(),
+            years.to_numpy(),
+            discount_rate,
+        )
         discounted_value = present_values.sum()
         discounted_values.append(discounted_value)
 
     return pd.Series(discounted_values)
 
 
-def get_phase_breakdown(bom):
+def get_phase_breakdown(bom: pd.DataFrame):
+    if "costs" not in bom.keys():
+        return
+
     # Check for null phases
     null_phases = pd.isnull(bom["phase"])
 
     # No breakdown available
     if null_phases.all():
-        return None
+        return
 
     # Replace any null phase values
     bom.loc[pd.isnull(bom["phase"]), "phase"] = "Other"
-
     phase_groups = bom.groupby("phase")
 
-    phase_breakdown = {}
-
-    for phase_name, phase_bom in phase_groups:
-        phase_cost = get_total_cost(phase_bom)
-        phase_breakdown[phase_name] = phase_cost
+    phase_breakdown = phase_groups.sum()
+    if "unitary_costs" in phase_breakdown:
+        phase_breakdown.drop("unitary_costs", axis=1, inplace=True)
 
     return phase_breakdown
 
 
-def get_present_values(value, yr, dr):
+def get_present_values(value: np.ndarray, yr: np.ndarray, dr: float):
     """
     Function to calculate present value
     It should be applied to a table with costs and year cost occurs, and to
