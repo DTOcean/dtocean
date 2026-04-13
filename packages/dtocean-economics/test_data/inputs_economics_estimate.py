@@ -18,7 +18,7 @@ test_data = {
     "project.installation_cost_estimate": 1e5,
     "project.opex_estimate": 1e4,
     "project.annual_repair_cost_estimate": 1e4,
-    "project.annual_array_mttf_estimate": 10000.0,
+    "project.annual_array_mttf_estimate": 4383.0,
     "project.electrical_network_efficiency": 0.95,
     "project.annual_energy": 10000.0,
     "project.estimate_energy_record": True,
