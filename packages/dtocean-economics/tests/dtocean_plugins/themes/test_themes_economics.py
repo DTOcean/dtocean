@@ -163,7 +163,7 @@ def test_economics_interface_entry(
         "project_year": [0, 0],
     }
     expected_bom_mandf = pd.DataFrame(expected_bom_mandf_dict).astype(
-        pd.Int64Dtype
+        pd.Int64Dtype()
     )
 
     capex_bom_mandf = (
@@ -179,7 +179,7 @@ def test_economics_interface_entry(
         "project_year": [1, 2],
     }
     expected_bom_inst = pd.DataFrame(expected_bom_inst_dict).astype(
-        pd.Int64Dtype
+        pd.Int64Dtype()
     )
 
     capex_bom_inst = (
@@ -263,12 +263,19 @@ def test_get_economics_interface_estimate(
 
 
 def test_economics_interface_entry_estimate(
+    mocker,
     inputs_economics_estimate,
     theme_menu,
     core,
     tidal_project,
     var_tree,
 ):
+    _get_outputs: MagicMock = mocker.patch(
+        "dtocean_plugins.themes.economics._get_outputs",
+        autospec=True,
+        return_value={},
+    )
+
     theme_name = "Economics"
 
     project_menu = ProjectMenu()
@@ -290,6 +297,69 @@ def test_economics_interface_entry_estimate(
     connector = _get_connector(project, "themes")
     interface = connector.get_interface(core, project, theme_name)
 
-    interface.connect(debug_entry=True)
+    interface.connect()
 
-    assert True
+    _get_outputs.assert_called_once()
+    _get_outputs_args = _get_outputs.call_args[0]
+
+    capex_bom = _get_outputs_args[0]
+    opex_bom = _get_outputs_args[1]
+    energy_record = _get_outputs_args[2]
+
+    capex_bom_dev = (
+        capex_bom[capex_bom["phase"] == "Devices"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    ).iloc[0]
+
+    assert capex_bom_dev["quantity"] == 5
+    assert capex_bom_dev["unitary_cost"] == 1e6
+    assert capex_bom_dev["project_year"] == 0
+
+    capex_bom_elec = (
+        capex_bom[capex_bom["phase"] == "Electrical Sub-Systems"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    ).iloc[0]
+
+    assert capex_bom_elec["quantity"] == 1
+    assert capex_bom_elec["unitary_cost"] == 1e5
+    assert capex_bom_elec["project_year"] == 0
+
+    capex_bom_moor = (
+        capex_bom[capex_bom["phase"] == "Mooring and Foundations"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    ).iloc[0]
+
+    assert capex_bom_moor["quantity"] == 1
+    assert capex_bom_moor["unitary_cost"] == 1e5
+    assert capex_bom_moor["project_year"] == 0
+
+    capex_bom_inst = (
+        capex_bom[capex_bom["phase"] == "Installation"]
+        .drop("phase", axis=1)
+        .reset_index(drop=True)
+    ).iloc[0]
+
+    assert capex_bom_inst["quantity"] == 1
+    assert capex_bom_inst["unitary_cost"] == 1e5
+    assert capex_bom_inst["project_year"] == 0
+
+    assert opex_bom["costs"].iloc[0] == 0
+    opex_bom_one = opex_bom[opex_bom["project_year"] != 0]
+
+    opex_bom_costs = set(opex_bom_one["costs"])
+    assert len(opex_bom_costs) == 1
+
+    opex_bom_cost = opex_bom_costs.pop()
+    assert opex_bom_cost == 30000.0
+
+    assert energy_record["energy"].iloc[0] == 0
+    energy_record_one = energy_record[energy_record["project_year"] != 0]
+
+    energy_record_energies = set(energy_record_one["energy"])
+    assert len(energy_record_energies) == 1
+
+    energy_record_energy = energy_record_energies.pop()
+    assert energy_record_energy == 10000 * 1e6 * 0.95
