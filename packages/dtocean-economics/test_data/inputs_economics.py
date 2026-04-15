@@ -13,6 +13,7 @@ discount_rate = 0.1
 electrical_network_efficiency = 0.99
 capex_oandm = 100.0
 externalities_capex = 1e6
+externalities_opex = 1e3
 
 zero_bom_dict = {
     "Quantity": [5, 10],
@@ -52,6 +53,7 @@ test_data = {
     "project.energy_per_year": energy_record,
     "project.electrical_network_efficiency": electrical_network_efficiency,
     "project.externalities_capex": externalities_capex,
+    "project.externalities_opex": externalities_opex,
 }
 
 if __name__ == "__main__":

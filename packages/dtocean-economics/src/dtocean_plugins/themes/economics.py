@@ -510,6 +510,12 @@ def _get_outputs(
     externalities_capex: Optional[float],
     externalities_opex: Optional[float],
 ) -> dict[str, Any]:
+    series = [opex_bom, energy_record]
+    series_lengths = [len(x) for x in series if not x.empty]
+    if len(set(series_lengths)) != 1:
+        msg = "opex bom and energy record must be the same length if not empty"
+        raise ValueError(msg)
+
     outputs: dict[str, Any] = {
         "capex_breakdown": None,
         "capex_total": None,
@@ -589,7 +595,7 @@ def _get_outputs(
         discounted_energy = get_discounted_values(energy_record, discount_rate)
 
         if discounted_capex is not None:
-            lcoe_capex = discounted_capex / discounted_energy
+            lcoe_capex = discounted_capex_total / discounted_energy
             lcoe_total = lcoe_capex.copy()
 
         if discounted_opex is not None:
@@ -620,7 +626,7 @@ def _get_outputs(
             discounted_opex,
             discounted_energy,
             lcoe_total,
-            capex_total,
+            discounted_capex_total,
         )
     )
 
@@ -772,7 +778,7 @@ def _get_outputs_stats(
     discounted_opex,
     discounted_energy,
     lcoe_total,
-    capex_total,
+    discounted_capex_total,
 ):
     outputs: dict[str, Any] = {
         "lifetime_opex_mean": None,
@@ -832,16 +838,22 @@ def _get_outputs_stats(
             distribution = BiVariateKDE(discounted_opex, discounted_energy)
 
             mean_coords = distribution.mean()
-            lcoe_mean = (capex_total + mean_coords[0]) / mean_coords[1]
+            opex_mean = mean_coords[0]
+            energy_mean = mean_coords[1]
+            lcoe_mean = (discounted_capex_total + opex_mean) / energy_mean
+
             outputs["lcoe_mean"] = lcoe_mean * 1000  # Euro/Wh to Euro/kWh
-            outputs["discounted_opex_mean"] = mean_coords[0]
-            outputs["discounted_energy_mean"] = mean_coords[1] / 1e6  # W to MW
+            outputs["discounted_opex_mean"] = opex_mean
+            outputs["discounted_energy_mean"] = energy_mean / 1e6  # W to MW
 
             mode_coords = distribution.mode()
-            lcoe_mode = (capex_total + mean_coords[0]) / mean_coords[1]
+            opex_mode = mode_coords[0]
+            energy_mode = mode_coords[1]
+            lcoe_mode = (discounted_capex_total + opex_mode) / energy_mode
+
             outputs["lcoe_mode"] = lcoe_mode * 1000  # Euro/Wh to Euro/kWh
-            outputs["discounted_opex_mode"] = mode_coords[0]
-            outputs["discounted_energy_mode"] = mode_coords[1] / 1e6  # W to MW
+            outputs["discounted_opex_mode"] = opex_mode
+            outputs["discounted_energy_mode"] = energy_mode / 1e6  # W to MW
 
             xx, yy, pdf = distribution.pdf()
             clevels = pdf_confidence_densities(pdf)
@@ -859,7 +871,8 @@ def _get_outputs_stats(
                 outputs["discounted_energy_upper"] = max(cy) / 1e6  # W to MW
 
                 lcoes = [
-                    (capex_total + discounted_opex) / discounted_energy
+                    (discounted_capex_total + discounted_opex)
+                    / discounted_energy
                     for discounted_opex, discounted_energy in zip(cx, cy)
                 ]
 
