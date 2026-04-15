@@ -194,7 +194,7 @@ class BiVariateKDE:
         return xx, yy, pdf
 
 
-def pdf_confidence_densities(pdf, levels=None):
+def pdf_confidence_densities(pdf, levels=None, xtol=2e-32):
     """Determine the required density values to satisfy a list of confidence
     levels in the given pdf"""
 
@@ -216,9 +216,12 @@ def pdf_confidence_densities(pdf, levels=None):
 
         try:
             density = optimize.brentq(
-                diff_frac, pdf.min(), pdf.max(), args=(local_pdf, frac, pdf_sum)
+                diff_frac,
+                pdf.min(),
+                pdf.max(),
+                args=(local_pdf, frac, pdf_sum),
+                xtol=xtol,
             )
-
             densities.append(density)
         except ValueError as e:
             module_logger.debug(e, exc_info=True)
