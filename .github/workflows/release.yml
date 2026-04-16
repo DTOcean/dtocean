@@ -9,14 +9,15 @@ permissions:
   contents: read
 
 env:
-  DTOCEAN_CORE_DIR: packages/dtocean-core
-  DTOCEAN_QT_DIR: packages/dtocean-qt
-  DTOCEAN_APP_DIR: packages/dtocean-app
-  DTOCEAN_HYDRODYNAMICS_DIR: packages/dtocean-hydrodynamics
-  DTOCEAN_DOCS_DIR: packages/dtocean-docs
   DTOCEAN_DIR: packages/dtocean
-  POLITE_CONFIG_DIR: packages/polite-config
+  DTOCEAN_APP_DIR: packages/dtocean-app
+  DTOCEAN_CORE_DIR: packages/dtocean-core
+  DTOCEAN_DOCS_DIR: packages/dtocean-docs
+  DTOCEAN_ECONOMICS_DIR: packages/dtocean-economics
+  DTOCEAN_HYDRODYNAMICS_DIR: packages/dtocean-hydrodynamics
+  DTOCEAN_QT_DIR: packages/dtocean-qt
   MDO_ENGINE_DIR: packages/mdo-engine
+  POLITE_CONFIG_DIR: packages/polite-config
   RELEASING_REPO: DTOcean/dtocean
 
 jobs:
@@ -40,6 +41,8 @@ jobs:
       dtocean-app-commit_sha: ${{ steps.release-dtocean-app.outputs.commit_sha }}
       dtocean-hydrodynamics-released: ${{ steps.release-dtocean-hydrodynamics.outputs.released }}
       dtocean-hydrodynamics-commit_sha: ${{ steps.release-dtocean-hydrodynamics.outputs.commit_sha }}
+      dtocean-economics-released: ${{ steps.release-dtocean-economics.outputs.released }}
+      dtocean-economics-commit_sha: ${{ steps.release-dtocean-economics.outputs.commit_sha }}
       root-released: ${{ steps.release-root.outputs.released }}
       root-commit_sha: ${{ steps.release-root.outputs.commit_sha }}
       root-tag: ${{ steps.release-root.outputs.tag }}
@@ -127,6 +130,16 @@ jobs:
         with:
           commit: ${{ github.repository == env.RELEASING_REPO }}
           directory: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          push: ${{ github.repository == env.RELEASING_REPO }}
+          vcs_release: false
+
+      - name: Release dtocean-economics
+        id: release-dtocean-economics
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
+          directory: ${{ env.DTOCEAN_ECONOMICS_DIR }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           push: ${{ github.repository == env.RELEASING_REPO }}
           vcs_release: false
@@ -585,6 +598,51 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}/dist
+          verbose: true
+
+  publish-dtocean-economics:
+    runs-on: ubuntu-latest
+    needs: release
+    if: needs.release.outputs.dtocean-economics-released == 'true'
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ env.DTOCEAN_ECONOMICS_DIR }}
+    environment:
+      name: pypi
+      url: https://pypi.org/project/dtocean-economics/
+    steps:
+      - name: Setup | Checkout repository on commit sha
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+          ref: ${{ needs.release.outputs.dtocean-economics-commit_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry-monoranger-plugin
+        shell: bash
+        run: |
+          poetry self add git+https://github.com/H0R5E/poetry-monoranger-plugin.git#include_groups
+
+      - name: Update Poetry configuration
+        run: poetry config virtualenvs.create false
+
+      - name: Package project
+        run: poetry build
+
+      - name: Publish package distributions to PyPI
+        if: ${{ github.repository == env.RELEASING_REPO }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ env.DTOCEAN_ECONOMICS_DIR }}/dist
           verbose: true
 
   publish-docs:
