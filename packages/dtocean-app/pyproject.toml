@@ -46,7 +46,7 @@ numpy = "^2.3.5"
 pandas = "^3.0.1"
 shiboken6 = "^6.9.0"
 pyside6 = "^6.9.0"
-pillow = "^12.1.1"
+pillow = "^12.2.0"
 pywin32 = { version = ">=308", platform = "win32" }
 pyshortcuts = "^1.9.7"
 
