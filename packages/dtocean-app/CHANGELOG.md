@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.3 (2026-04-16)
+
+### Bug Fixes
+
+- Update pillow for security fix
+  ([`c56b421`](https://github.com/DTOcean/dtocean/commit/c56b421e484ad98ce6a73d4f8e3e434dde120484))
+
+
 ## v4.0.2 (2026-03-13)
 
 ### Bug Fixes
