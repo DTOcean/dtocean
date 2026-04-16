@@ -29,7 +29,7 @@ class LCOEPDFPlot(PlotInterface):
           str: A unique string
         """
 
-        return "LCOE PDF Plot"
+        return "LCOE PDF Analysis"
 
     @classmethod
     def declare_inputs(cls):
@@ -100,8 +100,10 @@ class LCOEPDFPlot(PlotInterface):
         )
 
         xx = self.data.lcoe_pdf.coords["Discounted OPEX"].values
-        yy = self.data.lcoe_pdf.coords["Discounted Energy"].values
-        zz = self.data.lcoe_pdf.data.values
+        yy = (
+            self.data.lcoe_pdf.coords["Discounted Energy"].values / 1e6
+        )  # Wh to MWh
+        zz = self.data.lcoe_pdf.data
 
         plt.figure()
         cf = plt.contourf(
@@ -119,7 +121,7 @@ class LCOEPDFPlot(PlotInterface):
         plt.contour(xx, yy, zz.T, clevels, colors="k")
 
         opex = self.data.economics_metrics["Discounted OPEX"]
-        energy = self.data.economics_metrics["Discounted Energy"] / 1000
+        energy = self.data.economics_metrics["Discounted Energy"]
 
         sp = plt.scatter(
             opex,
@@ -137,4 +139,9 @@ class LCOEPDFPlot(PlotInterface):
         )
 
         plt.xlabel("Discounted OPEX [Euro]")
-        plt.ylabel("Discounted Energy [kWh]")
+        plt.ylabel("Discounted Energy [MWh]")
+
+        plt.title("LCOE PDF Analysis")
+        plt.tight_layout()
+
+        self.fig_handle = plt.gcf()
