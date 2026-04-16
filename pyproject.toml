@@ -137,6 +137,10 @@ paths = ["packages/dtocean"]
 paths = ["packages/dtocean-app"]
 trigger_bump_level = 4
 
+[tool.semantic_release.commit_parser_options.path_filters.dtocean-economics]
+paths = ["packages/dtocean-economics"]
+trigger_bump_level = 4
+
 [tool.semantic_release.commit_parser_options.path_filters.dtocean-hydrodynamics]
 paths = ["packages/dtocean-hydrodynamics"]
 trigger_bump_level = 4
