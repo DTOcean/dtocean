@@ -498,7 +498,7 @@ class EconomicInterface(ThemeInterface):
             self.data.externalities_opex,
         )
 
-        for k, v in outputs:
+        for k, v in outputs.items():
             self.data[k] = v
 
 

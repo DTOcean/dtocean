@@ -118,6 +118,7 @@ def test_economics_interface_entry(
     _get_outputs: MagicMock = mocker.patch(
         "dtocean_plugins.themes.economics._get_outputs",
         autospec=True,
+        return_value={"lcoe_mean": 1},
     )
 
     project_menu = ProjectMenu()
