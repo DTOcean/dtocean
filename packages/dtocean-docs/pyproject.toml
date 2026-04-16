@@ -34,7 +34,7 @@ include = [{ path = "src/dtocean_docs/html", format = "wheel" }]
 optional = true
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.3.4"
+pytest = "^9.0.3"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 

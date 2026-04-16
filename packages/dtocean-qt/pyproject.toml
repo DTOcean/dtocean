@@ -58,7 +58,7 @@ optional = true
 include-groups = ["test-qt"]
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.3.4"
+pytest = "^9.0.3"
 pytest-cov = "^6.0.0"
 pytest-env = "^1.1.5"
 

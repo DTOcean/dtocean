@@ -38,7 +38,7 @@ dtocean-hydrodynamics = { path = "../dtocean-hydrodynamics", develop = true }
 optional = true
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.3.4"
+pytest = "^9.0.3"
 pytest-cov = "^6.0.0"
 
 [tool.poetry.group.audit]

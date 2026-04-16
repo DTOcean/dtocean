@@ -35,7 +35,7 @@ pyyaml = "^6.0.2"
 optional = true
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.3.4"
+pytest = "^9.0.3"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 
@@ -112,23 +112,36 @@ env_list = ["3.14", "3.13", "3.12", "audit"]
 description = "Run test under {base_python}"
 skip_install = true
 allowlist_externals = ["poetry"]
-commands_pre = [
-    ["poetry", "sync", "--only", "polite-config", "--only", "test"]
-]
-commands = [
-    ["poetry", "run", "pytest", "tests"]
-]
+commands_pre = [["poetry", "sync", "--only", "polite-config", "--only", "test"]]
+commands = [["poetry", "run", "pytest", "tests"]]
 
 [tool.tox.env.audit]
 description = "Run audit check on code base"
 skip_install = true
 allowlist_externals = ["poetry"]
 commands_pre = [
-    ["poetry", "sync", "--only", "polite-config", "--only", "audit"]
+    [
+        "poetry",
+        "sync",
+        "--only",
+        "polite-config",
+        "--only",
+        "audit",
+    ],
 ]
 commands = [
-    ["poetry", "run", "ruff", "check"],
-    ["poetry", "run", "pyright", "src"]
+    [
+        "poetry",
+        "run",
+        "ruff",
+        "check",
+    ],
+    [
+        "poetry",
+        "run",
+        "pyright",
+        "src",
+    ],
 ]
 
 [build-system]
