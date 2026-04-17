@@ -37,7 +37,6 @@ from dtocean_economics import (
     add_costs_to_bom,
     get_discounted_values,
     get_phase_breakdown,
-    get_total_cost,
 )
 from dtocean_economics.preprocessing import (
     estimate_cost_per_power,
@@ -554,7 +553,6 @@ def _get_outputs(
     capex_total = 0
     discounted_capex_total = 0
     phase_breakdown = None
-    discounted_capex = None
     discounted_opex = None
     lcoe_capex = None
     lcoe_opex = None
@@ -564,20 +562,17 @@ def _get_outputs(
         add_costs_to_bom(capex_bom, discount_rate)
         costs_df = capex_bom[["project_year", "costs"]]
 
-        discounted_capex = get_discounted_values(
-            costs_df,
-            discount_rate,
-        )
-
-        discounted_capex_total = discounted_capex.iloc[0]
-        capex_total = get_total_cost(capex_bom)
+        capex_total = costs_df["costs"].sum()
+        discounted_capex_total = costs_df["discounted_costs"].sum()
         phase_breakdown = get_phase_breakdown(capex_bom)
-        assert phase_breakdown is not None
-        capex_breakdown = {k: v["costs"] for k, v in phase_breakdown.iterrows()}
 
         outputs["capex_total"] = capex_total
-        outputs["capex_breakdown"] = capex_breakdown
         outputs["discounted_capex"] = discounted_capex_total
+
+        if phase_breakdown is not None:
+            outputs["capex_breakdown"] = {
+                k: v["costs"] for k, v in phase_breakdown.iterrows()
+            }
 
         if externalities_capex is not None:
             outputs["capex_no_externalities"] = (
@@ -594,7 +589,7 @@ def _get_outputs(
         energy_total = energy_by_year.sum()
         discounted_energy = get_discounted_values(energy_record, discount_rate)
 
-        if discounted_capex is not None:
+        if discounted_capex_total > 0:
             lcoe_capex = discounted_capex_total / discounted_energy
             lcoe_total = lcoe_capex.copy()
 

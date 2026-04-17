@@ -24,7 +24,6 @@ from dtocean_economics import (
     get_discounted_values,
     get_phase_breakdown,
     get_present_values,
-    get_total_cost,
 )
 
 YEAR_ONE = 6 / 5
@@ -103,8 +102,3 @@ def test_get_present_values():
     result = get_present_values(value, year, dr)
 
     assert np.isclose(result, expected).all()
-
-
-def test_get_total_cost(bom):
-    expected = 101 + (YEAR_ONE * 110) + (YEAR_TWO * 120)
-    assert np.isclose(get_total_cost(bom), expected)

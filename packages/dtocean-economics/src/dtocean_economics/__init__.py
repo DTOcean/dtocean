@@ -85,7 +85,3 @@ def get_present_values(value: np.ndarray, yr: np.ndarray, dr: float):
     It can be applied in an item by item basis, or on the sum by year
     """
     return value / ((1 + dr) ** yr)
-
-
-def get_total_cost(bom):
-    return (bom["unitary_cost"] * bom["quantity"]).sum()
