@@ -560,10 +560,8 @@ def _get_outputs(
 
     if not capex_bom.empty:
         add_costs_to_bom(capex_bom, discount_rate)
-        costs_df = capex_bom[["project_year", "costs"]]
-
-        capex_total = costs_df["costs"].sum()
-        discounted_capex_total = costs_df["discounted_costs"].sum()
+        capex_total = capex_bom["costs"].sum()
+        discounted_capex_total = capex_bom["discounted_costs"].sum()
         phase_breakdown = get_phase_breakdown(capex_bom)
 
         outputs["capex_total"] = capex_total
