@@ -518,7 +518,7 @@ def _get_outputs(
 ) -> dict[str, Any]:
     series = [opex_bom, energy_record]
     series_lengths = [len(x) for x in series if not x.empty]
-    if len(set(series_lengths)) != 1:
+    if len(series_lengths) == 2 and len(set(series_lengths)) != 1:
         msg = "opex bom and energy record must be the same length if not empty"
         raise ValueError(msg)
 
@@ -560,7 +560,10 @@ def _get_outputs(
     capex_total = 0
     discounted_capex_total = 0
     phase_breakdown = None
+    opex_total = None
     discounted_opex = None
+    energy_total = None
+    discounted_energy = None
     lcoe_capex = None
     lcoe_opex = None
     lcoe_total = None
@@ -586,6 +589,11 @@ def _get_outputs(
 
     if not opex_bom.empty:
         opex_by_year = opex_bom.set_index("project_year")
+        opex_year_zero = opex_by_year.loc[0]
+        assert isinstance(opex_year_zero, pd.Series)
+        if opex_year_zero.sum() > 0.0:
+            raise ValueError("OPEX must be zero for year 0")
+
         opex_total = opex_by_year.sum()
         discounted_opex = get_discounted_values(opex_bom, discount_rate)
 
@@ -663,23 +671,30 @@ def _get_outputs(
 
         outputs["discounted_lifetime_cost_mode"] = lifetime_discounted_cost_mode
 
-    # Calculate values using most likely OPEX / Energy combination
-    if outputs["discounted_opex_mode"] is not None:
-        discounted_opex_base = outputs["discounted_opex_mode"]
+    if not opex_bom.empty:
+        # Calculate values using most likely OPEX / Energy combination
+        if outputs["discounted_opex_mode"] is not None:
+            discounted_opex_base = outputs["discounted_opex_mode"]
+        else:
+            discounted_opex_base = outputs["discounted_opex_mean"]
+
+        # OPEX Breakdown if externalities
+        if externalities_opex is None:
+            discounted_maintenance = discounted_opex_base
+        else:
+            opex_breakdown = _get_opex_breakdown(
+                opex_bom,
+                externalities_opex,
+                discounted_opex_base,
+                discount_rate,
+            )
+            outputs["opex_breakdown"] = opex_breakdown
+            discounted_maintenance = opex_breakdown["Maintenance"]
+            discounted_external = opex_breakdown["Externalities"]
     else:
-        discounted_opex_base = outputs["discounted_opex_mean"]
+        discounted_opex_base = 0.0
 
-    assert discounted_opex_base is not None
-
-    if outputs["discounted_energy_mode"] is not None:
-        discounted_energy_base = outputs["discounted_energy_mode"]
-    else:
-        discounted_energy_base = outputs["discounted_energy_mean"]
-
-    assert discounted_energy_base is not None
-    discounted_energy_base = discounted_energy_base * 1e6  # MW to W
-
-    # CAPEX vs OPEX Breakdown and OPEX Breakdown if externalities
+    # CAPEX vs OPEX Breakdown
     breakdown = {
         "Discounted CAPEX": discounted_capex_total,
         "Discounted OPEX": discounted_opex_base,
@@ -687,20 +702,16 @@ def _get_outputs(
 
     outputs["cost_breakdown"] = breakdown
 
-    if externalities_opex is None:
-        discounted_maintenance = discounted_opex_base
+    if energy_record.empty:
+        return outputs
+
+    if outputs["discounted_energy_mode"] is not None:
+        discounted_energy_base = outputs["discounted_energy_mode"]
     else:
-        opex_breakdown = _get_opex_breakdown(
-            opex_bom,
-            externalities_opex,
-            discounted_opex_base,
-            discount_rate,
-        )
-        outputs["opex_breakdown"] = opex_breakdown
-        discounted_maintenance = opex_breakdown["Maintenance"]
-        discounted_external = opex_breakdown["Externalities"]
+        discounted_energy_base = outputs["discounted_energy_mean"]
 
     # LCOE Breakdowns in cent/kWh (i.e. Euro/Wh * 1e5)
+    discounted_energy_base = discounted_energy_base * 1e6  # MW to W
     factor = 1e5
 
     if phase_breakdown is not None:
@@ -709,26 +720,32 @@ def _get_outputs(
             for k, v in phase_breakdown.iterrows()
         }
         outputs["capex_lcoe_breakdown"] = capex_lcoe_breakdown
-
-    lcoe_maintenance = round(
-        factor * discounted_maintenance / discounted_energy_base, 2
-    )
-
-    if externalities_opex is None:
-        lcoe_external = 0
+        total_capex = sum(capex_lcoe_breakdown.values())
     else:
-        lcoe_external = round(
-            factor * discounted_external / discounted_energy_base, 2
+        total_capex = 0.0
+
+    if not opex_bom.empty:
+        lcoe_maintenance = round(
+            factor * discounted_maintenance / discounted_energy_base, 2
         )
-        outputs["opex_lcoe_breakdown"] = {
-            "Maintenance": lcoe_maintenance,
-            "Externalities": lcoe_external,
-        }
 
-    total_capex = sum(capex_lcoe_breakdown.values())
-    total_opex = lcoe_maintenance + lcoe_external
+        if externalities_opex is None:
+            lcoe_external = 0
+        else:
+            lcoe_external = round(
+                factor * discounted_external / discounted_energy_base, 2
+            )
+            outputs["opex_lcoe_breakdown"] = {
+                "Maintenance": lcoe_maintenance,
+                "Externalities": lcoe_external,
+            }
 
-    outputs["lcoe_breakdown"] = {"CAPEX": total_capex, "OPEX": total_opex}
+        total_opex = lcoe_maintenance + lcoe_external
+    else:
+        total_opex = 0.0
+
+    if total_capex > 0.0 or total_opex > 0.0:
+        outputs["lcoe_breakdown"] = {"CAPEX": total_capex, "OPEX": total_opex}
 
     return outputs
 
@@ -762,7 +779,7 @@ def _get_metrics_table(
         metrics_dict[col_name] = col_result.values * factor
 
     metrics = pd.DataFrame(metrics_dict)
-    if len(metrics) is None:
+    if len(metrics) == 0:
         return
 
     # Set columns with missing data
@@ -773,12 +790,12 @@ def _get_metrics_table(
 
 
 def _get_outputs_stats(
-    metrics_table,
-    opex_total,
-    discounted_opex,
-    discounted_energy,
-    lcoe_total,
-    discounted_capex_total,
+    metrics_table: pd.DataFrame,
+    opex_total: Optional[pd.Series],
+    discounted_opex: Optional[pd.Series],
+    discounted_energy: Optional[pd.Series],
+    lcoe_total: Optional[pd.Series],
+    discounted_capex_total: float,
 ):
     outputs: dict[str, Any] = {
         "lifetime_opex_mean": None,
@@ -951,7 +968,7 @@ def _get_opex_breakdown(
     discounted_opex_base,
     discount_rate,
 ):
-    years = range(len(opex_bom))
+    years = range(1, len(opex_bom))
 
     discounted_externals = [
         externalities_opex / (1 + discount_rate) ** i for i in years

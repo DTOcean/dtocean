@@ -282,6 +282,7 @@ def test_economics_interface_entry_estimate(
     _get_outputs: MagicMock = mocker.patch(
         "dtocean_plugins.themes.economics._get_outputs",
         autospec=True,
+        return_value={"lcoe_mean": 1},
     )
 
     theme_name = "Economics"
@@ -416,7 +417,7 @@ def opex_costs_0_externalities():
     opex_dict = {
         "project_year": [0, 1, 2, 3],
         "cost 0": [
-            1 + opex_externalities,
+            0.0,
             YEAR_ONE + opex_externalities,
             YEAR_TWO + opex_externalities,
             YEAR_THREE + opex_externalities,
@@ -518,11 +519,11 @@ def test_get_outputs_0_externalities(
     economics_metric = economics_metrics.iloc[0]
 
     opex_metric = economics_metric["OPEX"]
-    opex_metric_expected = 1 + YEAR_ONE + YEAR_TWO + YEAR_THREE + 4 * 216
+    opex_metric_expected = YEAR_ONE + YEAR_TWO + YEAR_THREE + 3 * 216
     assert np.isclose(opex_metric, opex_metric_expected)
 
     discounted_opex_metric = economics_metric["Discounted OPEX"]
-    discounted_opex_metric_expected = 4 + 216 + 180 + 150 + 125
+    discounted_opex_metric_expected = 3 + 180 + 150 + 125
     assert discounted_opex_metric == discounted_opex_metric_expected
 
     energy_metric = economics_metric["Energy"]
@@ -563,15 +564,15 @@ def test_get_outputs_0_externalities(
     assert (
         outputs["discounted_energy_mean"] == discounted_energy_metric_expected
     )
-    assert outputs["lcoe_mean"] == lcoe_metric_expected
+    assert np.isclose(outputs["lcoe_mean"], lcoe_metric_expected)
 
     cost_breakdown = outputs["cost_breakdown"]
     assert cost_breakdown["Discounted CAPEX"] == discounted_capex_expected
     assert cost_breakdown["Discounted OPEX"] == discounted_opex_metric_expected
 
     opex_breakdown = outputs["opex_breakdown"]
-    assert opex_breakdown["Externalities"] == 216 + 180 + 150 + 125
-    assert opex_breakdown["Maintenance"] == 4
+    assert opex_breakdown["Externalities"] == 180 + 150 + 125
+    assert opex_breakdown["Maintenance"] == 3
 
     capex_lcoe_breakdown = outputs["capex_lcoe_breakdown"]
 
@@ -601,13 +602,13 @@ def test_get_outputs_0_externalities(
 
     # TODO: fix this rounding error
     expected = round(
-        (216 + 180 + 150 + 125) / discounted_energy_metric_expected * 1e-1,
+        (180 + 150 + 125) / discounted_energy_metric_expected * 1e-1,
         2,
     )
     assert abs(opex_lcoe_breakdown["Externalities"] - expected) < 0.02
 
     expected = round(
-        4 / discounted_energy_metric_expected * 1e-1,
+        3 / discounted_energy_metric_expected * 1e-1,
         2,
     )
     assert opex_lcoe_breakdown["Maintenance"] == expected
@@ -620,60 +621,459 @@ def test_get_outputs_0_externalities(
     assert abs(lcoe_breakdown["OPEX"] - expected) < 0.02
 
 
+def test_get_outputs_0_no_capex(
+    opex_costs_0_externalities,
+    energy_record_0,
+):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        pd.DataFrame(),
+        opex_costs_0_externalities,
+        energy_record_0,
+        discount_rate,
+        None,
+        216,
+    )
+    none_outputs = [
+        "capex_breakdown",
+        "capex_lcoe_breakdown",
+        "capex_no_externalities",
+        "capex_total",
+        "confidence_density",
+        "discounted_capex",
+        "discounted_energy_lower",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "discounted_lifetime_cost_mode",
+        "discounted_opex_lower",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "lcoe_mode",
+        "lcoe_lower",
+        "lcoe_upper",
+        "lcoe_pdf",
+        "lifetime_cost_mode",
+        "lifetime_opex_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_upper",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+    economics_metric = outputs["economics_metrics"]
+
+    lcoe_capex_metric = economics_metric["LCOE CAPEX"]
+    assert np.isnan(lcoe_capex_metric).all()
+
+    discounted_opex_expected = 3 + 180 + 150 + 125
+    discounted_energy_metric_expected = 4
+    lcoe_metric_expected = (
+        discounted_opex_expected / discounted_energy_metric_expected / 1000
+    )
+    lcoe_metric = economics_metric["LCOE"]
+    assert np.isclose(lcoe_metric, lcoe_metric_expected)
+
+    cost_breakdown = outputs["cost_breakdown"]
+    assert cost_breakdown["Discounted CAPEX"] == 0.0
+    assert cost_breakdown["Discounted OPEX"] == discounted_opex_expected
+
+    lcoe_breakdown = outputs["lcoe_breakdown"]
+    assert lcoe_breakdown["CAPEX"] == 0.0
+
+    # TODO: fix this rounding error
+    expected = round(lcoe_metric_expected * 100, 2)
+    assert abs(lcoe_breakdown["OPEX"] - expected) < 0.02
+
+
+def test_get_outputs_0_no_opex(
+    bom,
+    energy_record_0,
+):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        bom,
+        pd.DataFrame(),
+        energy_record_0,
+        discount_rate,
+        1e6,
+        None,
+    )
+
+    none_outputs = [
+        "confidence_density",
+        "discounted_energy_lower",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "discounted_lifetime_cost_mode",
+        "discounted_opex_lower",
+        "discounted_opex_mean",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "lcoe_mode",
+        "lcoe_lower",
+        "lcoe_upper",
+        "lcoe_pdf",
+        "lifetime_cost_mode",
+        "lifetime_opex_mean",
+        "lifetime_opex_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_upper",
+        "opex_breakdown",
+        "opex_lcoe_breakdown",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+    economics_metric = outputs["economics_metrics"]
+
+    opex_metric = economics_metric["OPEX"]
+    assert np.isnan(opex_metric).all()
+
+    discounted_opex_metric = economics_metric["Discounted OPEX"]
+    assert np.isnan(discounted_opex_metric).all()
+
+    lcoe_opex_metric = economics_metric["LCOE OPEX"]
+    assert np.isnan(lcoe_opex_metric).all()
+
+    discounted_capex_expected = 10 * 1e6 + 5e6 + 1e6 + 2 * (1e5 + 1e4)
+    discounted_energy_metric_expected = 4
+    lcoe_metric_expected = (
+        discounted_capex_expected / discounted_energy_metric_expected / 1000
+    )
+    lcoe_metric = economics_metric["LCOE"]
+    assert np.isclose(lcoe_metric, lcoe_metric_expected)
+
+    cost_breakdown = outputs["cost_breakdown"]
+    assert cost_breakdown["Discounted CAPEX"] == discounted_capex_expected
+    assert cost_breakdown["Discounted OPEX"] == 0.0
+
+    lcoe_breakdown = outputs["lcoe_breakdown"]
+    assert np.isclose(lcoe_breakdown["CAPEX"], lcoe_metric * 100)
+    assert lcoe_breakdown["OPEX"] == 0.0
+
+
+def test_get_outputs_0_no_energy(
+    bom,
+    opex_costs_0_externalities,
+):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        bom,
+        opex_costs_0_externalities,
+        pd.DataFrame(),
+        discount_rate,
+        1e6,
+        216,
+    )
+
+    none_outputs = [
+        "confidence_density",
+        "discounted_energy_lower",
+        "discounted_energy_mean",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "discounted_lifetime_cost_mode",
+        "discounted_opex_lower",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "lcoe_mode",
+        "lcoe_mean",
+        "lcoe_lower",
+        "lcoe_upper",
+        "lcoe_pdf",
+        "lifetime_cost_mode",
+        "lifetime_opex_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_upper",
+        "capex_lcoe_breakdown",
+        "opex_lcoe_breakdown",
+        "lcoe_breakdown",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+    economics_metric = outputs["economics_metrics"]
+
+    energy_metric = economics_metric["Energy"]
+    assert np.isnan(energy_metric).all()
+
+    discounted_energy_metric = economics_metric["Discounted Energy"]
+    assert np.isnan(discounted_energy_metric).all()
+
+    lcoe_capex_metric = economics_metric["LCOE CAPEX"]
+    assert np.isnan(lcoe_capex_metric).all()
+
+    lcoe_opex_metric = economics_metric["LCOE OPEX"]
+    assert np.isnan(lcoe_opex_metric).all()
+
+    lcoe_metric = economics_metric["LCOE"]
+    assert np.isnan(lcoe_metric).all()
+
+
+def test_get_outputs_0_capex_only(bom):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        bom,
+        pd.DataFrame(),
+        pd.DataFrame(),
+        discount_rate,
+        1e6,
+        None,
+    )
+
+    none_outputs = [
+        "cost_breakdown",
+        "confidence_density",
+        "discounted_energy_lower",
+        "discounted_energy_mean",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "discounted_lifetime_cost_mode",
+        "discounted_lifetime_cost_mean",
+        "discounted_opex_lower",
+        "discounted_opex_mean",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "economics_metrics",
+        "lcoe_mode",
+        "lcoe_mean",
+        "lcoe_lower",
+        "lcoe_upper",
+        "lcoe_pdf",
+        "lifetime_cost_mode",
+        "lifetime_cost_mean",
+        "lifetime_opex_mean",
+        "lifetime_opex_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_upper",
+        "opex_breakdown",
+        "capex_lcoe_breakdown",
+        "opex_lcoe_breakdown",
+        "lcoe_breakdown",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+
+def test_get_outputs_0_opex_only(opex_costs_0_externalities):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        pd.DataFrame(),
+        opex_costs_0_externalities,
+        pd.DataFrame(),
+        discount_rate,
+        None,
+        216,
+    )
+
+    none_outputs = [
+        "capex_breakdown",
+        "capex_no_externalities",
+        "capex_total",
+        "confidence_density",
+        "discounted_capex",
+        "discounted_energy_lower",
+        "discounted_energy_mean",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "discounted_lifetime_cost_mode",
+        "discounted_opex_lower",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "lcoe_mode",
+        "lcoe_mean",
+        "lcoe_lower",
+        "lcoe_upper",
+        "lcoe_pdf",
+        "lifetime_cost_mode",
+        "lifetime_opex_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_upper",
+        "capex_lcoe_breakdown",
+        "opex_lcoe_breakdown",
+        "lcoe_breakdown",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+
+def test_get_outputs_0_energy_only(energy_record_0):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        pd.DataFrame(),
+        pd.DataFrame(),
+        energy_record_0,
+        discount_rate,
+        None,
+        None,
+    )
+
+    none_outputs = [
+        "capex_breakdown",
+        "capex_no_externalities",
+        "capex_total",
+        "confidence_density",
+        "discounted_capex",
+        "discounted_energy_lower",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "discounted_lifetime_cost_mode",
+        "discounted_lifetime_cost_mean",
+        "discounted_opex_lower",
+        "discounted_opex_mean",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "lcoe_mode",
+        "lcoe_mean",
+        "lcoe_lower",
+        "lcoe_upper",
+        "lcoe_pdf",
+        "lifetime_cost_mean",
+        "lifetime_cost_mode",
+        "lifetime_opex_mean",
+        "lifetime_opex_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_upper",
+        "opex_breakdown",
+        "capex_lcoe_breakdown",
+        "opex_lcoe_breakdown",
+        "lcoe_breakdown",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+
+@pytest.fixture()
+def opex_costs_0_non_zero_year_0():
+    opex_dict = {
+        "project_year": [0, 1, 2, 3],
+        "cost 0": [
+            1.0,
+            YEAR_ONE,
+            YEAR_TWO,
+            YEAR_THREE,
+        ],
+    }
+    opex_df = pd.DataFrame(opex_dict)
+    return opex_df
+
+
+def test_get_outputs_0_opex_non_zero_year_0(opex_costs_0_non_zero_year_0):
+    discount_rate = 1 / 5
+    with pytest.raises(ValueError) as exc:
+        _get_outputs(
+            pd.DataFrame(),
+            opex_costs_0_non_zero_year_0,
+            pd.DataFrame(),
+            discount_rate,
+            None,
+            None,
+        )
+    assert "OPEX must be zero for year 0" in str(exc)
+
+
 @pytest.fixture()
 def opex_costs_8():
     opex_dict = {
         "project_year": [0, 1, 2, 3],
         "cost 0": [
-            0.5 * 1 * 1e5,
+            0.0,
             0.5 * YEAR_ONE * 1e5,
             0.5 * YEAR_TWO * 1e5,
             0.5 * YEAR_THREE * 1e5,
         ],
         "cost 1": [
-            1 * 1 * 1e5,
+            0.0,
             1 * YEAR_ONE * 1e5,
             1 * YEAR_TWO * 1e5,
             1 * YEAR_THREE * 1e5,
         ],
         "cost 2": [
-            1.5 * 1 * 1e5,
+            0.0,
             1.5 * YEAR_ONE * 1e5,
             1.5 * YEAR_TWO * 1e5,
             1.5 * YEAR_THREE * 1e5,
         ],
         "cost 3": [
-            0.5 * 1 * 1e5,
+            0.0,
             0.5 * YEAR_ONE * 1e5,
             0.5 * YEAR_TWO * 1e5,
             0.5 * YEAR_THREE * 1e5,
         ],
         "cost 4": [
-            1.5 * 1 * 1e5,
+            0.0,
             1.5 * YEAR_ONE * 1e5,
             1.5 * YEAR_TWO * 1e5,
             1.5 * YEAR_THREE * 1e5,
         ],
         "cost 5": [
-            0.75 * 1 * 1e5,
+            0.0,
             0.75 * YEAR_ONE * 1e5,
             0.75 * YEAR_TWO * 1e5,
             0.75 * YEAR_THREE * 1e5,
         ],
         "cost 6": [
-            1 * 1 * 1e5,
+            0.0,
             1 * YEAR_ONE * 1e5,
             1 * YEAR_TWO * 1e5,
             1 * YEAR_THREE * 1e5,
         ],
         "cost 7": [
-            1.25 * 1 * 1e5,
+            0.0,
             1.25 * YEAR_ONE * 1e5,
             1.25 * YEAR_TWO * 1e5,
             1.25 * YEAR_THREE * 1e5,
         ],
         "cost 8": [
-            1 * 1 * 1e5,
+            0.0,
             1 * YEAR_ONE * 1e5,
             1 * YEAR_TWO * 1e5,
             1 * YEAR_THREE * 1e5,
@@ -777,7 +1177,7 @@ def test_get_outputs_8(
             print(key)
         assert outputs[key] is not None
 
-    lifetime_opex_expected = 1e5 * (1 + YEAR_ONE + YEAR_TWO + YEAR_THREE)
+    lifetime_opex_expected = 1e5 * (YEAR_ONE + YEAR_TWO + YEAR_THREE)
 
     assert np.isclose(outputs["lifetime_opex_mean"], lifetime_opex_expected)
     lifetime_opex_mode_error = (
@@ -791,7 +1191,7 @@ def test_get_outputs_8(
     assert outputs["lifetime_opex_lower"] < lifetime_opex_expected
     assert outputs["lifetime_opex_upper"] > lifetime_opex_expected
 
-    discounted_opex_expected = 4 * 1e5
+    discounted_opex_expected = 3 * 1e5
     assert np.isclose(outputs["discounted_opex_mean"], discounted_opex_expected)
     assert np.isclose(outputs["discounted_opex_mode"], discounted_opex_expected)
     assert outputs["discounted_opex_lower"] < discounted_opex_expected
@@ -892,7 +1292,7 @@ def test_get_outputs_8_BiVariateKDE_error(
             print(key)
         assert outputs[key] is not None
 
-    lifetime_opex_expected = 1e5 * (1 + YEAR_ONE + YEAR_TWO + YEAR_THREE)
+    lifetime_opex_expected = 1e5 * (YEAR_ONE + YEAR_TWO + YEAR_THREE)
 
     assert np.isclose(outputs["lifetime_opex_mean"], lifetime_opex_expected)
     lifetime_opex_mode_error = (
@@ -906,7 +1306,7 @@ def test_get_outputs_8_BiVariateKDE_error(
     assert outputs["lifetime_opex_lower"] < lifetime_opex_expected
     assert outputs["lifetime_opex_upper"] > lifetime_opex_expected
 
-    discounted_opex_expected = 4 * 1e5
+    discounted_opex_expected = 3 * 1e5
     assert np.isclose(outputs["discounted_opex_mean"], discounted_opex_expected)
     assert np.isclose(
         outputs["discounted_opex_mode"],
@@ -1029,10 +1429,10 @@ def test_get_outputs_8_UniVariateKDE_error(
             print(key)
         assert outputs[key] is not None
 
-    lifetime_opex_expected = 1e5 * (1 + YEAR_ONE + YEAR_TWO + YEAR_THREE)
+    lifetime_opex_expected = 1e5 * (YEAR_ONE + YEAR_TWO + YEAR_THREE)
     assert np.isclose(outputs["lifetime_opex_mean"], lifetime_opex_expected)
 
-    discounted_opex_expected = 4 * 1e5
+    discounted_opex_expected = 3 * 1e5
     assert np.isclose(outputs["discounted_opex_mean"], discounted_opex_expected)
 
     discounted_energy_expected = 4.0
