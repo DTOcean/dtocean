@@ -4,11 +4,11 @@
 
 # dtocean-economics
 
-The DTOcean Economics Module provides functions to assess and compare the 
-economic performance of arrays designed by DTOcean. It generates metrics such 
-as the levelised cost of energy (LCOE). The module can accept multiple 
+The DTOcean Economics Module provides functions to assess and compare the
+economic performance of arrays designed by DTOcean. It generates metrics such
+as the levelised cost of energy (LCOE). The module can accept multiple
 operational expenditure and energy production records to generate statistical
-analysis
+analysis.
 
 Part of the [DTOcean](https://github.com/DTOcean/dtocean) suite of tools.
 
