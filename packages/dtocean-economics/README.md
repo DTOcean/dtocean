@@ -204,14 +204,12 @@ for contributing guidelines.
 
 ## Credits
 
-This package was initially created as part of the [EU DTOcean project](
-https://cordis.europa.eu/project/id/608597) by:
+This package was initially created as part of the [EU DTOcean project](https://cordis.europa.eu/project/id/608597) by:
 
-+ Mathew Topper at [TECNALIA](https://www.tecnalia.com)
-+ Marta Silva at [WavEC](https://www.wavec.org/)
+- Mathew Topper at [TECNALIA](https://www.tecnalia.com)
+- Marta Silva at [WavEC](https://www.wavec.org/)
 
-It is now maintained by Mathew Topper at [Data Only Greater](
-https://www.dataonlygreater.com/).
+It is now maintained by Mathew Topper at [Data Only Greater](https://www.dataonlygreater.com/).
 
 ## License
 
