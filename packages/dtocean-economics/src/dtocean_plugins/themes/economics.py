@@ -453,10 +453,17 @@ class EconomicInterface(ThemeInterface):
             )
 
         # Add OPEX externalities
-        if not opex_bom.empty and self.data.externalities_opex is not None:
-            opex_bom = opex_bom.set_index("project_year")
-            opex_bom += self.data.externalities_opex
-            opex_bom = opex_bom.reset_index()
+        if self.data.externalities_opex is not None:
+            if opex_bom.empty:
+                opex_bom = estimate_opex(
+                    self.data.lifetime,
+                    1,
+                    self.data.externalities_opex,
+                )
+            else:
+                opex_bom = opex_bom.set_index("project_year")
+                opex_bom += self.data.externalities_opex
+                opex_bom = opex_bom.reset_index()
 
         # Prepare energy
         if self.data.network_efficiency is not None:
