@@ -34,7 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install
@@ -58,8 +57,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
           persist-credentials: false
+      - name: Git LFS Pull
+        run: git lfs pull -I packages/dtocean-economics
       - name: Install package
         uses: ./.github/actions/poetry-install
         with:
