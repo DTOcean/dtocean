@@ -374,6 +374,87 @@ def test_economics_interface_entry_estimate(
     assert energy_record_energy == 10000 * 1e6
 
 
+def test_economics_interface_entry_estimate_externalities_opex(
+    mocker,
+    inputs_economics_estimate,
+    theme_menu,
+    core,
+    tidal_project,
+    var_tree,
+):
+    _get_outputs: MagicMock = mocker.patch(
+        "dtocean_plugins.themes.economics._get_outputs",
+        autospec=True,
+        return_value={"lcoe_mean": 1},
+    )
+
+    theme_name = "Economics"
+
+    project_menu = ProjectMenu()
+    project = deepcopy(tidal_project)
+    theme_menu.activate(core, project, theme_name)
+    project_menu.initiate_dataflow(core, project)
+
+    economics_branch = var_tree.get_branch(core, project, theme_name)
+    economics_branch.read_test_data(core, project, inputs_economics_estimate)
+    economics_branch.read_auto(core, project)
+
+    opex_estimate = economics_branch.get_input_variable(
+        core,
+        project,
+        "project.opex_estimate",
+    )
+    assert opex_estimate is not None
+
+    opex_estimate.set_raw_interface(core, None)
+    opex_estimate.read(core, project)
+
+    assert not opex_estimate.has_value(core, project)
+
+    annual_repair_cost_estimate = economics_branch.get_input_variable(
+        core,
+        project,
+        "project.annual_repair_cost_estimate",
+    )
+    assert annual_repair_cost_estimate is not None
+
+    annual_repair_cost_estimate.set_raw_interface(core, None)
+    annual_repair_cost_estimate.read(core, project)
+
+    assert not annual_repair_cost_estimate.has_value(core, project)
+
+    externalities_opex = economics_branch.get_input_variable(
+        core, project, "project.externalities_opex"
+    )
+    assert externalities_opex is not None
+
+    expected_opex_costs = 1e3
+    externalities_opex.set_raw_interface(core, expected_opex_costs)
+    externalities_opex.read(core, project)
+
+    can_execute = theme_menu.is_executable(core, project, theme_name)
+
+    if not can_execute:
+        inputs = economics_branch.get_input_status(core, project)
+        pprint(inputs)
+        assert can_execute
+
+    connector = _get_connector(project, "themes")
+    interface = connector.get_interface(core, project, theme_name)
+
+    interface.connect()
+
+    _get_outputs.assert_called_once()
+    _get_outputs_args = _get_outputs.call_args[0]
+    opex_bom = _get_outputs_args[1]
+
+    opex_bom_not_zero = opex_bom[opex_bom["project_year"] != 0]
+    unique_opex_costs = opex_bom_not_zero["costs"].unique()
+
+    assert len(unique_opex_costs) == 1
+    assert unique_opex_costs[0] == expected_opex_costs
+
+
 # These factors become 1 when used with a 1 / 5 discount rate in the respective
 # year
 YEAR_ONE = 6 / 5

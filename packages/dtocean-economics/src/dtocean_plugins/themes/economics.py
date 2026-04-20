@@ -454,7 +454,7 @@ class EconomicInterface(ThemeInterface):
 
         # Add OPEX externalities
         if self.data.externalities_opex is not None:
-            if opex_bom.empty:
+            if opex_bom.empty and self.data.lifetime is not None:
                 opex_bom = estimate_opex(
                     self.data.lifetime,
                     1,
