@@ -40,8 +40,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: false
           persist-credentials: false
+      - name: Git LFS Pull
+        run: git lfs pull -I packages/dtocean-core
       # https://github.com/actions/runner-images/issues/7048
       - name: Change mirror priorities
         run: |
@@ -106,8 +107,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: false
           persist-credentials: false
+      - name: Git LFS Pull
+        run: git lfs pull -I packages/dtocean-core
       - name: Install package
         uses: ./.github/actions/poetry-install
         with:
@@ -129,7 +131,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: false
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install
@@ -156,7 +157,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: false
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install
@@ -186,7 +186,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: false
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install
