@@ -40,8 +40,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
           persist-credentials: false
+      - name: Git LFS Pull
+        run: git lfs pull -I packages/dtocean-hydrodynamics
       # https://github.com/actions/runner-images/issues/7048
       - name: Change Mirror Priorities (Linux)
         run: |
@@ -83,8 +84,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
           persist-credentials: false
+      - name: Git LFS Pull
+        run: git lfs pull -I packages/dtocean-hydrodynamics
       # https://github.com/actions/runner-images/issues/7048
       - name: Change Mirror Priorities (Linux)
         run: |
@@ -130,7 +132,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install

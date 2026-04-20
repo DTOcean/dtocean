@@ -175,8 +175,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.dtocean-qt-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.DTOCEAN_QT_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -225,8 +227,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.dtocean-app-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.DTOCEAN_APP_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -275,8 +279,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.dtocean-hydrodynamics-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.DTOCEAN_HYDRODYNAMICS_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -325,8 +331,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.DTOCEAN_DOCS_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -376,8 +384,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.polite-config-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.POLITE_CONFIG_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -421,8 +431,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.mdo-engine-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.MDO_ENGINE_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -466,8 +478,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.dtocean-core-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.DTOCEAN_CORE_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -657,8 +671,10 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          lfs: true
           ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
+
+      - name: Git LFS Pull
+        run: git lfs pull -I ${{ env.DTOCEAN_DIR }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
