@@ -32,7 +32,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: false
           persist-credentials: false
       - uses: actions/setup-python@v6
         with:
@@ -62,7 +61,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: false
           persist-credentials: false
       - uses: actions/setup-python@v6
         with:
