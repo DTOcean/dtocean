@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
+          lfs: false
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
+          lfs: false
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install

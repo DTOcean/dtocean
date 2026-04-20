@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
+          lfs: false
           persist-credentials: false
       # https://github.com/actions/runner-images/issues/7048
       - name: Change Mirror Priorities (Linux)
@@ -72,7 +72,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          lfs: true
+          lfs: false
           persist-credentials: false
       - name: Install package
         uses: ./.github/actions/poetry-install
