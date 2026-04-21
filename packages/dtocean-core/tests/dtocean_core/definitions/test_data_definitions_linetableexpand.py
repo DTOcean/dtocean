@@ -1,6 +1,8 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import pytest
 from mdo_engine.control.factory import InterfaceFactory
 
@@ -41,6 +43,32 @@ def test_LineTableExpand():
     assert len(b.columns) == 2
     assert len(b) == len(velocity)
     assert b.index.name == "Velocity"
+
+
+def test_LineTableExpand_duplicate_cols():
+    velocity = [float(x) for x in range(10)]
+    drag1 = [2 * float(x) for x in range(10)]
+    drag2 = [3 * float(x) for x in range(10)]
+
+    raw = pd.DataFrame(
+        np.array([velocity, drag1, drag2]).T,
+        columns=["Velocity", "Drag 1", "Drag 1"],
+    )
+    meta = CoreMetaData(
+        {
+            "identifier": "test",
+            "structure": "test",
+            "title": "test",
+            "labels": ["Velocity", "Drag"],
+        }
+    )
+
+    test = LineTableExpand()
+
+    with pytest.raises(ValueError) as exp:
+        test.get_data(raw, meta)
+
+    assert "Column names must be unique" in str(exp)
 
 
 def test_get_None():

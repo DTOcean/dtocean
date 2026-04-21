@@ -1420,7 +1420,7 @@
   structure: LineTableExpand
   title: OPEX per Year
   types:
-  - float
+  - int
   - float
   units:
   - null
@@ -1434,7 +1434,7 @@
   structure: LineTableExpand
   title: Energy Production per Year
   types:
-  - float
+  - int
   - float
   units:
   - null
