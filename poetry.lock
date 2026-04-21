@@ -892,7 +892,7 @@ polite-config = {path = "../polite-config", develop = true}
 pyopengl = "^3.1.7"
 pyside6 = "^6.9.0"
 scikit-learn = "^1.6.0"
-scipy = "^1.14.1"
+scipy = "^1.17.0"
 shapely = "^2.0.6"
 shiboken6 = "^6.9.0"
 

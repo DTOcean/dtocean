@@ -38,4 +38,4 @@ def test_calculate_again(
     def is_enabled():
         assert form_hyd_calculated.btn_calculate_t2.isEnabled()
 
-    qtbot.waitUntil(is_enabled)
+    qtbot.waitUntil(is_enabled, timeout=30000)

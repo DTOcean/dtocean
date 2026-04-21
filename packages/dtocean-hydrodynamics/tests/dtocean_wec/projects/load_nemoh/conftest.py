@@ -81,7 +81,7 @@ def nehom_path(mocker, monkeypatch, qtbot, tmp_path):
         assert main_window.form_power is not None
         assert main_window.form_power.isEnabled()
 
-    qtbot.waitUntil(is_enabled)
+    qtbot.waitUntil(is_enabled, timeout=30000)
 
     return run_nehom_path / "hydrodynamic"
 

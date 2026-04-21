@@ -136,6 +136,20 @@ poetry run ruff
 poetry run pyright src
 ```
 
+The above tests can be run across all compatible Python versions using
+[tox](https://tox.wiki/) and [tox-uv](https://github.com/tox-dev/tox-uv). To
+install:
+
+```sh
+poetry install --with test --with test-extras --with audit --with tox
+```
+
+To run the tests:
+
+```sh
+poetry run tox
+```
+
 ## Contributing
 
 Please see the [dtocean](https://github.com/DTOcean/dtocean) GitHub repository
@@ -144,7 +158,7 @@ for contributing guidelines.
 ## Credits
 
 This package was initially created as part of the [EU DTOcean project](
-https://www.dtoceanplus.eu/About-DTOceanPlus/History) by:
+https://cordis.europa.eu/project/id/608597) by:
 
 * Francesco Ferri at [Aalborg University](https://www.en.aau.dk/)
 * Pau Mercade Ruiz at [Aalborg University](https://www.en.aau.dk/)
