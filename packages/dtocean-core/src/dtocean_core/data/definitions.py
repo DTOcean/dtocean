@@ -395,6 +395,9 @@ class TableData(Structure):
 
             raise ValueError(errStr)
 
+        if len(raw_cols) != len(raw_set):
+            raise ValueError("Column names must be unique")
+
         dataframe = pd.DataFrame(raw, columns=columns)
 
         # Order the columns

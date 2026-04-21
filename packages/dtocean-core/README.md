@@ -198,7 +198,7 @@ for contributing guidelines.
 ## Credits
 
 This package was initially created as part of the [EU DTOcean project](
-https://www.dtoceanplus.eu/About-DTOceanPlus/History) by:
+https://cordis.europa.eu/project/id/608597) by:
 
 + Mathew Topper at [TECNALIA](https://www.tecnalia.com)
 + Vincenzo Nava at [TECNALIA](https://www.tecnalia.com)
