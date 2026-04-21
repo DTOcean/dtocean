@@ -52,6 +52,7 @@ python-dateutil = "^2.9.0.post0"
 pyyaml = "^6.0.2"
 ruamel-yaml-clib = "^0.2.12"
 ruamel-yaml = "^0.19.1"
+scipy = "^1.17.0"
 shapely = "^2.0.6"
 utm = "^0.8.1"
 xarray = "~2026.2.0"
@@ -60,7 +61,6 @@ pywin32 = { version = ">=308", platform = "win32" }
 cmocean = "^4.0.3"
 packaging = ">=24.0"
 cartopy = "^0.25.0"
-scipy = "^1.17.0"
 
 [tool.poetry.group.test]
 optional = true
