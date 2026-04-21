@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.5 (2026-04-21)
+
+### Features
+
+- Reimplement dtocean-economics ([#68](https://github.com/DTOcean/dtocean/pull/68),
+  [`8df626c`](https://github.com/DTOcean/dtocean/commit/8df626cfa2a4b922d6163de1eff475bb8eb5f239))
+
+
 ## v4.0.4 (2026-03-13)
 
 ### Bug Fixes
