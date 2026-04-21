@@ -85,11 +85,18 @@ def test_get_phase_breakdown(bom):
     assert isinstance(other, pd.Series)
     assert other["costs"] == 364
 
+    assert "unitary_cost" not in result
+
 
 def test_get_phase_breakdown_none(bom):
     none_bom = bom[pd.isnull(bom["phase"])]
     add_costs_to_bom(none_bom)
     result = get_phase_breakdown(none_bom)
+    assert result is None
+
+
+def test_get_phase_breakdown_no_costs():
+    result = get_phase_breakdown(pd.DataFrame())
     assert result is None
 
 

@@ -70,8 +70,8 @@ def get_phase_breakdown(bom: pd.DataFrame):
     phase_groups = bom.groupby("phase")
 
     phase_breakdown = phase_groups.sum()
-    if "unitary_costs" in phase_breakdown:
-        phase_breakdown.drop("unitary_costs", axis=1, inplace=True)
+    if "unitary_cost" in phase_breakdown:
+        phase_breakdown.drop("unitary_cost", axis=1, inplace=True)
 
     return phase_breakdown
 

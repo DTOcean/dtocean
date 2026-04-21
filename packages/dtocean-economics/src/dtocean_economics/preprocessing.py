@@ -27,21 +27,14 @@ import pandas as pd
 def estimate_cost_per_power(total_rated_power, unit_cost, phase=None):
     cost = total_rated_power * unit_cost
     cost_bom = make_phase_bom([1], [cost], [0], phase)
-
     return cost_bom
 
 
-def estimate_energy(lifetime, year_energy, network_efficiency=None):
-    if network_efficiency is not None:
-        net_coeff = network_efficiency
-    else:
-        net_coeff = 1.0
-
-    energy = [0] + [year_energy * net_coeff] * lifetime
+def estimate_energy(lifetime, year_energy, network_efficiency=1.0):
+    energy = [0] + [year_energy * network_efficiency] * lifetime
     energy_year = range(lifetime + 1)
 
     raw_energy = {"energy": energy, "project_year": energy_year}
-
     energy_record = pd.DataFrame(raw_energy)
 
     return energy_record

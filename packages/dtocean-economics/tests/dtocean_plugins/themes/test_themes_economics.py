@@ -1533,3 +1533,102 @@ def test_get_outputs_8_UniVariateKDE_error(
         abs(outputs["lcoe_mean"] - lcoe_expected) / lcoe_expected * 100
     )
     assert lcoe_mean_error < 20
+
+
+def test_get_outputs_8_no_opex(
+    bom,
+    energy_record_8,
+):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        bom,
+        pd.DataFrame(),
+        energy_record_8,
+        discount_rate,
+        1e6,
+        None,
+    )
+
+    none_outputs = [
+        "discounted_opex_lower",
+        "discounted_opex_mean",
+        "discounted_opex_mode",
+        "discounted_opex_upper",
+        "lifetime_cost_mode",
+        "discounted_lifetime_cost_mode",
+        "lifetime_opex_mean",
+        "lifetime_opex_mode",
+        "lifetime_opex_lower",
+        "lifetime_opex_upper",
+        "confidence_density",
+        "lcoe_pdf",
+        "opex_breakdown",
+        "opex_lcoe_breakdown",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+
+def test_get_outputs_8_no_energy(
+    bom,
+    opex_costs_8,
+):
+    discount_rate = 1 / 5
+    outputs = _get_outputs(
+        bom,
+        opex_costs_8,
+        pd.DataFrame(),
+        discount_rate,
+        1e6,
+        None,
+    )
+
+    none_outputs = [
+        "opex_breakdown",
+        "discounted_energy_lower",
+        "discounted_energy_mean",
+        "discounted_energy_mode",
+        "discounted_energy_upper",
+        "lcoe_mean",
+        "lcoe_mode",
+        "lcoe_lower",
+        "lcoe_upper",
+        "confidence_density",
+        "lcoe_pdf",
+        "lcoe_breakdown",
+        "opex_lcoe_breakdown",
+        "capex_lcoe_breakdown",
+    ]
+    for key in none_outputs:
+        if outputs[key] is not None:
+            print(key)
+        assert outputs[key] is None
+
+    non_none_outputs = set(outputs.keys()) - set(none_outputs)
+    for key in non_none_outputs:
+        if outputs[key] is None:
+            print(key)
+        assert outputs[key] is not None
+
+
+def test_get_outputs_non_matching(bom, opex_costs_8, energy_record_0):
+    with pytest.raises(ValueError) as exc:
+        discount_rate = 1 / 5
+        _get_outputs(
+            bom,
+            opex_costs_8,
+            energy_record_0,
+            discount_rate,
+            1e6,
+            None,
+        )
+
+    assert "must be the same length" in str(exc)

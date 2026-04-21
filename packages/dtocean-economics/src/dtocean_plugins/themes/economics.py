@@ -517,7 +517,7 @@ def _get_outputs(
     externalities_opex: Optional[float],
 ) -> dict[str, Any]:
     series = [opex_bom, energy_record]
-    series_lengths = [len(x) for x in series if not x.empty]
+    series_lengths = [len(x.columns) for x in series if not x.empty]
     if len(series_lengths) == 2 and len(set(series_lengths)) != 1:
         msg = "opex bom and energy record must be the same length if not empty"
         raise ValueError(msg)
@@ -900,23 +900,7 @@ def _get_outputs_stats(
         except np.linalg.LinAlgError:
             _get_discounted_opex_stats(outputs, discounted_opex)
             _get_discounted_energy_stats(outputs, discounted_energy)
-
-            assert lcoe_total is not None
-
-            # Euro/Wh to Euro/kWh
-            try:
-                distribution = UniVariateKDE(lcoe_total)
-                outputs["lcoe_mean"] = distribution.mean() * 1000
-                outputs["lcoe_mode"] = distribution.mode() * 1000
-
-                intervals = distribution.confidence_interval(95)
-
-                if intervals is not None:
-                    outputs["lcoe_lower"] = intervals[0] * 1000
-                    outputs["lcoe_upper"] = intervals[1] * 1000
-
-            except np.linalg.LinAlgError:
-                outputs["lcoe_mean"] = lcoe_total.mean() * 1000
+            _get_lcoe_stats(outputs, lcoe_total)
 
         return outputs
 
@@ -925,6 +909,9 @@ def _get_outputs_stats(
 
     if discounted_energy is not None:
         _get_discounted_energy_stats(outputs, discounted_energy)
+
+    if lcoe_total is not None:
+        _get_lcoe_stats(outputs, lcoe_total)
 
     return outputs
 
@@ -960,6 +947,23 @@ def _get_discounted_energy_stats(outputs: dict[str, Any], discounted_energy):
 
     except np.linalg.LinAlgError:
         outputs["discounted_energy_mean"] = discounted_energy.mean() / 1e6
+
+
+def _get_lcoe_stats(outputs: dict[str, Any], lcoe_total):
+    # Euro/Wh to Euro/kWh
+    try:
+        distribution = UniVariateKDE(lcoe_total)
+        outputs["lcoe_mean"] = distribution.mean() * 1000
+        outputs["lcoe_mode"] = distribution.mode() * 1000
+
+        intervals = distribution.confidence_interval(95)
+
+        if intervals is not None:
+            outputs["lcoe_lower"] = intervals[0] * 1000
+            outputs["lcoe_upper"] = intervals[1] * 1000
+
+    except np.linalg.LinAlgError:
+        outputs["lcoe_mean"] = lcoe_total.mean() * 1000
 
 
 def _get_opex_breakdown(
