@@ -432,8 +432,30 @@ class EconomicInterface(ThemeInterface):
         )
         capex_bom = capex_bom.convert_dtypes()
 
+        # Try to infer the project lifetime
+        lifetime = None
+
+        if self.data.lifetime is not None:
+            lifetime = self.data.lifetime
+        else:
+            lifetimes: list[int] = []
+
+            if self.data.opex_per_year is not None:
+                lifetimes.append(self.data.opex_per_year.index.max())
+            if self.data.energy_per_year is not None:
+                lifetimes.append(self.data.energy_per_year.index.max())
+
+            if lifetimes:
+                lifetime = max(lifetimes)
+
         if self.data.opex_per_year is not None:
             opex_bom = self.data.opex_per_year.copy()
+            assert isinstance(opex_bom, pd.DataFrame)
+
+            # Fill missing years with zero
+            assert lifetime is not None
+            opex_bom = opex_bom.reindex(range(lifetime + 1), fill_value=0.0)
+
             opex_bom.index.name = "project_year"
             opex_bom = opex_bom.reset_index()
 
@@ -462,21 +484,32 @@ class EconomicInterface(ThemeInterface):
                 )
             else:
                 opex_bom = opex_bom.set_index("project_year")
-                opex_bom += self.data.externalities_opex
+                opex_bom.loc[1:] += self.data.externalities_opex
                 opex_bom = opex_bom.reset_index()
 
         # Prepare energy
         if self.data.network_efficiency is not None:
             net_coeff = self.data.network_efficiency
         else:
-            net_coeff = 1
+            net_coeff = 1.0
+
+        assert isinstance(net_coeff, float)
 
         # Convert energy to Wh
         MWh_to_Wh = 1e6
 
-        if self.data.energy_per_year is not None:  #
-            energy_record = self.data.energy_per_year.copy() * MWh_to_Wh
-            energy_record = energy_record * net_coeff
+        if self.data.energy_per_year is not None:
+            energy_record = self.data.energy_per_year.copy()
+            assert isinstance(energy_record, pd.DataFrame)
+            energy_record = energy_record * MWh_to_Wh * net_coeff
+
+            # Fill missing years with zero
+            assert lifetime is not None
+            energy_record = energy_record.reindex(
+                range(lifetime + 1),
+                fill_value=0.0,
+            )
+
             energy_record.index.name = "project_year"
             energy_record = energy_record.reset_index()
 
@@ -588,6 +621,10 @@ def _get_outputs(
             )
 
     if not opex_bom.empty:
+        max_year = opex_bom["project_year"].max()
+        if len(opex_bom) != max_year + 1:
+            raise ValueError("Not all project years have values in OPEX bom")
+
         opex_by_year = opex_bom.set_index("project_year")
         opex_year_zero = opex_by_year.loc[0]
         assert isinstance(opex_year_zero, pd.Series)
@@ -598,6 +635,12 @@ def _get_outputs(
         discounted_opex = get_discounted_values(opex_bom, discount_rate)
 
     if not energy_record.empty:
+        max_year = energy_record["project_year"].max()
+        if len(energy_record) != max_year + 1:
+            raise ValueError(
+                "Not all project years have values in energy record"
+            )
+
         energy_by_year = energy_record.set_index("project_year")
         energy_total = energy_by_year.sum()
         discounted_energy = get_discounted_values(energy_record, discount_rate)
