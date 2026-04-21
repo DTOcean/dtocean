@@ -223,15 +223,22 @@ def test_economics_interface_entry(
     assert externalities_opex == 1e3
 
     expected_opex_bom_dict = {
-        "project_year": [3, 4],
-        "Cost": [1000.0 + externalities_opex, 2000.0 + externalities_opex],
+        "project_year": [0, 1, 2, 3, 4, 5],
+        "Cost": [
+            0.0,
+            0.0 + externalities_opex,
+            0.0 + externalities_opex,
+            1000.0 + externalities_opex,
+            2000.0 + externalities_opex,
+            0.0 + externalities_opex,
+        ],
     }
     expected_opex_bom = pd.DataFrame(expected_opex_bom_dict)
     pd.testing.assert_frame_equal(expected_opex_bom, opex_bom)
 
     expected_energy_record_dict = {
-        "project_year": [3, 4],
-        "Energy": [10000.0, 20000.0],
+        "project_year": [0, 1, 2, 3, 4, 5],
+        "Energy": [0.0, 0.0, 0.0, 10000.0, 20000.0, 0.0],
     }
     expected_energy_record = pd.DataFrame(expected_energy_record_dict)
     expected_energy_record["Energy"] = (
@@ -1072,8 +1079,7 @@ def test_get_outputs_0_energy_only(energy_record_0):
         assert outputs[key] is not None
 
 
-@pytest.fixture()
-def opex_costs_0_non_zero_year_0():
+def test_get_outputs_opex_non_zero_year_0():
     opex_dict = {
         "project_year": [0, 1, 2, 3],
         "cost 0": [
@@ -1083,22 +1089,60 @@ def opex_costs_0_non_zero_year_0():
             YEAR_THREE,
         ],
     }
-    opex_df = pd.DataFrame(opex_dict)
-    return opex_df
-
-
-def test_get_outputs_0_opex_non_zero_year_0(opex_costs_0_non_zero_year_0):
+    opex_non_zero_year_0 = pd.DataFrame(opex_dict)
     discount_rate = 1 / 5
     with pytest.raises(ValueError) as exc:
         _get_outputs(
             pd.DataFrame(),
-            opex_costs_0_non_zero_year_0,
+            opex_non_zero_year_0,
             pd.DataFrame(),
             discount_rate,
             None,
             None,
         )
     assert "OPEX must be zero for year 0" in str(exc)
+
+
+def test_get_outputs_opex_missing_years():
+    opex_dict = {
+        "project_year": [1, 2, 3],
+        "cost 0": [
+            YEAR_ONE,
+            YEAR_TWO,
+            YEAR_THREE,
+        ],
+    }
+    opex_missing_years = pd.DataFrame(opex_dict)
+    discount_rate = 1 / 5
+    with pytest.raises(ValueError) as exc:
+        _get_outputs(
+            pd.DataFrame(),
+            opex_missing_years,
+            pd.DataFrame(),
+            discount_rate,
+            None,
+            None,
+        )
+    assert "Not all project years have values in OPEX bom" in str(exc)
+
+
+def test_get_outputs_energy_missing_years():
+    energy_dict = {
+        "project_year": [1, 2, 3],
+        "energy 0": [YEAR_ONE * 1e6, YEAR_TWO * 1e6, YEAR_THREE * 1e6],
+    }
+    energy_missing_years = pd.DataFrame(energy_dict)
+    discount_rate = 1 / 5
+    with pytest.raises(ValueError) as exc:
+        _get_outputs(
+            pd.DataFrame(),
+            pd.DataFrame(),
+            energy_missing_years,
+            discount_rate,
+            None,
+            None,
+        )
+    assert "Not all project years have values in energy record" in str(exc)
 
 
 @pytest.fixture()

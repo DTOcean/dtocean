@@ -39,7 +39,7 @@ install_bom = pd.DataFrame(install_bom_dict)
 opex_bom_dict = {"Cost": [1000, 2000], "Year": [3, 4]}
 opex_bom = pd.DataFrame(opex_bom_dict)
 
-energy_record_dict = {"Energy": [10000, 20000], "Year": [3, 4]}
+energy_record_dict = {"Energy": [10000, 20000, 0], "Year": [3, 4, 5]}
 energy_record = pd.DataFrame(energy_record_dict)
 
 
