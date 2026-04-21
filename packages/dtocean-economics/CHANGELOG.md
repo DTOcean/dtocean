@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.1 (2026-04-21)
+
+### Bug Fixes
+
+- Allow partially defined records ([#73](https://github.com/DTOcean/dtocean/pull/73),
+  [`0b9363d`](https://github.com/DTOcean/dtocean/commit/0b9363d93acf87d1ae7b0ba7580cbfc1abe9e110))
+
+
 ## v4.0.0 (2026-04-21)
 
 ### Features
