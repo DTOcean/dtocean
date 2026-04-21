@@ -22,16 +22,16 @@ marine renewable energy arrays.**
 DTOcean can calculate:
 
 - Optimal ocean energy converter (OEC) positioning
-- <s>Energy export infrastructure</s>
-- <s>Station keeping requirements based on OEC performance and site conditions</s>
-- <s>Installation planning with weather effects</s>
-- <s>Maintenance planning, simulating OEC downtime</s>
-- <s>Environmental impact assessment (experimental)</s>
+- <del>Energy export infrastructure</del>
+- <del>Station keeping requirements based on OEC performance and site conditions</del>
+- <del>Installation planning with weather effects</del>
+- <del>Maintenance planning, simulating OEC downtime</del>
+- <del>Environmental impact assessment (experimental)</del>
 
 And features include:
 
-- <s>A unique statistical approach to calculating levelized cost of energy (LCOE)</s>
-- <s>OEC reliability influenced at component level</s>
+- A unique statistical approach to calculating levelized cost of energy (LCOE)
+- <del>OEC reliability influenced at component level</del>
 - Graphical user interface
 - Persistent database
 

@@ -1,0 +1,17 @@
+{
+  "[markdown]": {
+    "editor.formatOnSave": true,
+  },
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "[toml]": {
+    "editor.formatOnSave": true,
+  },
+  "ruff.configuration": "pyproject.toml",
+}

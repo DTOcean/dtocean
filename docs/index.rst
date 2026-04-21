@@ -45,7 +45,7 @@
     - Station keeping designed for device and site conditions [#f2]_
     - Installation planning with weather effects [#f2]_
     - Maintenance needs and OEC downtime [#f2]_
-    - A unique statistical approach to LCOE [#f2]_
+    - A unique statistical approach to LCOE
     - Influence reliability at component level [#f2]_
     - Environmental impact assessment [#f1]_ [#f2]_
     - Graphical user interface
@@ -55,7 +55,7 @@
 
 .. only:: html
 
-    Loved and maintained by `Mathew Topper <mathew.topper@dataonlygreater.com>`_
+    Loved and maintained by `Mathew Topper <damm_horse@yahoo.co.uk>`_
     \@ `Data Only Greater <http://www.dataonlygreater.com>`_
 
 .. rubric:: Footnotes

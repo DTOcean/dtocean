@@ -31,6 +31,7 @@ include-groups = ["dtocean"]
 
 [tool.poetry.group.dtocean.dependencies]
 dtocean-app = { path = "../dtocean-app", develop = true }
+dtocean-economics = { path = "../dtocean-economics", develop = true }
 dtocean-docs = { path = "../dtocean-docs", develop = true }
 dtocean-hydrodynamics = { path = "../dtocean-hydrodynamics", develop = true }
 
