@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- version list -->
 
+## v4.0.7 (2026-04-22)
+
+### Bug Fixes
+
+- Include cli definition
+  ([`44fe3a3`](https://github.com/DTOcean/dtocean/commit/44fe3a3806f43e2d8b1d2ed49a154aa01cd5cb0d))
+
+
 ## v4.0.6 (2026-04-22)
 
 ### Bug Fixes
