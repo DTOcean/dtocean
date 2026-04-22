@@ -56,7 +56,7 @@ The table below describes the contents of the sub-folders found in the
 | dtocean-qt            | Support module providing specialised QT6 widgets for dtocean-app |
 | mdo-engine            | General data management, execution ordering and plugin framework |
 | polite-config         | Helper utilities for setting up logging, config files, etc.      |
-| dtocean-economics     | Economic assessment module[^3]                                   |
+| dtocean-economics     | Economic assessment module                                       |
 | dtocean-electrical    | Electrical network design module[^3]                             |
 | dtocean-environment   | Environmental impact assessment module[^3]                       |
 | dtocean-installation  | Farm installation logistics design module[^3]                    |
