@@ -83,8 +83,6 @@ class CalVersion(Version):
 
 
 if __name__ == "__main__":
-    dt = datetime.now(timezone.utc)
-
     with (
         mock.patch("semantic_release.version.version.Version", CalVersion),
         mock.patch("semantic_release.version.translator.Version", CalVersion),
@@ -98,7 +96,7 @@ if __name__ == "__main__":
         ),
         mock.patch(
             "semantic_release.version.algorithm.DEFAULT_VERSION",
-            f"{dt.year}.{dt.month}.0",
+            "1000.1.0",
         ),
     ):
         main()

@@ -144,14 +144,6 @@ jobs:
           push: ${{ github.repository == env.RELEASING_REPO }}
           vcs_release: false
 
-      - name: Release root
-        id: release-root
-        uses: ./.github/actions/semantic-release-calver
-        with:
-          commit: ${{ github.repository == env.RELEASING_REPO }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          push: ${{ github.repository == env.RELEASING_REPO }}
-
       - name: Release dtocean-docs
         id: release-dtocean-docs
         uses: python-semantic-release/python-semantic-release@v10.5.3
@@ -161,6 +153,14 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           push: ${{ github.repository == env.RELEASING_REPO }}
           vcs_release: false
+
+      - name: Release root
+        id: release-root
+        uses: ./.github/actions/semantic-release-calver
+        with:
+          commit: ${{ github.repository == env.RELEASING_REPO }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          push: ${{ github.repository == env.RELEASING_REPO }}
 
       - name: Update poetry lock file
         run: |
@@ -729,7 +729,7 @@ jobs:
       - name: Setup | Checkout repository on commit sha
         uses: actions/checkout@v6
         with:
-          ref: ${{ needs.release.outputs.dtocean-docs-commit_sha }}
+          ref: ${{ needs.release.outputs.root-commit_sha }}
 
       - name: Git LFS Pull
         run: git lfs pull -I ${{ env.DTOCEAN_DIR }}
