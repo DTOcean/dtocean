@@ -27,6 +27,10 @@ issues = "https://github.com/DTOcean/dtocean/issues"
 
 [tool.poetry]
 include = [{ path = "src/dtocean_docs/html", format = "wheel" }]
+packages = [
+    { include = "dtocean_docs", from = "src" },
+    { include = "dtocean_plugins", from = "src" },
+]
 
 [tool.poetry.dependencies]
 
