@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>9. Data Structures &mdash; DTOcean 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="8. DTOcean Themes" href="themes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User's Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/abstract.html">1. Abstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/softinstall.html">3. Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/overview.html">4. DTOcean Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/modules.html">6. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/themes.html">7. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/preprocessing.html">8. Preprocessing Steps: Data Requirements and Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/references.html">9. Links, Support and Extra Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Manual</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designreq.html">3. Requirements for Implementing the Design Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datamanagement.html">4. Data Management and Shared Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mainapp.html">5. Main Application and Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">6. Database Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">7. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">8. DTOcean Themes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">9. Data Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">9.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-specification">9.2. Data Specification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-fields">9.2.1. Model Fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-fields">9.2.2. Description Fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation-fields">9.2.3. Validation Fields</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-formats">9.3. Data Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#case-studies-bathymetry-data-structure">9.4. Case Studies: Bathymetry Data Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lease-area">9.4.1. Lease Area</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-cable-corridor">9.4.2. Export Cable Corridor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geological-data-requirements">9.4.3. Geological Data Requirements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">9. </span>Data Structures</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/technical/datastructures.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-structures">
+<span id="datastructures"></span><h1><span class="section-number">9. </span>Data Structures<a class="headerlink" href="#data-structures" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2><span class="section-number">9.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>A significant portion of the functionality of the DTOcean software is dedicated
+to the storage, delivery and manipulation of data. The system (particularly the
+underlying Aneris framework) is designed to provide flexible but precise
+definitions of all the data handled within the system. The definition of this
+data is given in an item known as the Data Definition Specification (DDS),
+which provides a collection of metadata unique to the system being developed.</p>
+<p>This metadata is provided in the form of fields and records, with each record
+referring to a single encapsulated data item. The fields are configurable for
+the needs of the system and those necessary for DTOcean are detailed here. A
+default field required by the Aneris framework is called “structure”. The
+structure field relates to the format of the data as it will be stored within
+the software. A clear understanding of the format of the data is vital for
+delivering it to the modules, but it can also provide the means to
+automatically create charts for the data, store the data on a local hard disk
+or retrieve data from a database. The majority of structures used in DTOcean
+are described here.</p>
+<p>Throughout development of the DTOcean software, agreement of the format of
+various items of data has been vital for the successful coupling of the modules
+and themes. Although format conversions can be achieved within the interfaces
+between the core and the modules, if the essence of data is not consistent then
+an incompatibility can occur. Such problems can occur, for instance, when the
+needs of a module are not supplied by a module which has run previously or
+where the resolutions of certain data items do not match between different
+modules. A case study for resolving these types of challenge is also given.</p>
+</section>
+<section id="data-specification">
+<h2><span class="section-number">9.2. </span>Data Specification<a class="headerlink" href="#data-specification" title="Link to this heading"></a></h2>
+<p>The following fields are used to describe each data member within the DTOcean
+tool. The definition is split into 3 sections, a model section which describes
+the technical information for use within the core. The second section is the
+description section, which provides real details about the data to aid the user
+identify and use the data member effectively. Finally, the validation section
+contains data about valid values that the data can take, should this be
+appropriate.</p>
+<section id="model-fields">
+<h3><span class="section-number">9.2.1. </span>Model Fields<a class="headerlink" href="#model-fields" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Identifier: A unique identifier for the data</p></li>
+<li><p>Structure: The data storage class to be used</p></li>
+<li><p>Types: A list of data type can also be specified which may be used within
+the data structure</p></li>
+<li><p>Tables: List of database tables &amp; columns used as an interface to the data.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="description-fields">
+<h3><span class="section-number">9.2.2. </span>Description Fields<a class="headerlink" href="#description-fields" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Title: The title of the data (also used for handles and plot titles)</p></li>
+<li><p>Description: A longer description of the data</p></li>
+<li><p>Labels: List of names for labels within the data such as for axes or table
+column headers</p></li>
+<li><p>Units: List of SI units of the data and / or axes etc.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="validation-fields">
+<h3><span class="section-number">9.2.3. </span>Validation Fields<a class="headerlink" href="#validation-fields" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Valid Values: List of valid values for discrete data</p></li>
+</ul>
+</div></blockquote>
+<p>The primary format for the specification is YAML, defining a list of
+dictionaries like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="o">-</span> <span class="n">description</span><span class="p">:</span> <span class="n">The</span> <span class="n">current</span> <span class="n">velocity</span> <span class="n">at</span> <span class="n">which</span> <span class="n">the</span> <span class="n">tidal</span> <span class="n">device</span> <span class="n">rotor</span> <span class="n">begins</span> <span class="n">to</span> <span class="n">turn</span><span class="o">.</span>
+  <span class="n">identifier</span><span class="p">:</span> <span class="n">device</span><span class="o">.</span><span class="n">cut_in_velocity</span>
+  <span class="n">structure</span><span class="p">:</span> <span class="n">SimpleDataColumn</span>
+  <span class="n">tables</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">project_device</span>
+  <span class="o">-</span> <span class="n">cut_in_velocity</span>
+  <span class="n">title</span><span class="p">:</span> <span class="n">Tidal</span> <span class="n">Turbine</span> <span class="n">Cut</span><span class="o">-</span><span class="n">In</span> <span class="n">Velocity</span>
+  <span class="n">types</span><span class="p">:</span>
+  <span class="o">-</span> <span class="nb">float</span>
+  <span class="n">units</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">m</span><span class="o">/</span><span class="n">s</span>
+</pre></div>
+</div>
+<p>It is also possible to convert an excel spreadsheet to the yaml format, when the
+first column headings match the definition fields as show below:</p>
+<img alt="../_images/dds_root.png" src="../_images/dds_root.png" />
+<p>Additionally, values with list entries can be added as additional sheets. For
+instance the “Types” sheet might define float types in two dimensions:</p>
+<img alt="../_images/dds_types.png" src="../_images/dds_types.png" />
+</section>
+</section>
+<section id="data-formats">
+<h2><span class="section-number">9.3. </span>Data Formats<a class="headerlink" href="#data-formats" title="Link to this heading"></a></h2>
+<p>This section describes the currently defined data formats available within the DTOcean core. These formats must correspond to the “structure” field of the data specification. Some requirements for specifying raw data for these structures is given. Also, a description of the automatic plot which can be viewed of these structures (where a plot is appropriate) is also described:</p>
+<p><em>UnknownData</em></p>
+<p>Description: This is for data where the structure is unknown and can act as a place holder until a more appropriate structure is chosen or defined</p>
+<p>Validation: None</p>
+<p>Plots: None</p>
+<p><em>DateTimeData</em></p>
+<p>Description: A single datetime.datetime object which records a date and time</p>
+<p>Validation: A datetime.datatime object must be given for initialisation</p>
+<p>Plots: None</p>
+<p><em>SeriesData</em></p>
+<p>Description: A pandas.Series object which records the evolution of a single variable against an (arbitrary) index</p>
+<p>Validation: A list like object must be given for initialisation. An optional label and unit can be given for dependant variable</p>
+<p>Plots: A basic line plot (pd.Series.plot) where the label and unit are optionally added to the y-axis</p>
+<p><em>TimeSeries</em></p>
+<p>Description: A pandas.Series object which records the evolution of a single variable against an datetime index</p>
+<p>Validation: A list of tuples must be given for initialisation where the first index is a datetime.datetime (like) object and the second index is the value for that time. An optional label and unit can be given for dependant variable</p>
+<p>Plots: A line plot (pd.Series.plot) with the date / time on the x-axis and where the label and unit are optionally added to the y-axis</p>
+<p><em>TableData</em></p>
+<p>Description: A pandas.DataFrame object on an arbitrary index with an arbitrary number of columns</p>
+<p>Validation: Any data which will initialise a pandas DataFrame can be used to initialise the structure. Validation of the column headers using the “labels” metadata is planned but not yet implemented.</p>
+<p>Plots: None</p>
+<p><em>IndexTable</em></p>
+<p>Description: A pandas.DataFrame object on using a shared index with an arbitrary number of columns. In this case the index would normally be textual.</p>
+<p>Validation: Any data which will initialise a pandas DataFrame can be used to initialise the structure. The first label must include the column to be used as the index.</p>
+<p>Plots: None</p>
+<p><em>LineTable</em></p>
+<p>Description: A pandas.DataFrame object on using a shared index with an arbitrary number of columns. In this case the index should be numerical.</p>
+<p>Validation: Any data which will initialise a pandas DataFrame can be used to initialise the structure. The first label must include the column to be used as the index.</p>
+<p>Plots: Multiple lines on a shared axis (pandas.DataFrame.plot). The label is known for the x-axis (the index) and optional units can be given. The column headings can be used to provide a legend for the plot, with optional units.</p>
+<p><em>TimeTable</em></p>
+<p>Description: A pandas.DataFrame object an using a date / time index with an arbitrary number of columns</p>
+<p>Validation: Any data which will initialise a pandas DataFrame can be used to initialise the structure. A column with the heading “DateTime” must be given within the raw data.</p>
+<p>Plots: Multiple lines on a shared axis (pandas.DataFrame.plot). The label is known for the x-axis (the datetime index) . The column headings can be used to provide a legend for the plot, with optional units.</p>
+<p><em>NumpyND</em></p>
+<p>Description: A general numpy.ndarray object. This class provides a base class for other derived structures and cannot be used directly</p>
+<p>Validation: None</p>
+<p>Plots: None</p>
+<p><em>Numpy2D</em></p>
+<p>Description: A numpy.ndarray with 2 dimensions.</p>
+<p>Validation: The shape of the raw data must match the requirements of the structure</p>
+<p>Plots: None</p>
+<p><em>Numpy3D</em></p>
+<p>Description: A numpy.ndarray with 3 dimensions.</p>
+<p>Validation: The shape of the raw data must match the requirements of the structure</p>
+<p>Plots: None</p>
+<p><em>NumpyLine</em></p>
+<p>Description: A numpy.ndarray with 2 dimensions and the second dimension having value 2. This structure represents a line with and x and y points being in the columns of the given data.</p>
+<p>Validation: The shape of the raw data must match the requirements of the structure</p>
+<p>Plots: A line plot using the 0 index column for the x-axis and the 1 index column for the y-axis. Labels and units for the axes can be optionally given.</p>
+<p><em>NumpyLineDict</em></p>
+<p>Description: A dictionary of ‘numpy.ndarray’s with 2 dimensions and the second dimension having value 2. This structure represents a group of lines on the same set of axes.</p>
+<p>Validation: A dictionary must be given and the shape of the dictionary values must match the requirements of the NumpyLine structure</p>
+<p>Plots: Similar to the LineTable plot the group of lines is plotted on a shared set of axes. The legend of the plot uses the dictionary keys to label the lines. Optional labels and units can be supplied for the axes.</p>
+<p><em>NumpyBar</em></p>
+<p>Description: Same as NumpyLine except the data represent discrete points, rather than a continuous variable</p>
+<p>Validation: See NumpyLine</p>
+<p>Plots: None</p>
+<p><em>Histogram</em></p>
+<p>Description: Data which is stored in variable width bins. Note, the bin height need not be the frequency (i.e. an integer) as probability densities can also be stored in this structure.</p>
+<p>Validation: To initialise this structure a tuple must be given where the first entry is a list of the bin values and the second entry is a list of the bin extents. The length of the bin extents should be one entry longer than the bin values.</p>
+<p>Plots: This plot plots the bins as blocks. Optional labels and units can be supplied for the x and y axes.</p>
+<p><em>HistogramDict</em></p>
+<p>Description: A dictionary of histograms which share an axes</p>
+<p>Validation: To initialise this structure a dictionary of tuples should be given. The tuples must match the validation required for the Histogram structure.</p>
+<p>Plots: Similar to the histogram plot, but the block space is shared between the dictionary keys.</p>
+<p><em>CartesianData</em></p>
+<p>Description: A point on Cartesian axes in 2 or 3 dimensions. This data is not georeferenced.</p>
+<p>Validation: A list like structure with 2 or 3 entries is required for initialisation</p>
+<p>Plots: A plot of the point relative to (0,0)</p>
+<p><em>CartesianList</em></p>
+<p>Description: A list of points on Cartesian axes in 2 or 3 dimensions. This data is not georeferenced.</p>
+<p>Validation: A nested list like structure with 2 or 3 entries for the inner dimension is required for initialisation. The outer dimension can have any length</p>
+<p>Plots: A plot of all the points relative to (0,0)</p>
+<p><em>CartesianDict</em></p>
+<p>Description: A dictionary of points on Cartesian axes in 2 or 3 dimensions. This data is not georeferenced.</p>
+<p>Validation: A dictionary of list like structure with 2 or 3 entries for each value is required for initialisation.</p>
+<p>Plots: A plot of all the points relative to (0,0). A label with the dictionary key is placed by the point.</p>
+<p><em>CartesianListDict</em></p>
+<p>Description: A dictionary of CartesianList structures. This data is not georeferenced.</p>
+<p>Validation: A dictionary of structures valid for CartesianList.</p>
+<p>Plots: None</p>
+<p><em>SimpleData</em></p>
+<p>Description: A singleton piece of data with a built in python type.</p>
+<p>Validation: Any raw data can be entered but it must validate with the given type value</p>
+<p>Plots: None</p>
+<p><em>SimpleList</em></p>
+<p>Description: A list of data with a built in python type.</p>
+<p>Validation: A list containing any raw data can be entered but the list entries must validate with the given type value</p>
+<p>Plots: None</p>
+<p><em>SimpleDict</em></p>
+<p>Description: A dictionary of data with a built in python type.</p>
+<p>Validation: A dictionary containing any raw data can be entered but the dictionary values must validate with the given type value</p>
+<p>Plots: Bar chart plot with keys on x-axis and values with optional labels and units on y-axis.</p>
+<p><em>SimplePie</em></p>
+<p>Description: See SimpleDict</p>
+<p>Validation: See SimpleDict</p>
+<p>Plots: Pie chart plot with keys on segments</p>
+<p><em>PointData</em></p>
+<p>Description: A georeferenced shapely.geometry.Point object in 2 or 3 dimensions.</p>
+<p>Validation: A list like structure with 2 or 3 numbers is required.</p>
+<p>Plots: Point displayed in UTM map axes</p>
+<p><em>PointList</em></p>
+<p>Description: A list of georeferenced shapely.geometry.Point objects in 2 or 3 dimentsions.</p>
+<p>Validation: A list of list like structure with 2 or 3 numbers is required.</p>
+<p>Plots: The group of points displayed in UTM map axes</p>
+<p><em>PointDict</em></p>
+<p>Description: A dictionary of georeferenced shapely.geometry.Point objects in 2 or 3 dimentsions. See the same issue as PointData.</p>
+<p>Validation: A dictionary containing values that are list like structure with 2 or 3 numbers</p>
+<p>Plots: The group of points can be plotted in UTM map axes using the dictionary keys as labels.</p>
+<p><em>PolygonData</em></p>
+<p>Description: A georeferenced shapely.geometry.Polygon object in 2 or 3 dimensions.</p>
+<p>Validation: A list of list like structures with 2 or 3 numbers is required where each point represents a vertex of the polygon. The first point in the list is also considered to be the last point, i.e. it does not need to be repeated.</p>
+<p>Plots: Polygon displayed in UTM map axes.</p>
+<p><em>PolygonList</em></p>
+<p>Description: A list of georeferenced shapely.geometry.Polygon object in 2 or 3 dimensions.</p>
+<p>Validation: A list of polygon definitions as per the PolygonData structure</p>
+<p>Plots: The group of polygons can displayed in UTM map axes.</p>
+<p><em>PolygonDict</em></p>
+<p>Description: A dictionary of georeferenced shapely.geometry.Polygon object in 2 or 3 dimensions</p>
+<p>Validation: A dictionary of polygon definitions as per the PolygonData structure</p>
+<p>Plots: The group of polygons displayed in UTM map axes with a label for each polygon using the dictionary keys.</p>
+<p><em>XGridND</em></p>
+<p>Description: A general xarray.DataArray object. This structure is used as a base class for other structures based on DataArrays.</p>
+<p>Validation: None</p>
+<p>Plots: None</p>
+<p><em>XGrid2D</em></p>
+<p>Description: A xarray.DataArray object with 2 dimensions.</p>
+<p>Validation: To initialise the structure a dictionary must be passed with the keys “values” and “coords”. The values key are the values for the structure having the desired shape (numpy array or list like). The coord key contains a list of lists where each list contains the coordinates. The length of each list must match the length of the dimension of the data in the “values” key. A label must also be set for each dimension with optional units and the data itself (i.e. the length of the units must equal the length of the number of dimensions plus one).</p>
+<p>Plots: xarray.DataArray.plot produces a surface plot of the data</p>
+<p><em>XGrid3D</em></p>
+<p>Description: A xarray.DataArray object with 3 dimensions.</p>
+<p>Validation: See XGrid2D</p>
+<p>Plots: None</p>
+<p><em>XSetND</em></p>
+<p>Description: A general xarray.Dataset object. This structure is used as a base class for other structures based on Datasets.</p>
+<p>Validation: None</p>
+<p>Plots: None</p>
+<p><em>XSet2D</em></p>
+<p>Description: A xarray.Dataset object with each set having 2 dimensions.</p>
+<p>Validation: To initialise the structure a dictionary must be passed with the keys “values” and “coords”. The values key contains another dictionary with keys giving the dataset name and each value being the associated data. This data should have the desired shape (as a numpy array or list like) and every value of the dictionary should have the same shape. The coord key contains a list of lists where each list contains the coordinates. The length of each list must match the length of the dimension of the data in the “values” key. A label must also be set for each dimension with optional units and the data itself (i.e. the length of the units must equal the length of the number of dimensions plus one).</p>
+<p>Plots: A plot with a sub-axes for each dataset showing a surface plot of the data</p>
+<p><em>XSet3D</em></p>
+<p>Description: A xarray.Dataset object with each set having 3 dimensions.</p>
+<p>Validation: See XSet2D</p>
+<p>Plots: None</p>
+<p><em>Strata</em></p>
+<p>Description: A subclass of XSet3D for storing bathymetric layers.</p>
+<p>Validation: Currently has similar validation to XSet3D, but the raw data should have the “values” key with “depth” and “sediment” in the subdictionary, the first two sets of coordinates should be monotonic and the last should be a list of strings with format “layer #” where # is the layer number starting from one. Note, this check is not yet implemented.</p>
+<p>Plots: A plot of the bathymetry can be provided using the “layer 1” key of the depth matrix.</p>
+<p><em>Network</em></p>
+<p>Description: A series of nested dictionaries that represent the electrical or moorings networks</p>
+<p>Validation: The only main validation right now is that the top level dictionary should have two keys: “nodes”, which refers to the “BOM” dictionary format and “topology” which refers to the hierarchy format.</p>
+<p>Plots: A plot of the network nodes and edges in a network diagram.</p>
+<p><em>RecommendationDict</em></p>
+<p>Description: A dictionary for containing recommendations from the Environmental module</p>
+<p>Validation: The top level keys of the structure should match the content of the labels key in the DDS metadata and be from a subset of valid values (which I need to list here). The next level dictionary should always have keys: “Generic Explanation”, General Recommendation” and “Detailed Recommendation”.</p>
+<p>Plots: None</p>
+</section>
+<section id="case-studies-bathymetry-data-structure">
+<h2><span class="section-number">9.4. </span>Case Studies: Bathymetry Data Structure<a class="headerlink" href="#case-studies-bathymetry-data-structure" title="Link to this heading"></a></h2>
+<p>This section details some case studies undertaken to form a common understanding
+of some data requirements and structures which would be shared among the
+modules.</p>
+<p>The first two subsections present definitions of the offshore bathymetry data
+structure in plan view. This was divided into two areas: the lease area and the
+export cable corridor. The discussion was undertaken as the Electrical
+Sub-Systems module required a more explicit definition of the grid layout of
+the lease area bathymetry, and as there were no definitions for the bathymetry
+relating to electrical export cable corridors.</p>
+<p>Following the results of bathymetric structure discussion, it became clear that
+a second study was required to discuss the definitions below the sea bottom.
+Thus, the final subsection addresses the question of provision and storage of
+geological data values for the software.</p>
+<section id="lease-area">
+<h3><span class="section-number">9.4.1. </span>Lease Area<a class="headerlink" href="#lease-area" title="Link to this heading"></a></h3>
+<p>The following decisions were made regarding the lease area bathymetry:</p>
+<p>1. The core bathymetry data structure is to be modified to include an index, as
+shown in Table 8.3 and illustrated in Figure 8.1. This will allow adjacency to
+be determined in the Electrical Sub-Systems module:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>This index is based on a 2D array (i,j)</p></li>
+<li><p>The index will be sequential and follow the English reading order (see (“Esri grid,” 2015)) i.e. “left-right and top-bottom”</p></li>
+<li><p>The data will be pre-processed in the core to map this array. The most northerly, easterly, southerly and westerly points will be identified and used to define the array dimensions</p></li>
+<li><p>During this process, the area around the lease area could be padded with temporary grid points, if necessary, to create a well dimensioned array. These temporary points would not be stored in the database</p></li>
+<li><p>An origin (0,0) may not exist</p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>The DTOcean software should be able to accept equidistant projections indicated by a formatted string (having the proj4 format (<a class="reference external" href="https://trac.osgeo.org/proj/">https://trac.osgeo.org/proj/</a>):</p>
+<ol class="loweralpha simple">
+<li><p>This will have no impact on the data structure passed to individual modules</p></li>
+<li><p>It should be the responsibility of the user to prepare a correctly formatted digital terrain map (DTM) which uses the given projection</p></li>
+<li><p>A string will be stored in the SITE table</p></li>
+</ol>
+</li>
+<li><p>Provision for scarcity of data should be included in all WP modules:</p>
+<ol class="loweralpha simple">
+<li><p>Bathymetry data (x,y,z) is the minimum user input data requirement</p></li>
+<li><p>Geotechnical surveying is likely to occur at a later stage of project development so may not be readily available</p>
+<ol class="lowerroman simple">
+<li><p>The core will provide data only for points which are True, i.e. it will not provide a predomi- nantly empty structure of NaNs</p></li>
+</ol>
+</li>
+<li><p>Note, this interpretation conflicts with the interpretation of (at least) WP2</p></li>
+</ol>
+</li>
+<li><p>Any data interpolation should be performed by the user prior to running the DTOcean software, although this does not imply all grid points need values apart from the bathymetry</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<span id="fig-ex1"></span><img alt="../_images/ex1.png" src="../_images/ex1.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 9.1 </span><span class="caption-text">Bathymetry data structure and sample data</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id2">
+<span id="fig-ex2"></span><img alt="../_images/ex2.png" src="../_images/ex2.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 9.2 </span><span class="caption-text">Example of lease area indexing.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="export-cable-corridor">
+<h3><span class="section-number">9.4.2. </span>Export Cable Corridor<a class="headerlink" href="#export-cable-corridor" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id3">
+<span id="fig-ex3"></span><img alt="../_images/ex3.png" src="../_images/ex3.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 9.3 </span><span class="caption-text">Cable corridor data structure</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>and sample data The following decisions were made regarding the export cable corridor bathymetry:</p>
+<ol class="arabic simple">
+<li><p>This is defined as a separate data table within the database such as Table 8.4:</p>
+<ol class="loweralpha simple">
+<li><p>Generally, the structure will be similar to that of the lease area definitions</p></li>
+<li><p>As the sole user, this may be tailored to the Electrical Sub-Systems module data requirements, i.e. less geotechnical data is required for this zone</p></li>
+<li><p>The resolution of the export cable corridor can be lower than the lease area. The minimum requirement is to contain at least two points:</p>
+<ol class="lowerroman simple">
+<li><p>the cable landing point</p></li>
+<li><p>another overlapping with the lease area</p></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>The cable corridor will have the same projection as the lease area</p></li>
+<li><p>Gradient changes are one of the main constraints within the cable routing process and should be exposed to the user, i.e. the software should afford the user the chance to modify this parameter</p></li>
+</ol>
+</section>
+<section id="geological-data-requirements">
+<h3><span class="section-number">9.4.3. </span>Geological Data Requirements<a class="headerlink" href="#geological-data-requirements" title="Link to this heading"></a></h3>
+<p><em>First Approximation</em></p>
+<p>The minimum level of data that would be needed throughout the software would be the specification of a single soil type for the entire site of interest. This soil type could then be mapped to a series of reference values within the database as required for each module. For example:</p>
+<figure class="align-default" id="fig-ex4">
+<img alt="../_images/ex4.png" src="../_images/ex4.png" />
+</figure>
+<p><em>Single Layer Specification</em></p>
+<p>Given the apparent availability of complete (if not coarse) public information for the top layer soil type of large areas of seabed it seems appropriate to ask the user to provide a single soil type definition for each point of the grid. An example of how this might be presented is shown in Table 8.5.</p>
+<figure class="align-default" id="id4">
+<span id="fig-ex5"></span><img alt="../_images/ex5.png" src="../_images/ex5.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 9.4 </span><span class="caption-text">Single layer bathymetry data structure and sample data</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Here, “Layer Start” represents the top of the layer (effectively the depth – which is now redundant) and the layer is assumed to be of infinite depth.</p>
+<p><em>Multi-Layer Specification</em></p>
+<p>Extending the above definition to multiple layers is trivial: only additional columns are needed to specify the number of layers that are known. The last known layer is then considered to have infinite depth. Layer one must always be fully specified.</p>
+<figure class="align-default" id="id5">
+<span id="fig-ex6"></span><img alt="../_images/ex6.png" src="../_images/ex6.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 9.5 </span><span class="caption-text">Multiple layer bathymetry data structure and sample data</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Within the core, the this information is stored in a NetCDF like structure (xarray DataSet), one array is used for the layer start depths and one for the layer types. Nonetheless, it will be easy to “unroll” this data into a table like Table 8.6, for the purposes of the modules (i.e. a pandas table with the above columns).</p>
+<p>As a result of this implementation, each point of the grid will not have necessary the same number of layers and also their thickness is variable.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="themes.html" class="btn btn-neutral float-left" title="8. DTOcean Themes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v1.0.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.4.2/index.html">v2026.4.2</a></dd>
+      <dd><a href="../../root-v2026.4.1/index.html">v2026.4.1</a></dd>
+      <dd><a href="../../root-v2026.4.0/index.html">v2026.4.0</a></dd>
+      <dd><a href="../../root-v2026.3.4/index.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2.0.0/index.html">v2.0.0</a></dd>
+      <dd><a href="datastructures.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/index.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

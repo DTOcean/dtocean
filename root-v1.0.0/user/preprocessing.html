@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8. Preprocessing Steps: Data Requirements and Preparation &mdash; DTOcean 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="9. Links, Support and Extra Documentation" href="references.html" />
+    <link rel="prev" title="7. DTOcean Themes" href="themes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User's Manual</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="abstract.html">1. Abstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="softinstall.html">3. Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">4. DTOcean Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">6. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">7. DTOcean Themes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. Preprocessing Steps: Data Requirements and Preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">8.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database">8.2. Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reference-data">8.2.1. Reference data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project-data">8.2.2. Project data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dummy-data">8.2.3. Dummy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wave-scenario">8.2.4. Wave Scenario</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tidal-scenario">8.2.5. Tidal Scenario</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">9. Links, Support and Extra Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../technical/introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/designreq.html">3. Requirements for Implementing the Design Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/datamanagement.html">4. Data Management and Shared Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/mainapp.html">5. Main Application and Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/database.html">6. Database Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/modules.html">7. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/themes.html">8. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/datastructures.html">9. Data Structures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8. </span>Preprocessing Steps: Data Requirements and Preparation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/preprocessing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="preprocessing-steps-data-requirements-and-preparation">
+<span id="preproc"></span><h1><span class="section-number">8. </span>Preprocessing Steps: Data Requirements and Preparation<a class="headerlink" href="#preprocessing-steps-data-requirements-and-preparation" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2><span class="section-number">8.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+</section>
+<section id="database">
+<h2><span class="section-number">8.2. </span>Database<a class="headerlink" href="#database" title="Link to this heading"></a></h2>
+<p>The DTOcean tool is coupled to a Database which stores data that will be
+consumed by the tool.</p>
+<p>The database is a relational Structured Query Language (SQL) database, using
+PostgreSQL version 9.4.</p>
+<p>From a structural point of view is a unique entity, however it can be virtually
+portioned in two sub-set of meta-data <a class="reference internal" href="#fig-database"><span class="std std-numref">Fig. 8.1</span></a>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Reference data</p></li>
+<li><p>Project data</p></li>
+</ul>
+</div></blockquote>
+<figure class="align-default" id="id1">
+<span id="fig-database"></span><img alt="../_images/database.png" src="../_images/database.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.1 </span><span class="caption-text">Virtual partitioning of the Global Database</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="reference-data">
+<h3><span class="section-number">8.2.1. </span>Reference data<a class="headerlink" href="#reference-data" title="Link to this heading"></a></h3>
+<p>Reference data is a long-standing set of data that can be called during the run
+of a simulation and also be consulted by the user as a catalogue of components.</p>
+<p>In this regard the data thereafter described is made fully searchable.</p>
+<p>Broadly speaking Reference data includes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Electrical components</p></li>
+<li><p>Mooring/Foundations components</p></li>
+<li><p>Vessels</p></li>
+<li><p>Ports</p></li>
+</ul>
+</div></blockquote>
+<p>Electrical components related Database tables contain detailed information of a
+large spectrum of components required in order for the tool to make an informed
+choice that is reflected in the simulation. These are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Cables (static and dynamic)</p></li>
+<li><p>Connectors (wet and dry)</p></li>
+<li><p>Transformers (Power, OEC, Auxiliary, Grounding and Measurements)</p></li>
+<li><p>Switchgears (Circuit breakers, fuses, relays and Disconnectors)</p></li>
+<li><p>Ancillary (Junction boxes, Back-up Generators and Bus-Bars)</p></li>
+<li><p>Collection points (Hubs and Substations)</p></li>
+<li><p>Power quality (Reactive compensations, Harmonic filters and FACTS)</p></li>
+</ul>
+</div></blockquote>
+<p>Likewise, mooring components include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Chains</p></li>
+<li><p>Anchors</p></li>
+<li><p>Shackles</p></li>
+<li><p>Ropes</p></li>
+<li><p>Forerunners</p></li>
+<li><p>Swivels</p></li>
+<li><p>Piles (foundations for fixed devices)</p></li>
+</ul>
+</div></blockquote>
+<p>A list of vessels with relative characteristics is provided as well.</p>
+<p>The tool will select from the list the Vessels which characteristics suffice to
+carry out installation with respect to minimum CaPEX.</p>
+<p>A list of Ports along the European cost is made available and is used by the
+tool in order to optimise Installation and O&amp;M operations.</p>
+<p>Reference value are common for both Wave and Tidal project.</p>
+<p>All data so far described can be used as reference, hence the user will be able
+to override the tool decision of using reference data by entering his/her own
+values should be a different component/vessel/port be available.</p>
+<p>As previously mentioned, all data above described are made available in a
+text-based searchable files (ANNEXXX).</p>
+<p>These files can all be easily read by any user with no experience with Database
+design, exception made for table “primary keys” (i.e. id) and “foreign key”
+(i.e. fk_id). These identifiers are necessary to identify relationship between
+parent and child tables.</p>
+<p>The functionality to display all attributes belonging to any reference data item
+across parent and child tables happens a GUI level as per Database design
+industry standard and therefore, out of scope of this section.</p>
+<p>The user is invited to refer back to “Technical Manual” in order to gain an
+insight into the structure of the Database and tables relationship.</p>
+</section>
+<section id="project-data">
+<h3><span class="section-number">8.2.2. </span>Project data<a class="headerlink" href="#project-data" title="Link to this heading"></a></h3>
+<p>Project data are set of data that the end user is required to enter in order to
+run a simulation.</p>
+<p>This data is of course specific to a project and will change location to location.</p>
+<p>This encompasses data relative to the device, bathymetry of the site, metocean
+characteristics, geotechnical description of the soils and a number of physical
+characteristics unique to the site of interest.</p>
+<p>Three different mechanism are available for the user to feed data to the DTOcean
+tool:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Feed data directly to the Core through the GUI</p></li>
+<li><p>Populate the Database by means of ad-hoc SQL scripts</p></li>
+<li><p>Populate the Database using Database management system</p></li>
+</ol>
+</div></blockquote>
+<p>All three options require some pre-processing on the data as per any
+state-of-art software.</p>
+<p>Option 2 and 3 require the user to have SQL and Database programming skills. An
+overview will be given in the “Technical manual”.</p>
+<p>Option 1 is described in the GUI section.</p>
+<p>The Database is designed following the specific requirements (i.e. input) from
+each single module.</p>
+<p>The full description of modules input is described in the specific section.</p>
+<p>A set of project dummy data is also provided for both Wave and Tidal project and
+are available in the Database. The user will have full access to this in order
+to familiarise with the structure of the Database and its content.</p>
+</section>
+<section id="dummy-data">
+<h3><span class="section-number">8.2.3. </span>Dummy data<a class="headerlink" href="#dummy-data" title="Link to this heading"></a></h3>
+<p>The Database is pre-populated with Project dummy data (in addition to the
+long-standing reference data) in order for the end User to familiarise with the
+tool.</p>
+<p>The dummy data covers one Wave and Tidal scenario. Only data relative to WP2,3
+and 4 are present in the DB. These are the three modules which the Core can
+connect to.</p>
+<p>The following main set of data are briefly described:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bathymetry of the Lease Area</p></li>
+<li><p>Bathymetry of Cable Corridor</p></li>
+<li><p>Geotechnical characteristics of the Lease Area</p></li>
+<li><p>Geotechnical characteristics of Cable Corridor</p></li>
+<li><p>Metocean Data</p></li>
+<li><p>Wave Device</p></li>
+</ul>
+</div></blockquote>
+<p>The remaining values for meta-data in the Database are not described in this
+section since they are self-explanatory and are described in details in each WP
+section.</p>
+<p>Nonetheless, they are provided in the Database in order to allow the user to run
+a full simulation.</p>
+</section>
+<section id="wave-scenario">
+<h3><span class="section-number">8.2.4. </span>Wave Scenario<a class="headerlink" href="#wave-scenario" title="Link to this heading"></a></h3>
+<p><em>Bathymetry of the Lease area</em></p>
+<p>The bathymetry data have been downloaded from the publicly available data page
+on the Scottish Government website. As reference, the Shetland bathymetry has
+been chosen (<a class="reference external" href="http://www.gov.scot/Topics/marine/science/MSInteractive/datatype/Bathymetry/data/shetlandbathymetry">http://www.gov.scot/Topics/marine/science/MSInteractive/datatype/Bathymetry/data/shetlandbathymetry</a>).
+The original resolution of the Bathymetry is 3m, but in order to provide a set of
+data that contains a limited number of point (i.e. for ease of computational
+time) the bathymetry has been resampled at 12m.</p>
+<p>A rectangular shaped Lease Area is chosen in order to contain 100000 (i.e. 500 x
+200 points ) bathymetry points.</p>
+<p>The coordinates of the polygon identifying the lease area are shown below:</p>
+<img alt="../_images/coordinates.png" src="../_images/coordinates.png" />
+<p>The Area in question is shown in red in <a class="reference internal" href="#fig-lease-area"><span class="std std-numref">Fig. 8.2</span></a>:</p>
+<figure class="align-default" id="id2">
+<span id="fig-lease-area"></span><img alt="../_images/lease_area.png" src="../_images/lease_area.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.2 </span><span class="caption-text">Lease Area in red, Cable Corridor in green and a generic Constrained Area in magenta</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><em>Bathymetry of Cable corridor</em></p>
+<p>In accordance to what described above for the Lease Area bathymetry also a Cable
+Corridor has been identified.</p>
+<p>The coordinates of the polygon are:</p>
+<img alt="../_images/coordinates2.png" src="../_images/coordinates2.png" />
+<p>The cable corridor is shown in green in <a class="reference internal" href="#fig-lease-area"><span class="std std-numref">Fig. 8.2</span></a> and it is made
+of 2300 points (i.e. 215 x 20 points) at 12m resolution.</p>
+<p><em>Geotechnical characteristics of the Lease area</em></p>
+<p>The Database offer the functionality to store geotechnical information for each
+single point of the domain (i.e. Lease Area and Cable Corridor). To each
+bathymetry point one or more layers can be assigned. Each layer represents a
+soil type that in turn is fully characterized by specific geotechnical
+characteristics as described in WP4 section.</p>
+<p>As dummy data, a simple scenario of two parallel layers made of “mediumsand” and
+“softclay” has been created. The characterization of the Lease Area can be
+found in the <a class="reference internal" href="#fig-layers-lease"><span class="std std-numref">Fig. 8.3</span></a> below:</p>
+<figure class="align-default" id="id3">
+<span id="fig-layers-lease"></span><img alt="../_images/layers_lease.png" src="../_images/layers_lease.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.3 </span><span class="caption-text">Lease Area in red, Cable Corridor in green and a generic Constrained Area in magenta</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><em>Geotechnical characteristics of Cable Corridor</em></p>
+<p>The Cable Corridor geotechnical characterization follows the same logics as the
+one for the Lease Area.</p>
+<p>However, different soil type and relative layer thickness have been applied
+(<a class="reference internal" href="#fig-layers-corridor"><span class="std std-numref">Fig. 8.4</span></a>).</p>
+<figure class="align-default" id="id4">
+<span id="fig-layers-corridor"></span><img alt="../_images/layers_corridor.png" src="../_images/layers_corridor.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.4 </span><span class="caption-text">Lease Area in red, Cable Corridor in green and a generic Constrained Area in magenta</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><em>Metocean data</em></p>
+<p>For a Wave scenario, the DTOcean toll requires a set of data which describes the
+wave resource of the site.</p>
+<p>Different meta-data are required from different WPs in order to run their
+modules. The specific requirement of it are specified in each single WP section.</p>
+<p>The Table below gives an overview of the type of data contained in the DB:</p>
+<figure class="align-default" id="id5">
+<span id="fig-wave"></span><img alt="../_images/wave.png" src="../_images/wave.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.5 </span><span class="caption-text">Overview of the wave resource time series</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Two years of wave resource time series at hourly resolution is provided for the
+following variables:</p>
+<p>Hs: Significant Wave Height [m]</p>
+<p>Tp: Peak Period [s]</p>
+<p>Te: Energy Period [s]</p>
+<p>Tz: Zero up-crossing period [s]</p>
+<p>Dir : mean Direction</p>
+<p>The wave rose of the dummy Wave time series of Hs and Dir is shown in
+<a class="reference internal" href="#fig-rose"><span class="std std-numref">Fig. 8.6</span></a>:</p>
+<figure class="align-default" id="id6">
+<span id="fig-rose"></span><img alt="../_images/rose.png" src="../_images/rose.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.6 </span><span class="caption-text">Wave rose of Hs and Dir relative to wave resource time series</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><em>Wave device</em></p>
+<p>The Database cointains data regarding a simple heaving cylinder rated at 480KW.</p>
+<p>The main characteristics of the device can be seen in <a class="reference internal" href="#fig-device-dim"><span class="std std-numref">Fig. 8.7</span></a>
+and <a class="reference internal" href="#fig-device-top"><span class="std std-numref">Fig. 8.8</span></a>.</p>
+<figure class="align-default" id="id7">
+<span id="fig-device-dim"></span><img alt="../_images/device_dim.png" src="../_images/device_dim.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.7 </span><span class="caption-text">Main device dimensions</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>H (Device Height) = 15m</p>
+<p>D (Device Diameter) = 10m</p>
+<p>T (Device Draft) = 10 m</p>
+<p>M (Device Mass) = 804625 Kg</p>
+<figure class="align-default" id="id8">
+<span id="fig-device-top"></span><img alt="../_images/device_top.png" src="../_images/device_top.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.8 </span><span class="caption-text">Device top view</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>RF (Footprint Radius) = 100 m</p>
+<p>Fi (i-th Fairlead location) = F1:[0,5,-10]; F2:[4.33, -2.40,-10]; F3:[-4.33, -2.40,-10]</p>
+<p>In order to proceed with hydrodynamics simulation (WP2 module), input files to
+Nemoh have been generated and can be found in a folder which content is shown
+below in <a class="reference internal" href="#fig-nemoh"><span class="std std-numref">Fig. 8.9</span></a>.</p>
+<figure class="align-default" id="id9">
+<span id="fig-nemoh"></span><img alt="../_images/nemoh.png" src="../_images/nemoh.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.9 </span><span class="caption-text">Input files to Nemoh in the dummy data device folder</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="tidal-scenario">
+<h3><span class="section-number">8.2.5. </span>Tidal Scenario<a class="headerlink" href="#tidal-scenario" title="Link to this heading"></a></h3>
+<p><em>Bathymetry of the Lease area</em></p>
+<p>The same Lease Area as the dummy Wave scenario previously described has been
+used (<a class="reference internal" href="#fig-lease-area"><span class="std std-numref">Fig. 8.2</span></a>).</p>
+<p>The domain is made up of 100000 points (500 x 200 points at 12m resolution).</p>
+<p><em>Bathymetry of Cable corridor</em></p>
+<p>Similarly, The same Cable Corridor as the dummy Wave scenario previously
+described has been used (<a class="reference internal" href="#fig-lease-area"><span class="std std-numref">Fig. 8.2</span></a>).</p>
+<p>The domain is made up of 4300 points (215 x 20 points at 12m resolution).</p>
+<p><em>Geotechnical characteristics of the Lease area</em></p>
+<p>The same characterization of the Lease Area as the dummy Wave scenario in terms
+of layers, soil types and geotechnical characteristics is used.</p>
+<p>The schematic overview can be found in <a class="reference internal" href="#fig-layers-lease"><span class="std std-numref">Fig. 8.3</span></a>.</p>
+<p><em>Geotechnical characteristics of Cable Corridor</em></p>
+<p>The same characterization of the Cable Corridor as the dummy Wave Scenario in
+terms of layers, soil types and geotechnical characteristics is used.</p>
+<p>The schematic overview can be found in <a class="reference internal" href="#fig-layers-corridor"><span class="std std-numref">Fig. 8.4</span></a>.</p>
+<p><em>Metocean data</em></p>
+<p>Timeseries of tidal stream are provided for all points of the domain (i.e. Lease
+area and Cable Corridor).</p>
+<p>An example of typical tidal stream data is shown in <a class="reference internal" href="#fig-tidal"><span class="std std-numref">Fig. 8.10</span></a>:</p>
+<figure class="align-default" id="id10">
+<span id="fig-tidal"></span><img alt="../_images/tidal.png" src="../_images/tidal.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.10 </span><span class="caption-text">Tidal stream time series example</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The time series cover a time span of two years at hourly resolution.</p>
+<p>u: x-axis component of the tidal stream flow [m/s]</p>
+<p>v: y-axis component of the tidal stream flow [m/s]</p>
+<p>Water Level: Sea surface level w.r.t MSWL [m]</p>
+<p>TI : Turbulence intensity</p>
+<p><em>Tidal device</em></p>
+<p>Data regarding a single turbine device rated at 1MW and founded on a mono-pile
+has been generated and made available in the Database.</p>
+<p>The main characteristics of the device can be seen in <a class="reference internal" href="#fig-tidal-device"><span class="std std-numref">Fig. 8.11</span></a>.</p>
+<figure class="align-default" id="id11">
+<span id="fig-tidal-device"></span><img alt="../_images/tidal_device.png" src="../_images/tidal_device.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.11 </span><span class="caption-text">Main characteristics of the dummy tidal device</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>H (Hub Height) = 35m</p>
+<p>DR (RotorDiameter) = 24m</p>
+<p>L (Device Length)= 22m</p>
+<p>W (Device Width)= 15m</p>
+<p>DP (Pil Diameter) = 5m</p>
+<p>M (System Mass)= 305000 kg</p>
+<p>A dummy power curve and Thrust coefficient curve have been generated as shown in
+<a class="reference internal" href="#fig-tidal-power"><span class="std std-numref">Fig. 8.12</span></a>.</p>
+<figure class="align-default" id="id12">
+<span id="fig-tidal-power"></span><img alt="../_images/tidal_power.png" src="../_images/tidal_power.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8.12 </span><span class="caption-text">Power curve and Thrust coefficient</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Cut-in and Cut-out velocity corresponds respectively to 0.72m/s and 3.60 m/s
+tidal stream velocity.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="themes.html" class="btn btn-neutral float-left" title="7. DTOcean Themes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="9. Links, Support and Extra Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v1.0.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.4.2/index.html">v2026.4.2</a></dd>
+      <dd><a href="../../root-v2026.4.1/index.html">v2026.4.1</a></dd>
+      <dd><a href="../../root-v2026.4.0/index.html">v2026.4.0</a></dd>
+      <dd><a href="../../root-v2026.3.4/index.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2.0.0/index.html">v2.0.0</a></dd>
+      <dd><a href="preprocessing.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/index.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

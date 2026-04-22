@@ -1,0 +1,1289 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5. Graphical User Interface &mdash; DTOcean 2026.3.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a6cd1e5a"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6. Data Preparation" href="data_preparation.html" />
+    <link rel="prev" title="4. Getting Started 2: Example Database" href="getting_started_2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">2. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_1.html">3. Getting Started 1: Example Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_2.html">4. Getting Started 2: Example Database</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">5.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#main-window">5.2. Main Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#menus-and-toolbars">5.3. Menus and Toolbars</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#file">5.3.1. File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data">5.3.2. Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simulation">5.3.3. Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view">5.3.4. View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools">5.3.5. Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#help">5.3.6. Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-dock">5.4. Pipeline Dock</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#variable-tree">5.4.1. Variable Tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#context-menu">5.4.2. Context Menu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter">5.4.3. Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#assessment-scope">5.4.4. Assessment Scope</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#simulations-dock">5.5. Simulations Dock</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-list">5.5.1. Simulation List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#context-menu-cloning">5.5.2. Context Menu (Cloning)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#system-dock">5.6. System Dock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-context">5.7. Data Context</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#variable-details">5.7.1. Variable Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variable-file-manager">5.7.2. Variable File Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-widgets">5.7.3. Data Widgets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#table-based-widgets">5.7.3.1. Table Based Widgets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#plots-context">5.8. Plots Context</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">5.8.1. Variable Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-manager">5.8.2. Plot Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-widgets">5.8.3. Plot Widgets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#comparisons-context">5.9. Comparisons Context</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-comparison">5.9.1. Module Comparison</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-comparison">5.9.2. Simulation Comparison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#saving-and-loading">5.10. Saving and Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#select-database-dialogue">5.11. Select Database Dialogue</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#working-with-credentials">5.11.1. Working with Credentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connecting-a-database">5.11.2. Connecting a Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-dump">5.11.3. Load &amp; Dump</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-requirements-dialogue">5.12. Data Requirements Dialogue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selection-shuttles">5.13. Selection Shuttles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#strategy-manager">5.14. Strategy Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#progress-bar">5.15. Progress Bar</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_preparation.html">6. Data Preparation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">5. </span>Graphical User Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/gui.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphical-user-interface">
+<span id="gui"></span><h1><span class="section-number">5. </span>Graphical User Interface<a class="headerlink" href="#graphical-user-interface" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2><span class="section-number">5.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>This chapter presents the major components of the graphical user interface and
+describes their functionalities. It is assumed that the reader is familiar with
+the <a class="reference internal" href="intro.html#key-terminology"><span class="std std-ref">Key Terminology</span></a>.</p>
+</section>
+<section id="main-window">
+<h2><span class="section-number">5.2. </span>Main Window<a class="headerlink" href="#main-window" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id7">
+<span id="fig-main-layout"></span><img alt="../_images/main_layout.png" src="../_images/main_layout.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.1 </span><span class="caption-text">The layout of the DTOcean main window</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The layout of the DTOcean main window is shown in <a class="reference internal" href="#fig-main-layout"><span class="std std-numref">Fig. 5.1</span></a>.
+At the top are menus and a toolbar. Below these there is a central contextual
+area and 3 docks (Pipeline, Simulations and System). All docks can be closed to
+increase the size of the contextual area, and the pipeline and simulations
+docks can be overlapped (the default layout has the pipeline dock overlapping
+the simulations dock). An overview of each of these components is given below
+with further detail provided in the later sections of this chapter.</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Context Area:</dt><dd><p>The context area can be used to add, inspect and save data (be that
+single values or tables); view and save plots; and compare the values of
+variables between design modules and simulations. These modes are
+switched using the “View” menu or toolbar icons.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Pipeline Dock:</dt><dd><p>The pipeline dock lists the variables within the active simulation
+and displays their status (i.e. if they contain data or not). It shows
+the order of execution of the modules chosen for the simulation. It
+allows the level at which the outputs are shown and the “scope” of
+the results from assessments to be set. Finally, the pipeline can be
+used to “reset” a simulation prior to execution of a particular module.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Simulations Dock:</dt><dd><p>The simulations dock lists all simulations within a project and
+indicates the currently active simulation. It can be used to change the
+active simulation, create clones of existing simulations, and rename
+simulations, as required.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>System Dock:</dt><dd><p>The system dock displays logging messages from the DTOcean interface,
+modules and assessments. These messages are also recorded in log files
+that can be accessed using the “Help” menu.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="menus-and-toolbars">
+<h2><span class="section-number">5.3. </span>Menus and Toolbars<a class="headerlink" href="#menus-and-toolbars" title="Link to this heading"></a></h2>
+<p>Each menu provided by DTOcean is detailed in the tables below. The name and
+purpose of each action is given and, where a toolbar short-cut is available,
+the associated icon is shown.</p>
+<p>The toolbar is split into sections mirroring the menus and these can be closed
+and reopened using the context menu accessed by right-clicking the toolbar.
+This menu can also be used to open and close the pipeline, simulations and
+system docks.</p>
+<section id="file">
+<h3><span class="section-number">5.3.1. </span>File<a class="headerlink" href="#file" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 65.0%" />
+<col style="width: 10.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Icon</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>New</p></td>
+<td><p>Create a new project from scratch</p></td>
+<td><p><img alt="icon_new" src="../_images/icon_new.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Open…</p></td>
+<td><p>Open an existing project file</p></td>
+<td><p><img alt="icon_open" src="../_images/icon_open.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Save</p></td>
+<td><p>Save the current project to file</p></td>
+<td><p><img alt="icon_save" src="../_images/icon_save.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Save As…</p></td>
+<td><p>Save the current project using a different file name</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Properties…</p></td>
+<td><p>Open the project properties dialogue</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Close</p></td>
+<td><p>Close the current project</p></td>
+<td><p><img alt="icon_close" src="../_images/icon_close.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Exit</p></td>
+<td><p>Leave DTOcean</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data">
+<h3><span class="section-number">5.3.2. </span>Data<a class="headerlink" href="#data" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 65.0%" />
+<col style="width: 10.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Icon</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Select Database…</p></td>
+<td><p>Open the select database dialogue</p></td>
+<td><p><img alt="icon_select_db" src="../_images/icon_select_db.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Initiate Pipeline</p></td>
+<td><p>Confirm chosen technology type and collect top-level information from the database (if selected)</p></td>
+<td><p><img alt="icon_pipeline" src="../_images/icon_pipeline.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Initiate Bathymetry</p></td>
+<td><p>Allow selection of bathymetry from a site chosen from the database (if selected)</p></td>
+<td><p><img alt="icon_bathymetry" src="../_images/icon_bathymetry.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Initiate Dataflow</p></td>
+<td><p>Calculate required variables for technology and module selection and collect available data from database (if selected)</p></td>
+<td><p><img alt="icon_dataflow" src="../_images/icon_dataflow.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Export…</p></td>
+<td><p>Export satisfied data to a datastate file</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Export (mask outputs)…</p></td>
+<td><p>Export satisfied data (excluding output variables) to a datastate file</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Import…</p></td>
+<td><p>Import a datastate file</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Import (skip satisfied)…</p></td>
+<td><p>Import a datastate file but do not overwrite satisfied variables</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="simulation">
+<h3><span class="section-number">5.3.3. </span>Simulation<a class="headerlink" href="#simulation" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 65.0%" />
+<col style="width: 10.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Icon</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Add Modules…</p></td>
+<td><p>Open the module selection shuttle</p></td>
+<td><p><img alt="icon_modules" src="../_images/icon_modules.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Add Assessment…</p></td>
+<td><p>Open the assessment selection shuttle</p></td>
+<td><p><img alt="icon_assessment" src="../_images/icon_assessment.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Select Strategy…</p></td>
+<td><p>Open the strategy selection dialogue</p></td>
+<td><p><img alt="icon_strategy" src="../_images/icon_strategy.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Run Current Module</p></td>
+<td><p>Execute the next module in the sequence</p></td>
+<td><p><img alt="icon_run_module" src="../_images/icon_run_module.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Run Assessments</p></td>
+<td><p>Execute all assessments for the last executed module</p></td>
+<td><p><img alt="icon_run_assessments" src="../_images/icon_run_assessments.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Run Strategy</p></td>
+<td><p>Execute the selected strategy</p></td>
+<td><p><img alt="icon_run_strategy" src="../_images/icon_run_strategy.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="view">
+<span id="menu-view"></span><h3><span class="section-number">5.3.4. </span>View<a class="headerlink" href="#view" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 65.0%" />
+<col style="width: 10.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Icon</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Show Pipeline</p></td>
+<td><p>Show the pipeline dock</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Show Simulations</p></td>
+<td><p>Show the simulations dock</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Show System</p></td>
+<td><p>Show the system dock</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Data</p></td>
+<td><p>Switch the context area to the data context</p></td>
+<td><p><img alt="icon_context_data" src="../_images/icon_context_data.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Plots</p></td>
+<td><p>Switch the context area to the plots context</p></td>
+<td><p><img alt="icon_context_plots" src="../_images/icon_context_plots.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Comparisons</p></td>
+<td><p>Switch the context area to the comparisons context</p></td>
+<td><p><img alt="icon_context_comparisons" src="../_images/icon_context_comparisons.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tools">
+<h3><span class="section-number">5.3.5. </span>Tools<a class="headerlink" href="#tools" title="Link to this heading"></a></h3>
+<p>See the <code class="docutils literal notranslate"><span class="pre">:ref:`tools`</span></code> chapter for additional information regarding the tools
+listed here.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 65.0%" />
+<col style="width: 10.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Icon</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>WEC Simulator</p></td>
+<td><p>Open the WEC hydrodynamics pre-processing tool</p></td>
+<td><p><img alt="icon_empty" src="../_images/icon_empty.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Constraints Plot</p></td>
+<td><p>Calculate and plot constraints to the electrical network layout</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="help">
+<span id="menu-help"></span><h3><span class="section-number">5.3.6. </span>Help<a class="headerlink" href="#help" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 65.0%" />
+<col style="width: 10.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Icon</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Index…</p></td>
+<td><p>Open the user manual (if installed)</p></td>
+<td><p><img alt="icon_manual" src="../_images/icon_manual.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>View Logs…</p></td>
+<td><p>Open the directory containing the log files</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>About DTOcean…</p></td>
+<td><p>Open the About dialogue</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pipeline-dock">
+<h2><span class="section-number">5.4. </span>Pipeline Dock<a class="headerlink" href="#pipeline-dock" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id8">
+<span id="fig-pipeline-dock"></span><img alt="../_images/pipeline_dock.png" src="../_images/pipeline_dock.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.2 </span><span class="caption-text">The pipeline dock, its controls, sections and top level branches</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="variable-tree">
+<h3><span class="section-number">5.4.1. </span>Variable Tree<a class="headerlink" href="#variable-tree" title="Link to this heading"></a></h3>
+<p>The pipeline dock provides an ordering to the data entry and execution of
+modules and assessments, and to the visualisation of results, using a tree
+structure familiar to a number of scientific computational packages. As seen
+in <a class="reference internal" href="#fig-pipeline-dock"><span class="std std-numref">Fig. 5.2</span></a> the tree is divided into two main sections,
+described as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Configuration:</dt><dd><p>This section is used to set the OEC type for a project, set
+database filtering options, present the order of execution of modules,
+and collect data necessary to execute the modules and assessments.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Results:</dt><dd><p>This section contains the results produced by the assessments and design
+modules</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>The top level branches within each section have the following purposes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Scenario:</dt><dd><p>Contains branches for project preparation, such as OEC type selection,
+and database filtering options. This branch is only used in the
+configuration section.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Modules:</dt><dd><p>Each branch within this section represents a module selected for the
+project. Inputs are collected in the configuration section and outputs
+given in the results section.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Assessment:</dt><dd><p>Each branch within this section represents an assessment selected for
+the project. Inputs are collected in the configuration section and
+outputs given in the results section.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>The leaves of each branch in the variable tree represent the input and output
+variables themselves, as seen in <a class="reference internal" href="#fig-pipeline-leaves"><span class="std std-numref">Fig. 5.3</span></a>. Clicking on
+a variable in the pipeline will update the context area with data or plots
+specific to the chosen variable.</p>
+<figure class="align-default" id="id9">
+<span id="fig-pipeline-leaves"></span><img alt="../_images/pipeline_leaves.png" src="../_images/pipeline_leaves.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.3 </span><span class="caption-text">Variables are represented as the leaves of the branches</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Each variable has an indicator to describe the status of the data it
+contains. The icon, status and meaning of these indicators are as follows:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 5.0%" />
+<col style="width: 15.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>Status</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="icon_green" src="../_images/icon_green.png" /></p></td>
+<td><p>Satisfied</p></td>
+<td><p>Data for the variable has been entered / outputted</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="icon_red" src="../_images/icon_red.png" /></p></td>
+<td><p>Required</p></td>
+<td><p>Data for the variable has not been entered and is required to execute the module or assessment</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="icon_blue" src="../_images/icon_blue.png" /></p></td>
+<td><p>Optional</p></td>
+<td><p>Data for the variable has not been entered but is not required to execute the module or assessment</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="icon_grey" src="../_images/icon_grey.png" /></p></td>
+<td><p>Unavailable</p></td>
+<td><p>The module has already been executed and data may not be entered for the variable (but can still be viewed)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="context-menu">
+<h3><span class="section-number">5.4.2. </span>Context Menu<a class="headerlink" href="#context-menu" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id10">
+<span id="fig-pipeline-context"></span><img alt="../_images/pipeline_context.png" src="../_images/pipeline_context.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.4 </span><span class="caption-text">Right-click a module or assessment branch to open the context menu</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Right-clicking on the root item of any module or assessment branch will summon
+a context menu. Which actions are available depends on the section of the
+pipeline and whether the chosen branch is a module or assessment. A full list
+of the available actions, the sections and branches for which they are
+available, and a description of each action’s purpose, is given in the table
+below. Note, the inspect and reset actions are only active once a module has
+been executed.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 10.0%" />
+<col style="width: 10.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Sections</p></th>
+<th class="head"><p>Branches</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Inspect</p></td>
+<td><p>Configuration, Results</p></td>
+<td><p>Modules</p></td>
+<td><p>Update the output variable values to the state following execution of the selected module</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reset</p></td>
+<td><p>Configuration</p></td>
+<td><p>Modules</p></td>
+<td><p>Reset modules and variables to the state prior to execution of the selected module. Note, this action is destructive and cannot be undone.</p></td>
+</tr>
+<tr class="row-even"><td><p>Load test data…</p></td>
+<td><p>Configuration</p></td>
+<td><p>Modules, Assessment</p></td>
+<td><p>Load data from a specifically formatted python file into the variables of the selected branch</p></td>
+</tr>
+</tbody>
+</table>
+<p>A minimal example of a python file which can be used with the “Load test
+data…” action is shown in the code block below, where the discount rate is
+set to 0.1. For further examples of programmatic setting of DTOcean variables
+please see the <code class="docutils literal notranslate"><span class="pre">:ref:`api_guide`</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">test_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;project.discount_rate&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">}</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">dtocean_core.utils.files</span><span class="w"> </span><span class="kn">import</span> <span class="n">pickle_test_data</span>
+
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="n">pickle_test_data</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="filter">
+<span id="id1"></span><h3><span class="section-number">5.4.3. </span>Filter<a class="headerlink" href="#filter" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id11">
+<span id="fig-pipeline-filter"></span><img alt="../_images/pipeline_filter.png" src="../_images/pipeline_filter.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.5 </span><span class="caption-text">Search field for filtering the variable tree</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Above the variable tree is a search field, as seen in
+<a class="reference internal" href="#fig-pipeline-filter"><span class="std std-numref">Fig. 5.5</span></a>, that can be used to filter out variables whose
+names do not match the entered text. This can be useful for quickly finding
+a specific variable. The filter can be cleared by clicking the “X” button to
+the right of the search field.</p>
+</section>
+<section id="assessment-scope">
+<h3><span class="section-number">5.4.4. </span>Assessment Scope<a class="headerlink" href="#assessment-scope" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id12">
+<span id="fig-pipeline-scope"></span><img alt="../_images/pipeline_scope.png" src="../_images/pipeline_scope.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.6 </span><span class="caption-text">Tool for switching between scopes of the assessment outputs</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Following execution of each design module, the chosen assessments are executed
+twice. The two datasets generated are referred to as “Assessment Scopes”and the
+meaning of each scope is as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Module:</dt><dd><p>The assessments use only the outputs generated by the executed module.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Global:</dt><dd><p>The assessments use all data collected up to that point, including
+data entered or calculated prior to running the executed module.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>The tool at the very top of the pipeline dock, shown in
+<a class="reference internal" href="#fig-pipeline-scope"><span class="std std-numref">Fig. 5.6</span></a>, can be used to change the assessment scope of all
+simulations in the project, and update the values of the output variables.
+Note, some output variables may not be available in the module scope as they
+require inputs from other sources.</p>
+</section>
+</section>
+<section id="simulations-dock">
+<h2><span class="section-number">5.5. </span>Simulations Dock<a class="headerlink" href="#simulations-dock" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id13">
+<span id="fig-simulations-dock"></span><img alt="../_images/simulations_dock.png" src="../_images/simulations_dock.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.7 </span><span class="caption-text">The simulations dock shows all simulations in the project and indicates which
+simulation is currently active</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The simulations dock is used to view all simulations in the project, identify
+and set the active simulation, create simulation clones and rename existing
+simulations.</p>
+<section id="simulation-list">
+<h3><span class="section-number">5.5.1. </span>Simulation List<a class="headerlink" href="#simulation-list" title="Link to this heading"></a></h3>
+<p>The list of simulations, as seen in <a class="reference internal" href="#fig-simulations-dock"><span class="std std-numref">Fig. 5.7</span></a>, shows the
+names of all simulations within a project. When starting a new project the
+initial simulation is named “default”. The simulation in bold represents the
+active simulation; the pipeline will always display the variables of the active
+simulation. The active simulation can be changed by left-clicking another
+simulation name. If data or a plot is visible in the context area, this will
+be updated as the active simulation changes.</p>
+<figure class="align-default" id="id14">
+<span id="fig-simulations-rename"></span><img alt="../_images/simulations_rename.png" src="../_images/simulations_rename.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.8 </span><span class="caption-text">Double-click an item in the list to rename the simulation</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Simulations can also be renamed by double-clicking an item in the list. A text
+editor window will open and the new name can be entered, as seen in
+<a class="reference internal" href="#fig-simulations-rename"><span class="std std-numref">Fig. 5.8</span></a>.</p>
+</section>
+<section id="context-menu-cloning">
+<h3><span class="section-number">5.5.2. </span>Context Menu (Cloning)<a class="headerlink" href="#context-menu-cloning" title="Link to this heading"></a></h3>
+<p>Right-clicking on a simulation will summon a context menu containing a single
+action, “Clone”. This action will create an exact copy of the selected
+simulation and set it as active. Note, no extra data is stored at this point as
+both simulations use links to the same stored data. New data is only stored
+when new variables values are committed.</p>
+</section>
+</section>
+<section id="system-dock">
+<h2><span class="section-number">5.6. </span>System Dock<a class="headerlink" href="#system-dock" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id15">
+<span id="fig-system-dock"></span><img alt="../_images/system_dock.png" src="../_images/system_dock.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.9 </span><span class="caption-text">Log messages are displayed in the system dock</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The system dock displays logging messages that allows the user to observe the
+actions of the underlying system, as seen in <a class="reference internal" href="#fig-system-dock"><span class="std std-numref">Fig. 5.9</span></a>. Every
+log message follows the same pattern:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">DATETIME</span><span class="p">}</span> <span class="o">-</span> <span class="p">{</span><span class="n">LEVEL</span><span class="p">}</span> <span class="o">-</span> <span class="p">{</span><span class="n">ADDRESS</span><span class="p">}</span> <span class="o">-</span> <span class="p">{</span><span class="n">MESSAGE</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Descriptions of the parts of the log message pattern are as follows:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DATETIME</p></td>
+<td><p>The date and time of the message</p></td>
+</tr>
+<tr class="row-odd"><td><p>LEVEL</p></td>
+<td><p>The logging level of the message. Can be DEBUG, INFO, WARNING, ERROR, or CRITICAL</p></td>
+</tr>
+<tr class="row-even"><td><p>ADDRESS</p></td>
+<td><p>The package and (python) module that generated the message</p></td>
+</tr>
+<tr class="row-odd"><td><p>MESSAGE</p></td>
+<td><p>The contents of the message itself</p></td>
+</tr>
+</tbody>
+</table>
+<p>The system dock can only display a maximum of 99999 messages. The complete
+logging history is recorded in files that can be accessed using the
+<a class="reference internal" href="#menu-help"><span class="std std-ref">Help</span></a> menu.</p>
+<p>Which packages and modules generate logs, and at which logging level, can be
+modified using the logging config file. To generate the file, run the “Copy
+Logger Config (Safe)” program from the DTOcean start menu folder. A file named
+<code class="docutils literal notranslate"><span class="pre">logging.yaml</span></code> will be placed into the
+<code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;USERNAME&gt;\AppData\Roaming\DTOcean\dtocean_app\config</span></code> directory,
+which can be edited to modify the logging behaviour of DTOcean <a class="footnote-reference brackets" href="#f1" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. For help
+regarding logging configuration files please see the <a class="reference external" href="https://docs.python.org/2.7/howto/logging.html">Logging HOWTO</a> section of the Python docs.</p>
+</section>
+<section id="data-context">
+<span id="id3"></span><h2><span class="section-number">5.7. </span>Data Context<a class="headerlink" href="#data-context" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id16">
+<span id="fig-data-context-layout"></span><img alt="../_images/data_context_layout.png" src="../_images/data_context_layout.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.10 </span><span class="caption-text">The layout of the data context</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The data context is used to view, enter, edit, import and export numeric or
+textual data for the currently selected variable in the pipeline. It is divided
+into three sections with the variable details section and the variable file
+manager placed above the data widget, as seen in
+<a class="reference internal" href="#fig-data-context-layout"><span class="std std-numref">Fig. 5.10</span></a>.</p>
+<section id="variable-details">
+<h3><span class="section-number">5.7.1. </span>Variable Details<a class="headerlink" href="#variable-details" title="Link to this heading"></a></h3>
+<p>The variables detail section provides information about the currently selected
+variable in the pipeline.</p>
+</section>
+<section id="variable-file-manager">
+<h3><span class="section-number">5.7.2. </span>Variable File Manager<a class="headerlink" href="#variable-file-manager" title="Link to this heading"></a></h3>
+<p>The variable file manager is used to load and save data for the selected
+variable using various file formats. It has two modes (set using the “File
+mode:” radio buttons), load and save, where the “LOAD” mode is used to add data
+to a variable from a file and the “SAVE” mode is used to create a file
+containing a copy of the variable’s data.</p>
+<p>The “File path:” field is used to set and display the file path that will be
+used to load or save the data. It is recommended to populate this field by
+pressing the “…” button and using the file dialogue to select a path, as seen
+in <a class="reference internal" href="#fig-select-save-dialog"><span class="std std-numref">Fig. 5.11</span></a>.</p>
+<figure class="align-default" id="id17">
+<span id="fig-select-save-dialog"></span><img alt="../_images/select_save_dialog.png" src="../_images/select_save_dialog.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.11 </span><span class="caption-text">File dialogue for selecting the path of the file to be saved</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The path must contain a valid file extension (specific to the data type of the
+variable), and the extension dictates the type of file. Once a valid file
+path has been entered, the “OK” button will activate. Clicking “OK” will load
+or save the data, depending on which mode the file manager is in.</p>
+</section>
+<section id="data-widgets">
+<h3><span class="section-number">5.7.3. </span>Data Widgets<a class="headerlink" href="#data-widgets" title="Link to this heading"></a></h3>
+<p>Data widgets are used to both view and enter data such as strings,
+integers, floating point numbers, tables of numbers, etc. For instance,
+<a class="reference internal" href="#fig-data-context-layout"><span class="std std-numref">Fig. 5.10</span></a> shows an example of a widget for collecting
+the coordinates of the export cable landing point.</p>
+<p>Each variable in DTOcean has an associated data structure, which (in most
+cases) has a unique widget for entering and viewing data. Some of
+the most complex data structures do not have a data widget, and the data can
+only be saved and loaded using files (or collected from the database).</p>
+<p>For variables in the Configuration section of the pipeline, buttons are
+provided in the bottom right corner of data widgets. The actions of these are
+as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>OK</strong>: commits the data entered to the selected variable</p></li>
+<li><p><strong>Cancel</strong>: returns the selected variable to its required or optional state</p></li>
+</ul>
+</div></blockquote>
+<p>Note, where no data entry widget is available for a variable, only the Cancel
+button is shown.</p>
+<section id="table-based-widgets">
+<h4><span class="section-number">5.7.3.1. </span>Table Based Widgets<a class="headerlink" href="#table-based-widgets" title="Link to this heading"></a></h4>
+<figure class="align-default" id="id18">
+<span id="fig-data-widget-table"></span><img alt="../_images/data_widget_table.png" src="../_images/data_widget_table.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.12 </span><span class="caption-text">An input data widget with tabulated data</span><a class="headerlink" href="#id18" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A number of data widgets use a table to collect data, which has additional
+controls for editing the table, as follows:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16.7%" />
+<col style="width: 83.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="icon_table_edit" src="../_images/icon_table_edit.png" /></p></td>
+<td><p>Toggle the editing mode of the table</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="icon_add_row" src="../_images/icon_add_row.png" /></p></td>
+<td><p>Appends a new row to the bottom of the table</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="icon_remove_row" src="../_images/icon_remove_row.png" /></p></td>
+<td><p>Removes the row containing the selected cell</p></td>
+</tr>
+</tbody>
+</table>
+<p>When the table is in editing mode, double-clicking on any cell will allow the
+data in that cell to be altered. If the cell contains a true-or-false tick-box,
+these can simply be clicked to change their state. Remember to click the “OK”
+button to commit edits to the variable, or they will be forgotten.</p>
+<p>Care is required when adding data to tables that contain a “Key Identifier”
+column. These values must be unique for all components used by the electrical
+sub-systems and mooring and foundations modules. To be certain not to generate
+a conflict, it is recommended to use values of 10000 or greater for new
+entries. Note, there is currently no validation of the key identifier values,
+so conflicts may cause errors during module execution or produce inaccurate
+results.</p>
+</section>
+</section>
+</section>
+<section id="plots-context">
+<h2><span class="section-number">5.8. </span>Plots Context<a class="headerlink" href="#plots-context" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id19">
+<span id="fig-plot-context-layout"></span><img alt="../_images/plot_context_layout.png" src="../_images/plot_context_layout.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.13 </span><span class="caption-text">The layout of the plots context</span><a class="headerlink" href="#id19" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The plots context is used to generate plots associated with the currently
+selected variable in the pipeline, if any are available. It is
+divided into three sections with the variable details section and the plot
+manager placed above the plot widget, as seen in
+<a class="reference internal" href="#fig-plot-context-layout"><span class="std std-numref">Fig. 5.13</span></a>.</p>
+<section id="id4">
+<h3><span class="section-number">5.8.1. </span>Variable Details<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>The variables detail section provides information about the currently selected
+variable in the pipeline.</p>
+</section>
+<section id="plot-manager">
+<h3><span class="section-number">5.8.2. </span>Plot Manager<a class="headerlink" href="#plot-manager" title="Link to this heading"></a></h3>
+<p>The plot manager serves two functions. Firstly, where more than one plot is
+available for a variable, it allows the user to select which plot they wish to
+draw. Secondly, the plot manager allows plots to be saved to file.</p>
+<p>The data structure associated with a variable may have a default plot,
+and, if this plot exists, it will be automatically drawn by the plot context.
+Additional plots may be available for the variable, which could also utilise
+other variables (such plots only become available when the data of all
+variables used is satisfied). These plots can be selected using the “Plot
+name:” drop-down menu, as seen in <a class="reference internal" href="#fig-plot-name-list"><span class="std std-numref">Fig. 5.14</span></a>, and then drawn
+using the “Plot” button. If you wish to redraw the default plot, click the
+“Default” button.</p>
+<figure class="align-default" id="id20">
+<span id="fig-plot-name-list"></span><img alt="../_images/plot_name_list.png" src="../_images/plot_name_list.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.14 </span><span class="caption-text">The drop-down list contains all available plots for the selected variable</span><a class="headerlink" href="#id20" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>To save the drawn plot to a file, a valid file path must be added to the “File
+path:” field. It is recommended to populate this field using the dialogue
+created by the “…” button, as this will ensure a valid file extension is
+provided. When the path is set, click the “Plot” button to save the plot. The
+file extension dictates the file type of the plot and the “Plot” button will
+only become active when a valid extension is used.</p>
+<p>An additional control is provided to help set the size of the saved plot (which
+uses the size on screen by default). By checking the “Custom size” box, the
+desired width and height (in inches) can be added; an example is shown in
+<a class="reference internal" href="#fig-plot-custom-size"><span class="std std-numref">Fig. 5.15</span></a>. Note, the produced plot may not be exactly the
+chosen size (due to some quirks in the matplotlib plotting library), so trial
+and error may be required.</p>
+<figure class="align-default" id="id21">
+<span id="fig-plot-custom-size"></span><img alt="../_images/plot_custom_size.png" src="../_images/plot_custom_size.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.15 </span><span class="caption-text">A custom size is set for the plot to be saved</span><a class="headerlink" href="#id21" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="plot-widgets">
+<h3><span class="section-number">5.8.3. </span>Plot Widgets<a class="headerlink" href="#plot-widgets" title="Link to this heading"></a></h3>
+<p>The plot widgets themselves will automatically resize the drawn plot to the
+available area, but do not provide any further functionality. Presently, input
+data can not be modified using a plot (such as in GIS software), nor can plots
+be interacted with (such as zooming and panning). In some cases, there may be
+multiple ways to display data, e.g. a bar chart versus a pie chart, yet only a
+single default plot per data structure is provided in DTOcean. It is hoped, in
+the future, that some of these useful features will be added.</p>
+</section>
+</section>
+<section id="comparisons-context">
+<h2><span class="section-number">5.9. </span>Comparisons Context<a class="headerlink" href="#comparisons-context" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id22">
+<span id="fig-comparisons-context-layout"></span><img alt="../_images/comparisons_context_layout.png" src="../_images/comparisons_context_layout.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.16 </span><span class="caption-text">The layout of the comparisons context</span><a class="headerlink" href="#id22" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The comparisons context is used to compare the value of a single variable
+between modules or examine how a dependant variable changes in response to an
+independent variable, for a particular module. It is divided into three
+sections with the module comparison and the simulation comparison tools placed
+above the data or plot widget, as seen in <a class="reference internal" href="#fig-plot-context-layout"><span class="std std-numref">Fig. 5.13</span></a>.
+Note, the comparison context is independent of both the selected variable in
+the pipeline and the active simulation.</p>
+<section id="module-comparison">
+<h3><span class="section-number">5.9.1. </span>Module Comparison<a class="headerlink" href="#module-comparison" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id23">
+<span id="fig-module-comparison-plot-gui"></span><img alt="../_images/module_comparison_plot.png" src="../_images/module_comparison_plot.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.17 </span><span class="caption-text">Example module comparison plot, using the module (local) assessment scope</span><a class="headerlink" href="#id23" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The module comparison tool can be used to compare the value of a single
+variable between all modules, across multiple simulations. An example of a plot
+created using this tool is seen in <a class="reference internal" href="#fig-module-comparison-plot-gui"><span class="std std-numref">Fig. 5.17</span></a>.
+The tool has two modes, “PLOT” and “DATA”, that can be used to generate a
+plot, or the corresponding table of data, respectively. These are placed into
+the area below the tool.</p>
+<p>After choosing the mode, a variable is selected using the “Variable:” field.
+Text entered in this field can be used to search the list of variables and a
+short list of possible matches will be displayed, as shown in
+<a class="reference internal" href="#fig-module-comparison-variable"><span class="std std-numref">Fig. 5.18</span></a>. After a variable is chosen, clicking
+the “OK” button will add the plot or tabulated data to the area below. Once the
+plot or data has been generated, the “Save” button will activate. Clicking
+“Save” will open a dialogue that allows the plot or data to be saved to a
+file.</p>
+<figure class="align-default" id="id24">
+<span id="fig-module-comparison-variable"></span><img alt="../_images/module_comparison_variable.png" src="../_images/module_comparison_variable.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.18 </span><span class="caption-text">Text entered into the variable field will search the list of variables</span><a class="headerlink" href="#id24" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>If a strategy was used to create a series of simulations, then the default
+behaviour of the tool is to only use the simulations created by the strategy.
+This behaviour can be suppressed by checking the “Ignore Strategy” box, after
+which all simulations will be used in the comparison.</p>
+</section>
+<section id="simulation-comparison">
+<h3><span class="section-number">5.9.2. </span>Simulation Comparison<a class="headerlink" href="#simulation-comparison" title="Link to this heading"></a></h3>
+<p>The simulation comparison tool can be used to compare the value of a dependent
+variable to that of an independent variable. The data is examined following
+execution of a particular module, across multiple simulations. An example of a
+plot created using this tool is seen in
+<a class="reference internal" href="#fig-comparisons-context-layout"><span class="std std-numref">Fig. 5.16</span></a>. The tool has two modes, “PLOT” and
+“DATA”, that can be used to generate a plot, or the corresponding table of
+data, respectively. These are placed into the area below the tool.</p>
+<p>The dependent variable is chosen using the “Variable:” field of the <strong>Module
+Comparison tool</strong>, as shown in <a class="reference internal" href="#fig-module-comparison-variable"><span class="std std-numref">Fig. 5.18</span></a>. The
+independent variable and the module used in the comparison are set in the
+“Variable:” and “Module:” fields of the Simulation Comparison tool, as
+<a class="reference internal" href="#fig-simulation-comparison-variable"><span class="std std-numref">Fig. 5.19</span></a>. After the variables and module
+are chosen, clicking the “OK” button will add the plot or tabulated data to the
+area below. Once the plot or data has been generated, the “Save” button will
+activate. Clicking “Save” will open a dialogue that allows the plot or data
+to be saved to a file.</p>
+<figure class="align-default" id="id25">
+<span id="fig-simulation-comparison-variable"></span><img alt="../_images/simulation_comparison_variable.png" src="../_images/simulation_comparison_variable.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.19 </span><span class="caption-text">The independent variable and module are entered into their corresponding
+fields</span><a class="headerlink" href="#id25" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>If a strategy was used to create a series of simulations, then the default
+behaviour of the tool is to only use the simulations created by the strategy.
+This behaviour can be suppressed by checking the “Ignore Strategy” box, after
+which all simulations will be used in the comparison.</p>
+</section>
+</section>
+<section id="saving-and-loading">
+<h2><span class="section-number">5.10. </span>Saving and Loading<a class="headerlink" href="#saving-and-loading" title="Link to this heading"></a></h2>
+<p>When using the “Open…” and “Save As…” actions from the File menu / toolbar,
+two file types can be used. The options are as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>.dto</dt><dd><p>The default file format for storing a DTOcean project</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>.prj</dt><dd><p>This file format can be used to transfer DTOcean projects to and from
+the dtocean-core module. Note, strategies are not recorded in this
+format.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>In most cases users should use the <code class="docutils literal notranslate"><span class="pre">.dto</span></code> format; however the <code class="docutils literal notranslate"><span class="pre">.prj</span></code> format
+is useful when combining the graphical interface for data manipulation and
+dtocean-core for execution. See the <code class="docutils literal notranslate"><span class="pre">:ref:`api_guide`</span></code>, for further
+information regarding scripting DTOcean using the dtocean-core module.</p>
+</section>
+<section id="select-database-dialogue">
+<h2><span class="section-number">5.11. </span>Select Database Dialogue<a class="headerlink" href="#select-database-dialogue" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id26">
+<span id="fig-select-database-dialog"></span><img alt="../_images/select_database_dialog.png" src="../_images/select_database_dialog.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.20 </span><span class="caption-text">The “local” database has been connected using credentials that were entered
+within the dialogue but not stored in the credentials file</span><a class="headerlink" href="#id26" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>When the “Select Database…” action is selected from the Data menu / toolbar,
+the dialogue shown in <a class="reference internal" href="#fig-select-database-dialog"><span class="std std-numref">Fig. 5.20</span></a> will open. This
+dialogue can be used to modify credentials, connect to a database, and import
+and export (load and dump) the database from and to structured files,
+respectively.</p>
+<section id="working-with-credentials">
+<h3><span class="section-number">5.11.1. </span>Working with Credentials<a class="headerlink" href="#working-with-credentials" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id27">
+<span id="fig-select-database-credentials"></span><img alt="../_images/select_database_credentials.png" src="../_images/select_database_credentials.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.21 </span><span class="caption-text">Credentials for multiple databases can be added, deleted, modified and saved</span><a class="headerlink" href="#id27" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The components of the select database dialogue used for working with
+credentials are shown in <a class="reference internal" href="#fig-select-database-credentials"><span class="std std-numref">Fig. 5.21</span></a>. There are
+three action buttons on the left, a list of available credentials to the right
+of the buttons and then, to the right of the list, a table showing the fields
+of the credentials. The purposes of the buttons is as follows:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Add</p></td>
+<td><p>Add an empty credentials record to the list of credentials</p></td>
+</tr>
+<tr class="row-odd"><td><p>Delete</p></td>
+<td><p>Delete the credentials record selected in the list of credentials</p></td>
+</tr>
+<tr class="row-even"><td><p>Save</p></td>
+<td><p>Save to file any modifications to the selected credentials made in the credentials table</p></td>
+</tr>
+</tbody>
+</table>
+<p>When a credentials record is selected in the “Available:” list, its data is
+displayed in the “Credentials” table. The “Value” column of this table can be
+edited by double-clicking on each cell. Modifications to this table are not
+automatically saved to file, so the user can choose not to store their
+password in the credentials file (which has a plain text format). The name of
+the credentials table will change to “Credentials (unsaved)” when new
+credentials have been entered but not saved. Note, unsaved credentials will be
+lost if a different record is selected.</p>
+</section>
+<section id="connecting-a-database">
+<h3><span class="section-number">5.11.2. </span>Connecting a Database<a class="headerlink" href="#connecting-a-database" title="Link to this heading"></a></h3>
+<p>Once the desired credentials have been chosen, clicking the “Apply” button will
+associate them with the current project. The chosen database name will be
+displayed in the “Current database:” field at the top of the dialogue. If
+unsaved credentials have been entered, the name will be appended with
+“(modified)”. To remove the database connection, click the “Reset” button.</p>
+<p>At this stage the dialogue can be closed, by pressing the “Close” button, or
+the user can undertake operations on the selected database, as discussed in the
+next section.</p>
+</section>
+<section id="load-dump">
+<span id="id5"></span><h3><span class="section-number">5.11.3. </span>Load &amp; Dump<a class="headerlink" href="#load-dump" title="Link to this heading"></a></h3>
+<p>Once a database has been connected to the project, the load and dump
+functionality will activate. This allows export and import between the selected
+database and structured files.</p>
+<p>Selecting the “Load” or “Dump” buttons will open a file dialogue for selecting
+a directory. This directory should either be empty for the “Dump” command or
+contain the required file structure for the “Load” command. Further details
+regarding the structure and modification of the files can be found in the
+<a class="reference internal" href="data_preparation.html#data-preparation"><span class="std std-ref">Data Preparation</span></a> chapter.</p>
+<figure class="align-default" id="id28">
+<span id="fig-select-database-load-dump"></span><img alt="../_images/select_database_load_dump.png" src="../_images/select_database_load_dump.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.22 </span><span class="caption-text">The user chooses to restrict database loading and dumping to the “Device”
+section</span><a class="headerlink" href="#id28" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>For efficiency, the user can also choose to load or dump a subsection of the
+database, which is selected using the “Select section:” dropdown list, as shown
+in <a class="reference internal" href="#fig-select-database-load-dump"><span class="std std-numref">Fig. 5.22</span></a>. The database tables accessed using
+each section are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Section</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All</p></td>
+<td><p>Every table in the database</p></td>
+</tr>
+<tr class="row-odd"><td><p>Device</p></td>
+<td><p>Only tables specific to devices</p></td>
+</tr>
+<tr class="row-even"><td><p>Site</p></td>
+<td><p>Only tables specific to sites</p></td>
+</tr>
+<tr class="row-odd"><td><p>Other</p></td>
+<td><p>Only tables specific to reference data</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="data-requirements-dialogue">
+<h2><span class="section-number">5.12. </span>Data Requirements Dialogue<a class="headerlink" href="#data-requirements-dialogue" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id29">
+<span id="fig-data-requirements"></span><img alt="../_images/data_requirements.png" src="../_images/data_requirements.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.23 </span><span class="caption-text">The data requirements dialogue provides the location of data required to
+progress</span><a class="headerlink" href="#id29" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Several actions in DTOcean (e.g. executing modules) require that specific
+variables are satisfied before the action can be completed. The data
+requirements dialogue checks the required variables and informs the
+user which, if any, are still to be satisfied. As seen in
+<a class="reference internal" href="#fig-data-requirements"><span class="std std-numref">Fig. 5.23</span></a>, when one or more variables are not satisfied,
+the dialogue will show “FAILED” and provide a list of addresses to the
+required variables. The address contains the section, branch and item in
+the pipeline of the variable.</p>
+<p>When all the required variables are set, the dialogue will report “PASSED”. The
+user can now click the “OK” button to complete the chosen action or, if they
+wish, they can click the “Cancel” button to go back. When the dialogue reports
+“FAILED” only the Cancel button is active.</p>
+</section>
+<section id="selection-shuttles">
+<h2><span class="section-number">5.13. </span>Selection Shuttles<a class="headerlink" href="#selection-shuttles" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id30">
+<span id="fig-add-modules-shuttle-gui"></span><img alt="../_images/add_modules_shuttle.png" src="../_images/add_modules_shuttle.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.24 </span><span class="caption-text">Modules are selected for execution by moving them to the right-hand list</span><a class="headerlink" href="#id30" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Selection shuttles are provided for choosing which modules and assessments will
+be used in a project. They are activated by the “Add Modules…” and “Add
+Assessment…” actions. As shown in <a class="reference internal" href="#fig-add-modules-shuttle-gui"><span class="std std-numref">Fig. 5.24</span></a>,
+available modules or assessments in the left-hand list are moved to the
+right-hand list to select them for execution.</p>
+<p>The “Add” button will move the item selected in the left-hand list to the
+right-hand list, whilst the “Remove” button does the reverse. Clicking the “OK”
+button will accept the selection and close the dialogue. Clicking the “Cancel”
+button will close the dialogue without accepting the selection.</p>
+</section>
+<section id="strategy-manager">
+<h2><span class="section-number">5.14. </span>Strategy Manager<a class="headerlink" href="#strategy-manager" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id31">
+<span id="fig-strategy-manager"></span><img alt="../_images/strategy_manager.png" src="../_images/strategy_manager.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.25 </span><span class="caption-text">All strategies available in DTOcean can be chosen and configured using the
+strategy manager</span><a class="headerlink" href="#id31" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>When the “Select Strategy” action is chosen, the Strategy Manager dialogue, as
+seen in <a class="reference internal" href="#fig-strategy-manager"><span class="std std-numref">Fig. 5.25</span></a>, will open. The strategy manager
+provides an interface for selecting and configuring all available strategies in
+DTOcean.</p>
+<p>To configure a strategy, simply click an item in the “Available Strategies”
+list. The configuration options for the strategy, should there be any, will
+then appear in the “Configuration” section of the dialogue. Configuration of
+each strategy is unique and further details can be found in the
+<code class="docutils literal notranslate"><span class="pre">:ref:`strategies`</span></code> chapter.</p>
+<p>Once the chosen strategy has been configured, the “Apply” button will activate.
+Clicking the Apply button will associate the strategy to the project and its
+name will appear in the “Current strategy” label. Note, when a strategy has
+finished executing, “(completed)” will be added to the strategy name. To clear
+the strategy for the project, click the “Reset” button (the current strategy
+label should now read “None”).</p>
+</section>
+<section id="progress-bar">
+<h2><span class="section-number">5.15. </span>Progress Bar<a class="headerlink" href="#progress-bar" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id32">
+<span id="fig-progress-bar-gui"></span><img alt="../_images/progress_bar.png" src="../_images/progress_bar.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.26 </span><span class="caption-text">The progress bar is shown during long running processes</span><a class="headerlink" href="#id32" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>When an action is chosen that initiates a long-running process, the progress
+bar shown in <a class="reference internal" href="#fig-progress-bar-gui"><span class="std std-numref">Fig. 5.26</span></a> will open. Currently, the progress
+bar is not capable of estimating time remaining, and simply serves as an
+indicator that the process is ongoing.</p>
+<p>Two actions are available while the progress bar is open. Firstly, the progress
+bar may be minimised, which will also minimise the main DTOcean window <a class="footnote-reference brackets" href="#f2" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.
+Secondly, the progress bar can be closed, which will force quit DTOcean.
+Processes active under the progress bar can not be stopped safely, so a
+warning, as shown in <a class="reference internal" href="#fig-active-thread-detected"><span class="std std-numref">Fig. 5.27</span></a>, will be shown to
+inform the user that bad things may happen.</p>
+<figure class="align-default" id="id33">
+<span id="fig-active-thread-detected"></span><img alt="../_images/active_thread_detected.png" src="../_images/active_thread_detected.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.27 </span><span class="caption-text">The warning shown after requesting to close the progress bar</span><a class="headerlink" href="#id33" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p class="rubric">Footnotes</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>If the configuration file already exists the new file will be named
+<code class="docutils literal notranslate"><span class="pre">logging.yaml.new</span></code>.</p>
+</aside>
+<aside class="footnote brackets" id="f2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">2</a><span class="fn-bracket">]</span></span>
+<p>The title bar of the progress bar may still be visible on the desktop.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started_2.html" class="btn btn-neutral float-left" title="4. Getting Started 2: Example Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_preparation.html" class="btn btn-neutral float-right" title="6. Data Preparation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v2026.3.4
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.4.2/user/gui.html">v2026.4.2</a></dd>
+      <dd><a href="../../root-v2026.4.1/user/gui.html">v2026.4.1</a></dd>
+      <dd><a href="../../root-v2026.4.0/user/gui.html">v2026.4.0</a></dd>
+      <dd><a href="gui.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2.0.0/user/gui.html">v2.0.0</a></dd>
+      <dd><a href="../../root-v1.0.0/user/gui.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/user/gui.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

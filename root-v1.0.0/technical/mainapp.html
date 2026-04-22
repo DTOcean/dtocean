@@ -1,0 +1,1086 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5. Main Application and Graphical User Interface &mdash; DTOcean 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6. Database Design" href="database.html" />
+    <link rel="prev" title="4. Data Management and Shared Utilities" href="datamanagement.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DTOcean
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User's Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/abstract.html">1. Abstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/softinstall.html">3. Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/overview.html">4. DTOcean Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/gui.html">5. Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/modules.html">6. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/themes.html">7. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/preprocessing.html">8. Preprocessing Steps: Data Requirements and Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/references.html">9. Links, Support and Extra Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Manual</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysreq.html">2. System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designreq.html">3. Requirements for Implementing the Design Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datamanagement.html">4. Data Management and Shared Utilities</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Main Application and Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">5.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dtocean-core">5.2. DTOcean Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#primary-functionality">5.2.1. Primary Functionality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-components">5.2.2. Additional Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functional-specification">5.2.3. Functional Specification</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#graphical-user-interface">5.3. Graphical User Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">6. Database Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">7. DTOcean Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">8. DTOcean Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datastructures.html">9. Data Structures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DTOcean</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">5. </span>Main Application and Graphical User Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/technical/mainapp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="main-application-and-graphical-user-interface">
+<h1><span class="section-number">5. </span>Main Application and Graphical User Interface<a class="headerlink" href="#main-application-and-graphical-user-interface" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2><span class="section-number">5.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>The section presents the development of the main application for executing the
+modules, thematic assessments and solution strategies within the system – along
+with means to upload and download data, using various sources, and plot
+results. Also described in this chapter is the graphical user interface which
+provides a view for controlling the main application.</p>
+</section>
+<section id="dtocean-core">
+<h2><span class="section-number">5.2. </span>DTOcean Core<a class="headerlink" href="#dtocean-core" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id1">
+<span id="fig-core"></span><img alt="../_images/core.png" src="../_images/core.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.19 </span><span class="caption-text">Robustness diagram for the DTOcean Core</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="primary-functionality">
+<h3><span class="section-number">5.2.1. </span>Primary Functionality<a class="headerlink" href="#primary-functionality" title="Link to this heading"></a></h3>
+<p><em>Objectives</em></p>
+<p>The objective of the DTOcean Core component is to facilitate the execution of
+packages in the correct manner, and provide a means for the user to control the
+execution of their associated Python packages and observe and modify the data
+supplied to and generated by them.</p>
+<p>The execution of the external packages and storage and control of the data being
+sent between them is handled by the Aneris framework with some specific
+customisations (as described below) to meet the requirements of the DTOcean
+project. The user interaction with the Core is facilitated using a programmatic
+model of the DTOcean GUI. This model provides a set of classes that operate
+like specific components of the GUI itself.</p>
+<p><em>Customisation and Incorporation of Aneris</em></p>
+<p>The Core provides the bridge, or model, for using the GUI to control the
+functionality found in the Aneris framework. Additionally, certain aspects of
+the Aneris framework were customised in order to meet the particular technical
+needs of the project.</p>
+<p>The most fundamental customisation is creating a MetaData subclass which will
+define the metadata fields that can be accessed within the core for each data
+member. This subclass is named CoreMetaData. The contents of this subclass are
+not discussed here, but the fields are described alongside the data structures
+themselves. The data descriptions themselves are collected by configuring a
+DataDefinition class which stores the address of a directory containing the
+definition files (in YAML format).</p>
+<p>A related and important customisation is extending the number of Data subclasses
+so that different structures of data can be included in the core. In
+<a class="reference internal" href="#fig-core"><span class="std std-numref">Fig. 5.19</span></a> three examples of generic data structures are shown: Simple
+stores single valued typed data, NumpyND is for the Numpy package array objects
+of arbitrary dimension and Table is for the pandas package DataFrame objects. A
+number of these classes are described in the data structures section, however
+Data classes can be subclassed as much as required to meet the specific needs
+of the data. If something is uniquely structured then a unique Data subclass
+can be created for it. The ambition, nonetheless, is to store the majority of
+data members within a limited set of generic structures. This will makes the
+development of plots, file inputs / outputs and database access for these
+structures less demanding, for instance.</p>
+<p>The Core makes use of all the standard Interface subclasses available in Aneris.
+Additionally there are a group of interfaces that mix the AutoInterface class
+of Aneris with the standard interfaces. For example, the AutoQuery class allows
+interfaces to be created automatically in order to access the DTOcean database.
+The creation of these interfaces is triggered by the existence of certain
+fields in the data definitions, and the use of Data subclasses that have the
+special “auto_db” method for accessing tables and columns specified in the data
+definition. Because there are different ways to store data in the database,
+subclasses of the generic Data subclasses (like the Simple class) have been
+created to return data members from specific types of database structures (like
+a single row from a single column, for instance). Auto interfaces for raw data
+entry, file inputs and outputs and plotting have been created in a similar
+manner.</p>
+<p>Standard MapInterface subclasses must also be created to connect external
+packages. These provide the translation of data structures for the local inputs
+for external packages and also the translation for returning the outputs to the
+core. RawInterface and FileInterface classes (and there auto variants) are used
+to collect data members from the user, where appropriate, and QueryInterface
+classes can be used to send instructions to the database regarding filtering
+the available data (by site location, OEC device, etc.)</p>
+<p>Three specific Hub objects are used within the Core, one to collect information
+about the specific scenario being undertaken, one to execute and sequence the
+chosen computational modules (a Pipeline) and one to execute the chosen
+thematic algorithms.</p>
+<p>These Hub objects and the other Aneris components are stored in two main
+classes, a control class called Core and an entity class called Project. The
+Project class holds all the data relating to a particular project, such as the
+Simulation objects and the DataPool, whereas the Core class gives access to the
+functions of Aneris and holds any objects that would be constant between
+projects (for this design, the DataCatalog and Hubs are such items).  Holding
+the project (or scenario) data in a single entity makes the logic of saving and
+loading projects more straightforward as the goal is to serialise all the
+contents of this class.</p>
+<p>All the remaining classes defined within the Core code, and unrelated to Aneris,
+make use of the Project and Core classes. To see these connections more easily
+in <a class="reference internal" href="#fig-core"><span class="std std-numref">Fig. 5.19</span></a>, associations to the Core class are shown in red and
+associations to the Project class are shown in blue.</p>
+<p><em>GUI Model and Controllers</em></p>
+<p>The DTOcean Core provides a model for which all of the functionality of the GUI
+design can be accessed programmatically. To do this, a number of “boundary”
+stereotype classes are created to support the components of the GUI. For
+instance to recreate the design stages in the GUI the following classes exist:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DataMenu</p></li>
+<li><p>ProjectMenu</p></li>
+<li><p>ModuleMenu</p></li>
+<li><p>ThemeMenu</p></li>
+</ul>
+</div></blockquote>
+<p>The methods of these classes complete actions that can be undertaken in the GUI,
+for instance the ProjectMenu can be used to create a new Project object using
+the new_project method.</p>
+<p>The DataMenu is used for configuring and activating the database access or for
+loading test data from specially formatted python files. All the other Menu
+classes affect actors accessed through interfaces. The ProjectMenu controls the
+“project” hub which affects interfaces related to the filtering of the
+database, for instance. The Module and Theme menus work with the “module”
+Pipeline and “theme” Hub to prepare and execute the modules and thematic
+assessments. To support these actions which utilise Aneris Hub classes, an
+additional controller class, named Connector, was created and the shared
+actions with this class and defined in the ConnectorMenu class from which
+ProjectMenu, ModuleMenu and ThemeMenu are subclassed.</p>
+<p>The next set of boundary classes relate to interacting with the data members
+themselves and mimic the “pipeline” part of the GUI design. Provided are a
+Tree, Branch and Variable class, with the Variable class being further
+subdivided into the InputVariable and OutputVariable classes.</p>
+<p>A control class named Tree has been created to access the Branch classes which
+are created per module or theme interface that have been chosen as part of the
+project. The Tree also can do some bulk actions on all branches such as reading
+from the database.</p>
+<p>A Branch object will group all the input and output variables for a particular
+component (such as an external package). It is also responsible for supplying
+reports relating to the status of the variable. A variable object can only be
+retrieved from the related branch.</p>
+<p>A Variable class allows the user to examine the data contained in a data member,
+and execute interfaces that are available for that variable such as raw data
+entry, database access, plots etc.</p>
+<blockquote>
+<div><p><em>DTOcean Packages and 3rd Party Libraries</em></p>
+</div></blockquote>
+<p>As the core provides the connection between all the external packages which form
+the DTOcean software, those packages must be made available to the core. The
+strategy for achieving this is to create an installable Python package for each
+major component. The list of packages that are used by the core are as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>dtocean-hydrodynamics</p></li>
+<li><p>dtocean-electrical</p></li>
+<li><p>dtocean-moorings-foundations</p></li>
+<li><p>dtocean-installation</p></li>
+<li><p>dtocean-operations-maintenance</p></li>
+<li><p>dtocean-logistics</p></li>
+<li><p>dtocean-economics</p></li>
+<li><p>dtocean-reliability</p></li>
+<li><p>dtocean-environmental</p></li>
+</ul>
+</div></blockquote>
+<p>Additionally, the Aneris and Polite DTOcean packages are required.</p>
+<p>The Core requires a number of 3rd party Python libraries for its operation.
+These include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>geoalchemy2</p></li>
+<li><p>matplotlib</p></li>
+<li><p>matplotlib-basemap</p></li>
+<li><p>netcdf4</p></li>
+<li><p>numpy</p></li>
+<li><p>openpyxl</p></li>
+<li><p>pandas</p></li>
+<li><p>pil</p></li>
+<li><p>psycopg2</p></li>
+<li><p>pyproj</p></li>
+<li><p>pyyaml</p></li>
+<li><p>shapely</p></li>
+<li><p>xarray</p></li>
+<li><p>xlrd</p></li>
+<li><p>xlwt</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="additional-components">
+<h3><span class="section-number">5.2.2. </span>Additional Components<a class="headerlink" href="#additional-components" title="Link to this heading"></a></h3>
+<p><em>Packages Interfaces</em></p>
+<figure class="align-default" id="id2">
+<span id="fig-mapinterface"></span><img alt="../_images/mapinterface.png" src="../_images/mapinterface.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.20 </span><span class="caption-text">UML Class diagram of the MapInterface class</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>All computational components in the DTOcean software are developed as
+installable Python packages or modules that can be executed separately to the
+main software itself. This provides a number of advantages to the design, in
+that the packages can be tested independently and also act similarly to any
+other data coupled component. This structure also allows other, non DTOcean,
+packages to be interfaced into the software in a similar manner, possibly
+replacing some functionality in DTOcean with a more complex tool.</p>
+<p>The specific method for interfacing with external packages is through an
+Interface class, as found in the Aneris framework. More specifically,
+MapInterface sub-classes have been used, as these allow a semantic disconnect
+between the data member identifier and the identifier used to recover the data
+to pass into the external package. This disconnect is useful as minimal changes
+are required if changes are made to the data definitions or external package
+entry points.</p>
+<p>The Aneris framework can also handle inputs to the external packages that are
+optional. These must be declared by listing the inputs as the return value of
+the “declare_optional” method. The system will then allow execution of the
+package if these optional inputs have not been satisfied.  Additionally, Aneris
+MaskVariable classes can be used in the input list to mask inputs until certain
+criteria are met for another data member.</p>
+<p>The UML class diagram for a MapInterface class is given in
+<a class="reference internal" href="#fig-mapinterface"><span class="std std-numref">Fig. 5.20</span></a>. Note that the first 6 methods are abstract methods,
+in that subclasses must be created which implement these methods or otherwise
+an error will occur. Each subclass of MapInterface describes the interface to
+one particular external package and each of these (when placed in the correct
+location) can be automatically discovered by Aneris’s Socket class.</p>
+<p>The abstract methods which each interface subclass must implement are described
+below:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>get_name</strong>: A method which returns the user readable name of the
+external package being called. These should be unique</p></li>
+<li><p><strong>declare_inputs</strong>: A method which returns all of the data member
+identifiers that are required inputs to the interface as a list of strings
+and / or MaskVariable objects. The identifiers must match those in the data
+definitions</p></li>
+<li><p><strong>declare_outputs</strong>: A method which returns all of the data member
+identifiers that are outputs from the interface as a list of strings. The
+identifiers should match those in the data definitions</p></li>
+<li><p><strong>declare_optional</strong>: A method which returns all of the data member
+identifiers that are optional inputs as a list of strings. These identifiers
+declared here are not strictly required for execution of the external
+package. The identifiers should match those in the data definitions</p></li>
+<li><p><strong>declare_id_map</strong>: A method which returns the mapping for variable
+identifiers given in the data descriptions to local names for use in the
+interface</p></li>
+<li><p><strong>connect</strong>: A method which is used to execute the external package using
+inputs collected from the data attribute and then populate the data
+attribute with values created by the external package</p></li>
+</ul>
+</div></blockquote>
+<p>As mentioned above the data attribute of the interface can be used to both
+access input values and provide output values. In the MapInterface class the
+data values can be accessed like class attributes, for example to collect the
+value of the locally named variable “my_variable”, the process is simply to
+request “self.data.my_variable”.</p>
+<p><em>Data Tools</em></p>
+<p>The potential functionality of the data tools within DTOcean is somewhat broad.
+There are two key use cases for data tools which are addressed. These are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Tools that can manipulate data within interfaces of external packages</p></li>
+<li><p>Tools that can manipulate data outside of the tool (for data preparation
+purposes)</p></li>
+</ul>
+</div></blockquote>
+<p>Another desirable feature of these tools is for them to be extensible, in a
+similar manner to external package interfaces, thus they should be accessed
+through an Aneris Plugin subclass.</p>
+<p>Examples of tools that are used in the DTOcean software include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Conversion of time domain environmental data to statistical form</p></li>
+<li><p>Conversion of wave period definitions</p></li>
+<li><p>Preparation of Hydrodynamic coefficients for wave device modelling</p></li>
+</ul>
+</div></blockquote>
+<p><em>Strategy Manager</em></p>
+<p>The Strategy Manager component of DTOcean provides a flexible framework for
+developing automated processes in the software, be that for a single complete
+simulation, sensitivity analysis or more complex optimisation algorithms. It is
+desirable for this functionality to be extensible such that new execution
+strategies can be easily integrated into the software.</p>
+<figure class="align-default" id="id3">
+<span id="fig-strategy-tech"></span><img alt="../_images/strategy.png" src="../_images/strategy.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.21 </span><span class="caption-text">Robustness diagram for the sequencing and optimisation component</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>A higher level controller for the functionality of the Core is provided, which
+will be known as the StrategyManager class, as seen in
+<a class="reference internal" href="#fig-strategy-tech"><span class="std std-numref">Fig. 5.21</span></a>. A base class “Strategy” is then provided
+(following a similar idea to Interfaces) for which a number of abstract methods
+must be provided in order to define a strategy. Subclasses of the Strategy
+class can be generalised of to any algorithm used to carry out an automated
+simulation using the DTOcean software. The Strategy classes utilise the same
+set of standardised boundary methods, used to interact with the Core and active
+Project classes, as the user.</p>
+<p>The StrategyManager class uses the Aneris Plugin functionality to discover
+Strategy classes. This allows the user to select which Strategy class they wish
+to use, and also configure its behaviour.</p>
+<p>With this architecture the user can design advanced learning strategies which
+could leverage existing optimisation packages written for Python. Such packages
+include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Scikit-learn</p></li>
+<li><p>Mystic</p></li>
+<li><p>DEAP</p></li>
+<li><p>cma</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="functional-specification">
+<h3><span class="section-number">5.2.3. </span>Functional Specification<a class="headerlink" href="#functional-specification" title="Link to this heading"></a></h3>
+<p>This section describes the operation of the core without the use of the GUI.</p>
+<p><em>Data Lifecycle</em></p>
+<p>A key feature of the Aneris framework (and, thus, of the DTOcean Core) is the
+strict contracting of data used within the core and exchanged with the external
+packages interfaced with the Core. This contracting ensures that a single
+unified definition for the meaning and structure of a piece of data is stored
+within the core. Interfaces to external components can then be used to deliver
+and collect the required data, translating from the local representation of
+that data into the global representation within the core. Four items must be
+prepared to establish the contracts for the data. These are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Defining the data structures</p></li>
+<li><p>Defining meta data fields</p></li>
+<li><p>Defining data definitions (DDS)</p></li>
+<li><p>Defining interfaces</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Defining Data Structures</strong></p>
+<figure class="align-default" id="id4">
+<span id="fig-structure-class"></span><img alt="../_images/structure_class.png" src="../_images/structure_class.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.22 </span><span class="caption-text">UML Class diagram of the Data class</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The Structure class shown in <a class="reference internal" href="#fig-structure-class"><span class="std std-numref">Fig. 5.22</span></a> must be the
+superclass of all data structures defined within the core. For every Structure
+object two abstract methods must be provided: “get_data()” which prepares data
+to be stored within the core and will check that the data has the correct
+structure; and “get_value()” which returns a copy of the data stored with the
+core in the expected format.</p>
+<p>Various Structure subclasses can be provided to provide storage for different
+structures of data which can validate the raw data being entered into the
+Structure object from an interface.</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<span id="code-datetime"></span><div class="code-block-caption"><span class="caption-number">Listing 5.1 </span><span class="caption-text">Python code for the DateTimeData class</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DateTimeData</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+
+<span class="w">   </span><span class="sd">&#39;&#39;&#39;A datetime.dateime data object&#39;&#39;&#39;</span>
+
+   <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">):</span>
+
+      <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pydatetime</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+
+         <span class="n">errStr</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DateTimeData requires a datetime.datetime</span>
+                   <span class="nb">object</span> <span class="k">as</span> <span class="s2">&quot;&quot;</span><span class="n">raw</span> <span class="n">data</span><span class="o">.</span><span class="s2">&quot;)</span>
+         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errStr</span><span class="p">)</span>
+
+      <span class="k">return</span> <span class="n">raw</span>
+
+   <span class="k">def</span><span class="w"> </span><span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+      <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<p><a class="reference internal" href="#code-datetime"><span class="std std-numref">Listing 5.1</span></a> shows an example of a data structure class, in this case
+for storing a date as a Python datetime.datetime object. The class contains a
+basic check that the raw data being added meets the expected structure. A
+further advantage of defining each data structure is that the other parts of
+the software can respond automatically to various structures. For instance,
+appropriate plots or file inputs / outputs can be provided based on the data
+structure of a data member. To define a plot for a structure, for example, the
+user would add the static method auto_plot to the Structure definition. Once
+placed in the “definitions.py” file within the data submodule of the core, the
+data structure subclasses are discovered automatically by the Validation class
+of Aneris, allowing easy inclusion of new classes as required.</p>
+<p><strong>Defining Meta Data Fields</strong></p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<span id="code-numpynd"></span><div class="code-block-caption"><span class="caption-number">Listing 5.2 </span><span class="caption-text">Example data definition in YAML format</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Tidal:</span><span class="nv"> </span><span class="s">represents</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">position</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">hub.</span>
+<span class="w">                </span><span class="s">Wave:</span><span class="nv"> </span><span class="s">represents</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">position</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">centre</span>
+<span class="w">                </span><span class="s">of</span><span class="nv"> </span><span class="s">gravity</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">whole</span><span class="nv"> </span><span class="s">device</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">point</span>
+<span class="w">                </span><span class="s">of</span><span class="nv"> </span><span class="s">rotation.&#39;</span>
+<span class="w">   </span><span class="nt">identifier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">device.coordinate_system</span>
+<span class="w">   </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Position of the local coordinate system</span>
+<span class="w">   </span><span class="nt">structure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NumpyND</span>
+</pre></div>
+</div>
+</div>
+<p>Upon installation of the code, any definitions for the data within the Core must
+be written in YAML format and placed within the “yaml” folder of the data
+submodule. An example of a definition given in this format is shown in
+<a class="reference internal" href="#code-numpynd"><span class="std std-numref">Listing 5.2</span></a>.</p>
+<p>Creating and editing the definitions in YAML format when the amount of data in
+the project is very large can be somewhat arduous. To make this workflow more
+efficient some special helper scripts were added to Aneris to allow conversion
+from Microsoft Excel format files to the YAML format. This function is
+available on the command line and is called “bootstrap_dds”. It will convert
+all the Excel files found in a given folder to YAML format and save these in
+the desired destination folder.</p>
+<p><strong>Defining Interfaces</strong></p>
+<p>The interface definitions are the most complex part of the data lifecycle of the
+DTOcean software. Partly, this is because there are a significant number of
+them. Different interfaces are available for:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The external packages</p></li>
+<li><p>Collecting / providing data from / to the user using files or in raw
+Python objects</p></li>
+<li><p>Communicating with the database</p></li>
+<li><p>Creating plots</p></li>
+</ul>
+</div></blockquote>
+<p>To help distinguish which interfaces should be grouped together, some subclasses
+of the interface classes defined by Aneris have been created in the core. One
+of the first actions to be completed with the software is to contact the
+database for the top level project data and a special QueryInterface subclass
+called ProjectInterface is provided for this purpose. The external packages
+require distinct interfaces so they have subclasses of the MapInterface called
+ModuleInterface and ThemeInterface respectively. Although, a number of
+automatically generated interfaces are included for collecting raw data from
+the user, defining database access, plots, etc., there may also be the need
+(particularly for plots) to create bespoke interfaces that can, for instance,
+plot many data members in the same plot.</p>
+<p>The most complex interfaces to design are those for the external packages. The
+interfaces are descendants of the MapInterface, details of which is given in
+the Aneris description. <a class="reference internal" href="#code-hydro-interface"><span class="std std-numref">Listing 5.3</span></a> shows a simplified
+example of the interface for the Hydrodynamics module. Note that identifiers in
+the input and output list must correspond to identifiers in the data
+definitions. Additionally, each identifier must have a local mapping given in
+the id_map dictionary.</p>
+<p>The connect method, which is used to call the code of the external package (in
+this case for the Hydrodynamics module,) has access to the data defined in the
+interface through the attribute “self.data”. Each variable name defined in the
+local mapping can be accessed or written to through this variable using simple
+“dot” notation as can be seen in <a class="reference internal" href="#code-hydro-interface"><span class="std std-numref">Listing 5.3</span></a>.</p>
+<p>The local mapping also allows changes in the data definitions to be isolated
+from changes in the external package definitions. Such a change would require
+simply a two line alteration in the interface, changing the input or output id
+and the id_map dictionary.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<span id="code-hydro-interface"></span><div class="code-block-caption"><span class="caption-number">Listing 5.3 </span><span class="caption-text">Simplified interface for the Hydrodynamics module</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">HydroInterface</span><span class="p">(</span><span class="n">ModuleInterface</span><span class="p">):</span>
+
+
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+      <span class="nb">super</span><span class="p">(</span><span class="n">HydroInterface</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+   <span class="nd">@classmethod</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+
+      <span class="k">return</span> <span class="s2">&quot;Hydrodynamics&quot;</span>
+
+   <span class="nd">@classmethod</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">declare_inputs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+
+      <span class="n">input_list</span>  <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;bathymetry.depth&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;farm.hydrodynamic_folder_path&quot;</span><span class="p">]</span>
+
+      <span class="k">return</span> <span class="n">input_list</span>
+
+   <span class="nd">@classmethod</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">declare_outputs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+
+      <span class="n">output_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;farm.annual_power&quot;</span><span class="p">]</span>
+
+      <span class="k">return</span> <span class="n">output_list</span>
+
+   <span class="nd">@classmethod</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">declare_optional</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+
+      <span class="n">optional</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;farm.hydrodynamic_folder_path&quot;</span><span class="p">,</span>
+                 <span class="p">]</span>
+
+      <span class="k">return</span> <span class="n">optional</span>
+
+   <span class="nd">@classmethod</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">declare_id_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+      <span class="n">id_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bathymetry&quot;</span><span class="p">:</span> <span class="s2">&quot;bathymetry.depth&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;hydro_folder_path&quot;</span><span class="p">:</span> <span class="s2">&quot;farm.hydrodynamic_folder_path&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;AEP_array&quot;</span><span class="p">:</span> <span class="s2">&quot;farm.annual_power&quot;</span><span class="p">}</span>
+
+      <span class="k">return</span> <span class="n">id_map</span>
+</pre></div>
+</div>
+</div>
+<p><em>Initialising the Core and Database Access</em></p>
+<p>The DTOcean software is designed to operate alongside a database containing
+stored data for multiple scenarios (a scenario being a combination of data
+relating to a single development site and a single energy conversion
+technology). The purpose of this database is to reduce the data entry burden on
+the software user, by providing a baseline data set prior to beginning the
+operation of the core. Of course, correctly formatted data must be entered into
+the database in order to make it available to the core, but this is a onetime
+operation versus re-entering the data into the core upon each usage.</p>
+<p>The core treats the database as an understood structure, in a not necessarily
+understood location. The default location for the database is locally hosted
+next to the DTOcean software, but the core is capable of connecting to similar
+databases on local networks or even remote networks, however data retrieval
+times will obviously increase as the distance to the database increases. It is
+important to note that the database may not be used with multiple parallel
+sessions of DTOcean, i.e. it is single user only.</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<span id="code-yaml-database"></span><div class="code-block-caption"><span class="caption-number">Listing 5.4 </span><span class="caption-text">Example of database location description in YAML format</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;local&quot;</span><span class="p p-Indicator">:</span>
+<span class="w">   </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;localhost&quot;</span>
+<span class="w">   </span><span class="nt">dbname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dtocean_base&quot;</span>
+<span class="w">   </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;production&quot;</span>
+<span class="w">   </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;yourusername&quot;</span>
+<span class="w">   </span><span class="nt">pwd</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;yourpassword&quot;</span>
+<span class="s">&quot;remote&quot;</span><span class="p p-Indicator">:</span>
+<span class="w">   </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;555.555.555.555&quot;</span>
+<span class="w">   </span><span class="nt">dbname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dtocean_shared&quot;</span>
+<span class="w">   </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;clone&quot;</span>
+<span class="w">   </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;guest&quot;</span>
+<span class="w">   </span><span class="nt">pwd</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;guest</span>
+</pre></div>
+</div>
+</div>
+<p>Database addresses are specified in a configuration file located in the AppData
+folder for DTOcean (for instance:
+C:UsersYourUserNameAppDataRoamingDTOceandtocean_coreconfig) in a file
+named database.yaml. <a class="reference internal" href="#code-yaml-database"><span class="std std-numref">Listing 5.4</span></a> gives an example of
+specifying a database location for a locally stored and remote database. Note
+PostgreSQL schemas can be used to allow multiple versions of the database
+tables to be used within a single database, making cloning more straightforward.</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<span id="code-create-project"></span><div class="code-block-caption"><span class="caption-number">Listing 5.5 </span><span class="caption-text">Creating a Project and connecting a database</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_core</span> <span class="o">=</span> <span class="n">Core</span><span class="p">()</span>
+<span class="n">project_menu</span> <span class="o">=</span> <span class="n">ProjectMenu</span><span class="p">()</span>
+<span class="n">data_menu</span> <span class="o">=</span> <span class="n">DataMenu</span><span class="p">()</span>
+
+<span class="n">my_project</span> <span class="o">=</span> <span class="n">project_menu</span><span class="o">.</span><span class="n">new_project</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+<span class="n">data_menu</span><span class="o">.</span><span class="n">select_database</span><span class="p">(</span><span class="n">my_project</span><span class="p">,</span> <span class="s2">&quot;local&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Setting up a project and connecting a database is demonstrated in
+<a class="reference internal" href="#code-create-project"><span class="std std-numref">Listing 5.5</span></a>. An instance of the Core, ProjectMenu and
+DataMenu classes are required and then a Project class can be created.
+Associating the desired database to the project is then done through the
+DataMenu´s select_database method, giving the project and the name of the
+definition in the YAML file as inputs. The updated project is then returned.</p>
+<p>Mapping particular data members to locations within the database structure is
+achieved through definitions given in the DDS files and special methods within
+the data structure definitions called “auto_db”.</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<span id="code-auto-db"></span><div class="code-block-caption"><span class="caption-number">Listing 5.6 </span><span class="caption-text">Example of a Structure subclass implementing an “auto_db” database access method</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">auto_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">tables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+      <span class="n">errStr</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Tables not defined for variable &quot;</span>
+                <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errStr</span><span class="p">)</span>
+
+   <span class="n">Table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">safe_reflect_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+   <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                  <span class="n">Table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+
+   <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+   <span class="k">return</span>
+</pre></div>
+</div>
+</div>
+<p><a class="reference internal" href="#code-auto-db"><span class="std std-numref">Listing 5.6</span></a> gives an example of a subclass of a data structure which
+implements an auto_db method. The method works on a list of strings, provided
+in the “tables” field of the DDS meta data, that refer to particular locations
+in the database. The first entry will always be a table name, but later entries
+could have various meanings depending on the context. In the method is a
+special local data reference called “result” which is used by the core to
+retrieve the result of the database query when data structures with auto_db
+methods are discovered.</p>
+<p>The auto_db methods provide fine control of database access but larger scale
+filtering operations can also be carried out using the QueryInterface class of
+Aneris. This interface provides access to the database object stored within the
+core which can be used to implement stored procedures within the database,
+given a particular set of input values (specified in an identical manner to
+those for the external package interfaces). This methodology is used for
+filtering multiple sites and technologies stored within the database to single
+selection and their associated data.</p>
+<p><em>External Package Execution</em></p>
+<p>The main burden for executing an external package with the DTOcean software lies
+in specifying the necessary inputs for that package to run. However, as the
+system can run with multiple packages the number of required inputs for a
+package may vary. Therefore, it is necessary to inform the core about database
+selections and how many packages are desired to compute before beginning the
+data collection task. The process is shown in <a class="reference internal" href="#fig-global-workflow"><span class="std std-numref">Fig. 5.23</span></a>
+and, to summarise, following opening a project, the user must:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Connect a database and filter it for project data if desired.</p></li>
+<li><p>Activate external packages for execution</p></li>
+<li><p>Examine which inputs must be satisfied to execute the first package</p></li>
+<li><p>Enter inputs into the core and test if the all the inputs have been provided</p></li>
+<li><p>If so, execute the package</p></li>
+</ol>
+</div></blockquote>
+<figure class="align-default" id="id11">
+<span id="fig-global-workflow"></span><img alt="../_images/global_workflow.png" src="../_images/global_workflow.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.23 </span><span class="caption-text">Activity diagram for executing external packages</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Activating Computational Modules and Thematic Algorithms</strong></p>
+<p>Assuming that a database not been selected, the first requirement for external
+package scheduling is to initiate the “pipeline”. This initiates the inbuilt
+hubs and pipelines required for filtering the database and activating and
+scheduling the packages. It also collects data that can be used as filters for
+the database, by selecting a site and technology from the retrieved lists. This
+command is used as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project_menu</span><span class="o">.</span><span class="n">initiate_pipeline</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is possible to retrieve the names of the computational modules which can be
+scheduled from the core. The command and sample output are shown in
+<a class="reference internal" href="#code-names"><span class="std std-numref">Listing 5.7</span></a>. This functionality is provided by the ModuleMenu class</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<span id="code-names"></span><div class="code-block-caption"><span class="caption-number">Listing 5.7 </span><span class="caption-text">Retrieving the available module names</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module_menu</span> <span class="o">=</span> <span class="n">ModuleMenu</span><span class="p">()</span>
+<span class="n">names</span> <span class="o">=</span> <span class="n">module_menu</span><span class="o">.</span><span class="n">get_available</span> <span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>“names” content:</p>
+<blockquote>
+<div><p>Hydrodynamics
+Electrical Sub Systems
+Mooring and Foundations
+Installation
+Operations and Maintenance</p>
+</div></blockquote>
+<p>Activating a computational module, for instance the Hydrodynamics module, is
+then achieved by issuing the command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module_menu</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">,</span> <span class="s1">&#39;Hydrodynamics&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is important to ensure that the name given in the final argument of the
+activate command matches one of those names given by the get_available command
+seen in <a class="reference internal" href="#code-names"><span class="std std-numref">Listing 5.7</span></a>.</p>
+<p>Any number of computational modules can then be activated, although each
+available module can only be activated once. The order of execution is strictly
+controlled in the core in order to ensure that the interrelationships between
+the computational modules are adhered to.</p>
+<p>In a similar manner the thematic algorithms can be checked and activated using
+the get_available and activate commands from the ThemeMenu class.</p>
+<p><em>Satisfying Inputs</em></p>
+<p>In order to inspect the status of the inputs for an external package, a Branch
+class associated to the package must be created. Naturally, to get a branch,
+first you need a Tree, and the example for getting the branch for the
+Hydrodynamics module is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_tree</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">()</span>
+<span class="n">hydro_branch</span> <span class="o">=</span> <span class="n">my_tree</span><span class="o">.</span><span class="n">get_branch</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">,</span> <span class="s2">&quot;Hydrodynamics&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The status of the inputs required for the Hydrodynamics module is retrieved
+using the following command shown in <a class="reference internal" href="#code-status"><span class="std std-numref">Listing 5.8</span></a>, and an example of
+the content is shown there also.</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<span id="code-status"></span><div class="code-block-caption"><span class="caption-number">Listing 5.8 </span><span class="caption-text">Retrieving the input status of the Hydrodynamics module and its contents</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">input_status</span> <span class="o">=</span> <span class="n">hydro_branch</span><span class="o">.</span><span class="n">get_input_status</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+
+   <span class="n">farm</span><span class="o">.</span><span class="n">main_direction</span><span class="p">:</span> <span class="n">optional</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">user_array_option</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">device</span><span class="o">.</span><span class="n">power_rating</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">device</span><span class="o">.</span><span class="n">minimum_distance_x</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">device</span><span class="o">.</span><span class="n">minimum_distance_y</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">device</span><span class="o">.</span><span class="n">installation_depth_min</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">geophysics</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">blockage_ratio</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">device</span><span class="o">.</span><span class="n">coordinate_system</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">rated_power</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">device</span><span class="o">.</span><span class="n">installation_depth_max</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">power_law_exponent</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">selected_technology</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">device</span><span class="o">.</span><span class="n">floating</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">user_array_layout</span><span class="p">:</span> <span class="n">optional</span>
+   <span class="n">bathymetry</span><span class="o">.</span><span class="n">depth</span><span class="p">:</span> <span class="n">required</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">lease_boundary</span><span class="p">:</span> <span class="n">required</span>
+</pre></div>
+</div>
+</div>
+<p>The input status of a branch is a Python dictionary with keys that match
+identifiers found in the DDS and values that relate to the data needs of the
+package in order to be able to execute. There are five possible values that
+this status can have, described as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>required</strong>: The data is necessary to execute the package and has not
+been entered into the core</p></li>
+<li><p><strong>optional</strong>: The data can optionally be entered into the package, but has
+not been entered into the core</p></li>
+<li><p><strong>satisfied</strong>: Necessary or optional inputs to the package that have been
+entered into the core</p></li>
+<li><p><strong>unavailable</strong>: Inputs to the package that will be overwritten by another
+package executed before the one being inspected</p></li>
+<li><p><strong>unavailable_option</strong>: Optional inputs to the package that will be
+overwritten by another package executed before the one being inspected</p></li>
+</ul>
+</div></blockquote>
+<p><em>Entering Inputs</em></p>
+<p>Once it has been established which inputs are required to execute one or all of
+the computational modules the necessary or optional data must be entered into
+the core. In general, this can be achieved using Interface classes, which
+facilitate collecting inputs directly from the user, from the database or from
+files.</p>
+<p>Within the DDS database mappings for various data members can be defined and
+these are retrieved using the auto_db methods defined within the data
+structures. If we wanted to attempt to collect the data for a single variable
+from a database, for example the farm.main_direction variable of the
+hydrodynamics branch, then the commands are:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_var</span> <span class="o">=</span> <span class="n">hydro_branch</span><span class="o">.</span><span class="n">get_input_variable</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span>
+                                          <span class="n">my_project</span><span class="p">,</span>
+                                          <span class="s2">&quot;farm.main_direction&quot;</span><span class="p">)</span>
+<span class="n">new_var</span><span class="o">.</span> <span class="n">read_auto</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then the new value for the variable will be loaded into the project. Obviously,
+it would be a slow process to do this for every variable, so the user can apply
+the read_auto method to every valid variable in the branch, by issuing the
+command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hydro_branch</span><span class="o">.</span> <span class="n">read_auto</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Assuming some inputs could not be retrieved from the database, or the user
+wishes to override some of them, then other interfaces can be used to collect
+data. The most common is the RawInterface, which collects data directly from
+the user in the form of Python objects. The core will automatically create raw
+interfaces for all variables.</p>
+<p>Providing a raw input to a variable is very similar to the process for
+retrieving data from the database. Again, setting the farm.main_direction
+variable to 180 as an example, the process would be as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_var</span> <span class="o">=</span> <span class="n">hydro_branch</span><span class="o">.</span><span class="n">get_input_variable</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span>
+                                          <span class="n">my_project</span><span class="p">,</span>
+                                          <span class="s2">&quot;farm.main_direction&quot;</span><span class="p">)</span>
+<span class="n">new_var</span><span class="o">.</span><span class="n">set_raw_interface</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="mf">180.</span><span class="p">)</span>
+<span class="n">new_var</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that set_raw_interface is checking to see if there is a unique interface
+defined for the variable. This is always the case for raw inputs but may not be
+for file interfaces, for instance, where several different formats could
+provide the same data. To examine which file interfaces are available for
+inputting a variable the user issues the get_file_input_interfaces command like
+so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_var</span> <span class="o">=</span> <span class="n">hydro_branch</span><span class="o">.</span><span class="n">get_input_variable</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span>
+                                          <span class="n">my_project</span><span class="p">,</span>
+                                          <span class="s2">&quot;farm.geophysics&quot;</span><span class="p">)</span>
+<span class="n">file_interfaces</span> <span class="o">=</span> <span class="n">new_var</span><span class="o">.</span> <span class="n">get_file_input_interfaces</span><span class="p">(</span><span class="n">my_core</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The file_interfaces variable now contains a list of file interface names that
+can be used to retrieve the data. Once one is chosen from this list, it can be
+activated in a manner similar to the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_var</span><span class="o">.</span><span class="n">set_file_interface</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="s2">&quot;path/to/my/file.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;GeoXYZInterface&quot;</span><span class="p">)</span>
+<span class="n">my_project</span> <span class="o">=</span> <span class="n">new_var</span><span class="o">.</span><span class="n">connect</span>
+</pre></div>
+</div>
+<p>The above processes should be repeated until all the necessary inputs and
+desired optional inputs are satisfied. Finally, to check if the computational
+module can be executed, the following command will return True or False:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module_menu</span><span class="o">.</span><span class="n">is_executable</span> <span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">,</span> <span class="s2">&quot;Hydrodynamics&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Executing the Computational Module(s)</em></p>
+<p>If the result of the is_executable test for the next executable module is “True”
+then the computational module can be safely executed. This is done as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module_menu</span><span class="o">.</span><span class="n">execute_current</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The computational modules will always run without requiring interaction from the
+user. Also, any activated thematic algorithms will be executed automatically
+following completion of the module, assuming the necessary data to run the
+theme has been produced.</p>
+<p><em>Selecting and Executing a Strategy</em></p>
+<p>Another option for executing computational modules is using a Strategy class,
+for either a simple simulation containing all the available modules, or more
+complex sensitivity and optimisation studies. Selecting a strategy involves the
+use of a StrategyManager as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">strategy_manager</span> <span class="o">=</span> <span class="n">StrategyManager</span><span class="p">()</span>
+
+<span class="n">unit_strategy</span> <span class="o">=</span> <span class="n">strategy_manager</span><span class="o">.</span><span class="n">get_strategy</span><span class="p">(</span><span class="s2">&quot;Unit Sensitivity&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The list of available strategies can also be recovered from the StrategyManager
+with the command “get_available_strategies()”. Once a strategy has been
+selected it must be configured and then executed. Configuration varies from
+strategy to strategy but the methods that must be called are always the same.
+Configuring and executing the strategy selected above is implemented using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">unit_strategy</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;Hydrodynamics&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;farm.rated_power&quot;</span><span class="p">,</span>
+                        <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
+<span class="n">unit_strategy</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The configuration of this strategy will run 3 simulations where the farm rated
+power is varied for the as an input to the hydrodynamics module between 5, 10
+and 20MW.</p>
+<p><em>Inspection of Results</em></p>
+<p>Following completion of an external package, the results are presented to the
+user in a similar manner to which the input data was collected. Firstly, the
+status of the outputs can be found using the same Branch object that was used
+to show the status of the inputs. As an example, the command to get the output
+status for the Hydrodynamics module and the content of that variable are shown
+in <a class="reference internal" href="#code-output-status"><span class="std std-numref">Listing 5.9</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<span id="code-output-status"></span><div class="code-block-caption"><span class="caption-number">Listing 5.9 </span><span class="caption-text">Retrieving the output status of the Hydrodynamics module and its contents</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">output_status</span> <span class="o">=</span> <span class="n">hydro_branch</span><span class="o">.</span><span class="n">get_output_status</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+
+   <span class="n">farm</span><span class="o">.</span><span class="n">annual_power_per_device</span><span class="p">:</span> <span class="n">satisfied</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">layout</span><span class="p">:</span> <span class="n">satisfied</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">annual_power</span><span class="p">:</span> <span class="n">satisfied</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">mean_power_per_device_per_state</span><span class="p">:</span> <span class="n">satisfied</span>
+   <span class="n">farm</span><span class="o">.</span><span class="n">number_of_devices</span><span class="p">:</span> <span class="n">satisfied</span>
+</pre></div>
+</div>
+</div>
+<p>Similarly to the input status, the output status of a branch is a Python
+dictionary with keys that match identifiers found in the DDS. Here, the values
+relate to the data associated to the identifier: whether it exists and whether
+it was created by the external package associated to the branch. There are
+three possible values that this status can have described as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>unavailable: The data associated to this identifier has not been entered
+into the core</p></li>
+<li><p>satisfied: The data associated to this identifier has been entered into
+the core by the package associated to this branch</p></li>
+<li><p>overwritten: The data associated to this identifier has been entered into
+the core by a package which has executed after the package associated to
+this branch</p></li>
+</ul>
+</div></blockquote>
+<p>Recovering the value of the data generated by the external package requires the
+user to retrieve the OutputVariable object for the given variable identifier
+and then extract the raw data from that object.</p>
+<p>For instance, to get the value of the number of OEC devices produced by the
+Hydrodynamics module, the process is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_devices</span> <span class="o">=</span> <span class="n">hydro_branch</span><span class="o">.</span><span class="n">get_output_variable</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span>
+                                             <span class="n">my_project</span><span class="p">,</span>
+                                             <span class="s2">&quot;farm.number_of_devices&quot;</span><span class="p">)</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">n_devices</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span> <span class="n">my_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also possible to generate charts using just the data contained in a single
+OutputVariable object. Because the metadata associated to the identifier is
+contained inside the object, descriptive information is used to decorate plots.
+<a class="reference internal" href="#fig-output-variable"><span class="std std-numref">Fig. 5.24</span></a> shows how such as chart can be created,
+for the annual power production per device output of the Hydrodynamics module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annual_power_per_dev</span> <span class="o">=</span> <span class="n">hydro_branch</span><span class="o">.</span><span class="n">get_output_variable</span><span class="p">(</span><span class="n">my_core</span><span class="p">,</span>
+                                          <span class="n">my_project</span><span class="p">,</span>
+                                          <span class="s2">&quot;farm.annual_power_per_device&quot;</span><span class="p">)</span>
+<span class="n">annual_power_per_dev</span> <span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">new_core</span><span class="p">,</span> <span class="n">new_project</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default" id="id15">
+<span id="fig-output-variable"></span><img alt="../_images/output_variable.png" src="../_images/output_variable.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.24 </span><span class="caption-text">Creating a chart using a single OutputVariable object and the matplotlib library</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="graphical-user-interface">
+<h2><span class="section-number">5.3. </span>Graphical User Interface<a class="headerlink" href="#graphical-user-interface" title="Link to this heading"></a></h2>
+<p>The graphical user interface (GUI) must facilitate the implementation of the
+core, optimisation and data tools components. This section presents the
+technical implementation of the GUI design.</p>
+<figure class="align-default" id="id16">
+<span id="fig-gui"></span><img alt="../_images/gui.png" src="../_images/gui.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.25 </span><span class="caption-text">Robustness diagram for the graphical user interface</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The GUI design in specified seven main features:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A main window with menus</p></li>
+<li><p>A docked area for recording / switching Simulations</p></li>
+<li><p>A docked area for the “pipeline” which displays variables triggers displays</p></li>
+<li><p>An textual input collection / output display area</p></li>
+<li><p>A graphical display area</p></li>
+<li><p>A simulation comparison area</p></li>
+<li><p>A log window dock</p></li>
+<li><p>Various pop-up dialogues</p></li>
+</ul>
+</div></blockquote>
+<p>These components are created using the Qt4 framework and are converted to Python
+compatible code using the PyQt package. Once created with PyQt they can be
+modified and manipulated dynamically with the requirements of the software.</p>
+<p>These widgets (the common name in Qt for an isolated graphical object) are
+stored in Python modules related to their purpose, as is seen in
+<a class="reference internal" href="#fig-gui"><span class="std std-numref">Fig. 5.25</span></a>. As required the control classes of the GUI can subclass
+these widgets and use their display and signalling capabilities.</p>
+<p>The main classes related to the operation of the core, the Core control class
+and the Project entity class, are subclassed into the classes GUICore and
+GUIProject in order to allow signally of events to be triggered when changes
+are detected. These subclasses are then stored in another class named “Shell”.
+This is a technicality for sharing a single instance of these classes between
+the various parts of the GUI which will remain synchronised. The boundary
+classes related to menus (DataMenu, ProjectMenu, ModuleMenu and ThemeMenu) are
+also stored within the Shell class.</p>
+<p>To provide a logical distinction of the various purposes of the GUI, four
+additional control classes are provided. The “DTOceanWindow” class is
+responsible for setting up the main window of the software, supplying menu
+options, generating new docks and spawning pop-up dialogues as required for
+various purposes. To facilitate this it contains the three other main control
+classes</p>
+<p>The “Pipeline” class is responsible for creating the main interactive component
+of the software, building the dock which contains the pipeline, input / output,
+display and system information areas of the GUI.  The Pipeline class contains a
+Tree class so that it can build the branches of pipeline which relate to the
+external packages connected to the DTOcean software. The Pipeline class can
+generate many types of children classes, but only two of these are discussed
+here.</p>
+<p>A “BranchItem” class allows per interface operations to be completed as a group
+- this includes updating the input / output statuses, for instance. Branches
+are also responsible for creating “VarItem” subclasses related to the branch.</p>
+<p>“VarItem” subclasses are used to provide functionality relating to the variables
+themselves, either inputs or outputs. This includes selecting the correct
+input, output and display widgets; feeding data to and from these widgets and
+the core; displaying the input / output status to the user. They also trigger
+the current display to update either its data or plot depending on which
+context area is selected.</p>
+<p>The other main control classes are the SimulationDock class which manages active
+simulations within the current project and allows for cloning and renaming of
+those simulations. Finally, the GUIStrategyManager is a subclass of the
+StrategyManager which provides a dialog for choosing a strategy. It discovers
+GUIStrategy classes which are subclasses of the core’s Strategy class. These
+subclasses of strategies defined in the core are used to provide a widget that
+can be used to configure the strategy before execution.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="datamanagement.html" class="btn btn-neutral float-left" title="4. Data Management and Shared Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="database.html" class="btn btn-neutral float-right" title="6. Database Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2026 The DTOcean Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: v1.0.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../root-v2026.4.2/index.html">v2026.4.2</a></dd>
+      <dd><a href="../../root-v2026.4.1/index.html">v2026.4.1</a></dd>
+      <dd><a href="../../root-v2026.4.0/index.html">v2026.4.0</a></dd>
+      <dd><a href="../../root-v2026.3.4/index.html">v2026.3.4</a></dd>
+      <dd><a href="../../root-v2.0.0/index.html">v2.0.0</a></dd>
+      <dd><a href="mainapp.html">v1.0.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/index.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
