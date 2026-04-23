@@ -1,6 +1,7 @@
 [![dtocean-app actions](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-app.yml/badge.svg?branch=main)](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-app.yml)
 [![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=dtocean-app)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=dtocean-app)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dtocean-app)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dtocean-app)](https://www.python.org/downloads/)
+[![PyPI - Version](https://img.shields.io/pypi/v/dtocean-app)](https://pypi.org/project/dtocean-app/)
 
 # dtocean-app
 

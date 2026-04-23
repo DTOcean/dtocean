@@ -1,6 +1,7 @@
 [![dtocean-economics actions](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-economics.yml/badge.svg?branch=main)](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-economics.yml)
 [![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=dtocean-economics)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=dtocean-economics)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dtocean-economics)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dtocean-economics)](https://www.python.org/downloads/)
+[![PyPI - Version](https://img.shields.io/pypi/v/dtocean-economics)](https://pypi.org/project/dtocean-economics/)
 
 # dtocean-economics
 

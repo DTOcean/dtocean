@@ -1,6 +1,7 @@
 [![polite-config actions](https://github.com/DTOcean/dtocean/actions/workflows/test-polite-config.yml/badge.svg?branch=main)](https://github.com/DTOcean/dtocean/actions/workflows/test-polite-config.yml)
 [![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=polite-config)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=polite-config)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/polite-config)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/polite-config)](https://www.python.org/downloads/)
+[![PyPI - Version](https://img.shields.io/pypi/v/polite-config)](https://pypi.org/project/polite-config/)
 
 # polite-config
 

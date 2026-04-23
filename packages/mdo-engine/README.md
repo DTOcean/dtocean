@@ -1,6 +1,7 @@
 [![mdo-engine actions](https://github.com/DTOcean/dtocean/actions/workflows/test-mdo-engine.yml/badge.svg?branch=main)](https://github.com/DTOcean/dtocean/actions/workflows/test-mdo-engine.yml)
 [![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=mdo-engine)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=mdo-engine)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mdo-engine)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mdo-engine)](https://www.python.org/downloads/)
+[![PyPI - Version](https://img.shields.io/pypi/v/mdo-engine)](https://pypi.org/project/mdo-engine/)
 
 # mdo-engine
 

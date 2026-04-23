@@ -1,6 +1,7 @@
 [![dtocean-qt actions](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-qt.yml/badge.svg?branch=main)](https://github.com/DTOcean/dtocean/actions/workflows/test-dtocean-qt.yml)
 [![codecov](https://img.shields.io/codecov/c/gh/DTOcean/dtocean?token=Y3GR22fUJ8&flag=dtocean-qt)](https://app.codecov.io/gh/DTOcean/dtocean?flags%5B0%5D=dtocean-qt)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dtocean-qt)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dtocean-qt)](https://www.python.org/downloads/)
+[![PyPI - Version](https://img.shields.io/pypi/v/dtocean-qt)](https://pypi.org/project/dtocean-qt/)
 
 # dtocean-qt
 
