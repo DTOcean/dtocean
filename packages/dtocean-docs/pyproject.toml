@@ -21,7 +21,7 @@ requires-python = ">=3.12,<3.15"
 dtocean-docs = 'dtocean_docs._cli:run'
 
 [project.urls]
-homepage = "https://python-poetry.org/"
+homepage = "https://dtocean.github.io/dtocean"
 repository = "https://github.com/DTOcean/dtocean"
 issues = "https://github.com/DTOcean/dtocean/issues"
 

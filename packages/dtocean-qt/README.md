@@ -188,7 +188,7 @@ for contributing guidelines.
 This package is a fork of the [pandas-qt](
 https://github.com/datalyze-solutions/pandas-qt) project by Matthias Ludwig at
 Datalyze Solutions. It was adapted for use in the [EU DTOcean project](
-https://www.dtoceanplus.eu/About-DTOceanPlus/History) by Mathew Topper at
+https://cordis.europa.eu/project/id/608597) by Mathew Topper at
 [TECNALIA](https://www.tecnalia.com).
 
 It is now maintained by Mathew Topper at [Data Only Greater](

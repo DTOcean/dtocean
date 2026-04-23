@@ -17,7 +17,7 @@ maintainers = [{ name = "Mathew Topper", email = "damm_horse@yahoo.co.uk" }]
 dynamic = ["version"]
 
 [project.urls]
-homepage = "https://python-poetry.org/"
+homepage = "https://dtocean.github.io/dtocean"
 repository = "https://github.com/DTOcean/dtocean"
 issues = "https://github.com/DTOcean/dtocean/issues"
 
